@@ -1,5 +1,23 @@
-# JSON Schema Collections
+# JSON Schema
 
-### [serverless/reference.json](serverless/reference.json) ([Raw](https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/reference.json))
+[![Software License][ico-license]][link-license]
 
-Official documentation can be seen [here](https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml)
+## Introduction
+
+Collection of JSON schemas for use in command line validators, editors auto-completion, etc.
+
+## List of schemas
+
+- [Serverless Framework Reference](serverless/reference.json), [Official Docs](https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml), [Raw Link](https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/reference.json)
+
+## About
+
+I'll try to maintain this project as simple as possible, but Pull Requests are welcomed!
+
+## License
+
+The MIT License (MIT). Please see [License File][link-license] for more information.
+
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+
+[link-license]: LICENSE
