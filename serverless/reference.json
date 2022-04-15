@@ -5324,6 +5324,34 @@
         "Properties": {
           "type": "object",
           "properties": {
+            "AccountRecoverySetting": {
+              "type": "object",
+              "properties": {
+                "RecoveryMechanisms": {
+                  "type": "array",
+                  "items": {
+                    "title": "AWS_Cognito_UserPool_AccountRecoverySetting_RecoveryOption",
+                    "type": "object",
+                    "properties": {
+                      "Name": {
+                        "type": "string",
+                        "enum": [
+                          "admin_only",
+                          "verified_email",
+                          "verified_phone_number"
+                        ]
+                      },
+                      "Priority": {
+                        "type": "integer",
+                        "maximum": 2,
+                        "minimum": 1
+                      }
+                    }
+                  },
+                  "maxItems": 2
+                }
+              }
+            },
             "UserPoolTags": {
               "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cognito-userpool.html#cfn-cognito-userpool-userpooltags",
               "anyOf": [
@@ -5405,9 +5433,82 @@
             "DeviceConfiguration": {
               "$ref": "#/definitions/AWS_Cognito_UserPool_DeviceConfiguration"
             },
+            "EnabledMfas": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "SMS_MFA",
+                  "SOFTWARE_TOKEN_MFA"
+                ]
+              }
+            },
             "EmailVerificationMessage": {
               "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cognito-userpool.html#cfn-cognito-userpool-emailverificationmessage",
               "$ref": "#/definitions/Expression"
+            },
+            "UsernameConfiguration": {
+              "type": "object",
+              "properties": {
+                "CaseSensitive": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "VerificationMessageTemplate": {
+              "type": "object",
+              "properties": {
+                "DefaultEmailOption" : {
+                  "type": "string",
+                  "enum": [
+                    "CONFIRM_WITH_CODE",
+                    "CONFIRM_WITH_LINK"
+                  ]
+                },
+                "EmailMessage" : {
+                  "type": "string",
+                  "minLength": 6,
+                  "maxLength": 20000,
+                  "pattern": "[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\s*]*\\{####\\}[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\s*]*"
+                },
+                "EmailMessageByLink" : {
+                  "type": "string",
+                  "minLength": 6,
+                  "maxLength": 20000,
+                  "pattern": "[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\s*]*\\{##[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\s*]*##\\}[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\s*]*"
+                },
+                "EmailSubject" : {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 140,
+                  "pattern": "[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\s]+"
+                },
+                "EmailSubjectByLink" : {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 140,
+                  "pattern": "[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\s]+"
+                },
+                "SmsMessage" : {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 140,
+                  "pattern": ".*\\{####\\}.*"
+                }
+              }
+            },
+            "UserPoolAddOns": {
+              "type": "object",
+              "properties": {
+                "AdvancedSecurityMode": {
+                  "type": "string",
+                  "enum": [
+                    "AUDIT",
+                    "ENFORCED",
+                    "OFF"
+                  ]
+                }
+              }
             }
           },
           "additionalProperties": false
