@@ -10,6 +10,12 @@ Collection of JSON schemas for use in command line validators, editors auto-comp
 
 - [Serverless Framework Reference](serverless/reference.json), [Official Docs](https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml), [Raw Link](https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/reference.json)
 
+## Editors Support
+
+- VsCode:- Using the [YAML](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
+    **Note:- Set `yaml.schemaStore.enable` to true in settings to pull**
+- IntelliJ:- Editors in the IntelliJ family
+
 ## About
 
 I'll try to maintain this project as simple as possible, but Pull Requests are welcomed!

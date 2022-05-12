@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "title": "Serverless Framework Configuration",
   "description": "Schema for serverless framework configuration files",
-  "fileMatch": ["serverless.yml"],
+  "fileMatch": ["serverless.yml", "serverless.yaml"],
   "definitions": {
     "Transform": {
       "type": "object",
@@ -2300,10 +2300,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "CertificateArn",
-            "DomainName"
-          ]
+          "required": ["CertificateArn", "DomainName"]
         }
       }
     },
@@ -2326,10 +2323,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "ApiId",
-            "DomainName"
-          ]
+          "required": ["ApiId", "DomainName"]
         }
       }
     },
@@ -37686,9 +37680,11 @@
     "Aws.ApiGateway": {
       "properties": {
         "apiKeySourceType": {
-          "type": "string"
+          "type": "string",
+          "enum": ["HEADER", "AUTHORIZER"]
         },
         "binaryMediaTypes": {
+          "description": "Optional binary media types the API might return",
           "items": {
             "type": "string"
           },
@@ -37698,7 +37694,9 @@
           "type": "string"
         },
         "minimumCompressionSize": {
-          "type": ["string", "number"]
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10485760
         },
         "restApiId": {
           "type": "string"
@@ -37712,7 +37710,81 @@
         "restApiRootResourceId": {
           "type": "string"
         },
-        "websocketApiId": {}
+        "websocketApiId": {
+          "type": "string"
+        },
+        "disableDefaultEndpoint": {
+          "description": "Disable the default 'execute-api' HTTP endpoint (default: false)",
+          "type": "boolean"
+        },
+        "apiKeys": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "customerId": {
+                    "type": "string"
+                  },
+                  "enabled": {
+                    "description": "Can be used to disable the API key without removing it (default: true)",
+                    "type": "boolean"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "metrics": {
+          "type": "boolean"
+        },
+        "shouldStartNameWithService": {
+          "description": "Use `${service}-${stage}` naming for API Gateway. Will be `true` by default in v3.",
+          "type": "boolean"
+        },
+        "usagePlan": {
+          "type": "object",
+          "properties": {
+            "quota": {
+              "type": "object",
+              "properties": {
+                "limit": {
+                  "type": "number"
+                },
+                "offset": {
+                  "type": "number"
+                },
+                "period": {
+                  "type": "string"
+                }
+              }
+            },
+            "throttle": {
+              "type": "object",
+              "properties": {
+                "burstLimit": {
+                  "type": "number"
+                },
+                "rateLimit": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
       },
       "type": "object"
     },
@@ -37805,6 +37877,41 @@
         },
         "vpc": {
           "$ref": "#/definitions/Aws.Vpc"
+        },
+        "image": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "uri": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "workingDirectory": {
+                  "type": "string"
+                },
+                "command": {
+                  "description": "Sometimes it appears that command from the dockerfile is not read and we have to overwrite it manually to make it work. One of my clients faced this recently",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "entryPoint": {
+                  "description": "Sometimes it appears that { from the dockerfile is not read and we have to overwrite it manually to make it work",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ]
         }
       },
       "type": "object"
@@ -38029,14 +38136,18 @@
       "type": "object"
     },
     "Aws.DeploymentBucket": {
+      "description": "Configure the S3 bucket used by Serverless Framework to deploy code packages to Lambda",
       "properties": {
         "blockPublicAccess": {
+          "description": "Prevents public access via ACLs or bucket policies (default: false). Note: the deployment bucket is not public by default. These are additional ACLs.",
           "type": "boolean"
         },
         "maxPreviousDeploymentArtifacts": {
+          "description": "On deployment, serverless prunes artifacts older than this limit (default: 5)",
           "type": ["string", "number"]
         },
         "name": {
+          "description": "Name of an existing bucket to use (default: created by serverless)",
           "type": "string"
         },
         "serverSideEncryption": {
@@ -38056,6 +38167,14 @@
         },
         "tags": {
           "$ref": "#/definitions/Aws.Tags"
+        },
+        "skipPolicySetup": {
+          "description": "Skip the creation of a default bucket policy when the deployment bucket is created (default: false)",
+          "type": "boolean"
+        },
+        "versioning": {
+          "description": "Enable bucket versioning (default: false)",
+          "type": "boolean"
         }
       },
       "type": "object"
@@ -39468,7 +39587,17 @@
           "type": "string"
         },
         "payload": {
-          "type": "string"
+          "description": "Payload format version (note: use quotes in YAML: '1.0' or '2.0') (default: '2.0')",
+          "type": "string",
+          "enum": ["1.0", "2.0"]
+        },
+        "disableDefaultEndpoint": {
+          "description": "Disable the default 'execute-api' HTTP endpoint (default: false). Useful when using a custom domain.",
+          "type": "boolean"
+        },
+        "metrics": {
+          "description": "Enable detailed CloudWatch metrics (default: false)",
+          "type": "boolean"
         }
       },
       "type": "object"
@@ -40081,6 +40210,53 @@
         "alb": {
           "$ref": "#/definitions/Aws.Alb"
         },
+        "ecr": {
+          "type": "object",
+          "properties": {
+            "scanOnPush": {
+              "description": "Enabling this will make AWS scan image for CVE(Common Vulnerabilities and Exposures)",
+              "type": "boolean"
+            },
+            "images": {
+              "type": "object",
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "uri": {
+                        "description": "URI of an existing Docker image in ECR",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "description": "Path to the Docker context that will be used when building that image locally (default: '.')",
+                        "type": "string"
+                      },
+                      "file": {
+                        "type": "string",
+                        "description": "Dockerfile that will be used when building the image locally (default: 'Dockerfile')"
+                      },
+                      "buildArgs": {
+                        "type": "object"
+                      },
+                      "cacheFrom": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
         "apiGateway": {
           "$ref": "#/definitions/Aws.ApiGateway"
         },
@@ -40091,6 +40267,7 @@
           "type": "array"
         },
         "apiName": {
+          "description": "Change this to use a custom name for the API Gateway API",
           "type": "string"
         },
         "cfnRole": {
@@ -40131,6 +40308,17 @@
           "$ref": "#/definitions/Aws.Logs"
         },
         "memorySize": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "description": "Note: API Gateway has a maximum timeout of 30 seconds",
+              "type": "number",
+              "minimum": 128,
+              "maximum": 10240
+            }
+          ],
           "type": ["string", "number"]
         },
         "name": {
@@ -40168,7 +40356,23 @@
           "$ref": "#/definitions/Aws.RollbackConfiguration"
         },
         "runtime": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "nodejs14.x",
+            "nodejs12.x",
+            "python3.9",
+            "python3.8",
+            "python3.7",
+            "python3.6",
+            "ruby2.7",
+            "java11",
+            "java8.al2",
+            "java8",
+            "go1.x",
+            "dotnet6",
+            "dotnetcore3.1"
+          ],
+          "description": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
         },
         "stackName": {
           "type": "string"
@@ -40204,7 +40408,13 @@
           "$ref": "#/definitions/Aws.UsagePlan"
         },
         "versionFunctions": {
+          "description": "Use function versioning (enabled by default)",
           "type": "boolean"
+        },
+        "architecture": {
+          "type": "string",
+          "enum": ["x86_64", "arm64"],
+          "description": "Processor architecture: 'x86_64' or 'arm64' via Graviton2 (default: x86_64)"
         },
         "vpc": {
           "$ref": "#/definitions/Aws.Vpc"
@@ -40214,6 +40424,18 @@
         },
         "websocketsApiRouteSelectionExpression": {
           "type": "string"
+        },
+        "websocketsDescription": {
+          "type": "string"
+        },
+        "deploymentMethod": {
+          "description": "Method used for CloudFormation deployments: 'changesets' or 'direct' (default: changesets). See https://www.serverless.com/framework/docs/providers/aws/guide/deploying#deployment-method",
+          "type": "string",
+          "enum": ["direct", "changesets"]
+        },
+        "disableRollback": {
+          "type": "boolean",
+          "description": "Disable automatic rollback by CloudFormation on failure. To be used for non-production environments."
         }
       },
       "oneOf": [
