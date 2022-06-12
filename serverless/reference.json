@@ -38360,7 +38360,11 @@
       "type": "object"
     },
     "Aws.Custom": {
-      "additionalProperties": {},
+      "additionalProperties": {
+        "pythonRequirements": {
+          "$ref": "#/definitions/Plugin.Python_Requirements"
+        }
+      },
       "type": "object"
     },
     "Aws.DeadLetterTargetImport": {
@@ -41127,6 +41131,148 @@
         }
       },
       "type": "object"
+    },
+    "Plugin.Python_Requirements": {
+      "type": "object",
+      "properties": {
+        "dockerizePip": {
+          "description": "Compiling non-pure-Python modules or fetching their manylinux wheels is supported on non-linux OSs via the use of Docker and the (docker-lambda)[https://github.com/lambci/docker-lambda] image",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "description": "This will only use docker on non-linux environments",
+              "type": "string",
+              "enum": [
+                "non-linux"
+              ]
+            }
+          ]
+        },
+        "dockerImage": {
+          "description": "Name of the docker image you want to utilize instead of the default. This must be the full image name and tag to use, including the runtime specific tag if applicable",
+          "type": "string"
+        },
+        "dockerFile": {
+          "description": "Use this to define your Docker image in your own Dockerfile. Path to the Dockerfile that must be in the current folder (or a subfolder). Please note the dockerImage and the dockerFile are mutually exclusive.",
+          "type": "string"
+        },
+        "dockerSsh": {
+          "type": "boolean",
+          "description": "Set to true if you need to install from private git repositories. This will mount your $HOME/.ssh/id_rsa and $HOME/.ssh/known_hosts as a volume in the docker container."
+        },
+        "dockerPrivateKey": {
+          "type": "string"
+        },
+        "usePipenv": {
+          "type": "boolean",
+          "description": "Use Pipenv instead of requirements.txt. https://github.com/serverless/serverless-python-requirements#sparklescakesparkles-pipenv-support"
+        },
+        "usePoetry": {
+          "type": "boolean",
+          "description": "https://github.com/serverless/serverless-python-requirements#sparklespencilsparkles-poetry-support"
+        },
+        "zip": {
+          "type": "boolean",
+          "description": "https://github.com/serverless/serverless-python-requirements#sparklescakesparkles-pipenv-support"
+        },
+        "slim": {
+          "type": "boolean",
+          "description": "https://github.com/serverless/serverless-python-requirements#slim-package"
+        },
+        "slimPatterns": {
+          "type": "string",
+          "description": "https://github.com/serverless/serverless-python-requirements#custom-removal-patterns"
+        },
+        "slimPatternsAppendDefaults": {
+          "type": "boolean"
+        },
+        "strip": {
+          "description": "https://github.com/serverless/serverless-python-requirements#option-not-to-strip-binaries",
+          "type": "boolean"
+        },
+        "layer": {
+          "description": "https://github.com/serverless/serverless-python-requirements#lambda-layer",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "compatibleRuntimes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "python3.9",
+                      "python3.8",
+                      "python3.7",
+                      "python3.6"
+                    ]
+                  }
+                },
+                "licenseInfo": {
+                  "type": "string"
+                },
+                "allowedAccounts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "noDeploy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "useDownloadCache": {
+          "type": "boolean"
+        },
+        "useStaticCache": {
+          "type": "boolean"
+        },
+        "cacheLocation": {
+          "type": "string"
+        },
+        "staticCacheMaxVersions": {
+          "type": "integer"
+        },
+        "pipCmdExtraArgs": {
+          "description": "https://github.com/serverless/serverless-python-requirements#extra-pip-arguments",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dockerBuildCmdExtraArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dockerRunCmdExtraArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "invalidateCaches": {
+          "type": "boolean"
+        }
+      }
     }
   },
   "properties": {
