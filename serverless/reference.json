@@ -41003,24 +41003,35 @@
       "type": "object"
     },
     "Aws.S3": {
-      "properties": {
-        "bucket": {
-          "type": "string"
-        },
-        "event": {
-          "type": "string"
-        },
-        "existing": {
-          "type": "boolean"
-        },
-        "rules": {
-          "items": {
-            "$ref": "#/definitions/Aws.S3Rule"
+      "oneOf": [
+        {
+          "properties": {
+            "bucket": {
+              "type": "string"
+            },
+            "event": {
+              "type": "string"
+            },
+            "existing": {
+              "type": "boolean"
+            },
+            "rules": {
+              "items": {
+                "$ref": "#/definitions/Aws.S3Rule"
+              },
+              "type": "array"
+            }
           },
-          "type": "array"
+          "type": "object"
+        },
+        {
+          "type": "string",
+          "description": "This will create a new bucket and trigger the lambda when an object is added or modified inside the bucket. More details :- https://www.serverless.com/framework/docs/providers/aws/events/s3#simple-event-definition",
+          "minLength": 3,
+          "maxLength": 63,
+          "pattern": "(?!(^((2(5[0-5]|[0-4][0-9])|[01]?[0-9]{1,2})\\.){3}(2(5[0-5]|[0-4][0-9])|[01]?[0-9]{1,2})$|^xn--|-s3alias$))^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$"
         }
-      },
-      "type": "object"
+      ]
     },
     "Aws.S3Rule": {
       "properties": {
