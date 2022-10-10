@@ -547,10 +547,31 @@
             },
             {
               "$comment": "The list of objects to select from. This list must not be null, nor can it have null entries.",
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
+              "type": ["array", "object"],
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                {
+                  "$ref": "#/definitions/FnFindInMap"
+                },
+                {
+                  "$ref": "#/definitions/FnGetAtt"
+                },
+                {
+                  "$ref": "#/definitions/FnGetAZs"
+                },
+                {
+                  "$ref": "#/definitions/FnIf"
+                },
+                {
+                  "$ref": "#/definitions/FnSplit"
+                },
+                {
+                  "$ref": "#/definitions/FnRef"
+                }
+              ],
               "minItems": 1
             }
           ]
@@ -571,7 +592,44 @@
             },
             {
               "$comment": "The string value that you want to split.",
-              "type": "string"
+              "type": ["string", "object"],
+              "oneOf": [
+                {
+                  "$comment": "Literal string value",
+                  "type": "string"
+                },
+        
+                {
+                  "$ref": "#/definitions/FnBase64"
+                },
+                {
+                  "$ref": "#/definitions/FnFindInMap"
+                },
+                {
+                  "$ref": "#/definitions/FnGetAtt"
+                },
+                {
+                  "$ref": "#/definitions/FnGetAZs"
+                },
+                {
+                  "$ref": "#/definitions/FnIf"
+                },
+                {
+                  "$ref": "#/definitions/FnImportValue"
+                },
+                {
+                  "$ref": "#/definitions/FnJoin"
+                },
+                {
+                  "$ref": "#/definitions/FnSelect"
+                },
+                {
+                  "$ref": "#/definitions/FnSub"
+                },
+                {
+                  "$ref": "#/definitions/FnRef"
+                }
+              ]
             }
           ]
         }
@@ -41220,13 +41278,13 @@
       "properties": {
         "securityGroupIds": {
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/Expression"
           },
           "type": "array"
         },
         "subnetIds": {
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/Expression"
           },
           "type": "array"
         }
