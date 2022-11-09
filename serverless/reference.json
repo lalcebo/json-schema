@@ -6650,7 +6650,81 @@
               "items": {
                 "$ref": "#/definitions/AWS_DynamoDB_Table_GlobalSecondaryIndex"
               },
-              "minItems": 0
+            "ImportSourceSpecification": {
+              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-table-importsourcespecification.html",
+              "type": "object",
+              "properties": {
+                "InputCompressionType": {
+                  "type": "string",
+                  "enum": [
+                    "GZIP",
+                    "NONE",
+                    "ZSTD"
+                  ]
+                },
+                "InputFormat": {
+                  "type": "string",
+                  "enum": [
+                    "CSV",
+                    "DYNAMODB_JSON",
+                    "ION"
+                  ]
+                },
+                "InputFormatOptions": {
+                  "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-table-inputformatoptions.html",
+                  "type": "object",
+                  "properties": {
+                    "Csv": {
+                      "type": "object",
+                      "properties": {
+                        "Delimiter": {
+                          "description": "The delimiter used for separating items in the CSV file being imported.",
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1,
+                          "pattern": "[,;:|\t ]"
+                        },
+                        "HeaderList": {
+                          "description": "List of the headers used to specify a common header for all source CSV files being imported. If this field is specified then the first line of each CSV file is treated as data instead of the header. If this field is not specified the the first line of each CSV file is treated as the header.",
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "maxLength": 255
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "S3BucketSource": {
+                  "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-dynamodb-table-s3bucketsource.html",
+                  "type": "object",
+                  "properties": {
+                    "S3Bucket": {
+                      "description": "The S3 bucket that is being imported from.",
+                      "type": "string",
+                      "maxLength": 255,
+                      "pattern": "^[a-z0-9A-Z]+[\\.\\-\\w]*[a-z0-9A-Z]+$"
+                    },
+                    "S3BucketOwner": {
+                      "description": "The account number of the S3 bucket that is being imported from. If the bucket is owned by the requester this is optional.",
+                      "type": "string",
+                      "pattern": "[0-9]{12}"
+                    },
+                    "S3KeyPrefix": {
+                      "description": "The key prefix shared by all S3 Objects that are being imported.",
+                      "maxLength": 1024
+                    }
+                  },
+                  "required": [
+                    "S3Bucket"
+                  ]
+                }
+              },
+              "required": [
+                "InputFormat",
+                "S3BucketSource"
+              ]
             },
             "KeySchema": {
               "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html#cfn-dynamodb-table-keyschema",
