@@ -37672,6 +37672,9 @@
         },
         "prune": {
           "$ref": "#/definitions/Plugin.Prune"
+        },
+        "esbuild": {
+          "$ref": "#/definitions/Plugin.Esbuild"
         }
       },
       "additionalProperties": true,
@@ -40739,6 +40742,110 @@
         "includeLayers": {
           "type": "boolean",
           "description": "Whether to prune versions of layers or not"
+        }
+      }
+    },
+    "Plugin.Esbuild": {
+      "type": "object",
+      "description": "Configuration for esbuild. Please make sure to install the [serverless-esbuild](https://www.npmjs.com/package/serverless-esbuild) package and add to plugins. All of the Esbuild options can be taken up by this plugin, so please also visit esbuild docs here to check(https://esbuild.github.io/api/)",
+      "properties": {
+        "concurrency": {
+          "description": "The number of concurrent zip and bundle operations to run at once (This can be memory intensive). eg. 10. NOTE: This will produce slower builds. Default value is Infinity",
+          "oneOf": [
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "disableIncremental": {
+          "type": "boolean",
+          "description": "Disables the use of esbuild incremental compilation."
+        },
+        "exclude": {
+          "type": "array",
+          "description": "An array of dependencies to exclude from the Lambda. This is passed to the esbuild external option. Set to * to disable packaging node_modules",
+          "items": {
+            "type": "string"
+          }
+        },
+        "installExtraArgs": {
+          "type": "array",
+          "description": "Optional arguments passed to npm or yarn for external dependency resolution. eg. ['--legacy-peer-deps'] for npm v7+ to use legacy peerDependency resolution behavior",
+          "items": {
+            "type": "string"
+          }
+        },
+        "keepOutputDirectory": {
+          "type": "boolean",
+          "description": "Keeps the .esbuild output folder. Useful for debugging."
+        },
+        "nativeZip": {
+          "type": "boolean",
+          "description": "Uses the system's zip executable to create archives. NOTE: This will produce non-deterministic archives which causes a Serverless deployment update on every deploy."
+        },
+        "outputBuildFolder": {
+          "type": "string",
+          "description": "The output folder for Esbuild builds within the work folder. You will also need to manually override the watch ignore config if used."
+        },
+        "outputWorkFolder": {
+          "type": "string",
+          "description": "The output folder for this plugin where all the bundle preparation is done. You will also need to manually override the watch ignore config if used."
+        },
+        "outputFileExtension": {
+          "type": "string",
+          "description": "The file extension used for the bundled output file. This will override the esbuild `outExtension` option",
+          "enum": [
+            ".js",
+            ".cjs",
+            ".mjs"
+          ]
+        },
+        "packagePath": {
+          "type": "string",
+          "description": "Path to the package.json file for external dependency resolution."
+        },
+        "packager": {
+          "type": "string",
+          "description": "Packager to use for external dependency resolution. Values: npm, yarn, pnpm",
+          "enum": [
+            "yarn",
+            "npm",
+            "pnpm"
+          ]
+        },
+        "packagerOptions": {
+          "type": "object",
+          "description": "Extra options for packagers for external dependency resolution.",
+          "properties": {
+            "scripts": {
+              "description": "A string or array of scripts to be executed, currently only supports 'scripts' for npm, pnpm and yarn",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "watch": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "An anymatch-compatible(https://github.com/es128/anymatch) definition for the watcher to respond to"
+            },
+            "ignore": {
+              "type": "string",
+              "description": "An anymatch-compatible(https://github.com/es128/anymatch) definition for the watcher to ignore"
+            }
+          }
+        },
+        "bundle": {
+          "type": "boolean"
+        },
+        "minify": {
+          "type": "boolean"
         }
       }
     }
