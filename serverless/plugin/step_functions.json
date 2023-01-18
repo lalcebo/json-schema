@@ -126,7 +126,14 @@
               "$ref": "#/Aws_StateMachine_States_Wait"
             },
             {
-              "$ref": "#/Aws_StateMachine_States_Map"
+              "oneOf": [
+                {
+                "$ref": "#/Aws_StateMachine_States_Map_Iterator"
+                },
+                {
+                  "$ref": "#/Aws_StateMachine_States_Map_ItemProcessor"
+                }
+              ]
             }
           ]
         }
@@ -1123,48 +1130,95 @@
     ],
     "required": ["Type"]
   },
-  "Aws_StateMachine_States_Map": {
+  "Aws_StateMachine_States_Map_Properties": {
+    "Type": {
+      "type": "string",
+      "enum": ["Map"]
+    },
+    "Next": {
+      "type": "string"
+    },
+    "End": {
+      "enum": [true]
+    },
+    "Comment": {
+      "type": "string"
+    },
+    "OutputPath": {
+      "type": ["string", "null"]
+    },
+    "InputPath": {
+      "type": ["string", "null"]
+    },
+    "ResultPath": {
+      "type": ["string", "null"]
+    },
+    "ItemsPath": {
+      "type": ["string", "null"]
+    },
+    "MaxConcurrency": {
+      "type": "number",
+      "minimum": 0
+    },
+    "Parameters": {
+      "type": ["object", "array"],
+      "items": {
+        "type": "object"
+      }
+    },
+    "ResultSelector": {
+      "type": "object"
+    },
+    "Retry": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ErrorEquals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/Aws_StateMachine_Errors"
+            }
+          },
+          "IntervalSeconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "MaxAttempts": {
+            "type": "number",
+            "minimum": 0
+          },
+          "BackoffRate": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": ["ErrorEquals"]
+      }
+    },
+    "Catch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ErrorEquals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/Aws_StateMachine_Errors"
+            }
+          },
+          "Next": {
+            "type": "string"
+          }
+        },
+        "required": ["ErrorEquals", "Next"]
+      }
+    }
+  },
+  "Aws_StateMachine_States_Map_ItemProcessor": {
     "type": "object",
     "properties": {
-      "Type": {
-        "type": "string",
-        "enum": ["Map"]
-      },
-      "Next": {
-        "type": "string"
-      },
-      "End": {
-        "enum": [true]
-      },
-      "Comment": {
-        "type": "string"
-      },
-      "OutputPath": {
-        "type": ["string", "null"]
-      },
-      "InputPath": {
-        "type": ["string", "null"]
-      },
-      "ResultPath": {
-        "type": ["string", "null"]
-      },
-      "ItemsPath": {
-        "type": ["string", "null"]
-      },
-      "MaxConcurrency": {
-        "type": "number",
-        "minimum": 0
-      },
-      "ItemBatcher": {
-        "type": ["object", "array"],
-        "MaxItemsPerBatch": {
-          "type": "number",
-          "minimum": 0
-        }
-      },
-      "Iterator": {
-        "$ref": "#/Aws_StateMachine_Definition"
-      },
+      "$ref": "#/Aws_StateMachine_States_Map_Properties",
       "ItemProcessor": {
         "$ref": "#/Aws_StateMachine_Definition",
         "ProcessorConfig": {
@@ -1179,62 +1233,15 @@
           }
         }
       },
+      "ItemBatcher": {
+        "type": ["object", "array"],
+        "MaxItemsPerBatch": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
       "ItemReader": {
         "type": "object"
-      },
-      "Parameters": {
-        "type": ["object", "array"],
-        "items": {
-          "type": "object"
-        }
-      },
-      "ResultSelector": {
-        "type": "object"
-      },
-      "Retry": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "ErrorEquals": {
-              "type": "array",
-              "items": {
-                "$ref": "#/Aws_StateMachine_Errors"
-              }
-            },
-            "IntervalSeconds": {
-              "type": "number",
-              "minimum": 0
-            },
-            "MaxAttempts": {
-              "type": "number",
-              "minimum": 0
-            },
-            "BackoffRate": {
-              "type": "number",
-              "minimum": 0
-            }
-          },
-          "required": ["ErrorEquals"]
-        }
-      },
-      "Catch": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "ErrorEquals": {
-              "type": "array",
-              "items": {
-                "$ref": "#/Aws_StateMachine_Errors"
-              }
-            },
-            "Next": {
-              "type": "string"
-            }
-          },
-          "required": ["ErrorEquals", "Next"]
-        }
       }
     },
     "oneOf": [
@@ -1246,5 +1253,23 @@
       }
     ],
     "required": ["Type", "ItemProcessor"]
+  },
+  "Aws_StateMachine_States_Map_Iterator": {
+    "type": "object",
+    "properties": {
+      "$ref": "#/Aws_StateMachine_States_Map_Properties",
+      "Iterator": {
+        "$ref": "#/Aws_StateMachine_Definition"
+      }
+    },
+    "oneOf": [
+      {
+        "required": ["Next"]
+      },
+      {
+        "required": ["End"]
+      }
+    ],
+    "required": ["Type", "Iterator"]
   }
 }
