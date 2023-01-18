@@ -1221,24 +1221,42 @@
       "$ref": "#/Aws_StateMachine_States_Map_Properties",
       "ItemProcessor": {
         "$ref": "#/Aws_StateMachine_Definition",
-        "ProcessorConfig": {
-          "type": ["object", "array"],
-          "Mode": {
-            "type": "string",
-            "enum": ["DISTRIBUTED", "INLINE"]
-          },
-          "ExecutionType": {
-            "type": "string",
-            "enum": ["STANDARD", "EXPRESS"]
+        "properties": {
+          "ProcessorConfig": {
+            "type": ["object"],
+            "properties": {
+              "Mode": {
+                "type": "string",
+                "enum": ["DISTRIBUTED", "INLINE"]
+              },
+              "ExecutionType": {
+                "type": "string",
+                "enum": ["STANDARD", "EXPRESS"]
+              }
+            }
           }
         }
       },
       "ItemBatcher": {
-        "type": ["object", "array"],
-        "MaxItemsPerBatch": {
-          "type": "number",
-          "minimum": 0
-        }
+        "type": "object",
+        "properties": {
+          "MaxItemsPerBatch": {
+            "type": "number",
+            "minimum": 0
+          },
+          "MaxInputBytesPerBatchPath": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "oneOf": [
+          {
+            "required": ["MaxItemsPerBatch"]
+          },
+          {
+            "required": ["MaxInputBytesPerBatchPath"]
+          }
+        ]
       },
       "ItemReader": {
         "type": "object"
