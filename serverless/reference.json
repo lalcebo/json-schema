@@ -37968,6 +37968,131 @@
       "type": "object"
     },
     "AwsHttpAuthorizer": {
+      "anyOf": [
+        {
+          "title": "AwsHttpIamAuthorizerShort",
+          "description": "AWS_IAM based authorizer, https://www.serverless.com/framework/docs/providers/aws/events/apigateway#http-endpoints-with-aws_iam-authorizers",
+          "type": "string",
+          "enum": ["aws_iam"]
+        },
+        {
+          "title": "AwsHttpIamAuthorizer",
+          "description": "AWS_IAM based authorizer, https://www.serverless.com/framework/docs/providers/aws/events/apigateway#http-endpoints-with-aws_iam-authorizers",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["aws_iam"]
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "AwsHttpCognitoAuthorizer",
+          "properties": {
+            "arn": {
+              "type": "string",
+              "description": "The arn of the cognito user pool"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "claims": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "COGNITO_USER_POOLS"
+              ]
+            },
+            "identitySource": {
+              "type": "string",
+              "default": "method.request.header.Authorization",
+              "description": "The identity source for which authorization is requested. The value is a comma-separated string of one or more mapping expressions of the specified request parameters. For example, if an Auth header, a Name query string parameter are defined as identity sources, this value is method.request.header.Auth, method.request.querystring.Name"
+            },
+            "identityValidationExpression": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "resultTtlInSeconds": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3600
+            }
+          },
+          "required": [
+            "type",
+            "arn"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "AwsHttpLambdaAuthorizer",
+          "type": "object",
+          "properties": {
+            "arn": {
+              "type": "string"
+            },
+            "identitySource": {
+              "type": "string",
+              "default": "method.request.header.Authorization",
+              "description": "The identity source for which authorization is requested. The value is a comma-separated string of one or more mapping expressions of the specified request parameters. For example, if an Auth header, a Name query string parameter are defined as identity sources, this value is `method.request.header.Auth, method.request.querystring.Name`"
+            },
+            "identityValidationExpression": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "resultTtlInSeconds": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 3600
+            },
+            "type": {
+              "type": "string",
+              "enum": ["request", "token", "REQUEST", "TOKEN"],
+              "default": "token"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "AwsHttpExistingAuthorizer",
+          "description": "Use an existing Api Gateway Authorizer created outside or in the same stack",
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["CUSTOM"]
+            },
+            "authorizerId": {
+              "type": "string",
+              "description": "The Id of the existing authorizer"
+            }
+          },
+          "required": [
+            "type",
+            "authorizerId"
+          ],
+          "additionalProperties": false
+        }
+      ]
     },
     "Aws.HttpCors": {
       "properties": {
