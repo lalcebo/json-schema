@@ -42,11 +42,27 @@
           "type": "array",
           "items": {
             "type": "object",
-            "oneOf": [
-              {
-                "$ref": "#/Aws_StateMachine_ScheduleEvent"
+            "properties": {
+              "schedule": {
+                "oneOf": [
+                  {
+                    "$ref": "#/Aws_StateMachine_ScheduleEvent"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "http": {
+                "$ref": "#/Aws_StateMachine_HttpEvent"
+              },
+              "cloudwatchEvent": {
+                "$ref": "#/Aws_StateMachine_EventBridgeEvent"
+              },
+              "eventBridge": {
+                "$ref": "#/Aws_StateMachine_EventBridgeEvent"
               }
-            ]
+            }
           }
         }
       },
@@ -89,6 +105,66 @@
         "type": "string"
       }
     }
+  },
+  "Aws_StateMachine_HttpEvent": {
+    "type": "object",
+    "properties": {
+      "path": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "path"
+    ],
+    "additionalProperties": false
+  },
+  "Aws_StateMachine_EventBridgeEvent": {
+    "type": "object",
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "input": {
+        "type": "object"
+      },
+      "deadLetterConfig": {
+        "type": "string"
+      },
+      "event": {
+        "type": "object",
+        "description": "EventBridge event pattern see:- https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events.html",
+        "properties": {
+          "source" : {
+            "type": "string"
+          },
+          "detail": {
+            "type": "object"
+          },
+          "detail-type": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "event"
+    ],
+    "additionalProperties": false
   },
   "Aws_StateMachine_Definition": {
     "type": "object",
