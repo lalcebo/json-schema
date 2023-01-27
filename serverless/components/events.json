@@ -1,0 +1,67 @@
+{
+  "id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/components/events.json",
+  "schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Sub schema containing definitions for Events",
+  "additionalProperties": false,
+  "AwsActiveMq": {
+    "type": "object",
+    "properties": {
+      "arn": {
+        "anyOf": [
+            {
+              "type": "string",
+              "pattern": "arn:[a-z-]+:mq:[a-z0-9-]+:\\d+:broker:[A-Za-z0-9/_+=.@-]+:b-[a-z0-9-]+"
+            },
+            {
+              "$ref": "cf.functions.json#/FnImportValue"
+            },
+            {
+              "$ref": "cf.functions.json#/FnRef"
+            }
+        ]
+      },
+      "basicAuthArn": {
+        "anyOf": [
+            {
+              "$ref": "common.json#/AwsSecretsManagerArnString"
+            },
+            {
+              "$ref": "cf.functions.json#/FnImportValue"
+            },
+            {
+              "$ref": "cf.functions.json#/FnRef"
+            }
+        ]
+      },
+      "batchSize": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 10000
+      },
+      "maximumBatchingWindow": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 300
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "queue": {
+        "type": "string"
+      },
+      "filterPatterns": {
+        "$ref": "common.json#/AwsFilterPatterns"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "basicAuthArn",
+      "arn",
+      "queue"
+    ]
+  },
+  "required": [
+    "AwsActiveMq"
+  ]
+}
