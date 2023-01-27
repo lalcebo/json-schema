@@ -37504,7 +37504,7 @@
           "type": "string"
         },
         "inputTransformer": {
-          "$ref": "#/definitions/Aws.InputTransformer"
+          "$ref": "#/definitions/AwsInputTransformer"
         },
         "name": {
           "type": "string"
@@ -37798,34 +37798,69 @@
       "type": "object"
     },
     "AwsEventBridge": {
+      "title": "AwsEventBridge",
+      "description": "Aws Lambda function Eventbridge event source",
       "properties": {
         "eventBus": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
-        "input": {
-          "$ref": "#/definitions/Aws.Input"
+        "schedule": {
+          "type": "string",
+          "pattern": "^(?:cron|rate)\\(.+\\)$"
         },
-        "inputPath": {
-          "type": "string"
+        "name": {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9-_.]+",
+          "minLength": 1,
+          "maxLength": 64
         },
-        "inputTransformer": {
-          "$ref": "#/definitions/Aws.InputTransformer"
+        "enabled": {
+          "type": "boolean",
+          "default": true
         },
         "pattern": {
           "anyOf": [
             {
-              "$ref": "#/definitions/Aws.PatternExisting"
+              "$ref": "#/definitions/AwsPatternExisting"
             },
             {
-              "$ref": "#/definitions/Aws.PatternInput"
+              "$ref": "#/definitions/AwsPatternInput"
             }
           ]
         },
-        "schedule": {
-          "type": "string"
+        "input": {
+          "type": "object"
+        },
+        "inputPath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "inputTransformer": {
+          "$ref": "#/definitions/AwsInputTransformer"
+        },
+        "retryPolicy": {
+          "type": "object",
+          "properties": {
+            "maximumEventAge": {
+              "type": "number",
+              "minimum": 60,
+              "maximum": 86400
+            },
+            "maximumRetryAttempts": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 185
+            }
+          }
         }
       },
-      "type": "object"
+      "type": "object",
+      "anyOf": [
+        { "required": ["pattern"] },
+        { "required": ["schedule"] }
+      ]
     },
     "AwsFunctions": {
       "oneOf": [
@@ -38284,19 +38319,25 @@
       "additionalProperties": {},
       "type": "object"
     },
-    "Aws.InputTransformer": {
+    "AwsInputTransformer": {
       "properties": {
         "inputPathsMap": {
           "additionalProperties": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "type": "object"
         },
         "inputTemplate": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
         }
       },
-      "type": "object"
+      "type": "object",
+      "required": [
+        "inputTemplate"
+      ]
     },
     "AwsIot": {
       "properties": {
@@ -38638,7 +38679,7 @@
         }
       ]
     },
-    "Aws.PatternExisting": {
+    "AwsPatternExisting": {
       "properties": {
         "source": {
           "items": {
@@ -38649,7 +38690,7 @@
       },
       "type": "object"
     },
-    "Aws.PatternInput": {
+    "AwsPatternInput": {
       "properties": {
         "detail": {
           "$ref": "#/definitions/Aws.Detail"
@@ -39147,7 +39188,7 @@
           "type": "string"
         },
         "inputTransformer": {
-          "$ref": "#/definitions/Aws.InputTransformer"
+          "$ref": "#/definitions/AwsInputTransformer"
         },
         "name": {
           "type": "string"
