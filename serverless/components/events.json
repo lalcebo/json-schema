@@ -91,24 +91,41 @@
         "$ref": "#/AwsSnsRedrivePolicy"
       },
       "topicName": {
+        "type": "string",
+        "maxLength": 256,
+        "pattern": "^[\\w-]+$"
+      },
+      "arn": {
+        "$ref": "common.json#/AwsArnString"
+      },
+      "filterPolicyScope": {
         "type": "string"
       }
     },
-    "type": "object"
+    "type": "object",
+    "anyOf": [{ "required": ["arn"] }, { "required": ["topicName"] }],
+    "additionalProperties": false
   },
   "AwsSnsRedrivePolicy": {
     "properties": {
       "deadLetterTargetArn": {
-        "type": "string"
+        "$ref": "common.json#/AwsArnString"
       },
       "deadLetterTargetImport": {
         "$ref": "#/AwsSnsDeadLetterTargetImport"
       },
       "deadLetterTargetRef": {
-        "type": "string"
+        "type": "string",
+        "minLength": 1
       }
     },
-    "type": "object"
+    "type": "object",
+    "additionalProperties": false,
+    "oneOf": [
+      { "required": ["deadLetterTargetArn"] },
+      { "required": ["deadLetterTargetRef"] },
+      { "required": ["deadLetterTargetImport"] }
+    ]
   },
   "AwsSnsDeadLetterTargetImport": {
     "properties": {
