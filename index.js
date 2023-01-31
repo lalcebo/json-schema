@@ -123,7 +123,7 @@ function applyCFStringFunctions(obj) {
               "Properties"
             ]
         }
-        schema.title = schema.typeName
+        schema.title = `${schema.typeName.split("::").join("")}Properties`
         schema.type = "object"
         let {description, sourceUrl} = schema
         if (!description) {
