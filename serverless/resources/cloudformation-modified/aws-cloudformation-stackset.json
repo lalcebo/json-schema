@@ -14,17 +14,31 @@
       "type": "object",
       "properties": {
         "Key": {
-          "description": "A string used to identify this tag. You can specify a maximum of 127 characters for a tag key.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "pattern": "^(?!aws:.*)[a-zA-Z0-9\\s\\:\\_\\.\\/\\=\\+\\-]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:.*)[a-zA-Z0-9\\s\\:\\_\\.\\/\\=\\+\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag. You can specify a maximum of 127 characters for a tag key."
         },
         "Value": {
-          "description": "A string containing the value for this tag. You can specify a maximum of 256 characters for a tag value.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for this tag. You can specify a maximum of 256 characters for a tag value."
         }
       },
       "required": [
@@ -48,33 +62,68 @@
       "additionalProperties": false
     },
     "Account": {
-      "description": "AWS account that you want to create stack instances in the specified Region(s) for.",
-      "type": "string",
-      "pattern": "^[0-9]{12}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9]{12}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "AWS account that you want to create stack instances in the specified Region(s) for."
     },
     "Region": {
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9-]{1,128}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9-]{1,128}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "OrganizationalUnitId": {
-      "type": "string",
-      "pattern": "^(ou-[a-z0-9]{4,32}-[a-z0-9]{8,32}|r-[a-z0-9]{4,32})$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(ou-[a-z0-9]{4,32}-[a-z0-9]{8,32}|r-[a-z0-9]{4,32})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Capability": {
-      "type": "string",
-      "enum": [
-        "CAPABILITY_IAM",
-        "CAPABILITY_NAMED_IAM",
-        "CAPABILITY_AUTO_EXPAND"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CAPABILITY_IAM",
+            "CAPABILITY_NAMED_IAM",
+            "CAPABILITY_AUTO_EXPAND"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "RegionConcurrencyType": {
-      "description": "The concurrency type of deploying StackSets operations in regions, could be in parallel or one region at a time",
-      "type": "string",
-      "enum": [
-        "SEQUENTIAL",
-        "PARALLEL"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SEQUENTIAL",
+            "PARALLEL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The concurrency type of deploying StackSets operations in regions, could be in parallel or one region at a time"
     },
     "Active": {
       "description": "When true, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.",
@@ -118,12 +167,26 @@
       "type": "object",
       "properties": {
         "ParameterKey": {
-          "description": "The key associated with the parameter. If you don't specify a key and value for a particular parameter, AWS CloudFormation uses the default value that is specified in your template.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key associated with the parameter. If you don't specify a key and value for a particular parameter, AWS CloudFormation uses the default value that is specified in your template."
         },
         "ParameterValue": {
-          "description": "The input value associated with the parameter.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The input value associated with the parameter."
         }
       },
       "required": [
@@ -157,14 +220,21 @@
           }
         },
         "AccountFilterType": {
-          "description": "The filter type you want to apply on organizational units and accounts.",
-          "type": "string",
-          "enum": [
-            "NONE",
-            "UNION",
-            "INTERSECTION",
-            "DIFFERENCE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "UNION",
+                "INTERSECTION",
+                "DIFFERENCE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The filter type you want to apply on organizational units and accounts."
         }
       },
       "additionalProperties": false
@@ -205,16 +275,30 @@
   },
   "properties": {
     "StackSetName": {
-      "description": "The name to associate with the stack set. The name must be unique in the Region where you create your stack set.",
-      "type": "string",
-      "pattern": "^[a-zA-Z][a-zA-Z0-9\\-]{0,127}$",
-      "maxLength": 128
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9\\-]{0,127}$",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name to associate with the stack set. The name must be unique in the Region where you create your stack set."
     },
     "AdministrationRoleARN": {
-      "description": "The Amazon Resource Number (ARN) of the IAM role to use to create this stack set. Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account.",
-      "type": "string",
-      "minLength": 20,
-      "maxLength": 2048
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Number (ARN) of the IAM role to use to create this stack set. Specify an IAM role only if you are using customized administrator roles to control which users or groups can manage specific stack sets within the same administrator account."
     },
     "AutoDeployment": {
       "description": "Describes whether StackSets automatically deploys to AWS Organizations accounts that are added to the target organization or organizational unit (OU). Specify only if PermissionModel is SERVICE_MANAGED.",
@@ -230,16 +314,30 @@
       }
     },
     "Description": {
-      "description": "A description of the stack set. You can use the description to identify the stack set's purpose or other important information.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the stack set. You can use the description to identify the stack set's purpose or other important information."
     },
     "ExecutionRoleName": {
-      "description": "The name of the IAM execution role to use to create the stack set. If you do not specify an execution role, AWS CloudFormation uses the AWSCloudFormationStackSetExecutionRole role for the stack set operation.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 64
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the IAM execution role to use to create the stack set. If you do not specify an execution role, AWS CloudFormation uses the AWSCloudFormationStackSetExecutionRole role for the stack set operation."
     },
     "OperationPreferences": {
       "$ref": "#/definitions/OperationPreferences"
@@ -263,12 +361,19 @@
       }
     },
     "PermissionModel": {
-      "description": "Describes how the IAM roles required for stack set operations are created. By default, SELF-MANAGED is specified.",
-      "type": "string",
-      "enum": [
-        "SERVICE_MANAGED",
-        "SELF_MANAGED"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SERVICE_MANAGED",
+            "SELF_MANAGED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Describes how the IAM roles required for stack set operations are created. By default, SELF-MANAGED is specified."
     },
     "Tags": {
       "description": "The key-value pairs to associate with this stack set and the stacks created from it. AWS CloudFormation also propagates these tags to supported resources that are created in the stacks. A maximum number of 50 tags can be specified.",
@@ -281,24 +386,45 @@
       }
     },
     "TemplateBody": {
-      "description": "The structure that contains the template body, with a minimum length of 1 byte and a maximum length of 51,200 bytes.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 51200
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 51200
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The structure that contains the template body, with a minimum length of 1 byte and a maximum length of 51,200 bytes."
     },
     "TemplateURL": {
-      "description": "Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that is located in an Amazon S3 bucket.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 5120
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5120
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that is located in an Amazon S3 bucket."
     },
     "CallAs": {
-      "description": "Specifies the AWS account that you are acting from. By default, SELF is specified. For self-managed permissions, specify SELF; for service-managed permissions, if you are signed in to the organization's management account, specify SELF. If you are signed in to a delegated administrator account, specify DELEGATED_ADMIN.",
-      "type": "string",
-      "enum": [
-        "SELF",
-        "DELEGATED_ADMIN"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SELF",
+            "DELEGATED_ADMIN"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the AWS account that you are acting from. By default, SELF is specified. For self-managed permissions, specify SELF; for service-managed permissions, if you are signed in to the organization's management account, specify SELF. If you are signed in to a delegated administrator account, specify DELEGATED_ADMIN."
     },
     "ManagedExecution": {
       "description": "Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.",

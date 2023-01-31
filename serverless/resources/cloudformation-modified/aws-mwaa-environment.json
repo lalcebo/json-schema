@@ -4,33 +4,54 @@
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mwaa.git",
   "definitions": {
     "EnvironmentName": {
-      "type": "string",
-      "description": "Customer-defined identifier for the environment, unique per customer region.",
-      "minLength": 1,
-      "maxLength": 80,
-      "pattern": "^[a-zA-Z][0-9a-zA-Z\\-_]*$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z][0-9a-zA-Z\\-_]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Customer-defined identifier for the environment, unique per customer region."
     },
     "EnvironmentStatus": {
-      "type": "string",
-      "description": "The status of the environment.",
-      "enum": [
-        "CREATING",
-        "CREATE_FAILED",
-        "AVAILABLE",
-        "UPDATING",
-        "DELETING",
-        "DELETED",
-        "UPDATE_FAILED",
-        "UNAVAILABLE"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "CREATE_FAILED",
+            "AVAILABLE",
+            "UPDATING",
+            "DELETING",
+            "DELETED",
+            "UPDATE_FAILED",
+            "UNAVAILABLE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the environment."
     },
     "UpdateStatus": {
-      "type": "string",
-      "description": "",
-      "enum": [
-        "SUCCESS",
-        "PENDING",
-        "FAILED"
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "",
+          "enum": [
+            "SUCCESS",
+            "PENDING",
+            "FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "UpdateError": {
@@ -47,122 +68,248 @@
       }
     },
     "AirflowArn": {
-      "type": "string",
-      "description": "",
-      "minLength": 1,
-      "maxLength": 1224,
-      "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:airflow:[a-z0-9\\-]+:\\d{12}:environment/\\w+"
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "",
+          "minLength": 1,
+          "maxLength": 1224,
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:airflow:[a-z0-9\\-]+:\\d{12}:environment/\\w+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "EnvironmentArn": {
-      "type": "string",
-      "description": "ARN for the MWAA environment.",
-      "minLength": 1,
-      "maxLength": 1224,
-      "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:airflow:[a-z0-9\\-]+:\\d{12}:environment/\\w+"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1224,
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:airflow:[a-z0-9\\-]+:\\d{12}:environment/\\w+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "ARN for the MWAA environment."
     },
     "S3BucketArn": {
-      "type": "string",
-      "description": "ARN for the AWS S3 bucket to use as the source of DAGs and plugins for the environment.",
-      "minLength": 1,
-      "maxLength": 1224,
-      "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:s3:::[a-z0-9.\\-]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1224,
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:s3:::[a-z0-9.\\-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "ARN for the AWS S3 bucket to use as the source of DAGs and plugins for the environment."
     },
     "CreatedAt": {
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "When the environment resource was created."
     },
     "UpdateCreatedAt": {
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "When the update request was created."
     },
     "WebserverUrl": {
-      "type": "string",
-      "description": "Url endpoint for the environment's Airflow UI.",
-      "minLength": 1,
-      "maxLength": 256,
-      "pattern": "^https://.+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^https://.+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Url endpoint for the environment's Airflow UI."
     },
     "ExecutionRoleArn": {
-      "type": "string",
-      "description": "IAM role to be used by tasks.",
-      "maxLength": 1224,
-      "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1224,
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "IAM role to be used by tasks."
     },
     "ServiceRoleArn": {
-      "type": "string",
-      "description": "IAM role to be used by MWAA to perform AWS API calls on behalf of the customer.",
-      "maxLength": 1224,
-      "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1224,
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "IAM role to be used by MWAA to perform AWS API calls on behalf of the customer."
     },
     "KmsKey": {
-      "type": "string",
-      "description": "The identifier of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use for MWAA data encryption.\n\n    You can specify the CMK using any of the following:\n\n    Key ID. For example, key/1234abcd-12ab-34cd-56ef-1234567890ab.\n\n    Key alias. For example, alias/ExampleAlias.\n\n    Key ARN. For example, arn:aws:kms:us-east-1:012345678910:key/abcd1234-a123-456a-a12b-a123b4cd56ef.\n\n    Alias ARN. For example, arn:aws:kms:us-east-1:012345678910:alias/ExampleAlias.\n\n    AWS authenticates the CMK asynchronously. Therefore, if you specify an ID, alias, or ARN that is not valid, the action can appear to complete, but eventually fails.",
-      "maxLength": 1224,
-      "pattern": "^(((arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:kms:[a-z]{2}-[a-z]+-\\d:\\d+:)?key\\/)?[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|(arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):kms:[a-z]{2}-[a-z]+-\\d:\\d+:)?alias/.+)$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1224,
+          "pattern": "^(((arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:kms:[a-z]{2}-[a-z]+-\\d:\\d+:)?key\\/)?[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|(arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):kms:[a-z]{2}-[a-z]+-\\d:\\d+:)?alias/.+)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the AWS Key Management Service (AWS KMS) customer master key (CMK) to use for MWAA data encryption.\n\n    You can specify the CMK using any of the following:\n\n    Key ID. For example, key/1234abcd-12ab-34cd-56ef-1234567890ab.\n\n    Key alias. For example, alias/ExampleAlias.\n\n    Key ARN. For example, arn:aws:kms:us-east-1:012345678910:key/abcd1234-a123-456a-a12b-a123b4cd56ef.\n\n    Alias ARN. For example, arn:aws:kms:us-east-1:012345678910:alias/ExampleAlias.\n\n    AWS authenticates the CMK asynchronously. Therefore, if you specify an ID, alias, or ARN that is not valid, the action can appear to complete, but eventually fails."
     },
     "AirflowVersion": {
-      "type": "string",
-      "description": "Version of airflow to deploy to the environment.",
-      "maxLength": 32,
-      "pattern": "^[0-9a-z.]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 32,
+          "pattern": "^[0-9a-z.]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Version of airflow to deploy to the environment."
     },
     "RelativePath": {
-      "type": "string",
-      "description": "Represents an S3 prefix relative to the root of an S3 bucket.",
-      "maxLength": 1024,
-      "pattern": ".*"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": ".*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Represents an S3 prefix relative to the root of an S3 bucket."
     },
     "ConfigKey": {
-      "type": "string",
-      "description": "",
-      "maxLength": 64,
-      "pattern": "^[a-z]+([a-z._]*[a-z]+)?$"
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "",
+          "maxLength": 64,
+          "pattern": "^[a-z]+([a-z._]*[a-z]+)?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ConfigValue": {
-      "type": "string",
-      "description": "",
-      "maxLength": 256,
-      "pattern": ".*"
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "",
+          "maxLength": 256,
+          "pattern": ".*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "SecurityGroupId": {
-      "type": "string",
-      "description": "",
-      "minLength": 1,
-      "maxLength": 1024,
-      "pattern": "^sg-[a-zA-Z0-9\\-._]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^sg-[a-zA-Z0-9\\-._]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "SubnetId": {
-      "type": "string",
-      "description": "",
-      "maxLength": 1024,
-      "pattern": "^subnet-[a-zA-Z0-9\\-._]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "",
+          "maxLength": 1024,
+          "pattern": "^subnet-[a-zA-Z0-9\\-._]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "CloudWatchLogGroupArn": {
-      "type": "string",
-      "description": "",
-      "maxLength": 1224,
-      "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:logs:[a-z0-9\\-]+:\\d{12}:log-group:\\w+"
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "",
+          "maxLength": 1224,
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b)(-[a-z]+)?:logs:[a-z0-9\\-]+:\\d{12}:log-group:\\w+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "LoggingEnabled": {
       "type": "boolean",
       "description": ""
     },
     "LoggingLevel": {
-      "type": "string",
-      "description": "",
-      "enum": [
-        "CRITICAL",
-        "ERROR",
-        "WARNING",
-        "INFO",
-        "DEBUG"
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "",
+          "enum": [
+            "CRITICAL",
+            "ERROR",
+            "WARNING",
+            "INFO",
+            "DEBUG"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "EnvironmentClass": {
-      "type": "string",
-      "description": "Templated configuration for airflow processes and backing infrastructure.",
-      "minLength": 1,
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Templated configuration for airflow processes and backing infrastructure."
     },
     "MaxWorkers": {
       "type": "integer",
@@ -296,34 +443,69 @@
       }
     },
     "ErrorCode": {
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "The error code associated with an error."
     },
     "ErrorMessage": {
-      "type": "string",
-      "description": "Error message describing a failed operation.",
-      "minLength": 1,
-      "maxLength": 1024,
-      "pattern": "^.+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^.+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Error message describing a failed operation."
     },
     "S3ObjectVersion": {
-      "type": "string",
-      "description": "Represents an version ID for an S3 object.",
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Represents an version ID for an S3 object."
     },
     "WeeklyMaintenanceWindowStart": {
-      "type": "string",
-      "description": "Start time for the weekly maintenance window.",
-      "maxLength": 9,
-      "pattern": "(MON|TUE|WED|THU|FRI|SAT|SUN):([01]\\d|2[0-3]):(00|30)"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 9,
+          "pattern": "(MON|TUE|WED|THU|FRI|SAT|SUN):([01]\\d|2[0-3]):(00|30)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Start time for the weekly maintenance window."
     },
     "WebserverAccessMode": {
-      "type": "string",
-      "description": "Choice for mode of webserver access including over public internet or via private VPC endpoint.",
-      "enum": [
-        "PRIVATE_ONLY",
-        "PUBLIC_ONLY"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PRIVATE_ONLY",
+            "PUBLIC_ONLY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Choice for mode of webserver access including over public internet or via private VPC endpoint."
     }
   },
   "properties": {

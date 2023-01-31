@@ -4,8 +4,15 @@
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Arn": {
-      "type": "string",
-      "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Tags": {
       "description": "A key-value pair to associate with a resource.",
@@ -24,23 +31,44 @@
       "type": "object",
       "properties": {
         "S3Bucket": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "The Arn of the S3Bucket that stores the robot application source."
         },
         "S3Key": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "The s3 key of robot application source."
         },
         "Architecture": {
-          "type": "string",
-          "description": "The architecture of robot application.",
-          "minLength": 1,
-          "maxLength": 255,
-          "enum": [
-            "X86_64",
-            "ARM64",
-            "ARMHF"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "enum": [
+                "X86_64",
+                "ARM64",
+                "ARMHF"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The architecture of robot application."
         }
       },
       "required": [
@@ -55,22 +83,36 @@
       "type": "object",
       "properties": {
         "Name": {
-          "type": "string",
-          "description": "The name of robot software suite.",
-          "enum": [
-            "ROS",
-            "ROS2",
-            "General"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ROS",
+                "ROS2",
+                "General"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of robot software suite."
         },
         "Version": {
-          "type": "string",
-          "description": "The version of robot software suite.",
-          "enum": [
-            "Kinetic",
-            "Melodic",
-            "Dashing"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Kinetic",
+                "Melodic",
+                "Dashing"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of robot software suite."
         }
       },
       "required": [
@@ -81,10 +123,17 @@
   },
   "properties": {
     "Name": {
-      "description": "The name of the robot application.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 255
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the robot application."
     },
     "Sources": {
       "description": "The sources of the robot application.",
@@ -95,17 +144,31 @@
       }
     },
     "Environment": {
-      "description": "The URI of the Docker image for the robot application.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The URI of the Docker image for the robot application."
     },
     "RobotSoftwareSuite": {
       "$ref": "#/definitions/RobotSoftwareSuite"
     },
     "CurrentRevisionId": {
-      "description": "The revision ID of robot application.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 40
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The revision ID of robot application."
     },
     "Tags": {
       "$ref": "#/definitions/Tags"

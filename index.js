@@ -1,6 +1,49 @@
 const fs = require("fs");
 const path = require("path");
 
+function applyIntrinsicFunctions(schema) {
+  if (schema.properties) {
+    schema.properties = applyCFStringFunctions(schema.properties)
+  }
+  if (schema.definitions) {
+    schema.definitions = applyCFStringFunctions(schema.definitions)
+  }
+  return schema
+}
+
+function applyCFStringFunctions(obj) {
+  Object.keys(obj).forEach((key) => {
+    let val = obj[key];
+    if (val.type === "string") {
+      const {description} = val
+      if (description) {
+        delete val.description
+      }
+      val = {
+        "oneOf": [
+          {
+            ...val
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+      if (description) {
+        val.description = description
+      }
+      obj[key] = val
+    } else if (val.type === "object") {
+      if (
+        obj[key].properties
+      ) {
+        obj[key].properties = applyCFStringFunctions(obj[key].properties)
+      }
+    }
+  })
+  return obj
+}
+
 (async () => {
     const sharedAttributes = {
         "DeletionPolicy": {
@@ -58,7 +101,7 @@ const path = require("path");
         properties: {}
     }
     for (const resource of resources) {
-        const schema = require(`./serverless/resources/cloudformation/${resource}`);
+        let schema = require(`./serverless/resources/cloudformation/${resource}`);
         resourcesSchema.definitions[schema.typeName.split("::").join("")] = {
             title: schema.typeName.split("::").join(""),
             type: "object",
@@ -90,6 +133,9 @@ const path = require("path");
           sourceUrl = "No source definition found, add manually please"
         }
         schema.description = `${description}. Source:- ${sourceUrl}`
+
+        // modify properties so they would allow for Cloudformation functions
+        schema = applyIntrinsicFunctions(schema)
         // remove readonly properties
         if (schema.readOnlyProperties) {
           schema.readOnlyProperties.forEach(rP => {

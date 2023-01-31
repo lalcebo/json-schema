@@ -8,18 +8,25 @@
       "description": "Configuration for the transfer acceleration state."
     },
     "AccessControl": {
-      "description": "A canned access control list (ACL) that grants predefined permissions to the bucket.",
-      "enum": [
-        "AuthenticatedRead",
-        "AwsExecRead",
-        "BucketOwnerFullControl",
-        "BucketOwnerRead",
-        "LogDeliveryWrite",
-        "Private",
-        "PublicRead",
-        "PublicReadWrite"
+      "oneOf": [
+        {
+          "enum": [
+            "AuthenticatedRead",
+            "AwsExecRead",
+            "BucketOwnerFullControl",
+            "BucketOwnerRead",
+            "LogDeliveryWrite",
+            "Private",
+            "PublicRead",
+            "PublicReadWrite"
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "type": "string"
+      "description": "A canned access control list (ACL) that grants predefined permissions to the bucket."
     },
     "AnalyticsConfigurations": {
       "description": "The configuration and any analyses for the analytics filter of an Amazon S3 bucket.",
@@ -34,11 +41,18 @@
       "$ref": "#/definitions/BucketEncryption"
     },
     "BucketName": {
-      "description": "A name for the bucket. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the bucket name.",
-      "maxLength": 63,
-      "minLength": 3,
-      "pattern": "^[a-z0-9][a-z0-9//.//-]*[a-z0-9]$",
-      "type": "string"
+      "oneOf": [
+        {
+          "maxLength": 63,
+          "minLength": 3,
+          "pattern": "^[a-z0-9][a-z0-9//.//-]*[a-z0-9]$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A name for the bucket. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the bucket name."
     },
     "CorsConfiguration": {
       "$ref": "#/definitions/CorsConfiguration",
@@ -124,10 +138,24 @@
       "additionalProperties": false,
       "properties": {
         "Value": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Key": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -141,25 +169,53 @@
       "additionalProperties": false,
       "properties": {
         "BucketArn": {
-          "description": "The Amazon Resource Name (ARN) of the bucket to which data is exported.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the bucket to which data is exported."
         },
         "BucketAccountId": {
-          "description": "The account ID that owns the destination S3 bucket. ",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The account ID that owns the destination S3 bucket. "
         },
         "Format": {
-          "description": "Specifies the file format used when exporting data to Amazon S3.",
-          "type": "string",
-          "enum": [
-            "CSV",
-            "ORC",
-            "Parquet"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CSV",
+                "ORC",
+                "Parquet"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the file format used when exporting data to Amazon S3."
         },
         "Prefix": {
-          "description": "The prefix to use when exporting data. The prefix is prepended to all results.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The prefix to use when exporting data. The prefix is prepended to all results."
         }
       },
       "required": [
@@ -172,12 +228,19 @@
       "additionalProperties": false,
       "properties": {
         "AccelerationStatus": {
-          "description": "Configures the transfer acceleration state for an Amazon S3 bucket.",
-          "type": "string",
-          "enum": [
-            "Enabled",
-            "Suspended"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Enabled",
+                "Suspended"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Configures the transfer acceleration state for an Amazon S3 bucket."
         }
       },
       "required": [
@@ -201,12 +264,26 @@
           "$ref": "#/definitions/StorageClassAnalysis"
         },
         "Id": {
-          "description": "The ID that identifies the analytics configuration.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID that identifies the analytics configuration."
         },
         "Prefix": {
-          "description": "The prefix that an object must have to be included in the analytics results.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The prefix that an object must have to be included in the analytics results."
         }
       },
       "required": [
@@ -233,9 +310,16 @@
           "$ref": "#/definitions/Destination"
         },
         "OutputSchemaVersion": {
-          "description": "The version of the output schema to use when exporting data.",
-          "type": "string",
-          "const": "V_1"
+          "oneOf": [
+            {
+              "type": "string",
+              "const": "V_1"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the output schema to use when exporting data."
         }
       },
       "required": [
@@ -281,14 +365,28 @@
       "type": "object",
       "properties": {
         "KMSMasterKeyID": {
-          "description": "\"KMSMasterKeyID\" can only be used when you set the value of SSEAlgorithm as aws:kms.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "\"KMSMasterKeyID\" can only be used when you set the value of SSEAlgorithm as aws:kms."
         },
         "SSEAlgorithm": {
-          "type": "string",
-          "enum": [
-            "aws:kms",
-            "AES256"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "aws:kms",
+                "AES256"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         }
       },
@@ -364,9 +462,16 @@
           }
         },
         "Id": {
-          "description": "A unique identifier for this rule.",
-          "type": "string",
-          "maxLength": 255
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A unique identifier for this rule."
         },
         "MaxAge": {
           "description": "The time in seconds that your browser is to cache the preflight response for the specified resource.",
@@ -384,20 +489,41 @@
       "additionalProperties": false,
       "properties": {
         "Id": {
-          "description": "The ID used to identify the S3 Intelligent-Tiering configuration.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID used to identify the S3 Intelligent-Tiering configuration."
         },
         "Prefix": {
-          "description": "An object key name prefix that identifies the subset of objects to which the rule applies.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An object key name prefix that identifies the subset of objects to which the rule applies."
         },
         "Status": {
-          "description": "Specifies the status of the configuration.",
-          "type": "string",
-          "enum": [
-            "Disabled",
-            "Enabled"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Disabled",
+                "Enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the status of the configuration."
         },
         "TagFilters": {
           "description": "A container for a key-value pair.",
@@ -429,12 +555,19 @@
       "additionalProperties": false,
       "properties": {
         "AccessTier": {
-          "description": "S3 Intelligent-Tiering access tier. See Storage class for automatically optimizing frequently and infrequently accessed objects for a list of access tiers in the S3 Intelligent-Tiering storage class.",
-          "type": "string",
-          "enum": [
-            "ARCHIVE_ACCESS",
-            "DEEP_ARCHIVE_ACCESS"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ARCHIVE_ACCESS",
+                "DEEP_ARCHIVE_ACCESS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "S3 Intelligent-Tiering access tier. See Storage class for automatically optimizing frequently and infrequently accessed objects for a list of access tiers in the S3 Intelligent-Tiering storage class."
         },
         "Days": {
           "description": "The number of consecutive days of no access after which an object will be eligible to be transitioned to the corresponding tier. The minimum number of days specified for Archive Access tier must be at least 90 days and Deep Archive Access tier must be at least 180 days. The maximum can be up to 2 years (730 days).",
@@ -458,16 +591,30 @@
           "type": "boolean"
         },
         "Id": {
-          "description": "The ID used to identify the inventory configuration.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID used to identify the inventory configuration."
         },
         "IncludedObjectVersions": {
-          "description": "Object versions to include in the inventory list.",
-          "type": "string",
-          "enum": [
-            "All",
-            "Current"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "All",
+                "Current"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Object versions to include in the inventory list."
         },
         "OptionalFields": {
           "description": "Contains the optional fields that are included in the inventory results.",
@@ -493,16 +640,30 @@
           }
         },
         "Prefix": {
-          "description": "The prefix that is prepended to all inventory results.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The prefix that is prepended to all inventory results."
         },
         "ScheduleFrequency": {
-          "description": "Specifies the schedule for generating inventory results.",
-          "type": "string",
-          "enum": [
-            "Daily",
-            "Weekly"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Daily",
+                "Weekly"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the schedule for generating inventory results."
         }
       },
       "required": [
@@ -549,8 +710,15 @@
           "type": "boolean"
         },
         "Id": {
-          "type": "string",
-          "maxLength": 255
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "NoncurrentVersionExpirationInDays": {
           "type": "integer"
@@ -570,13 +738,27 @@
           }
         },
         "Prefix": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Status": {
-          "type": "string",
-          "enum": [
-            "Enabled",
-            "Disabled"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Enabled",
+                "Disabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         },
         "TagFilters": {
@@ -588,14 +770,28 @@
           }
         },
         "ObjectSizeGreaterThan": {
-          "type": "string",
-          "maxLength": 20,
-          "pattern": "[0-9]+"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 20,
+              "pattern": "[0-9]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "ObjectSizeLessThan": {
-          "type": "string",
-          "maxLength": 20,
-          "pattern": "[0-9]+"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 20,
+              "pattern": "[0-9]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Transition": {
           "$ref": "#/definitions/Transition"
@@ -629,9 +825,16 @@
       ]
     },
     "iso8601UTC": {
-      "description": "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
-      "type": "string",
-      "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)"
     },
     "NoncurrentVersionExpiration": {
       "type": "object",
@@ -657,17 +860,24 @@
       "additionalProperties": false,
       "properties": {
         "StorageClass": {
-          "description": "The class of storage used to store the object.",
-          "type": "string",
-          "enum": [
-            "DEEP_ARCHIVE",
-            "GLACIER",
-            "Glacier",
-            "GLACIER_IR",
-            "INTELLIGENT_TIERING",
-            "ONEZONE_IA",
-            "STANDARD_IA"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DEEP_ARCHIVE",
+                "GLACIER",
+                "Glacier",
+                "GLACIER_IR",
+                "INTELLIGENT_TIERING",
+                "ONEZONE_IA",
+                "STANDARD_IA"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The class of storage used to store the object."
         },
         "TransitionInDays": {
           "description": "Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action.",
@@ -687,15 +897,22 @@
       "type": "object",
       "properties": {
         "StorageClass": {
-          "type": "string",
-          "enum": [
-            "DEEP_ARCHIVE",
-            "GLACIER",
-            "Glacier",
-            "GLACIER_IR",
-            "INTELLIGENT_TIERING",
-            "ONEZONE_IA",
-            "STANDARD_IA"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DEEP_ARCHIVE",
+                "GLACIER",
+                "Glacier",
+                "GLACIER_IR",
+                "INTELLIGENT_TIERING",
+                "ONEZONE_IA",
+                "STANDARD_IA"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         },
         "TransitionDate": {
@@ -715,11 +932,25 @@
       "type": "object",
       "properties": {
         "DestinationBucketName": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "The name of an Amazon S3 bucket where Amazon S3 store server access log files. You can store log files in any bucket that you own. By default, logs are stored in the bucket where the LoggingConfiguration property is defined."
         },
         "LogFilePrefix": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false
@@ -729,13 +960,34 @@
       "additionalProperties": false,
       "properties": {
         "AccessPointArn": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Id": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Prefix": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "TagFilters": {
           "type": "array",
@@ -805,16 +1057,30 @@
       "additionalProperties": false,
       "properties": {
         "Event": {
-          "description": "The Amazon S3 bucket event for which to invoke the AWS Lambda function.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 bucket event for which to invoke the AWS Lambda function."
         },
         "Filter": {
           "description": "The filtering rules that determine which objects invoke the AWS Lambda function.",
           "$ref": "#/definitions/NotificationFilter"
         },
         "Function": {
-          "description": "The Amazon Resource Name (ARN) of the AWS Lambda function that Amazon S3 invokes when the specified event type occurs.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the AWS Lambda function that Amazon S3 invokes when the specified event type occurs."
         }
       },
       "required": [
@@ -828,16 +1094,30 @@
       "additionalProperties": false,
       "properties": {
         "Event": {
-          "description": "The Amazon S3 bucket event about which you want to publish messages to Amazon SQS.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 bucket event about which you want to publish messages to Amazon SQS."
         },
         "Filter": {
           "description": "The filtering rules that determine which objects trigger notifications.",
           "$ref": "#/definitions/NotificationFilter"
         },
         "Queue": {
-          "description": "The Amazon Resource Name (ARN) of the Amazon SQS queue to which Amazon S3 publishes a message when it detects events of the specified type.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the Amazon SQS queue to which Amazon S3 publishes a message when it detects events of the specified type."
         }
       },
       "required": [
@@ -851,16 +1131,30 @@
       "additionalProperties": false,
       "properties": {
         "Event": {
-          "description": "The Amazon S3 bucket event about which to send notifications.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 bucket event about which to send notifications."
         },
         "Filter": {
           "description": "The filtering rules that determine for which objects to send notifications.",
           "$ref": "#/definitions/NotificationFilter"
         },
         "Topic": {
-          "description": "The Amazon Resource Name (ARN) of the Amazon SNS topic to which Amazon S3 publishes a message when it detects events of the specified type.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the Amazon SNS topic to which Amazon S3 publishes a message when it detects events of the specified type."
         }
       },
       "required": [
@@ -905,11 +1199,25 @@
       "additionalProperties": false,
       "properties": {
         "Name": {
-          "type": "string",
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -922,8 +1230,15 @@
       "additionalProperties": false,
       "properties": {
         "ObjectLockEnabled": {
-          "type": "string",
-          "const": "Enabled"
+          "oneOf": [
+            {
+              "type": "string",
+              "const": "Enabled"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Rule": {
           "$ref": "#/definitions/ObjectLockRule"
@@ -952,10 +1267,17 @@
           "type": "integer"
         },
         "Mode": {
-          "type": "string",
-          "enum": [
-            "COMPLIANCE",
-            "GOVERNANCE"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "COMPLIANCE",
+                "GOVERNANCE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         }
       }
@@ -982,13 +1304,20 @@
       "additionalProperties": false,
       "properties": {
         "ObjectOwnership": {
-          "description": "Specifies an object ownership rule.",
-          "type": "string",
-          "enum": [
-            "ObjectWriter",
-            "BucketOwnerPreferred",
-            "BucketOwnerEnforced"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ObjectWriter",
+                "BucketOwnerPreferred",
+                "BucketOwnerEnforced"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies an object ownership rule."
         }
       }
     },
@@ -1021,8 +1350,15 @@
       "additionalProperties": false,
       "properties": {
         "Role": {
-          "description": "The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that Amazon S3 assumes when replicating objects.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the AWS Identity and Access Management (IAM) role that Amazon S3 assumes when replicating objects."
         },
         "Rules": {
           "description": "A container for one or more replication rules.",
@@ -1056,14 +1392,28 @@
           "$ref": "#/definitions/ReplicationRuleFilter"
         },
         "Id": {
-          "description": "A unique identifier for the rule.",
-          "type": "string",
-          "maxLength": 255
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A unique identifier for the rule."
         },
         "Prefix": {
-          "description": "An object key name prefix that identifies the object or objects to which the rule applies.",
-          "type": "string",
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An object key name prefix that identifies the object or objects to which the rule applies."
         },
         "Priority": {
           "type": "integer"
@@ -1072,12 +1422,19 @@
           "$ref": "#/definitions/SourceSelectionCriteria"
         },
         "Status": {
-          "description": "Specifies whether the rule is enabled.",
-          "type": "string",
-          "enum": [
-            "Disabled",
-            "Enabled"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Disabled",
+                "Enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies whether the rule is enabled."
         }
       },
       "required": [
@@ -1090,10 +1447,17 @@
       "additionalProperties": false,
       "properties": {
         "Status": {
-          "type": "string",
-          "enum": [
-            "Disabled",
-            "Enabled"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Disabled",
+                "Enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         }
       }
@@ -1107,10 +1471,24 @@
           "$ref": "#/definitions/AccessControlTranslation"
         },
         "Account": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Bucket": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "EncryptionConfiguration": {
           "$ref": "#/definitions/EncryptionConfiguration"
@@ -1122,18 +1500,25 @@
           "$ref": "#/definitions/ReplicationTime"
         },
         "StorageClass": {
-          "description": "The storage class to use when replicating objects, such as S3 Standard or reduced redundancy.",
-          "type": "string",
-          "enum": [
-            "DEEP_ARCHIVE",
-            "GLACIER",
-            "GLACIER_IR",
-            "INTELLIGENT_TIERING",
-            "ONEZONE_IA",
-            "REDUCED_REDUNDANCY",
-            "STANDARD",
-            "STANDARD_IA"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DEEP_ARCHIVE",
+                "GLACIER",
+                "GLACIER_IR",
+                "INTELLIGENT_TIERING",
+                "ONEZONE_IA",
+                "REDUCED_REDUNDANCY",
+                "STANDARD",
+                "STANDARD_IA"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The storage class to use when replicating objects, such as S3 Standard or reduced redundancy."
         }
       },
       "required": [
@@ -1146,8 +1531,15 @@
       "additionalProperties": false,
       "properties": {
         "Owner": {
-          "type": "string",
-          "const": "Destination"
+          "oneOf": [
+            {
+              "type": "string",
+              "const": "Destination"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -1160,8 +1552,15 @@
       "additionalProperties": false,
       "properties": {
         "ReplicaKmsKeyID": {
-          "description": "Specifies the ID (Key ARN or Alias ARN) of the customer managed customer master key (CMK) stored in AWS Key Management Service (KMS) for the destination bucket.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ID (Key ARN or Alias ARN) of the customer managed customer master key (CMK) stored in AWS Key Management Service (KMS) for the destination bucket."
         }
       },
       "required": [
@@ -1176,10 +1575,17 @@
           "$ref": "#/definitions/ReplicationTimeValue"
         },
         "Status": {
-          "type": "string",
-          "enum": [
-            "Disabled",
-            "Enabled"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Disabled",
+                "Enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         }
       },
@@ -1204,10 +1610,17 @@
       "additionalProperties": false,
       "properties": {
         "Status": {
-          "type": "string",
-          "enum": [
-            "Disabled",
-            "Enabled"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Disabled",
+                "Enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         },
         "Time": {
@@ -1227,7 +1640,14 @@
           "$ref": "#/definitions/ReplicationRuleAndOperator"
         },
         "Prefix": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "TagFilter": {
           "$ref": "#/definitions/TagFilter"
@@ -1239,7 +1659,14 @@
       "additionalProperties": false,
       "properties": {
         "Prefix": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "TagFilters": {
           "type": "array",
@@ -1271,12 +1698,19 @@
       "additionalProperties": false,
       "properties": {
         "Status": {
-          "description": "Specifies whether Amazon S3 replicates modifications on replicas.",
-          "type": "string",
-          "enum": [
-            "Enabled",
-            "Disabled"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Enabled",
+                "Disabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies whether Amazon S3 replicates modifications on replicas."
         }
       },
       "required": [
@@ -1289,12 +1723,19 @@
       "additionalProperties": false,
       "properties": {
         "Status": {
-          "description": "Specifies whether Amazon S3 replicates objects created with server-side encryption using a customer master key (CMK) stored in AWS Key Management Service.",
-          "type": "string",
-          "enum": [
-            "Disabled",
-            "Enabled"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Disabled",
+                "Enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies whether Amazon S3 replicates objects created with server-side encryption using a customer master key (CMK) stored in AWS Key Management Service."
         }
       },
       "required": [
@@ -1306,14 +1747,28 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -1327,13 +1782,20 @@
       "additionalProperties": false,
       "properties": {
         "Status": {
-          "description": "The versioning state of the bucket.",
-          "type": "string",
-          "default": "Suspended",
-          "enum": [
-            "Enabled",
-            "Suspended"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "Suspended",
+              "enum": [
+                "Enabled",
+                "Suspended"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The versioning state of the bucket."
         }
       },
       "required": [
@@ -1346,12 +1808,26 @@
       "additionalProperties": false,
       "properties": {
         "ErrorDocument": {
-          "description": "The name of the error document for the website.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the error document for the website."
         },
         "IndexDocument": {
-          "description": "The name of the index document for the website.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the index document for the website."
         },
         "RoutingRules": {
           "type": "array",
@@ -1388,28 +1864,63 @@
       "additionalProperties": false,
       "properties": {
         "HostName": {
-          "description": "The host name to use in the redirect request.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The host name to use in the redirect request."
         },
         "HttpRedirectCode": {
-          "description": "The HTTP redirect code to use on the response. Not required if one of the siblings is present.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The HTTP redirect code to use on the response. Not required if one of the siblings is present."
         },
         "Protocol": {
-          "description": "Protocol to use when redirecting requests. The default is the protocol that is used in the original request.",
-          "enum": [
-            "http",
-            "https"
+          "oneOf": [
+            {
+              "enum": [
+                "http",
+                "https"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ],
-          "type": "string"
+          "description": "Protocol to use when redirecting requests. The default is the protocol that is used in the original request."
         },
         "ReplaceKeyPrefixWith": {
-          "description": "The object key prefix to use in the redirect request.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The object key prefix to use in the redirect request."
         },
         "ReplaceKeyWith": {
-          "description": "The specific object key to use in the redirect request.d",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The specific object key to use in the redirect request.d"
         }
       }
     },
@@ -1419,12 +1930,26 @@
       "additionalProperties": false,
       "properties": {
         "KeyPrefixEquals": {
-          "description": "The object key name prefix when the redirect is applied.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The object key name prefix when the redirect is applied."
         },
         "HttpErrorCodeReturnedEquals": {
-          "description": "The HTTP error code when the redirect is applied. ",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The HTTP error code when the redirect is applied. "
         }
       }
     },
@@ -1434,16 +1959,30 @@
       "additionalProperties": false,
       "properties": {
         "HostName": {
-          "description": "Name of the host where requests are redirected.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the host where requests are redirected."
         },
         "Protocol": {
-          "description": "Protocol to use when redirecting requests. The default is the protocol that is used in the original request.",
-          "type": "string",
-          "enum": [
-            "http",
-            "https"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "http",
+                "https"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Protocol to use when redirecting requests. The default is the protocol that is used in the original request."
         }
       },
       "required": [
@@ -1451,8 +1990,15 @@
       ]
     },
     "Arn": {
-      "description": "the Amazon Resource Name (ARN) of the specified bucket.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "the Amazon Resource Name (ARN) of the specified bucket."
     }
   },
   "tagging": {

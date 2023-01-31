@@ -22,22 +22,36 @@
       "type": "boolean"
     },
     "EventSourceArn": {
-      "description": "The Amazon Resource Name (ARN) of the event source.",
-      "type": "string",
-      "pattern": "arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
-      "minLength": 12,
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
+          "minLength": 12,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the event source."
     },
     "FilterCriteria": {
       "description": "The filter criteria to control event filtering.",
       "$ref": "#/definitions/FilterCriteria"
     },
     "FunctionName": {
-      "description": "The name of the Lambda function.",
-      "type": "string",
-      "pattern": "(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?",
-      "minLength": 1,
-      "maxLength": 140
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?",
+          "minLength": 1,
+          "maxLength": 140
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the Lambda function."
     },
     "MaximumBatchingWindowInSeconds": {
       "description": "(Streams) The maximum amount of time to gather records before invoking the function, in seconds.",
@@ -64,11 +78,18 @@
       "maximum": 10
     },
     "StartingPosition": {
-      "description": "The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Streams sources.",
-      "type": "string",
-      "pattern": "(LATEST|TRIM_HORIZON|AT_TIMESTAMP)+",
-      "minLength": 6,
-      "maxLength": 12
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "(LATEST|TRIM_HORIZON|AT_TIMESTAMP)+",
+          "minLength": 6,
+          "maxLength": 12
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Streams sources."
     },
     "StartingPositionTimestamp": {
       "description": "With StartingPosition set to AT_TIMESTAMP, the time from which to start reading, in Unix time seconds.",
@@ -181,11 +202,18 @@
       "additionalProperties": false,
       "properties": {
         "Pattern": {
-          "type": "string",
-          "description": "The filter pattern that defines which events should be passed for invocations.",
-          "pattern": ".*",
-          "minLength": 0,
-          "maxLength": 4096
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The filter pattern that defines which events should be passed for invocations."
         }
       }
     },
@@ -195,11 +223,18 @@
       "additionalProperties": false,
       "properties": {
         "Destination": {
-          "description": "The Amazon Resource Name (ARN) of the destination resource.",
-          "type": "string",
-          "pattern": "arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
-          "minLength": 12,
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
+              "minLength": 12,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the destination resource."
         }
       }
     },
@@ -209,25 +244,39 @@
       "description": "The configuration used by AWS Lambda to access event source",
       "properties": {
         "Type": {
-          "description": "The type of source access configuration.",
-          "enum": [
-            "BASIC_AUTH",
-            "VPC_SUBNET",
-            "VPC_SECURITY_GROUP",
-            "SASL_SCRAM_512_AUTH",
-            "SASL_SCRAM_256_AUTH",
-            "VIRTUAL_HOST",
-            "CLIENT_CERTIFICATE_TLS_AUTH",
-            "SERVER_ROOT_CA_CERTIFICATE"
+          "oneOf": [
+            {
+              "enum": [
+                "BASIC_AUTH",
+                "VPC_SUBNET",
+                "VPC_SECURITY_GROUP",
+                "SASL_SCRAM_512_AUTH",
+                "SASL_SCRAM_256_AUTH",
+                "VIRTUAL_HOST",
+                "CLIENT_CERTIFICATE_TLS_AUTH",
+                "SERVER_ROOT_CA_CERTIFICATE"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ],
-          "type": "string"
+          "description": "The type of source access configuration."
         },
         "URI": {
-          "description": "The URI for the source access configuration resource.",
-          "type": "string",
-          "pattern": "[a-zA-Z0-9-\\/*:_+=.@-]*",
-          "minLength": 1,
-          "maxLength": 200
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-zA-Z0-9-\\/*:_+=.@-]*",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The URI for the source access configuration resource."
         }
       }
     },
@@ -264,11 +313,18 @@
       }
     },
     "ConsumerGroupId": {
-      "description": "The identifier for the Kafka Consumer Group to join.",
-      "type": "string",
-      "pattern": "[a-zA-Z0-9-\\/*:_+=.@-]*",
-      "minLength": 1,
-      "maxLength": 200
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9-\\/*:_+=.@-]*",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier for the Kafka Consumer Group to join."
     },
     "AmazonManagedKafkaEventSourceConfig": {
       "description": "Specific configuration settings for an MSK event source.",

@@ -4,13 +4,27 @@
   "documentationUrl": "https://docs.aws.amazon.com/emr/latest/APIReference/API_CreateStudio.html",
   "definitions": {
     "SubnetId": {
-      "description": "Identifier of a subnet",
-      "type": "string",
-      "pattern": "^(subnet-[a-f0-9]{13})|(subnet-[a-f0-9]{8})\\Z"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(subnet-[a-f0-9]{13})|(subnet-[a-f0-9]{8})\\Z"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Identifier of a subnet"
     },
     "Arn": {
-      "type": "string",
-      "pattern": "^arn:aws(-(cn|us-gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws(-(cn|us-gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Tags": {
       "type": "array",
@@ -26,18 +40,32 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "type": "string",
-          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. ",
-          "minLength": 1,
-          "maxLength": 128,
-          "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
         },
         "Value": {
-          "type": "string",
-          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. ",
-          "minLength": 0,
-          "maxLength": 256,
-          "pattern": "[a-zA-Z+-=._:/]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
         }
       },
       "required": [
@@ -48,39 +76,74 @@
   },
   "properties": {
     "AuthMode": {
-      "type": "string",
-      "description": "Specifies whether the Studio authenticates users using single sign-on (SSO) or IAM. Amazon EMR Studio currently only supports SSO authentication.",
-      "enum": [
-        "SSO",
-        "IAM"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SSO",
+            "IAM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies whether the Studio authenticates users using single sign-on (SSO) or IAM. Amazon EMR Studio currently only supports SSO authentication."
     },
     "DefaultS3Location": {
-      "description": "The default Amazon S3 location to back up EMR Studio Workspaces and notebook files. A Studio user can select an alternative Amazon S3 location when creating a Workspace.",
-      "type": "string",
-      "minLength": 6,
-      "maxLength": 10280,
-      "pattern": "^s3://.*"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 10280,
+          "pattern": "^s3://.*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The default Amazon S3 location to back up EMR Studio Workspaces and notebook files. A Studio user can select an alternative Amazon S3 location when creating a Workspace."
     },
     "Description": {
-      "description": "A detailed description of the Studio.",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A detailed description of the Studio."
     },
     "EngineSecurityGroupId": {
-      "description": "The ID of the Amazon EMR Studio Engine security group. The Engine security group allows inbound network traffic from the Workspace security group, and it must be in the same VPC specified by VpcId.",
-      "type": "string",
-      "minLength": 4,
-      "maxLength": 256,
-      "pattern": "^sg-[a-zA-Z0-9\\-._]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 256,
+          "pattern": "^sg-[a-zA-Z0-9\\-._]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon EMR Studio Engine security group. The Engine security group allows inbound network traffic from the Workspace security group, and it must be in the same VPC specified by VpcId."
     },
     "Name": {
-      "description": "A descriptive name for the Amazon EMR Studio.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 256,
-      "pattern": "[a-zA-Z0-9_-]+"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "[a-zA-Z0-9_-]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A descriptive name for the Amazon EMR Studio."
     },
     "ServiceRole": {
       "description": "The IAM role that will be assumed by the Amazon EMR Studio. The service role provides a way for Amazon EMR Studio to interoperate with other AWS services.",
@@ -103,26 +166,54 @@
       "$ref": "#/definitions/Arn"
     },
     "VpcId": {
-      "description": "The ID of the Amazon Virtual Private Cloud (Amazon VPC) to associate with the Studio.",
-      "type": "string",
-      "pattern": "^(vpc-[0-9a-f]{8}|vpc-[0-9a-f]{17})$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(vpc-[0-9a-f]{8}|vpc-[0-9a-f]{17})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon Virtual Private Cloud (Amazon VPC) to associate with the Studio."
     },
     "WorkspaceSecurityGroupId": {
-      "description": "The ID of the Amazon EMR Studio Workspace security group. The Workspace security group allows outbound network traffic to resources in the Engine security group, and it must be in the same VPC specified by VpcId.",
-      "type": "string",
-      "pattern": "^sg-[a-zA-Z0-9\\-._]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^sg-[a-zA-Z0-9\\-._]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon EMR Studio Workspace security group. The Workspace security group allows outbound network traffic to resources in the Engine security group, and it must be in the same VPC specified by VpcId."
     },
     "IdpAuthUrl": {
-      "description": "Your identity provider's authentication endpoint. Amazon EMR Studio redirects federated users to this endpoint for authentication when logging in to a Studio with the Studio URL.",
-      "type": "string",
-      "pattern": "^https://[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])(:[0-9]*)*([?/#].*)?$",
-      "maxLength": 4096
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^https://[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])(:[0-9]*)*([?/#].*)?$",
+          "maxLength": 4096
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Your identity provider's authentication endpoint. Amazon EMR Studio redirects federated users to this endpoint for authentication when logging in to a Studio with the Studio URL."
     },
     "IdpRelayStateParameterName": {
-      "description": "The name of relay state parameter for external Identity Provider.",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of relay state parameter for external Identity Provider."
     }
   },
   "additionalProperties": false,

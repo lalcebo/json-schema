@@ -4,31 +4,59 @@
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-evidently",
   "properties": {
     "Name": {
-      "type": "string",
-      "pattern": "[-a-zA-Z0-9._]*",
-      "minLength": 1,
-      "maxLength": 127
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[-a-zA-Z0-9._]*",
+          "minLength": 1,
+          "maxLength": 127
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Project": {
-      "type": "string",
-      "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
-      "minLength": 0,
-      "maxLength": 2048
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
+          "minLength": 0,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Description": {
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 160
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 160
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "RunningStatus": {
       "description": "Start Experiment. Default is False",
       "$ref": "#/definitions/RunningStatusObject"
     },
     "RandomizationSalt": {
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 127,
-      "pattern": ".*"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 127,
+          "pattern": ".*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Treatments": {
       "type": "array",
@@ -59,10 +87,17 @@
       "$ref": "#/definitions/OnlineAbConfigObject"
     },
     "Segment": {
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 2048,
-      "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:segment/[-a-zA-Z0-9._]*)"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 2048,
+          "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:segment/[-a-zA-Z0-9._]*)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "RemoveSegment": {
       "type": "boolean"
@@ -83,21 +118,49 @@
       "additionalProperties": false,
       "properties": {
         "Status": {
-          "description": "Provide START or STOP action to apply on an experiment",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Provide START or STOP action to apply on an experiment"
         },
         "AnalysisCompleteTime": {
-          "description": "Provide the analysis Completion time for an experiment",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Provide the analysis Completion time for an experiment"
         },
         "Reason": {
-          "description": "Reason is a required input for stopping the experiment",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Reason is a required input for stopping the experiment"
         },
         "DesiredState": {
-          "description": "Provide CANCELLED or COMPLETED desired state when stopping an experiment",
-          "type": "string",
-          "pattern": "^(CANCELLED|COMPLETED)"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(CANCELLED|COMPLETED)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Provide CANCELLED or COMPLETED desired state when stopping an experiment"
         }
       },
       "oneOf": [
@@ -120,23 +183,51 @@
       "type": "object",
       "properties": {
         "TreatmentName": {
-          "type": "string",
-          "pattern": "[-a-zA-Z0-9._]*",
-          "minLength": 1,
-          "maxLength": 127
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[-a-zA-Z0-9._]*",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Description": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Feature": {
-          "type": "string",
-          "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:.*)"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:.*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Variation": {
-          "type": "string",
-          "pattern": "[-a-zA-Z0-9._]*",
-          "minLength": 1,
-          "maxLength": 255
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[-a-zA-Z0-9._]*",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -150,34 +241,76 @@
       "type": "object",
       "properties": {
         "MetricName": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "pattern": "^[\\S]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "^[\\S]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "EntityIdKey": {
-          "description": "The JSON path to reference the entity id in the event.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The JSON path to reference the entity id in the event."
         },
         "ValueKey": {
-          "description": "The JSON path to reference the numerical metric value in the event.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The JSON path to reference the numerical metric value in the event."
         },
         "EventPattern": {
-          "description": "Event patterns have the same structure as the events they match. Rules use event patterns to select events. An event pattern either matches an event or it doesn't.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Event patterns have the same structure as the events they match. Rules use event patterns to select events. An event pattern either matches an event or it doesn't."
         },
         "UnitLabel": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "pattern": ".*"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": ".*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "DesiredChange": {
-          "type": "string",
-          "enum": [
-            "INCREASE",
-            "DECREASE"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "INCREASE",
+                "DECREASE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         }
       },
@@ -193,10 +326,17 @@
       "type": "object",
       "properties": {
         "ControlTreatmentName": {
-          "type": "string",
-          "pattern": "[-a-zA-Z0-9._]*",
-          "minLength": 1,
-          "maxLength": 127
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[-a-zA-Z0-9._]*",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "TreatmentWeights": {
           "type": "array",
@@ -213,10 +353,17 @@
       "type": "object",
       "properties": {
         "Treatment": {
-          "type": "string",
-          "pattern": "[-a-zA-Z0-9._]*",
-          "minLength": 1,
-          "maxLength": 127
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[-a-zA-Z0-9._]*",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "SplitWeight": {
           "type": "integer",
@@ -235,17 +382,31 @@
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
-          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
-          "minLength": 1,
-          "maxLength": 128
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         },
         "Value": {
-          "type": "string",
-          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
-          "minLength": 0,
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
       "required": [

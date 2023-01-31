@@ -7,8 +7,15 @@
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "pattern": "^[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]{1,128}$|resource-groups:Name"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]{1,128}$|resource-groups:Name"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Values": {
           "type": "array",
@@ -32,18 +39,39 @@
       }
     },
     "S3Region": {
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 20
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 20
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "S3BucketName": {
-      "type": "string",
-      "minLength": 3,
-      "maxLength": 63
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "S3KeyPrefix": {
-      "type": "string",
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "S3OutputLocation": {
       "type": "object",
@@ -72,32 +100,60 @@
   },
   "properties": {
     "AssociationName": {
-      "description": "The name of the association.",
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9_\\-.]{3,128}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_\\-.]{3,128}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the association."
     },
     "DocumentVersion": {
-      "description": "The version of the SSM document to associate with the target.",
-      "type": "string",
-      "pattern": "([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The version of the SSM document to associate with the target."
     },
     "InstanceId": {
-      "description": "The ID of the instance that the SSM document is associated with.",
-      "type": "string",
-      "pattern": "(^i-(\\w{8}|\\w{17})$)|(^mi-\\w{17}$)",
-      "examples": [
-        "i-0e60836d21cf313c4",
-        "mi-0532c22e49636ee13"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "(^i-(\\w{8}|\\w{17})$)|(^mi-\\w{17}$)",
+          "examples": [
+            "i-0e60836d21cf313c4",
+            "mi-0532c22e49636ee13"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the instance that the SSM document is associated with."
     },
     "Name": {
-      "description": "The name of the SSM document.",
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9_\\-.:/]{3,200}$",
-      "examples": [
-        "AWS-GatherSoftwareInventory",
-        "MyCustomSSMDocument"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_\\-.:/]{3,200}$",
+          "examples": [
+            "AWS-GatherSoftwareInventory",
+            "MyCustomSSMDocument"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the SSM document."
     },
     "Parameters": {
       "description": "Parameter values that the SSM document uses at runtime.",
@@ -110,16 +166,23 @@
       "additionalProperties": false
     },
     "ScheduleExpression": {
-      "description": "A Cron or Rate expression that specifies when the association is applied to the target.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 256,
-      "examples": [
-        "cron(0 0 */1 * * ? *)",
-        "cron(0 16 ? * TUE *)",
-        "rate(30 minutes)",
-        "rate(7 days)"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "examples": [
+            "cron(0 0 */1 * * ? *)",
+            "cron(0 16 ? * TUE *)",
+            "rate(30 minutes)",
+            "rate(7 days)"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A Cron or Rate expression that specifies when the association is applied to the target."
     },
     "Targets": {
       "description": "The targets that the SSM document sends commands to.",
@@ -134,45 +197,80 @@
       "$ref": "#/definitions/InstanceAssociationOutputLocation"
     },
     "AutomationTargetParameterName": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 50
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "MaxErrors": {
-      "type": "string",
-      "pattern": "^([1-9][0-9]{0,6}|[0]|[1-9][0-9]%|[0-9]%|100%)$",
-      "examples": [
-        "1%",
-        "10%",
-        "50%",
-        "1"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([1-9][0-9]{0,6}|[0]|[1-9][0-9]%|[0-9]%|100%)$",
+          "examples": [
+            "1%",
+            "10%",
+            "50%",
+            "1"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "MaxConcurrency": {
-      "type": "string",
-      "pattern": "^([1-9][0-9]{0,6}|[1-9][0-9]%|[1-9]%|100%)$",
-      "examples": [
-        "1%",
-        "10%",
-        "50%",
-        "1"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([1-9][0-9]{0,6}|[1-9][0-9]%|[1-9]%|100%)$",
+          "examples": [
+            "1%",
+            "10%",
+            "50%",
+            "1"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "ComplianceSeverity": {
-      "type": "string",
-      "enum": [
-        "CRITICAL",
-        "HIGH",
-        "MEDIUM",
-        "LOW",
-        "UNSPECIFIED"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CRITICAL",
+            "HIGH",
+            "MEDIUM",
+            "LOW",
+            "UNSPECIFIED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "SyncCompliance": {
-      "type": "string",
-      "enum": [
-        "AUTO",
-        "MANUAL"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AUTO",
+            "MANUAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "WaitForSuccessTimeoutSeconds": {

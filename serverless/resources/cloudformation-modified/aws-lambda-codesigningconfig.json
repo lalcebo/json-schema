@@ -4,10 +4,17 @@
   "additionalProperties": false,
   "properties": {
     "Description": {
-      "description": "A description of the CodeSigningConfig",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the CodeSigningConfig"
     },
     "AllowedPublishers": {
       "description": "When the CodeSigningConfig is later on attached to a function, the function code will be expected to be signed by profiles from this list",
@@ -47,13 +54,20 @@
       "additionalProperties": false,
       "properties": {
         "UntrustedArtifactOnDeployment": {
-          "type": "string",
-          "description": "Indicates how Lambda operations involve updating the code artifact will operate. Default to Warn if not provided",
-          "default": "Warn",
-          "enum": [
-            "Warn",
-            "Enforce"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "Warn",
+              "enum": [
+                "Warn",
+                "Enforce"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indicates how Lambda operations involve updating the code artifact will operate. Default to Warn if not provided"
         }
       },
       "required": [

@@ -4,8 +4,15 @@
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Arn": {
-      "type": "string",
-      "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     }
   },
   "properties": {
@@ -13,11 +20,18 @@
       "$ref": "#/definitions/Arn"
     },
     "CurrentRevisionId": {
-      "description": "The revision ID of robot application.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 40,
-      "pattern": "[a-zA-Z0-9_.\\-]*"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "pattern": "[a-zA-Z0-9_.\\-]*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The revision ID of robot application."
     }
   },
   "additionalProperties": false,

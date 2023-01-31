@@ -7,17 +7,31 @@
       "type": "object",
       "properties": {
         "LogGroupName": {
-          "description": "The Amazon CloudWatch log group to which CloudFormation sends error logging information when invoking the type's handlers.",
-          "type": "string",
-          "pattern": "^[\\.\\-_/#A-Za-z0-9]+$",
-          "minLength": 1,
-          "maxLength": 512
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\.\\-_/#A-Za-z0-9]+$",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon CloudWatch log group to which CloudFormation sends error logging information when invoking the type's handlers."
         },
         "LogRoleArn": {
-          "description": "The ARN of the role that CloudFormation should assume when sending log entries to CloudWatch logs.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the role that CloudFormation should assume when sending log entries to CloudWatch logs."
         }
       },
       "additionalProperties": false
@@ -25,64 +39,120 @@
   },
   "properties": {
     "ExecutionRoleArn": {
-      "description": "The Amazon Resource Name (ARN) of the IAM execution role to use to register the type. If your resource type calls AWS APIs in any of its handlers, you must create an IAM execution role that includes the necessary permissions to call those AWS APIs, and provision that execution role in your account. CloudFormation then assumes that execution role to provide your resource type with the appropriate credentials.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the IAM execution role to use to register the type. If your resource type calls AWS APIs in any of its handlers, you must create an IAM execution role that includes the necessary permissions to call those AWS APIs, and provision that execution role in your account. CloudFormation then assumes that execution role to provide your resource type with the appropriate credentials."
     },
     "PublisherId": {
-      "description": "The publisher id assigned by CloudFormation for publishing in this region.",
-      "pattern": "[0-9a-zA-Z]{40}",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 40
+      "oneOf": [
+        {
+          "pattern": "[0-9a-zA-Z]{40}",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The publisher id assigned by CloudFormation for publishing in this region."
     },
     "LoggingConfig": {
       "$ref": "#/definitions/LoggingConfig",
       "description": "Specifies logging configuration information for a type."
     },
     "PublicTypeArn": {
-      "description": "The Amazon Resource Number (ARN) assigned to the public extension upon publication",
-      "pattern": "arn:aws[A-Za-z0-9-]{0,64}:cloudformation:[A-Za-z0-9-]{1,64}:([0-9]{12})?:type/.+",
-      "type": "string",
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "pattern": "arn:aws[A-Za-z0-9-]{0,64}:cloudformation:[A-Za-z0-9-]{1,64}:([0-9]{12})?:type/.+",
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Number (ARN) assigned to the public extension upon publication"
     },
     "AutoUpdate": {
       "description": "Whether to automatically update the extension in this account and region when a new minor version is published by the extension publisher. Major versions released by the publisher must be manually updated.",
       "type": "boolean"
     },
     "TypeNameAlias": {
-      "description": "An alias to assign to the public extension in this account and region. If you specify an alias for the extension, you must then use the alias to refer to the extension in your templates.",
-      "pattern": "[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}(::MODULE){0,1}",
-      "type": "string",
-      "minLength": 10,
-      "maxLength": 204
+      "oneOf": [
+        {
+          "pattern": "[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}(::MODULE){0,1}",
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 204
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An alias to assign to the public extension in this account and region. If you specify an alias for the extension, you must then use the alias to refer to the extension in your templates."
     },
     "VersionBump": {
-      "description": "Manually updates a previously-enabled type to a new major or minor version, if available. You can also use this parameter to update the value of AutoUpdateEnabled",
-      "type": "string",
-      "enum": [
-        "MAJOR",
-        "MINOR"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MAJOR",
+            "MINOR"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Manually updates a previously-enabled type to a new major or minor version, if available. You can also use this parameter to update the value of AutoUpdateEnabled"
     },
     "MajorVersion": {
-      "description": "The Major Version of the type you want to enable",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 100000
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Major Version of the type you want to enable"
     },
     "TypeName": {
-      "description": "The name of the type being registered.\n\nWe recommend that type names adhere to the following pattern: company_or_organization::service::type.",
-      "pattern": "[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}(::MODULE){0,1}",
-      "type": "string"
+      "oneOf": [
+        {
+          "pattern": "[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}(::MODULE){0,1}",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the type being registered.\n\nWe recommend that type names adhere to the following pattern: company_or_organization::service::type."
     },
     "Type": {
-      "description": "The kind of extension",
-      "enum": [
-        "RESOURCE",
-        "MODULE",
-        "HOOK"
+      "oneOf": [
+        {
+          "enum": [
+            "RESOURCE",
+            "MODULE",
+            "HOOK"
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "type": "string"
+      "description": "The kind of extension"
     }
   },
   "oneOf": [

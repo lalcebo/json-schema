@@ -4,8 +4,15 @@
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Arn": {
-      "type": "string",
-      "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Tags": {
       "description": "A key-value pair to associate with a resource.",
@@ -25,16 +32,30 @@
       "type": "object",
       "properties": {
         "Name": {
-          "type": "string",
-          "description": "The name of the rendering engine.",
-          "enum": [
-            "OGRE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "OGRE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the rendering engine."
         },
         "Version": {
-          "type": "string",
-          "description": "The version of the rendering engine.",
-          "pattern": "1.x"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "1.x"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the rendering engine."
         }
       },
       "required": [
@@ -48,23 +69,37 @@
       "type": "object",
       "properties": {
         "Name": {
-          "type": "string",
-          "description": "The name of the robot software suite.",
-          "enum": [
-            "ROS",
-            "ROS2",
-            "General"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ROS",
+                "ROS2",
+                "General"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the robot software suite."
         },
         "Version": {
-          "type": "string",
-          "description": "The version of the robot software suite.",
-          "enum": [
-            "Kinetic",
-            "Melodic",
-            "Dashing",
-            "Foxy"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Kinetic",
+                "Melodic",
+                "Dashing",
+                "Foxy"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the robot software suite."
         }
       },
       "required": [
@@ -77,24 +112,45 @@
       "description": "Information about a source configuration.",
       "properties": {
         "S3Bucket": {
-          "type": "string",
-          "description": "The Amazon S3 bucket name.",
-          "pattern": "[a-z0-9][a-z0-9.\\-]*[a-z0-9]"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-z0-9][a-z0-9.\\-]*[a-z0-9]"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 bucket name."
         },
         "S3Key": {
-          "type": "string",
-          "description": "The s3 object key.",
-          "minLength": 1,
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The s3 object key."
         },
         "Architecture": {
-          "type": "string",
-          "description": "The target processor architecture for the application.",
-          "enum": [
-            "X86_64",
-            "ARM64",
-            "ARMHF"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "X86_64",
+                "ARM64",
+                "ARMHF"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The target processor architecture for the application."
         }
       },
       "required": [
@@ -109,26 +165,40 @@
       "type": "object",
       "properties": {
         "Name": {
-          "type": "string",
-          "description": "The name of the simulation software suite.",
-          "enum": [
-            "Gazebo",
-            "RosbagPlay",
-            "SimulationRuntime"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Gazebo",
+                "RosbagPlay",
+                "SimulationRuntime"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the simulation software suite."
         },
         "Version": {
-          "type": "string",
-          "description": "The version of the simulation software suite.",
-          "enum": [
-            "7",
-            "9",
-            "11",
-            "Kinetic",
-            "Melodic",
-            "Dashing",
-            "Foxy"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "7",
+                "9",
+                "11",
+                "Kinetic",
+                "Melodic",
+                "Dashing",
+                "Foxy"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the simulation software suite."
         }
       },
       "required": [
@@ -139,15 +209,29 @@
   },
   "properties": {
     "Name": {
-      "description": "The name of the simulation application.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 255,
-      "pattern": "[a-zA-Z0-9_\\-]*"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "[a-zA-Z0-9_\\-]*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the simulation application."
     },
     "CurrentRevisionId": {
-      "description": "The current revision id.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The current revision id."
     },
     "RenderingEngine": {
       "description": "The rendering engine for the simulation application.",
@@ -170,8 +254,15 @@
       }
     },
     "Environment": {
-      "description": "The URI of the Docker image for the robot application.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The URI of the Docker image for the robot application."
     },
     "Tags": {
       "$ref": "#/definitions/Tags"

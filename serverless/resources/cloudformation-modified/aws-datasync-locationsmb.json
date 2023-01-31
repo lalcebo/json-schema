@@ -9,13 +9,20 @@
       "type": "object",
       "properties": {
         "Version": {
-          "description": "The specific SMB version that you want DataSync to use to mount your SMB share.",
-          "type": "string",
-          "enum": [
-            "AUTOMATIC",
-            "SMB2",
-            "SMB3"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AUTOMATIC",
+                "SMB2",
+                "SMB3"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The specific SMB version that you want DataSync to use to mount your SMB share."
         }
       }
     },
@@ -25,18 +32,32 @@
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "description": "The key for an AWS resource tag.",
-          "pattern": "^[a-zA-Z0-9\\s+=._:/-]+$",
-          "maxLength": 256,
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key for an AWS resource tag."
         },
         "Value": {
-          "type": "string",
-          "description": "The value for an AWS resource tag.",
-          "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$",
-          "maxLength": 256,
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for an AWS resource tag."
         }
       },
       "required": [
@@ -59,10 +80,17 @@
       "insertionOrder": false
     },
     "Domain": {
-      "description": "The name of the Windows domain that the SMB server belongs to.",
-      "type": "string",
-      "maxLength": 253,
-      "pattern": "^([A-Za-z0-9]+[A-Za-z0-9-.]*)*[A-Za-z0-9-]*[A-Za-z0-9]$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 253,
+          "pattern": "^([A-Za-z0-9]+[A-Za-z0-9-.]*)*[A-Za-z0-9-]*[A-Za-z0-9]$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the Windows domain that the SMB server belongs to."
     },
     "MountOptions": {
       "$ref": "#/definitions/MountOptions",
@@ -71,28 +99,56 @@
       }
     },
     "Password": {
-      "description": "The password of the user who can mount the share and has the permissions to access files and folders in the SMB share.",
-      "type": "string",
-      "maxLength": 104,
-      "pattern": "^.{0,104}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 104,
+          "pattern": "^.{0,104}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The password of the user who can mount the share and has the permissions to access files and folders in the SMB share."
     },
     "ServerHostname": {
-      "description": "The name of the SMB server. This value is the IP address or Domain Name Service (DNS) name of the SMB server.",
-      "type": "string",
-      "maxLength": 255,
-      "pattern": "^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "pattern": "^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the SMB server. This value is the IP address or Domain Name Service (DNS) name of the SMB server."
     },
     "Subdirectory": {
-      "description": "The subdirectory in the SMB file system that is used to read data from the SMB source location or write data to the SMB destination",
-      "type": "string",
-      "maxLength": 4096,
-      "pattern": "^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 4096,
+          "pattern": "^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The subdirectory in the SMB file system that is used to read data from the SMB source location or write data to the SMB destination"
     },
     "User": {
-      "description": "The user who can mount the share, has the permissions to access files and folders in the SMB share.",
-      "type": "string",
-      "maxLength": 104,
-      "pattern": "^[^\\x5B\\x5D\\\\/:;|=,+*?]{1,104}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 104,
+          "pattern": "^[^\\x5B\\x5D\\\\/:;|=,+*?]{1,104}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The user who can mount the share, has the permissions to access files and folders in the SMB share."
     },
     "Tags": {
       "description": "An array of key-value pairs to apply to this resource.",
