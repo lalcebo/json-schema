@@ -82,6 +82,14 @@ const path = require("path");
         }
         schema.title = schema.typeName
         schema.type = "object"
+        let {description, sourceUrl} = schema
+        if (!description) {
+          description = "No description available"
+        }
+        if (!sourceUrl) {
+          sourceUrl = "No source definition found, add manually please"
+        }
+        schema.description = `${description}. Source:- ${sourceUrl}`
         fs.writeFileSync(
             path.join(__dirname, `serverless/resources/cloudformation-modified/${resource}`),
             JSON.stringify(schema, null, 2)
