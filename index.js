@@ -80,6 +80,12 @@ const path = require("path");
               "Properties"
             ]
         }
+        schema.title = schema.typeName
+        schema.type = "object"
+        fs.writeFileSync(
+            path.join(__dirname, `serverless/resources/cloudformation/${resource}`),
+            JSON.stringify(schema, null, 2)
+        )
     }
     resourcesSchema.properties = {
         Resources: {
@@ -98,6 +104,6 @@ const path = require("path");
     }
     fs.writeFileSync(
         path.join(__dirname, "serverless/resources/resources.schema.json"),
-        JSON.stringify(resourcesSchema, null, 4)
+        JSON.stringify(resourcesSchema, null, 2)
     )
 })()
