@@ -20,6 +20,11 @@ Collection of JSON schemas for use in command line validators, editors auto-comp
 
 I'll try to maintain this project as simple as possible, but Pull Requests are welcomed!
 
+## Building AWS resources
+
+This project uses Cloudformation as the source of truth and hence the definitions for individual functions is taken from Cloudformation and maintained into their individual definition files, see [here](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-type-schemas.html)
+It's absolutely necessary that these files be kept to up to date.
+
 ## License
 
 The MIT License (MIT). Please see [License File][link-license] for more information.
