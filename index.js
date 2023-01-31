@@ -71,7 +71,7 @@ const path = require("path");
                     ],
                 },
                 Properties: {
-                  $ref: `cloudformation/${resource}`
+                  $ref: `cloudformation-modified/${resource}`
                 },
                 ...sharedAttributes
             },
@@ -83,7 +83,7 @@ const path = require("path");
         schema.title = schema.typeName
         schema.type = "object"
         fs.writeFileSync(
-            path.join(__dirname, `serverless/resources/cloudformation/${resource}`),
+            path.join(__dirname, `serverless/resources/cloudformation-modified/${resource}`),
             JSON.stringify(schema, null, 2)
         )
     }
