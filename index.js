@@ -90,6 +90,16 @@ const path = require("path");
           sourceUrl = "No source definition found, add manually please"
         }
         schema.description = `${description}. Source:- ${sourceUrl}`
+        // remove readonly properties
+        if (schema.readOnlyProperties) {
+          schema.readOnlyProperties.forEach(rP => {
+            const parts = rP.trim().split("/")
+            const property = parts[parts.length - 1]
+            if (schema.properties[property]) {
+              delete schema.properties[property]
+            }
+          })
+        }
         fs.writeFileSync(
             path.join(__dirname, `serverless/resources/cloudformation-modified/${resource}`),
             JSON.stringify(schema, null, 2)
