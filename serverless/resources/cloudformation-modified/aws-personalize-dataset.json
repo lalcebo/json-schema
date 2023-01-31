@@ -8,42 +8,77 @@
       "type": "object",
       "properties": {
         "JobName": {
-          "description": "The name for the dataset import job.",
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
-          "minLength": 1,
-          "maxLength": 63
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
+              "minLength": 1,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name for the dataset import job."
         },
         "DatasetImportJobArn": {
-          "description": "The ARN of the dataset import job",
-          "type": "string",
-          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the dataset import job"
         },
         "DatasetArn": {
-          "description": "The ARN of the dataset that receives the imported data",
-          "type": "string",
-          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the dataset that receives the imported data"
         },
         "DataSource": {
           "type": "object",
           "description": "The Amazon S3 bucket that contains the training data to import.",
           "properties": {
             "DataLocation": {
-              "description": "The path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored.",
-              "type": "string",
-              "maxLength": 256,
-              "pattern": "(s3|http|https)://.+"
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 256,
+                  "pattern": "(s3|http|https)://.+"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored."
             }
           },
           "additionalProperties": false
         },
         "RoleArn": {
-          "description": "The ARN of the IAM role that has permissions to read from the Amazon S3 data source.",
-          "type": "string",
-          "maxLength": 256,
-          "pattern": "arn:([a-z\\d-]+):iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "arn:([a-z\\d-]+):iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the IAM role that has permissions to read from the Amazon S3 data source."
         }
       },
       "additionalProperties": false
@@ -51,33 +86,61 @@
   },
   "properties": {
     "Name": {
-      "description": "The name for the dataset",
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
-      "minLength": 1,
-      "maxLength": 63
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name for the dataset"
     },
     "DatasetType": {
-      "description": "The type of dataset",
-      "type": "string",
-      "enum": [
-        "Interactions",
-        "Items",
-        "Users"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Interactions",
+            "Items",
+            "Users"
+          ],
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "maxLength": 256
+      "description": "The type of dataset"
     },
     "DatasetGroupArn": {
-      "description": "The Amazon Resource Name (ARN) of the dataset group to add the dataset to",
-      "type": "string",
-      "maxLength": 256,
-      "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the dataset group to add the dataset to"
     },
     "SchemaArn": {
-      "description": "The ARN of the schema to associate with the dataset. The schema defines the dataset fields.",
-      "type": "string",
-      "maxLength": 256,
-      "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the schema to associate with the dataset. The schema defines the dataset fields."
     },
     "DatasetImportJob": {
       "$ref": "#/definitions/DatasetImportJob"

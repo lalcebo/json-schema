@@ -7,32 +7,60 @@
   },
   "properties": {
     "TargetFunctionArn": {
-      "description": "The Amazon Resource Name (ARN) of the function associated with the Function URL.",
-      "type": "string",
-      "pattern": "^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:((?!\\d+)[0-9a-zA-Z_]+))?$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:((?!\\d+)[0-9a-zA-Z_]+))?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the function associated with the Function URL."
     },
     "Qualifier": {
-      "description": "The alias qualifier for the target function. If TargetFunctionArn is unqualified then Qualifier must be passed.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "pattern": "((?!^[0-9]+$)([a-zA-Z0-9-_]+))"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "((?!^[0-9]+$)([a-zA-Z0-9-_]+))"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The alias qualifier for the target function. If TargetFunctionArn is unqualified then Qualifier must be passed."
     },
     "AuthType": {
-      "description": "Can be either AWS_IAM if the requests are authorized via IAM, or NONE if no authorization is configured on the Function URL.",
-      "type": "string",
-      "enum": [
-        "AWS_IAM",
-        "NONE"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS_IAM",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Can be either AWS_IAM if the requests are authorized via IAM, or NONE if no authorization is configured on the Function URL."
     },
     "InvokeMode": {
-      "description": "The invocation mode for the function’s URL. Set to BUFFERED if you want to buffer responses before returning them to the client. Set to RESPONSE_STREAM if you want to stream responses, allowing faster time to first byte and larger response payload sizes. If not set, defaults to BUFFERED.",
-      "type": "string",
-      "enum": [
-        "BUFFERED",
-        "RESPONSE_STREAM"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BUFFERED",
+            "RESPONSE_STREAM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The invocation mode for the function’s URL. Set to BUFFERED if you want to buffer responses before returning them to the client. Set to RESPONSE_STREAM if you want to stream responses, allowing faster time to first byte and larger response payload sizes. If not set, defaults to BUFFERED."
     },
     "Cors": {
       "$ref": "#/definitions/Cors"

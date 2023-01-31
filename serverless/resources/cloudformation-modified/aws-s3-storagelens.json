@@ -4,15 +4,29 @@
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3-storagelens",
   "definitions": {
     "Id": {
-      "description": "The ID that identifies the Amazon S3 Storage Lens configuration.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 64,
-      "pattern": "^[a-zA-Z0-9\\-_.]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9\\-_.]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID that identifies the Amazon S3 Storage Lens configuration."
     },
     "Arn": {
-      "description": "The Amazon Resource Name (ARN) of the specified resource.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the specified resource."
     },
     "BucketsAndRegions": {
       "description": "S3 buckets and Regions to include/exclude in the Amazon S3 Storage Lens configuration.",
@@ -105,8 +119,15 @@
           "type": "integer"
         },
         "Delimiter": {
-          "description": "Delimiter to divide S3 key into hierarchy of prefixes.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Delimiter to divide S3 key into hierarchy of prefixes."
         },
         "MinStorageBytesPercentage": {
           "description": "The minimum storage bytes threshold for the prefixes to be included in the analysis.",
@@ -193,8 +214,15 @@
       "additionalProperties": false,
       "properties": {
         "KeyId": {
-          "description": "The ARN of the KMS key to use for encryption.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the KMS key to use for encryption."
         }
       },
       "required": [
@@ -237,31 +265,66 @@
       "additionalProperties": false,
       "properties": {
         "OutputSchemaVersion": {
-          "description": "The version of the output schema to use when exporting Amazon S3 Storage Lens metrics.",
-          "type": "string",
-          "enum": [
-            "V_1"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "V_1"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the output schema to use when exporting Amazon S3 Storage Lens metrics."
         },
         "Format": {
-          "description": "Specifies the file format to use when exporting Amazon S3 Storage Lens metrics export.",
-          "type": "string",
-          "enum": [
-            "CSV",
-            "Parquet"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CSV",
+                "Parquet"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the file format to use when exporting Amazon S3 Storage Lens metrics export."
         },
         "AccountId": {
-          "description": "The AWS account ID that owns the destination S3 bucket.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The AWS account ID that owns the destination S3 bucket."
         },
         "Arn": {
-          "description": "The ARN of the bucket to which Amazon S3 Storage Lens exports will be placed.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the bucket to which Amazon S3 Storage Lens exports will be placed."
         },
         "Prefix": {
-          "description": "The prefix to use for Amazon S3 Storage Lens export.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The prefix to use for Amazon S3 Storage Lens export."
         },
         "Encryption": {
           "$ref": "#/definitions/Encryption"
@@ -306,16 +369,30 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 127,
-          "pattern": "^(?!aws:.*)[a-zA-Z0-9\\s\\_\\.\\/\\=\\+\\-]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127,
+              "pattern": "^(?!aws:.*)[a-zA-Z0-9\\s\\_\\.\\/\\=\\+\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "pattern": "^(?!aws:.*)[a-zA-Z0-9\\s\\_\\.\\/\\=\\+\\-]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "^(?!aws:.*)[a-zA-Z0-9\\s\\_\\.\\/\\=\\+\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -351,8 +428,15 @@
           "type": "boolean"
         },
         "StorageLensArn": {
-          "description": "The ARN for the Amazon S3 Storage Lens configuration.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN for the Amazon S3 Storage Lens configuration."
         }
       },
       "required": [

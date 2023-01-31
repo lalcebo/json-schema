@@ -67,12 +67,19 @@
       "type": "object",
       "properties": {
         "StreamMode": {
-          "description": "The mode of the stream",
-          "type": "string",
-          "enum": [
-            "ON_DEMAND",
-            "PROVISIONED"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ON_DEMAND",
+                "PROVISIONED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The mode of the stream"
         }
       },
       "required": [
@@ -85,17 +92,31 @@
       "type": "object",
       "properties": {
         "EncryptionType": {
-          "description": "The encryption type to use. The only valid value is KMS. ",
-          "type": "string",
-          "enum": [
-            "KMS"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "KMS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The encryption type to use. The only valid value is KMS. "
         },
         "KeyId": {
-          "minLength": 1,
-          "description": "The GUID for the customer-managed AWS KMS key to use for encryption. This value can be a globally unique identifier, a fully specified Amazon Resource Name (ARN) to either an alias or a key, or an alias name prefixed by \"alias/\".You can also use a master key owned by Kinesis Data Streams by specifying the alias aws/kinesis.",
-          "type": "string",
-          "maxLength": 2048
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The GUID for the customer-managed AWS KMS key to use for encryption. This value can be a globally unique identifier, a fully specified Amazon Resource Name (ARN) to either an alias or a key, or an alias name prefixed by \"alias/\".You can also use a master key owned by Kinesis Data Streams by specifying the alias aws/kinesis."
         }
       },
       "required": [
@@ -109,16 +130,30 @@
       "type": "object",
       "properties": {
         "Value": {
-          "minLength": 0,
-          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
-          "type": "string",
-          "maxLength": 255
+          "oneOf": [
+            {
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         },
         "Key": {
-          "minLength": 1,
-          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
-          "type": "string",
-          "maxLength": 128
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
       "required": [
@@ -154,11 +189,18 @@
       }
     },
     "Name": {
-      "minLength": 1,
-      "pattern": "^[a-zA-Z0-9_.-]+$",
-      "description": "The name of the Kinesis stream.",
-      "type": "string",
-      "maxLength": 128
+      "oneOf": [
+        {
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_.-]+$",
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the Kinesis stream."
     },
     "ShardCount": {
       "description": "The number of shards that the stream uses. Required when StreamMode = PROVISIONED is passed.",

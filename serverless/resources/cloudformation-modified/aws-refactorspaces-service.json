@@ -6,10 +6,17 @@
       "type": "object",
       "properties": {
         "Arn": {
-          "type": "string",
-          "maxLength": 2048,
-          "minLength": 1,
-          "pattern": "^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -18,26 +25,47 @@
       "additionalProperties": false
     },
     "ServiceEndpointType": {
-      "type": "string",
-      "enum": [
-        "LAMBDA",
-        "URL"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LAMBDA",
+            "URL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "UrlEndpointInput": {
       "type": "object",
       "properties": {
         "HealthUrl": {
-          "type": "string",
-          "maxLength": 2048,
-          "minLength": 1,
-          "pattern": "^https?://[-a-zA-Z0-9+\\x38@#/%?=~_|!:,.;]*[-a-zA-Z0-9+\\x38@#/%=~_|]$"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^https?://[-a-zA-Z0-9+\\x38@#/%?=~_|!:,.;]*[-a-zA-Z0-9+\\x38@#/%=~_|]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Url": {
-          "type": "string",
-          "maxLength": 2048,
-          "minLength": 1,
-          "pattern": "^https?://[-a-zA-Z0-9+\\x38@#/%?=~_|!:,.;]*[-a-zA-Z0-9+\\x38@#/%=~_|]$"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^https?://[-a-zA-Z0-9+\\x38@#/%?=~_|!:,.;]*[-a-zA-Z0-9+\\x38@#/%=~_|]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -50,17 +78,31 @@
       "type": "object",
       "properties": {
         "Key": {
-          "description": "A string used to identify this tag",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "pattern": "^(?!aws:).+"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:).+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag"
         },
         "Value": {
-          "description": "A string containing the value for the tag",
-          "type": "string",
-          "minLength": 0,
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for the tag"
         }
       },
       "required": [
@@ -72,43 +114,78 @@
   },
   "properties": {
     "ApplicationIdentifier": {
-      "type": "string",
-      "maxLength": 14,
-      "minLength": 14,
-      "pattern": "^app-([0-9A-Za-z]{10}$)"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 14,
+          "minLength": 14,
+          "pattern": "^app-([0-9A-Za-z]{10}$)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Description": {
-      "type": "string",
-      "maxLength": 256,
-      "minLength": 1,
-      "pattern": "^[a-zA-Z0-9-_\\s\\.\\!\\*\\#\\@\\']+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-_\\s\\.\\!\\*\\#\\@\\']+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "EndpointType": {
       "$ref": "#/definitions/ServiceEndpointType"
     },
     "EnvironmentIdentifier": {
-      "type": "string",
-      "maxLength": 14,
-      "minLength": 14,
-      "pattern": "^env-([0-9A-Za-z]{10}$)"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 14,
+          "minLength": 14,
+          "pattern": "^env-([0-9A-Za-z]{10}$)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "LambdaEndpoint": {
       "$ref": "#/definitions/LambdaEndpointInput"
     },
     "Name": {
-      "type": "string",
-      "maxLength": 63,
-      "minLength": 3,
-      "pattern": "^(?!svc-)[a-zA-Z0-9]+[a-zA-Z0-9-_ ]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 63,
+          "minLength": 3,
+          "pattern": "^(?!svc-)[a-zA-Z0-9]+[a-zA-Z0-9-_ ]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "UrlEndpoint": {
       "$ref": "#/definitions/UrlEndpointInput"
     },
     "VpcId": {
-      "type": "string",
-      "maxLength": 21,
-      "minLength": 12,
-      "pattern": "^vpc-[-a-f0-9]{8}([-a-f0-9]{9})?$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 21,
+          "minLength": 12,
+          "pattern": "^vpc-[-a-f0-9]{8}([-a-f0-9]{9})?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Tags": {
       "type": "array",

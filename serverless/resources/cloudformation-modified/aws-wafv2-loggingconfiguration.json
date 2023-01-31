@@ -7,12 +7,19 @@
       "type": "object",
       "properties": {
         "Behavior": {
-          "description": "How to handle logs that satisfy the filter's conditions and requirement. ",
-          "type": "string",
-          "enum": [
-            "KEEP",
-            "DROP"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "KEEP",
+                "DROP"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "How to handle logs that satisfy the filter's conditions and requirement. "
         },
         "Conditions": {
           "description": "Match conditions for the filter.",
@@ -23,12 +30,19 @@
           }
         },
         "Requirement": {
-          "description": "Logic to apply to the filtering conditions. You can specify that, in order to satisfy the filter, a log must match all conditions or must match at least one condition.",
-          "type": "string",
-          "enum": [
-            "MEETS_ALL",
-            "MEETS_ANY"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MEETS_ALL",
+                "MEETS_ANY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Logic to apply to the filtering conditions. You can specify that, in order to satisfy the filter, a log must match all conditions or must match at least one condition."
         }
       },
       "additionalProperties": false,
@@ -48,16 +62,23 @@
           "additionalProperties": false,
           "properties": {
             "Action": {
-              "description": "Logic to apply to the filtering conditions. You can specify that, in order to satisfy the filter, a log must match all conditions or must match at least one condition.",
-              "type": "string",
-              "enum": [
-                "ALLOW",
-                "BLOCK",
-                "COUNT",
-                "CAPTCHA",
-                "CHALLENGE",
-                "EXCLUDED_AS_COUNT"
-              ]
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "ALLOW",
+                    "BLOCK",
+                    "COUNT",
+                    "CAPTCHA",
+                    "CHALLENGE",
+                    "EXCLUDED_AS_COUNT"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "Logic to apply to the filtering conditions. You can specify that, in order to satisfy the filter, a log must match all conditions or must match at least one condition."
             }
           },
           "required": [
@@ -70,8 +91,15 @@
           "additionalProperties": false,
           "properties": {
             "LabelName": {
-              "description": "The label name that a log record must contain in order to meet the condition. This must be a fully qualified label name. Fully qualified labels have a prefix, optional namespaces, and label name. The prefix identifies the rule group or web ACL context of the rule that added the label. ",
-              "type": "string"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The label name that a log record must contain in order to meet the condition. This must be a fully qualified label name. Fully qualified labels have a prefix, optional namespaces, and label name. The prefix identifies the rule group or web ACL context of the rule that added the label. "
             }
           },
           "required": [
@@ -91,13 +119,20 @@
           "additionalProperties": false,
           "properties": {
             "InvalidFallbackBehavior": {
-              "description": "What AWS WAF should do if it fails to completely parse the JSON body.",
-              "type": "string",
-              "enum": [
-                "MATCH",
-                "NO_MATCH",
-                "EVALUATE_AS_STRING"
-              ]
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "MATCH",
+                    "NO_MATCH",
+                    "EVALUATE_AS_STRING"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "What AWS WAF should do if it fails to completely parse the JSON body."
             },
             "MatchPattern": {
               "description": "The patterns to look for in the JSON body. AWS WAF inspects the results of these pattern matches against the rule inspection criteria. ",
@@ -120,13 +155,20 @@
               }
             },
             "MatchScope": {
-              "description": "The parts of the JSON to match against using the MatchPattern. If you specify All, AWS WAF matches against keys and values. ",
-              "type": "string",
-              "enum": [
-                "ALL",
-                "KEY",
-                "VALUE"
-              ]
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "ALL",
+                    "KEY",
+                    "VALUE"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The parts of the JSON to match against using the MatchPattern. If you specify All, AWS WAF matches against keys and values. "
             }
           },
           "required": [
@@ -148,8 +190,15 @@
           "additionalProperties": false,
           "properties": {
             "Name": {
-              "description": "The name of the query header to inspect.",
-              "type": "string"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The name of the query header to inspect."
             }
           },
           "required": [
@@ -165,8 +214,15 @@
   },
   "properties": {
     "ResourceArn": {
-      "description": "The Amazon Resource Name (ARN) of the web ACL that you want to associate with LogDestinationConfigs.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the web ACL that you want to associate with LogDestinationConfigs."
     },
     "LogDestinationConfigs": {
       "description": "The Amazon Resource Names (ARNs) of the logging destinations that you want to associate with the web ACL.",
@@ -189,12 +245,19 @@
       "additionalProperties": false,
       "properties": {
         "DefaultBehavior": {
-          "description": "Default handling for logs that don't match any of the specified filtering conditions.",
-          "type": "string",
-          "enum": [
-            "KEEP",
-            "DROP"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "KEEP",
+                "DROP"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Default handling for logs that don't match any of the specified filtering conditions."
         },
         "Filters": {
           "description": "The filters that you want to apply to the logs.",

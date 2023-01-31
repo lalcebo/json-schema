@@ -15,30 +15,58 @@
       "$ref": "#/definitions/ApplicationConfiguration"
     },
     "ApplicationDescription": {
-      "description": "The description of the application.",
-      "type": "string",
-      "default": "",
-      "minLength": 0,
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "",
+          "minLength": 0,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the application."
     },
     "ApplicationMode": {
-      "description": "To create a Kinesis Data Analytics Studio notebook, you must set the mode to `INTERACTIVE`. However, for a Kinesis Data Analytics for Apache Flink application, the mode is optional.",
-      "type": "string",
-      "enum": [
-        "INTERACTIVE",
-        "STREAMING"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "INTERACTIVE",
+            "STREAMING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "To create a Kinesis Data Analytics Studio notebook, you must set the mode to `INTERACTIVE`. However, for a Kinesis Data Analytics for Apache Flink application, the mode is optional."
     },
     "ApplicationName": {
-      "description": "The name of the application.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "pattern": "^[a-zA-Z0-9_.-]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the application."
     },
     "RuntimeEnvironment": {
-      "description": "The runtime environment for the application.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The runtime environment for the application."
     },
     "ServiceExecutionRole": {
       "description": "Specifies the IAM role that the application uses to access external resources.",
@@ -66,11 +94,18 @@
   },
   "definitions": {
     "Arn": {
-      "description": "The Amazon Resource Name",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 2048,
-      "pattern": "^arn:.*$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^arn:.*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name"
     },
     "ApplicationConfiguration": {
       "description": "Specifies the creation parameters for a Kinesis Data Analytics application.",
@@ -128,20 +163,34 @@
       "additionalProperties": false,
       "properties": {
         "ApplicationRestoreType": {
-          "description": "Specifies how the application should be restored.",
-          "type": "string",
-          "enum": [
-            "SKIP_RESTORE_FROM_SNAPSHOT",
-            "RESTORE_FROM_LATEST_SNAPSHOT",
-            "RESTORE_FROM_CUSTOM_SNAPSHOT"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SKIP_RESTORE_FROM_SNAPSHOT",
+                "RESTORE_FROM_LATEST_SNAPSHOT",
+                "RESTORE_FROM_CUSTOM_SNAPSHOT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies how the application should be restored."
         },
         "SnapshotName": {
-          "description": "The identifier of an existing snapshot of application state to use to restart an application. The application uses this value if RESTORE_FROM_CUSTOM_SNAPSHOT is specified for the ApplicationRestoreType.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "pattern": "^[a-zA-Z0-9_.-]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[a-zA-Z0-9_.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The identifier of an existing snapshot of application state to use to restart an application. The application uses this value if RESTORE_FROM_CUSTOM_SNAPSHOT is specified for the ApplicationRestoreType."
         }
       },
       "required": [
@@ -169,12 +218,19 @@
           "$ref": "#/definitions/CodeContent"
         },
         "CodeContentType": {
-          "description": "Specifies whether the code content is in text or zip format.",
-          "type": "string",
-          "enum": [
-            "PLAINTEXT",
-            "ZIPFILE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PLAINTEXT",
+                "ZIPFILE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies whether the code content is in text or zip format."
         }
       },
       "required": [
@@ -188,18 +244,32 @@
       "additionalProperties": false,
       "properties": {
         "ZipFileContent": {
-          "description": "The zip-format code for a Flink-based Kinesis Data Analytics application.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The zip-format code for a Flink-based Kinesis Data Analytics application."
         },
         "S3ContentLocation": {
           "description": "Information about the Amazon S3 bucket that contains the application code.",
           "$ref": "#/definitions/S3ContentLocation"
         },
         "TextContent": {
-          "description": "The text-format code for a Flink-based Kinesis Data Analytics application.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 102400
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 102400
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The text-format code for a Flink-based Kinesis Data Analytics application."
         }
       }
     },
@@ -213,16 +283,30 @@
           "$ref": "#/definitions/Arn"
         },
         "FileKey": {
-          "description": "The file key for the object containing the application code.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The file key for the object containing the application code."
         },
         "ObjectVersion": {
-          "description": "The version of the object containing the application code.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the object containing the application code."
         }
       },
       "required": [
@@ -267,11 +351,18 @@
       "additionalProperties": false,
       "properties": {
         "PropertyGroupId": {
-          "description": "Describes the key of an application execution property key-value pair.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 50,
-          "pattern": "^[a-zA-Z0-9_.-]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9_.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Describes the key of an application execution property key-value pair."
         },
         "PropertyMap": {
           "description": "Describes the value of an application execution property key-value pair.",
@@ -313,12 +404,19 @@
       "additionalProperties": false,
       "properties": {
         "ConfigurationType": {
-          "description": "Describes whether the application uses Kinesis Data Analytics' default checkpointing behavior. You must set this property to `CUSTOM` in order to set the `CheckpointingEnabled`, `CheckpointInterval`, or `MinPauseBetweenCheckpoints` parameters.",
-          "type": "string",
-          "enum": [
-            "DEFAULT",
-            "CUSTOM"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DEFAULT",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Describes whether the application uses Kinesis Data Analytics' default checkpointing behavior. You must set this property to `CUSTOM` in order to set the `CheckpointingEnabled`, `CheckpointInterval`, or `MinPauseBetweenCheckpoints` parameters."
         },
         "CheckpointingEnabled": {
           "description": "Describes whether checkpointing is enabled for a Flink-based Kinesis Data Analytics application.",
@@ -349,32 +447,53 @@
       "additionalProperties": false,
       "properties": {
         "ConfigurationType": {
-          "description": "Describes whether to use the default CloudWatch logging configuration for an application. You must set this property to CUSTOM in order to set the LogLevel or MetricsLevel parameters.",
-          "type": "string",
-          "enum": [
-            "DEFAULT",
-            "CUSTOM"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DEFAULT",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Describes whether to use the default CloudWatch logging configuration for an application. You must set this property to CUSTOM in order to set the LogLevel or MetricsLevel parameters."
         },
         "MetricsLevel": {
-          "description": "Describes the granularity of the CloudWatch Logs for an application. The Parallelism level is not recommended for applications with a Parallelism over 64 due to excessive costs.",
-          "type": "string",
-          "enum": [
-            "APPLICATION",
-            "OPERATOR",
-            "PARALLELISM",
-            "TASK"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "APPLICATION",
+                "OPERATOR",
+                "PARALLELISM",
+                "TASK"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Describes the granularity of the CloudWatch Logs for an application. The Parallelism level is not recommended for applications with a Parallelism over 64 due to excessive costs."
         },
         "LogLevel": {
-          "description": "Describes the verbosity of the CloudWatch Logs for an application.",
-          "type": "string",
-          "enum": [
-            "DEBUG",
-            "INFO",
-            "WARN",
-            "ERROR"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DEBUG",
+                "INFO",
+                "WARN",
+                "ERROR"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Describes the verbosity of the CloudWatch Logs for an application."
         }
       },
       "required": [
@@ -387,12 +506,19 @@
       "additionalProperties": false,
       "properties": {
         "ConfigurationType": {
-          "description": "Describes whether the application uses the default parallelism for the Kinesis Data Analytics service. You must set this property to `CUSTOM` in order to change your application's `AutoScalingEnabled`, `Parallelism`, or `ParallelismPerKPU` properties.",
-          "type": "string",
-          "enum": [
-            "CUSTOM",
-            "DEFAULT"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CUSTOM",
+                "DEFAULT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Describes whether the application uses the default parallelism for the Kinesis Data Analytics service. You must set this property to `CUSTOM` in order to change your application's `AutoScalingEnabled`, `Parallelism`, or `ParallelismPerKPU` properties."
         },
         "ParallelismPerKPU": {
           "description": "Describes the number of parallel tasks that a Java-based Kinesis Data Analytics application can perform per Kinesis Processing Unit (KPU) used by the application. For more information about KPUs, see Amazon Kinesis Data Analytics Pricing.",
@@ -436,11 +562,18 @@
       "additionalProperties": false,
       "properties": {
         "NamePrefix": {
-          "description": "The name prefix to use when creating an in-application stream. Suppose that you specify a prefix `\"MyInApplicationStream\"`. Kinesis Data Analytics then creates one or more (as per the InputParallelism count you specified) in-application streams with the names `\"MyInApplicationStream_001\"`, `\"MyInApplicationStream_002\"`, and so on.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 32,
-          "pattern": "^[^-\\s<>&]*$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32,
+              "pattern": "^[^-\\s<>&]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name prefix to use when creating an in-application stream. Suppose that you specify a prefix `\"MyInApplicationStream\"`. Kinesis Data Analytics then creates one or more (as per the InputParallelism count you specified) in-application streams with the names `\"MyInApplicationStream_001\"`, `\"MyInApplicationStream_002\"`, and so on."
         },
         "InputSchema": {
           "description": "Describes the format of the data in the streaming source, and how each data element maps to corresponding columns in the in-application stream that is being created.",
@@ -474,11 +607,18 @@
       "additionalProperties": false,
       "properties": {
         "RecordEncoding": {
-          "description": "Specifies the encoding of the records in the streaming source. For example, UTF-8.",
-          "type": "string",
-          "enum": [
-            "UTF-8"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "UTF-8"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the encoding of the records in the streaming source. For example, UTF-8."
         },
         "RecordColumns": {
           "description": "A list of `RecordColumn` objects.",
@@ -506,23 +646,44 @@
       "additionalProperties": false,
       "properties": {
         "Mapping": {
-          "description": "A reference to the data element in the streaming input or the reference data source.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 65535
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65535
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A reference to the data element in the streaming input or the reference data source."
         },
         "Name": {
-          "description": "The name of the column that is created in the in-application input stream or reference table.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "pattern": "^[^-\\s<>&]*$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[^-\\s<>&]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the column that is created in the in-application input stream or reference table."
         },
         "SqlType": {
-          "description": "The type of column created in the in-application input stream or reference table.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 100
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of column created in the in-application input stream or reference table."
         }
       },
       "required": [
@@ -536,12 +697,19 @@
       "additionalProperties": false,
       "properties": {
         "RecordFormatType": {
-          "description": "The type of record format.",
-          "type": "string",
-          "enum": [
-            "CSV",
-            "JSON"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CSV",
+                "JSON"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of record format."
         },
         "MappingParameters": {
           "description": "When you configure application input at the time of creating or updating an application, provides additional mapping information specific to the record format (such as JSON, CSV, or record fields delimited by some delimiter) on the streaming source.",
@@ -573,16 +741,30 @@
       "additionalProperties": false,
       "properties": {
         "RecordColumnDelimiter": {
-          "description": "The column delimiter. For example, in a CSV format, a comma (\",\") is the typical column delimiter.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The column delimiter. For example, in a CSV format, a comma (\",\") is the typical column delimiter."
         },
         "RecordRowDelimiter": {
-          "description": "The row delimiter. For example, in a CSV format, '\\n' is the typical row delimiter.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The row delimiter. For example, in a CSV format, '\\n' is the typical row delimiter."
         }
       },
       "required": [
@@ -596,11 +778,18 @@
       "additionalProperties": false,
       "properties": {
         "RecordRowPath": {
-          "description": "The path to the top-level parent that contains the records.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 65535,
-          "pattern": "^(?=^\\$)(?=^\\S+$).*$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 65535,
+              "pattern": "^(?=^\\$)(?=^\\S+$).*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The path to the top-level parent that contains the records."
         }
       },
       "required": [
@@ -724,14 +913,21 @@
       "additionalProperties": false,
       "properties": {
         "LogLevel": {
-          "description": "The verbosity of the CloudWatch Logs for an application. You can set it to `INFO`, `WARN`, `ERROR`, or `DEBUG`.",
-          "type": "string",
-          "enum": [
-            "DEBUG",
-            "INFO",
-            "WARN",
-            "ERROR"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DEBUG",
+                "INFO",
+                "WARN",
+                "ERROR"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The verbosity of the CloudWatch Logs for an application. You can set it to `INFO`, `WARN`, `ERROR`, or `DEBUG`."
         }
       }
     },
@@ -759,11 +955,18 @@
           "$ref": "#/definitions/Arn"
         },
         "BasePath": {
-          "description": "The base path for the S3 bucket.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1024,
-          "pattern": "^[a-zA-Z0-9/!-_.*'()]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "pattern": "^[a-zA-Z0-9/!-_.*'()]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The base path for the S3 bucket."
         }
       },
       "required": [
@@ -787,12 +990,19 @@
       "additionalProperties": false,
       "properties": {
         "ArtifactType": {
-          "description": "Set this to either `UDF` or `DEPENDENCY_JAR`. `UDF` stands for user-defined functions. This type of artifact must be in an S3 bucket. A `DEPENDENCY_JAR` can be in either Maven or an S3 bucket.",
-          "type": "string",
-          "enum": [
-            "DEPENDENCY_JAR",
-            "UDF"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DEPENDENCY_JAR",
+                "UDF"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Set this to either `UDF` or `DEPENDENCY_JAR`. `UDF` stands for user-defined functions. This type of artifact must be in an S3 bucket. A `DEPENDENCY_JAR` can be in either Maven or an S3 bucket."
         },
         "MavenReference": {
           "description": "The parameters required to fully specify a Maven reference.",
@@ -813,25 +1023,46 @@
       "additionalProperties": false,
       "properties": {
         "ArtifactId": {
-          "description": "The artifact ID of the Maven reference.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "pattern": "^[a-zA-Z0-9_.-]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[a-zA-Z0-9_.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The artifact ID of the Maven reference."
         },
         "GroupId": {
-          "description": "The group ID of the Maven reference.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "pattern": "^[a-zA-Z0-9_.-]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[a-zA-Z0-9_.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The group ID of the Maven reference."
         },
         "Version": {
-          "description": "The version of the Maven reference.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "pattern": "^[a-zA-Z0-9_.-]+$"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[a-zA-Z0-9_.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the Maven reference."
         }
       },
       "required": [
@@ -890,9 +1121,16 @@
       "additionalProperties": false,
       "properties": {
         "ApplicationMaintenanceWindowStartTime": {
-          "description": "The start time for the maintenance window.",
-          "type": "string",
-          "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The start time for the maintenance window."
         }
       },
       "required": [
@@ -905,16 +1143,30 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "description": "The key name of the tag. You can specify a value that's 1 to 128 Unicode characters in length and can't be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that's 1 to 128 Unicode characters in length and can't be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         },
         "Value": {
-          "description": "The value for the tag. You can specify a value that's 0 to 256 characters in length.",
-          "type": "string",
-          "minLength": 0,
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that's 0 to 256 characters in length."
         }
       },
       "required": [

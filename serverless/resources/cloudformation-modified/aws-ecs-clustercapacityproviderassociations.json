@@ -12,28 +12,42 @@
       "uniqueItems": true
     },
     "CapacityProvider": {
-      "description": "If using ec2 auto-scaling, the name of the associated capacity provider. Otherwise FARGATE, FARGATE_SPOT.",
-      "type": "string",
-      "anyOf": [
+      "oneOf": [
         {
           "type": "string",
-          "enum": [
-            "FARGATE",
-            "FARGATE_SPOT"
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FARGATE",
+                "FARGATE_SPOT"
+              ]
+            },
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
           ]
         },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "If using ec2 auto-scaling, the name of the associated capacity provider. Otherwise FARGATE, FARGATE_SPOT."
+    },
+    "Cluster": {
+      "oneOf": [
         {
           "type": "string",
           "minLength": 1,
           "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
-    },
-    "Cluster": {
-      "description": "The name of the cluster",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 2048
+      ],
+      "description": "The name of the cluster"
     },
     "DefaultCapacityProviderStrategy": {
       "description": "List of capacity providers to associate with the cluster",

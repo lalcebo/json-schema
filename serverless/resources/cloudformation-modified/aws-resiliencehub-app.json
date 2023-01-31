@@ -4,8 +4,15 @@
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-resiliencehub",
   "definitions": {
     "TagValue": {
-      "type": "string",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "TagMap": {
       "type": "object",
@@ -21,21 +28,49 @@
       "additionalProperties": false,
       "properties": {
         "AwsAccountId": {
-          "type": "string",
-          "pattern": "^[0-9]{12}$"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9]{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "AwsRegion": {
-          "type": "string",
-          "pattern": "^[a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]$"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Identifier": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Type": {
-          "type": "string",
-          "pattern": "Arn|Native"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "Arn|Native"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -49,18 +84,46 @@
       "additionalProperties": false,
       "properties": {
         "LogicalStackName": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "MappingType": {
-          "type": "string",
-          "pattern": "CfnStack|Resource|Terraform"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "CfnStack|Resource|Terraform"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "ResourceName": {
-          "type": "string",
-          "pattern": "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "TerraformSourceName": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "PhysicalResourceId": {
           "$ref": "#/definitions/PhysicalResourceId"
@@ -74,30 +137,58 @@
   },
   "properties": {
     "Name": {
-      "description": "Name of the app.",
-      "type": "string",
-      "pattern": "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of the app."
     },
     "Description": {
-      "description": "App description.",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 500
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "App description."
     },
     "ResiliencyPolicyArn": {
-      "type": "string",
-      "description": "Amazon Resource Name (ARN) of the Resiliency Policy.",
-      "pattern": "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Amazon Resource Name (ARN) of the Resiliency Policy."
     },
     "Tags": {
       "$ref": "#/definitions/TagMap"
     },
     "AppTemplateBody": {
-      "description": "A string containing full ResilienceHub app template body.",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 5000,
-      "pattern": "^[\\w\\s:,-\\.'{}\\[\\]:\"]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 5000,
+          "pattern": "^[\\w\\s:,-\\.'{}\\[\\]:\"]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A string containing full ResilienceHub app template body."
     },
     "ResourceMappings": {
       "description": "An array of ResourceMapping objects.",
@@ -109,12 +200,19 @@
       }
     },
     "AppAssessmentSchedule": {
-      "description": "Assessment execution schedule.",
-      "type": "string",
-      "enum": [
-        "Disabled",
-        "Daily"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Disabled",
+            "Daily"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Assessment execution schedule."
     }
   },
   "additionalProperties": false,

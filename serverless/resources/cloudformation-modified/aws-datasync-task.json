@@ -9,19 +9,33 @@
       "type": "object",
       "properties": {
         "FilterType": {
-          "description": "The type of filter rule to apply. AWS DataSync only supports the SIMPLE_PATTERN rule type.",
-          "type": "string",
-          "enum": [
-            "SIMPLE_PATTERN"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SIMPLE_PATTERN"
+              ],
+              "pattern": "^[A-Z0-9_]+$",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ],
-          "pattern": "^[A-Z0-9_]+$",
-          "maxLength": 128
+          "description": "The type of filter rule to apply. AWS DataSync only supports the SIMPLE_PATTERN rule type."
         },
         "Value": {
-          "description": "A single filter string that consists of the patterns to include or exclude. The patterns are delimited by \"|\".",
-          "type": "string",
-          "pattern": "^[^\\x00]+$",
-          "maxLength": 409600
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[^\\x00]+$",
+              "maxLength": 409600
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A single filter string that consists of the patterns to include or exclude. The patterns are delimited by \"|\"."
         }
       }
     },
@@ -31,18 +45,32 @@
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "description": "The key for an AWS resource tag.",
-          "pattern": "^[a-zA-Z0-9\\s+=._:/-]+$",
-          "maxLength": 256,
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key for an AWS resource tag."
         },
         "Value": {
-          "type": "string",
-          "description": "The value for an AWS resource tag.",
-          "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$",
-          "maxLength": 256,
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for an AWS resource tag."
         }
       },
       "required": [
@@ -56,10 +84,17 @@
       "type": "object",
       "properties": {
         "ScheduleExpression": {
-          "description": "A cron expression that specifies when AWS DataSync initiates a scheduled transfer from a source to a destination location",
-          "type": "string",
-          "maxLength": 256,
-          "pattern": "^[a-zA-Z0-9\\ \\_\\*\\?\\,\\|\\^\\-\\/\\#\\s\\(\\)\\+]*$"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[a-zA-Z0-9\\ \\_\\*\\?\\,\\|\\^\\-\\/\\#\\s\\(\\)\\+]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A cron expression that specifies when AWS DataSync initiates a scheduled transfer from a source to a destination location"
         }
       },
       "required": [
@@ -72,12 +107,19 @@
       "type": "object",
       "properties": {
         "Atime": {
-          "description": "A file metadata value that shows the last time a file was accessed (that is, when the file was read or written to).",
-          "type": "string",
-          "enum": [
-            "NONE",
-            "BEST_EFFORT"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "BEST_EFFORT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A file metadata value that shows the last time a file was accessed (that is, when the file was read or written to)."
         },
         "BytesPerSecond": {
           "description": "A value that limits the bandwidth used by AWS DataSync.",
@@ -86,115 +128,206 @@
           "minimum": -1
         },
         "Gid": {
-          "description": "The group ID (GID) of the file's owners.",
-          "type": "string",
-          "enum": [
-            "NONE",
-            "INT_VALUE",
-            "NAME",
-            "BOTH"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "INT_VALUE",
+                "NAME",
+                "BOTH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The group ID (GID) of the file's owners."
         },
         "LogLevel": {
-          "description": "A value that determines the types of logs that DataSync publishes to a log stream in the Amazon CloudWatch log group that you provide.",
-          "type": "string",
-          "enum": [
-            "OFF",
-            "BASIC",
-            "TRANSFER"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "OFF",
+                "BASIC",
+                "TRANSFER"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines the types of logs that DataSync publishes to a log stream in the Amazon CloudWatch log group that you provide."
         },
         "Mtime": {
-          "description": "A value that indicates the last time that a file was modified (that is, a file was written to) before the PREPARING phase.",
-          "type": "string",
-          "enum": [
-            "NONE",
-            "PRESERVE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "PRESERVE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that indicates the last time that a file was modified (that is, a file was written to) before the PREPARING phase."
         },
         "OverwriteMode": {
-          "description": "A value that determines whether files at the destination should be overwritten or preserved when copying files.",
-          "type": "string",
-          "enum": [
-            "ALWAYS",
-            "NEVER"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ALWAYS",
+                "NEVER"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines whether files at the destination should be overwritten or preserved when copying files."
         },
         "PosixPermissions": {
-          "description": "A value that determines which users or groups can access a file for a specific purpose such as reading, writing, or execution of the file.",
-          "type": "string",
-          "enum": [
-            "NONE",
-            "PRESERVE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "PRESERVE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines which users or groups can access a file for a specific purpose such as reading, writing, or execution of the file."
         },
         "PreserveDeletedFiles": {
-          "description": "A value that specifies whether files in the destination that don't exist in the source file system should be preserved.",
-          "type": "string",
-          "enum": [
-            "PRESERVE",
-            "REMOVE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PRESERVE",
+                "REMOVE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that specifies whether files in the destination that don't exist in the source file system should be preserved."
         },
         "PreserveDevices": {
-          "description": "A value that determines whether AWS DataSync should preserve the metadata of block and character devices in the source file system, and recreate the files with that device name and metadata on the destination.",
-          "type": "string",
-          "enum": [
-            "NONE",
-            "PRESERVE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "PRESERVE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines whether AWS DataSync should preserve the metadata of block and character devices in the source file system, and recreate the files with that device name and metadata on the destination."
         },
         "SecurityDescriptorCopyFlags": {
-          "description": "A value that determines which components of the SMB security descriptor are copied during transfer.",
-          "type": "string",
-          "enum": [
-            "NONE",
-            "OWNER_DACL",
-            "OWNER_DACL_SACL"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "OWNER_DACL",
+                "OWNER_DACL_SACL"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines which components of the SMB security descriptor are copied during transfer."
         },
         "TaskQueueing": {
-          "description": "A value that determines whether tasks should be queued before executing the tasks.",
-          "type": "string",
-          "enum": [
-            "ENABLED",
-            "DISABLED"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines whether tasks should be queued before executing the tasks."
         },
         "TransferMode": {
-          "description": "A value that determines whether DataSync transfers only the data and metadata that differ between the source and the destination location, or whether DataSync transfers all the content from the source, without comparing to the destination location.",
-          "type": "string",
-          "enum": [
-            "CHANGED",
-            "ALL"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CHANGED",
+                "ALL"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines whether DataSync transfers only the data and metadata that differ between the source and the destination location, or whether DataSync transfers all the content from the source, without comparing to the destination location."
         },
         "Uid": {
-          "description": "The user ID (UID) of the file's owner.",
-          "type": "string",
-          "enum": [
-            "NONE",
-            "INT_VALUE",
-            "NAME",
-            "BOTH"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "INT_VALUE",
+                "NAME",
+                "BOTH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The user ID (UID) of the file's owner."
         },
         "VerifyMode": {
-          "description": "A value that determines whether a data integrity verification should be performed at the end of a task execution after all data and metadata have been transferred.",
-          "type": "string",
-          "enum": [
-            "POINT_IN_TIME_CONSISTENT",
-            "ONLY_FILES_TRANSFERRED",
-            "NONE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "POINT_IN_TIME_CONSISTENT",
+                "ONLY_FILES_TRANSFERRED",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines whether a data integrity verification should be performed at the end of a task execution after all data and metadata have been transferred."
         },
         "ObjectTags": {
-          "description": "A value that determines whether object tags should be read from the source object store and written to the destination object store.",
-          "type": "string",
-          "enum": [
-            "PRESERVE",
-            "NONE"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PRESERVE",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A value that determines whether object tags should be read from the source object store and written to the destination object store."
         }
       }
     },
@@ -249,23 +382,44 @@
       }
     },
     "CloudWatchLogGroupArn": {
-      "description": "The ARN of the Amazon CloudWatch log group that is used to monitor and log events in the task.",
-      "type": "string",
-      "maxLength": 562,
-      "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\\-0-9]*:[0-9]{12}:log-group:([^:\\*]*)(:\\*)?$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 562,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\\-0-9]*:[0-9]{12}:log-group:([^:\\*]*)(:\\*)?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the Amazon CloudWatch log group that is used to monitor and log events in the task."
     },
     "DestinationLocationArn": {
-      "description": "The ARN of an AWS storage resource's location.",
-      "type": "string",
-      "maxLength": 128,
-      "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of an AWS storage resource's location."
     },
     "Name": {
-      "description": "The name of a task. This value is a text reference that is used to identify the task in the console.",
-      "type": "string",
-      "maxLength": 256,
-      "minLength": 1,
-      "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of a task. This value is a text reference that is used to identify the task in the console."
     },
     "Options": {
       "$ref": "#/definitions/Options"
@@ -274,10 +428,17 @@
       "$ref": "#/definitions/TaskSchedule"
     },
     "SourceLocationArn": {
-      "description": "The ARN of the source location for the task.",
-      "type": "string",
-      "maxLength": 128,
-      "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the source location for the task."
     }
   },
   "tagging": {

@@ -25,10 +25,17 @@
       "type": "object",
       "properties": {
         "CertificateType": {
-          "type": "string",
-          "enum": [
-            "DISABLED",
-            "GENERATED"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DISABLED",
+                "GENERATED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         }
       },
@@ -48,17 +55,31 @@
           "maximum": 60000
         },
         "IpRange": {
-          "description": "A range of allowed IP addresses. This value must be expressed in CIDR notation. Example: \"000.000.000.000/[subnet mask]\" or optionally the shortened version \"0.0.0.0/[subnet mask]\".",
-          "type": "string",
-          "pattern": "(^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$)"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A range of allowed IP addresses. This value must be expressed in CIDR notation. Example: \"000.000.000.000/[subnet mask]\" or optionally the shortened version \"0.0.0.0/[subnet mask]\"."
         },
         "Protocol": {
-          "description": "The network communication protocol used by the fleet.",
-          "type": "string",
-          "enum": [
-            "TCP",
-            "UDP"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "TCP",
+                "UDP"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The network communication protocol used by the fleet."
         },
         "ToPort": {
           "description": "An ending value for a range of allowed port numbers. Port numbers are end-inclusive. This value must be higher than FromPort.",
@@ -76,10 +97,17 @@
       ]
     },
     "Location": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 64,
-      "pattern": "^[A-Za-z0-9\\-]+"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z0-9\\-]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "LocationCapacity": {
       "description": "Current resource capacity settings in a specified fleet or location. The location value might refer to a fleet's remote location or its home Region.",
@@ -179,17 +207,31 @@
           "minimum": 1
         },
         "LaunchPath": {
-          "description": "The location of the server executable in a custom game build or the name of the Realtime script file that contains the Init() function. Game builds and Realtime scripts are installed on instances at the root:\n\nWindows (for custom game builds only): C:\\game. Example: \"C:\\game\\MyGame\\server.exe\"\n\nLinux: /local/game. Examples: \"/local/game/MyGame/server.exe\" or \"/local/game/MyRealtimeScript.js\"",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1024,
-          "pattern": "^([Cc]:\\\\game\\S+|/local/game/\\S+)"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "pattern": "^([Cc]:\\\\game\\S+|/local/game/\\S+)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The location of the server executable in a custom game build or the name of the Realtime script file that contains the Init() function. Game builds and Realtime scripts are installed on instances at the root:\n\nWindows (for custom game builds only): C:\\game. Example: \"C:\\game\\MyGame\\server.exe\"\n\nLinux: /local/game. Examples: \"/local/game/MyGame/server.exe\" or \"/local/game/MyRealtimeScript.js\""
         },
         "Parameters": {
-          "description": "An optional list of parameters to pass to the server executable or Realtime script on launch.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 1024
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An optional list of parameters to pass to the server executable or Realtime script on launch."
         }
       },
       "additionalProperties": false,
@@ -209,18 +251,32 @@
       "$ref": "#/definitions/CertificateConfiguration"
     },
     "ComputeType": {
-      "description": "ComputeType to differentiate EC2 hardware managed by GameLift and Anywhere hardware managed by the customer.",
-      "type": "string",
-      "enum": [
-        "EC2",
-        "ANYWHERE"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EC2",
+            "ANYWHERE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "ComputeType to differentiate EC2 hardware managed by GameLift and Anywhere hardware managed by the customer."
     },
     "Description": {
-      "description": "A human-readable description of a fleet.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A human-readable description of a fleet."
     },
     "DesiredEC2Instances": {
       "description": "[DEPRECATED] The number of EC2 instances that you want this fleet to host. When creating a new fleet, GameLift automatically sets this value to \"1\" and initiates a single instance. Once the fleet is active, update this value to trigger GameLift to add or remove instances from the fleet.",
@@ -237,23 +293,44 @@
       "insertionOrder": false
     },
     "EC2InstanceType": {
-      "description": "The name of an EC2 instance type that is supported in Amazon GameLift. A fleet instance type determines the computing resources of each instance in the fleet, including CPU, memory, storage, and networking capacity. Amazon GameLift supports the following EC2 instance types. See Amazon EC2 Instance Types for detailed descriptions.",
-      "type": "string",
-      "pattern": "^.*..*$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^.*..*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of an EC2 instance type that is supported in Amazon GameLift. A fleet instance type determines the computing resources of each instance in the fleet, including CPU, memory, storage, and networking capacity. Amazon GameLift supports the following EC2 instance types. See Amazon EC2 Instance Types for detailed descriptions."
     },
     "FleetType": {
-      "description": "Indicates whether to use On-Demand instances or Spot instances for this fleet. If empty, the default is ON_DEMAND. Both categories of instances use identical hardware and configurations based on the instance type selected for this fleet.",
-      "type": "string",
-      "enum": [
-        "ON_DEMAND",
-        "SPOT"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ON_DEMAND",
+            "SPOT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Indicates whether to use On-Demand instances or Spot instances for this fleet. If empty, the default is ON_DEMAND. Both categories of instances use identical hardware and configurations based on the instance type selected for this fleet."
     },
     "InstanceRoleARN": {
-      "description": "A unique identifier for an AWS IAM role that manages access to your AWS services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role's ARN from the IAM dashboard in the AWS Management Console.",
-      "type": "string",
-      "minLength": 1,
-      "pattern": "^arn:aws(-.*)?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^arn:aws(-.*)?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique identifier for an AWS IAM role that manages access to your AWS services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role's ARN from the IAM dashboard in the AWS Management Console."
     },
     "Locations": {
       "type": "array",
@@ -292,62 +369,118 @@
       "minimum": 0
     },
     "Name": {
-      "description": "A descriptive label that is associated with a fleet. Fleet names do not need to be unique.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A descriptive label that is associated with a fleet. Fleet names do not need to be unique."
     },
     "NewGameSessionProtectionPolicy": {
-      "description": "A game session protection policy to apply to all game sessions hosted on instances in this fleet. When protected, active game sessions cannot be terminated during a scale-down event. If this parameter is not set, instances in this fleet default to no protection. You can change a fleet's protection policy to affect future game sessions on the fleet. You can also set protection for individual game sessions.",
-      "type": "string",
-      "enum": [
-        "FullProtection",
-        "NoProtection"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "FullProtection",
+            "NoProtection"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A game session protection policy to apply to all game sessions hosted on instances in this fleet. When protected, active game sessions cannot be terminated during a scale-down event. If this parameter is not set, instances in this fleet default to no protection. You can change a fleet's protection policy to affect future game sessions on the fleet. You can also set protection for individual game sessions."
     },
     "PeerVpcAwsAccountId": {
-      "description": "A unique identifier for the AWS account with the VPC that you want to peer your Amazon GameLift fleet with. You can find your account ID in the AWS Management Console under account settings.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 1024,
-      "pattern": "^[0-9]{12}$"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^[0-9]{12}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique identifier for the AWS account with the VPC that you want to peer your Amazon GameLift fleet with. You can find your account ID in the AWS Management Console under account settings."
     },
     "PeerVpcId": {
-      "description": "A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the VPC Dashboard in the AWS Management Console.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 1024,
-      "pattern": "^vpc-\\S+"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^vpc-\\S+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the VPC Dashboard in the AWS Management Console."
     },
     "ResourceCreationLimitPolicy": {
       "description": "A policy that limits the number of game sessions an individual player can create over a span of time for this fleet.",
       "$ref": "#/definitions/ResourceCreationLimitPolicy"
     },
     "BuildId": {
-      "description": "A unique identifier for a build to be deployed on the new fleet. If you are deploying the fleet with a custom game build, you must specify this property. The build must have been successfully uploaded to Amazon GameLift and be in a READY status. This fleet setting cannot be changed once the fleet is created.",
-      "type": "string",
-      "pattern": "^build-\\S+|^arn:.*:build/build-\\S+"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^build-\\S+|^arn:.*:build/build-\\S+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique identifier for a build to be deployed on the new fleet. If you are deploying the fleet with a custom game build, you must specify this property. The build must have been successfully uploaded to Amazon GameLift and be in a READY status. This fleet setting cannot be changed once the fleet is created."
     },
     "ScriptId": {
-      "description": "A unique identifier for a Realtime script to be deployed on a new Realtime Servers fleet. The script must have been successfully uploaded to Amazon GameLift. This fleet setting cannot be changed once the fleet is created.\n\nNote: It is not currently possible to use the !Ref command to reference a script created with a CloudFormation template for the fleet property ScriptId. Instead, use Fn::GetAtt Script.Arn or Fn::GetAtt Script.Id to retrieve either of these properties as input for ScriptId. Alternatively, enter a ScriptId string manually.",
-      "type": "string",
-      "pattern": "^script-\\S+|^arn:.*:script/script-\\S+"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^script-\\S+|^arn:.*:script/script-\\S+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique identifier for a Realtime script to be deployed on a new Realtime Servers fleet. The script must have been successfully uploaded to Amazon GameLift. This fleet setting cannot be changed once the fleet is created.\n\nNote: It is not currently possible to use the !Ref command to reference a script created with a CloudFormation template for the fleet property ScriptId. Instead, use Fn::GetAtt Script.Arn or Fn::GetAtt Script.Id to retrieve either of these properties as input for ScriptId. Alternatively, enter a ScriptId string manually."
     },
     "RuntimeConfiguration": {
       "description": "Instructions for launching server processes on each instance in the fleet. Server processes run either a custom game build executable or a Realtime script. The runtime configuration defines the server executables or launch script file, launch parameters, and the number of processes to run concurrently on each instance. When creating a fleet, the runtime configuration must have at least one server process configuration; otherwise the request fails with an invalid request exception.\n\nThis parameter is required unless the parameters ServerLaunchPath and ServerLaunchParameters are defined. Runtime configuration has replaced these parameters, but fleets that use them will continue to work.",
       "$ref": "#/definitions/RuntimeConfiguration"
     },
     "ServerLaunchParameters": {
-      "description": "This parameter is no longer used but is retained for backward compatibility. Instead, specify server launch parameters in the RuntimeConfiguration parameter. A request must specify either a runtime configuration or values for both ServerLaunchParameters and ServerLaunchPath.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "This parameter is no longer used but is retained for backward compatibility. Instead, specify server launch parameters in the RuntimeConfiguration parameter. A request must specify either a runtime configuration or values for both ServerLaunchParameters and ServerLaunchPath."
     },
     "ServerLaunchPath": {
-      "description": "This parameter is no longer used. Instead, specify a server launch path using the RuntimeConfiguration parameter. Requests that specify a server launch path and launch parameters instead of a runtime configuration will continue to work.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 1024
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "This parameter is no longer used. Instead, specify a server launch path using the RuntimeConfiguration parameter. Requests that specify a server launch path and launch parameters instead of a runtime configuration will continue to work."
     }
   },
   "required": [

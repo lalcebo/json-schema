@@ -8,8 +8,15 @@
       "type": "object",
       "properties": {
         "EndpointId": {
-          "description": "Id of the endpoint. For Network/Application Load Balancer this value is the ARN.  For EIP, this value is the allocation ID.  For EC2 instances, this is the EC2 instance ID",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Id of the endpoint. For Network/Application Load Balancer this value is the ARN.  For EIP, this value is the allocation ID.  For EC2 instances, this is the EC2 instance ID"
         },
         "Weight": {
           "description": "The weight for the endpoint.",
@@ -55,12 +62,26 @@
   },
   "properties": {
     "ListenerArn": {
-      "description": "The Amazon Resource Name (ARN) of the listener",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the listener"
     },
     "EndpointGroupRegion": {
-      "description": "The name of the AWS Region where the endpoint group is located",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the AWS Region where the endpoint group is located"
     },
     "EndpointConfigurations": {
       "description": "The list of endpoint objects.",
@@ -84,19 +105,33 @@
       "default": -1
     },
     "HealthCheckProtocol": {
-      "description": "The protocol that AWS Global Accelerator uses to check the health of endpoints in this endpoint group.",
-      "type": "string",
-      "default": "TCP",
-      "enum": [
-        "TCP",
-        "HTTP",
-        "HTTPS"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "TCP",
+          "enum": [
+            "TCP",
+            "HTTP",
+            "HTTPS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The protocol that AWS Global Accelerator uses to check the health of endpoints in this endpoint group."
     },
     "HealthCheckPath": {
-      "description": "",
-      "type": "string",
-      "default": "/"
+      "oneOf": [
+        {
+          "description": "",
+          "type": "string",
+          "default": "/"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "HealthCheckIntervalSeconds": {
       "description": "The time in seconds between each health check for an endpoint. Must be a value of 10 or 30",

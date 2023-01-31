@@ -4,35 +4,63 @@
   "additionalProperties": false,
   "properties": {
     "ConnectorLabel": {
-      "description": "The label of the connector. The label is unique for each ConnectorRegistration in your AWS account. Only needed if calling for CUSTOMCONNECTOR connector type/.",
-      "type": "string",
-      "pattern": "[\\w!@#.-]+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\w!@#.-]+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The label of the connector. The label is unique for each ConnectorRegistration in your AWS account. Only needed if calling for CUSTOMCONNECTOR connector type/."
     },
     "ConnectorProfileName": {
-      "description": "The maximum number of items to retrieve in a single batch.",
-      "type": "string",
-      "pattern": "[\\w/!@#+=.-]+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\w/!@#+=.-]+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The maximum number of items to retrieve in a single batch."
     },
     "KMSArn": {
-      "description": "The ARN of the AWS Key Management Service (AWS KMS) key that's used to encrypt your function's environment variables. If it's not provided, AWS Lambda uses a default service key.",
-      "type": "string",
-      "pattern": "arn:aws:kms:.*:[0-9]+:.*",
-      "maxLength": 2048,
-      "minLength": 20
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws:kms:.*:[0-9]+:.*",
+          "maxLength": 2048,
+          "minLength": 20
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the AWS Key Management Service (AWS KMS) key that's used to encrypt your function's environment variables. If it's not provided, AWS Lambda uses a default service key."
     },
     "ConnectorType": {
       "description": "List of Saas providers that need connector profile to be created",
       "$ref": "#/definitions/ConnectorType"
     },
     "ConnectionMode": {
-      "description": "Mode in which data transfer should be enabled. Private connection mode is currently enabled for Salesforce, Snowflake, Trendmicro and Singular",
-      "type": "string",
-      "enum": [
-        "Public",
-        "Private"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Public",
+            "Private"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Mode in which data transfer should be enabled. Private connection mode is currently enabled for Salesforce, Snowflake, Trendmicro and Singular"
     },
     "ConnectorProfileConfig": {
       "description": "Connector specific configurations needed to create connector profile",
@@ -41,26 +69,33 @@
   },
   "definitions": {
     "ConnectorType": {
-      "type": "string",
-      "enum": [
-        "Salesforce",
-        "Pardot",
-        "Singular",
-        "Slack",
-        "Redshift",
-        "Marketo",
-        "Googleanalytics",
-        "Zendesk",
-        "Servicenow",
-        "SAPOData",
-        "Datadog",
-        "Trendmicro",
-        "Snowflake",
-        "Dynatrace",
-        "Infornexus",
-        "Amplitude",
-        "Veeva",
-        "CustomConnector"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Salesforce",
+            "Pardot",
+            "Singular",
+            "Slack",
+            "Redshift",
+            "Marketo",
+            "Googleanalytics",
+            "Zendesk",
+            "Servicenow",
+            "SAPOData",
+            "Datadog",
+            "Trendmicro",
+            "Snowflake",
+            "Dynatrace",
+            "Infornexus",
+            "Amplitude",
+            "Veeva",
+            "CustomConnector"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "ConnectorProfileConfig": {
@@ -874,22 +909,36 @@
       "additionalProperties": false
     },
     "AuthenticationType": {
-      "type": "string",
-      "enum": [
-        "OAUTH2",
-        "APIKEY",
-        "BASIC",
-        "CUSTOM"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OAUTH2",
+            "APIKEY",
+            "BASIC",
+            "CUSTOM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "OAuth2Properties": {
       "type": "object",
       "properties": {
         "TokenUrl": {
-          "type": "string",
-          "minLength": 0,
-          "maxLength": 256,
-          "pattern": "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "OAuth2GrantType": {
           "$ref": "#/definitions/OAuth2GrantType"
@@ -916,10 +965,17 @@
       "additionalProperties": false
     },
     "OAuth2GrantType": {
-      "type": "string",
-      "enum": [
-        "CLIENT_CREDENTIALS",
-        "AUTHORIZATION_CODE"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CLIENT_CREDENTIALS",
+            "AUTHORIZATION_CODE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ]
     },
     "TokenUrlCustomProperties": {
@@ -938,193 +994,452 @@
       "additionalProperties": false
     },
     "CustomAuthenticationType": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ClientId": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ClientSecret": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "InstanceUrl": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "AccessToken": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ApiKey": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ApiSecretKey": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ApiToken": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ApplicationKey": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "AuthCode": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "BucketName": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 63,
-      "minLength": 3
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 63,
+          "minLength": 3
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "BucketPrefix": {
-      "type": "string",
-      "maxLength": 128
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Key": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "DatabaseUrl": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "RoleArn": {
-      "type": "string",
-      "pattern": "arn:aws:iam:.*:[0-9]+:.*",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws:iam:.*:[0-9]+:.*",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "DataApiRoleArn": {
-      "type": "string",
-      "pattern": "arn:aws:iam:.*:[0-9]+:.*",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws:iam:.*:[0-9]+:.*",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ClusterIdentifier": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "WorkgroupName": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "DatabaseName": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Warehouse": {
-      "type": "string",
-      "pattern": "[\\s\\w/!@#+=.-]*",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\s\\w/!@#+=.-]*",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Stage": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 16
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 16
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "PrivateLinkServiceName": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "AccountName": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "RefreshToken": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Region": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 64
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "SecretKey": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "AccessKeyId": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 256
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Username": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Password": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "BusinessUnitId": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 18
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 18
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ConnectorOAuthRequest": {
       "type": "object",
       "properties": {
         "AuthCode": {
-          "description": "The code provided by the connector when it has been authenticated via the connected app.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The code provided by the connector when it has been authenticated via the connected app."
         },
         "RedirectUri": {
-          "description": "The URL to which the authentication server redirects the browser after authorization has been\ngranted.",
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The URL to which the authentication server redirects the browser after authorization has been\ngranted."
         }
       }
     },
     "ClientCredentialsArn": {
-      "type": "string",
-      "pattern": "arn:aws:secretsmanager:.*:[0-9]+:.*",
-      "maxLength": 2048
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws:secretsmanager:.*:[0-9]+:.*",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ApplicationHostUrl": {
-      "type": "string",
-      "maxLength": 256,
-      "pattern": "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ApplicationServicePath": {
-      "type": "string",
-      "pattern": "\\S+",
-      "maxLength": 512
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\S+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ClientNumber": {
-      "type": "string",
-      "pattern": "^\\d{3}$",
-      "minLength": 3,
-      "maxLength": 3
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{3}$",
+          "minLength": 3,
+          "maxLength": 3
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "LogonLanguage": {
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9_]*$",
-      "maxLength": 2
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_]*$",
+          "maxLength": 2
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "PortNumber": {
       "type": "integer",
@@ -1135,14 +1450,28 @@
       "type": "object",
       "properties": {
         "AuthCodeUrl": {
-          "type": "string",
-          "maxLength": 256,
-          "pattern": "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "TokenUrl": {
-          "type": "string",
-          "maxLength": 256,
-          "pattern": "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^(https?)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "OAuthScopes": {
           "type": "array",

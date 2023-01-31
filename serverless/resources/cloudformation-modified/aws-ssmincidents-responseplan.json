@@ -4,16 +4,30 @@
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ssm-incidents.git",
   "definitions": {
     "SSMContact": {
-      "description": "The ARN of the contact.",
-      "type": "string",
-      "pattern": "^arn:aws(-(cn|us-gov))?:ssm-contacts:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
-      "maxLength": 1000
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws(-(cn|us-gov))?:ssm-contacts:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the contact."
     },
     "SnsArn": {
-      "description": "The ARN of the Chatbot SNS topic.",
-      "type": "string",
-      "pattern": "^arn:aws(-(cn|us-gov))?:sns:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
-      "maxLength": 1000
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws(-(cn|us-gov))?:sns:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the Chatbot SNS topic."
     },
     "NotificationTargetItem": {
       "description": "A notification target.",
@@ -45,28 +59,56 @@
       ],
       "properties": {
         "RoleArn": {
-          "description": "The role ARN to use when starting the SSM automation document.",
-          "type": "string",
-          "pattern": "^arn:aws(-(cn|us-gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
-          "maxLength": 1000
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws(-(cn|us-gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The role ARN to use when starting the SSM automation document."
         },
         "DocumentName": {
-          "description": "The document name to use when starting the SSM automation document.",
-          "type": "string",
-          "maxLength": 128
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The document name to use when starting the SSM automation document."
         },
         "DocumentVersion": {
-          "description": "The version of the document to use when starting the SSM automation document.",
-          "type": "string",
-          "maxLength": 128
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the document to use when starting the SSM automation document."
         },
         "TargetAccount": {
-          "description": "The account type to use when starting the SSM automation document.",
-          "type": "string",
-          "enum": [
-            "IMPACTED_ACCOUNT",
-            "RESPONSE_PLAN_OWNER_ACCOUNT"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "IMPACTED_ACCOUNT",
+                "RESPONSE_PLAN_OWNER_ACCOUNT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The account type to use when starting the SSM automation document."
         },
         "Parameters": {
           "description": "The parameters to set when starting the SSM automation document.",
@@ -98,9 +140,16 @@
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 50
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Values": {
           "type": "array",
@@ -119,18 +168,32 @@
       "additionalProperties": false
     },
     "SsmParameterValue": {
-      "description": "A value of the parameter to set when starting the SSM automation document.",
-      "type": "string",
-      "maxLength": 10000
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 10000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A value of the parameter to set when starting the SSM automation document."
     },
     "DynamicSsmParameter": {
       "description": "A parameter with a dynamic value to set when starting the SSM automation document.",
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 50
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
           "$ref": "#/definitions/DynamicSsmParameterValue"
@@ -153,12 +216,19 @@
       }
     },
     "VariableType": {
-      "description": "The variable types used as dynamic parameter value when starting the SSM automation document.",
-      "type": "string",
-      "enum": [
-        "INCIDENT_RECORD_ARN",
-        "INVOLVED_RESOURCES"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "INCIDENT_RECORD_ARN",
+            "INVOLVED_RESOURCES"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The variable types used as dynamic parameter value when starting the SSM automation document."
     },
     "Integration": {
       "type": "object",
@@ -187,16 +257,30 @@
       ],
       "properties": {
         "Name": {
-          "description": "The name of the pagerDuty configuration.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the pagerDuty configuration."
         },
         "SecretId": {
-          "description": "The AWS secrets manager secretId storing the pagerDuty token.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 512
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The AWS secrets manager secretId storing the pagerDuty token."
         },
         "PagerDutyIncidentConfiguration": {
           "$ref": "#/definitions/PagerDutyIncidentConfiguration"
@@ -209,10 +293,17 @@
       "type": "object",
       "properties": {
         "ServiceId": {
-          "description": "The pagerDuty serviceId.",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 200
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The pagerDuty serviceId."
         }
       },
       "required": [
@@ -225,15 +316,29 @@
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
-          "minLength": 1,
-          "maxLength": 128
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -251,10 +356,17 @@
       ],
       "properties": {
         "DedupeString": {
-          "description": "The deduplication string.",
-          "type": "string",
-          "maxLength": 1000,
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The deduplication string."
         },
         "Impact": {
           "description": "The impact value.",
@@ -273,15 +385,29 @@
           "insertionOrder": false
         },
         "Summary": {
-          "description": "The summary string.",
-          "type": "string",
-          "maxLength": 4000,
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The summary string."
         },
         "Title": {
-          "description": "The title string.",
-          "type": "string",
-          "maxLength": 200
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The title string."
         },
         "IncidentTags": {
           "description": "Tags that get applied to incidents created by the StartIncident API action.",
@@ -318,17 +444,31 @@
   },
   "properties": {
     "Name": {
-      "description": "The name of the response plan.",
-      "type": "string",
-      "pattern": "^[a-zA-Z0-9_-]*$",
-      "maxLength": 200,
-      "minLength": 1
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the response plan."
     },
     "DisplayName": {
-      "description": "The display name of the response plan.",
-      "type": "string",
-      "maxLength": 200,
-      "minLength": 1
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The display name of the response plan."
     },
     "ChatChannel": {
       "$ref": "#/definitions/ChatChannel"
