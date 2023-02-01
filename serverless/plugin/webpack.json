@@ -1,0 +1,165 @@
+{
+  "id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/webpack.json",
+  "schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Configuration schema for the webpack plugin",
+  "additionalProperties": false,
+  "WebpackConfiguration": {
+    "description": "Configuration for webpack plugin:- https://github.com/serverless-heaven/serverless-webpack",
+    "type": "object",
+    "properties": {
+      "webpackConfig": {
+        "description": "Name of webpack configuration file",
+        "type": "string",
+        "default": "webpack.config.js"
+      },
+      "excludeFiles": {
+        "description": "Provide a glob for files to ignore",
+        "type": "string",
+        "default": "src/**/*.test.js"
+      },
+      "excludeRegex": {
+        "description": "Provide a regex to match files to ignore",
+        "type": "string",
+        "default": "\\.ts|test|\\.map"
+      },
+      "keepOutputDirectory": {
+        "description": "Keep the output .webpack directory after packaging",
+        "type": "boolean",
+        "default": false
+      },
+      "concurrency": {
+        "description": "Desired concurrency, defaults to the number of available cores",
+        "type": "number",
+        "minimum": 1
+      },
+      "serializedCompile": {
+        "description": "Backward compatible, this translates to concurrency: 1",
+        "type": "boolean",
+        "default": true
+      },
+      "packager": {
+        "description": "Packager that will be used to package your external modules",
+        "type": "string",
+        "default": "npm",
+        "enum": [
+          "npm",
+          "yarn",
+          "pnpm"
+        ]
+      },
+      "includeModules": {
+        "oneOf": [
+          {
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "title": "WebpackIncludeModules",
+            "type": "object",
+            "properties": {
+              "packagePath": {
+                "description": "Relative path to custom package.json file.",
+                "type": "string",
+                "default": "package.json"
+              },
+              "nodeModulesRelativeDir": {
+                "description": "relative path to current working directory.",
+                "type": "string",
+                "default": "./"
+              },
+              "forceExclude": {
+                "description": "The collection of modules that should not be bundled",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": ["aws-sdk"]
+              },
+              "forceInclude": {
+                "description": "The collection of modules that should definitely be bundled",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "packagerOptions": {
+        "anyOf": [
+          {
+            "title": "WebpackYarnPackageOptions",
+            "type": "object",
+            "properties": {
+              "lockFile": {
+                "description": "relative path to package-lock.json or yarn.lock",
+                "type": "string",
+                "default": "./package-lock.json"
+              },
+              "ignoreScripts": {
+                "description": "Do not execute package.json hook scripts on install",
+                "type": "boolean",
+                "default": false
+              },
+              "noInstall": {
+                "description": "Do not run npm install (assume install completed)",
+                "type": "boolean",
+                "default": false
+              },
+              "scripts": {
+                "description": "Scripts to run after installation, source:- https://github.com/serverless-heaven/serverless-webpack#custom-scripts",
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "title": "WebpackYarnPackageOptions",
+            "type": "object",
+            "properties": {
+              "ignoreScripts": {
+                "description": "Do not execute package.json hook scripts on install",
+                "type": "boolean",
+                "default": false
+              },
+              "noInstall": {
+                "description": "Do not run npm install (assume install completed)",
+                "type": "boolean",
+                "default": false
+              },
+              "noNonInteractive": {
+                "description": "Disable interactive mode when using Yarn 2 or above",
+                "type": "boolean",
+                "default": false
+              },
+              "noFrozenLockfile": {
+                "description": "Do not require an up-to-date yarn.lock",
+                "type": "boolean",
+                "default": false
+              },
+              "networkConcurrency": {
+                "description": "Specify number of concurrent network requests",
+                "type": "number",
+                "minimum": 1
+              },
+              "scripts": {
+                "description": "Scripts to run after installation, source:- https://github.com/serverless-heaven/serverless-webpack#custom-scripts",
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "additionalProperties": false
+  },
+  "required": [
+    "WebpackConfiguration"
+  ]
+}
