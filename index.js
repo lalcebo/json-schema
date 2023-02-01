@@ -146,6 +146,16 @@ function applyCFStringFunctions(obj) {
             }
           })
         }
+        // Add title to every definition
+        if (schema.definitions) {
+          Object.keys(schema.definitions).forEach((key) => {
+            if (schema.definitions[key]) {
+              if (!schema.definitions[key].title) {
+                schema.definitions[key].title = `${key}Definition`
+              }
+            }
+          })
+        }
         fs.writeFileSync(
             path.join(__dirname, `serverless/resources/cloudformation-modified/${resource}`),
             JSON.stringify(schema, null, 2)
