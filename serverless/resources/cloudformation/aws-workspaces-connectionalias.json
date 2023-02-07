@@ -1,0 +1,154 @@
+{
+  "typeName": "AWS::WorkSpaces::ConnectionAlias",
+  "description": "Resource Type definition for AWS::WorkSpaces::ConnectionAlias. Source:- No source definition found, add manually please",
+  "definitions": {
+    "ConnectionAliasAssociation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AssociationStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NOT_ASSOCIATED",
+                "PENDING_ASSOCIATION",
+                "ASSOCIATED_WITH_OWNER_ACCOUNT",
+                "ASSOCIATED_WITH_SHARED_ACCOUNT",
+                "PENDING_DISASSOCIATION"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AssociatedAccountId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResourceId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".+",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ConnectionIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 20,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "ConnectionAliasAssociationDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "TagDefinition"
+    }
+  },
+  "properties": {
+    "ConnectionString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[.0-9a-zA-Z\\-]{1,255}$",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "ConnectionString"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/AliasId"
+  ],
+  "createOnlyProperties": [
+    "/properties/ConnectionString",
+    "/properties/Tags"
+  ],
+  "readOnlyProperties": [
+    "/properties/ConnectionAliasState",
+    "/properties/AliasId",
+    "/properties/Associations"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "workspaces:CreateConnectionAlias"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "workspaces:DescribeConnectionAliases"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "workspaces:DeleteConnectionAlias"
+      ]
+    }
+  },
+  "title": "AWSWorkSpacesConnectionAliasProperties",
+  "type": "object"
+}

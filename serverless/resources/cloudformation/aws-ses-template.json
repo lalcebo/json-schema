@@ -1,63 +1,118 @@
 {
-  "typeName" : "AWS::SES::Template",
-  "description" : "Resource Type definition for AWS::SES::Template",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
-  "definitions" : {
-    "Template" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "description" : "The content of the email, composed of a subject line, an HTML part, and a text-only part",
-      "properties" : {
-        "TemplateName" : {
-          "description" : "The name of the template.",
-          "type" : "string",
-          "pattern" : "^[a-zA-Z0-9_-]{1,64}$",
-          "maxLength" : 64,
-          "minLength" : 1
+  "typeName": "AWS::SES::Template",
+  "description": "Resource Type definition for AWS::SES::Template. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
+  "definitions": {
+    "Template": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The content of the email, composed of a subject line, an HTML part, and a text-only part",
+      "properties": {
+        "TemplateName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,64}$",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the template."
         },
-        "SubjectPart" : {
-          "description" : "The subject line of the email.",
-          "type" : "string"
+        "SubjectPart": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The subject line of the email."
         },
-        "TextPart" : {
-          "description" : "The email body that is visible to recipients whose email clients do not display HTML content.",
-          "type" : "string"
+        "TextPart": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The email body that is visible to recipients whose email clients do not display HTML content."
         },
-        "HtmlPart" : {
-          "description" : "The HTML body of the email.",
-          "type" : "string"
+        "HtmlPart": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The HTML body of the email."
         }
       },
-      "required" : [ "SubjectPart" ]
+      "required": [
+        "SubjectPart"
+      ],
+      "title": "TemplateDefinition"
     }
   },
-  "properties" : {
-    "Id" : {
-      "type" : "string"
-    },
-    "Template" : {
-      "$ref" : "#/definitions/Template"
+  "properties": {
+    "Template": {
+      "$ref": "#/definitions/Template"
     }
   },
-  "additionalProperties" : false,
-  "readOnlyProperties" : [ "/properties/Id" ],
-  "primaryIdentifier" : [ "/properties/Id" ],
-  "createOnlyProperties" : [ "/properties/Template/TemplateName" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "ses:CreateEmailTemplate", "ses:GetEmailTemplate", "ses:CreateTemplate", "ses:GetTemplate" ]
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/Id"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "createOnlyProperties": [
+    "/properties/Template/TemplateName"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ses:CreateEmailTemplate",
+        "ses:GetEmailTemplate",
+        "ses:CreateTemplate",
+        "ses:GetTemplate"
+      ]
     },
-    "read" : {
-      "permissions" : [ "ses:GetEmailTemplate", "ses:GetTemplate" ]
+    "read": {
+      "permissions": [
+        "ses:GetEmailTemplate",
+        "ses:GetTemplate"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "ses:DeleteEmailTemplate", "ses:DeleteTemplate" ]
+    "delete": {
+      "permissions": [
+        "ses:DeleteEmailTemplate",
+        "ses:DeleteTemplate"
+      ]
     },
-    "update" : {
-      "permissions" : [ "ses:GetEmailTemplate", "ses:UpdateEmailTemplate", "ses:GetTemplate", "ses:UpdateTemplate" ]
+    "update": {
+      "permissions": [
+        "ses:GetEmailTemplate",
+        "ses:UpdateEmailTemplate",
+        "ses:GetTemplate",
+        "ses:UpdateTemplate"
+      ]
     },
-    "list" : {
-      "permissions" : [ "ses:ListEmailTemplates", "ses:ListTemplates" ]
+    "list": {
+      "permissions": [
+        "ses:ListEmailTemplates",
+        "ses:ListTemplates"
+      ]
     }
-  }
+  },
+  "title": "AWSSESTemplateProperties",
+  "type": "object"
 }

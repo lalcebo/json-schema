@@ -1,0 +1,214 @@
+{
+  "typeName": "AWS::IoTCoreDeviceAdvisor::SuiteDefinition",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-device-advisor.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-device-advisor.git",
+  "definitions": {
+    "DeviceUnderTest": {
+      "type": "object",
+      "properties": {
+        "CertificateArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ThingArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "DeviceUnderTestDefinition"
+    },
+    "SuiteDefinitionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Name of the suite definition.",
+      "title": "SuiteDefinitionNameDefinition"
+    },
+    "RootGroup": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The root group of the test suite.",
+      "title": "RootGroupDefinition"
+    },
+    "Devices": {
+      "type": "array",
+      "description": "The devices being tested in the test suite",
+      "minItems": 0,
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/definitions/DeviceUnderTest"
+      },
+      "title": "DevicesDefinition"
+    },
+    "DevicePermissionRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The device permission role arn of the test suite.",
+      "title": "DevicePermissionRoleArnDefinition"
+    },
+    "IntendedForQualification": {
+      "description": "Whether the tests are intended for qualification in a suite.",
+      "type": "boolean",
+      "title": "IntendedForQualificationDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
+    }
+  },
+  "properties": {
+    "SuiteDefinitionConfiguration": {
+      "type": "object",
+      "properties": {
+        "DevicePermissionRoleArn": {
+          "$ref": "#/definitions/DevicePermissionRoleArn"
+        },
+        "Devices": {
+          "$ref": "#/definitions/Devices"
+        },
+        "IntendedForQualification": {
+          "$ref": "#/definitions/IntendedForQualification"
+        },
+        "RootGroup": {
+          "$ref": "#/definitions/RootGroup"
+        },
+        "SuiteDefinitionName": {
+          "$ref": "#/definitions/SuiteDefinitionName"
+        }
+      },
+      "required": [
+        "DevicePermissionRoleArn",
+        "RootGroup"
+      ],
+      "additionalProperties": false
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "SuiteDefinitionConfiguration"
+  ],
+  "readOnlyProperties": [
+    "/properties/SuiteDefinitionId",
+    "/properties/SuiteDefinitionArn",
+    "/properties/SuiteDefinitionVersion"
+  ],
+  "primaryIdentifier": [
+    "/properties/SuiteDefinitionId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iotdeviceadvisor:CreateSuiteDefinition",
+        "iam:PassRole"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "iotdeviceadvisor:GetSuiteDefinition"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "iotdeviceadvisor:UpdateSuiteDefinition",
+        "iotdeviceadvisor:GetSuiteDefinition",
+        "iotdeviceadvisor:UntagResource",
+        "iotdeviceadvisor:TagResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "iotdeviceadvisor:DeleteSuiteDefinition"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "iotdeviceadvisor:ListSuiteDefinitions"
+      ]
+    }
+  },
+  "title": "AWSIoTCoreDeviceAdvisorSuiteDefinitionProperties",
+  "type": "object"
+}

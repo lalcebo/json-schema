@@ -1,111 +1,182 @@
 {
-  "typeName" : "AWS::M2::Application",
-  "description" : "Represents an application that runs on an AWS Mainframe Modernization Environment",
-  "definitions" : {
-    "Definition" : {
-      "oneOf" : [ {
-        "type" : "object",
-        "title" : "S3Location",
-        "properties" : {
-          "S3Location" : {
-            "type" : "string",
-            "pattern" : "^\\S{1,2000}$"
-          }
+  "typeName": "AWS::M2::Application",
+  "description": "Represents an application that runs on an AWS Mainframe Modernization Environment. Source:- No source definition found, add manually please",
+  "definitions": {
+    "Definition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "S3Location",
+          "properties": {
+            "S3Location": {
+              "type": "string",
+              "pattern": "^\\S{1,2000}$"
+            }
+          },
+          "required": [
+            "S3Location"
+          ],
+          "additionalProperties": false
         },
-        "required" : [ "S3Location" ],
-        "additionalProperties" : false
-      }, {
-        "type" : "object",
-        "title" : "Content",
-        "properties" : {
-          "Content" : {
-            "type" : "string",
-            "maxLength" : 65000,
-            "minLength" : 1
-          }
+        {
+          "type": "object",
+          "title": "Content",
+          "properties": {
+            "Content": {
+              "type": "string",
+              "maxLength": 65000,
+              "minLength": 1
+            }
+          },
+          "required": [
+            "Content"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "DefinitionDefinition"
+    },
+    "EngineType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "microfocus",
+            "bluage"
+          ]
         },
-        "required" : [ "Content" ],
-        "additionalProperties" : false
-      } ]
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "EngineTypeDefinition"
     },
-    "EngineType" : {
-      "type" : "string",
-      "enum" : [ "microfocus", "bluage" ]
-    },
-    "TagMap" : {
-      "type" : "object",
-      "maxProperties" : 200,
-      "minProperties" : 0,
-      "patternProperties" : {
-        "^(?!aws:).+$" : {
-          "type" : "string",
-          "maxLength" : 256,
-          "minLength" : 0
+    "TagMap": {
+      "type": "object",
+      "maxProperties": 200,
+      "minProperties": 0,
+      "patternProperties": {
+        "^(?!aws:).+$": {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "TagMapDefinition"
     }
   },
-  "properties" : {
-    "ApplicationArn" : {
-      "type" : "string",
-      "pattern" : "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+  "properties": {
+    "Definition": {
+      "$ref": "#/definitions/Definition"
     },
-    "ApplicationId" : {
-      "type" : "string",
-      "pattern" : "^\\S{1,80}$"
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "Definition" : {
-      "$ref" : "#/definitions/Definition"
+    "EngineType": {
+      "$ref": "#/definitions/EngineType"
     },
-    "Description" : {
-      "type" : "string",
-      "maxLength" : 500,
-      "minLength" : 0
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID or the Amazon Resource Name (ARN) of the customer managed KMS Key used for encrypting application-related resources."
     },
-    "EngineType" : {
-      "$ref" : "#/definitions/EngineType"
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "KmsKeyId" : {
-      "type" : "string",
-      "maxLength" : 2048,
-      "description" : "The ID or the Amazon Resource Name (ARN) of the customer managed KMS Key used for encrypting application-related resources."
-    },
-    "Name" : {
-      "type" : "string",
-      "pattern" : "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
-    },
-    "Tags" : {
-      "$ref" : "#/definitions/TagMap"
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
     }
   },
-  "tagging" : {
-    "taggable" : true,
-    "tagOnCreate" : true,
-    "tagUpdatable" : true,
-    "cloudFormationSystemTags" : false
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false
   },
-  "required" : [ "Definition", "EngineType", "Name" ],
-  "readOnlyProperties" : [ "/properties/ApplicationArn", "/properties/ApplicationId" ],
-  "writeOnlyProperties" : [ "/properties/Definition" ],
-  "createOnlyProperties" : [ "/properties/EngineType", "/properties/Name", "/properties/KmsKeyId" ],
-  "primaryIdentifier" : [ "/properties/ApplicationArn" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "m2:CreateApplication", "m2:ListTagsForResource", "s3:GetObject", "s3:ListBucket" ]
+  "required": [
+    "Definition",
+    "EngineType",
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/ApplicationArn",
+    "/properties/ApplicationId"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Definition"
+  ],
+  "createOnlyProperties": [
+    "/properties/EngineType",
+    "/properties/Name",
+    "/properties/KmsKeyId"
+  ],
+  "primaryIdentifier": [
+    "/properties/ApplicationArn"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "m2:CreateApplication",
+        "m2:ListTagsForResource",
+        "s3:GetObject",
+        "s3:ListBucket"
+      ]
     },
-    "read" : {
-      "permissions" : [ "m2:GetApplication", "m2:ListTagsForResource" ]
+    "read": {
+      "permissions": [
+        "m2:GetApplication",
+        "m2:ListTagsForResource"
+      ]
     },
-    "update" : {
-      "permissions" : [ "m2:UpdateApplication", "m2:ListTagsForResource", "m2:TagResource", "m2:UntagResource", "s3:GetObject", "s3:ListBucket" ]
+    "update": {
+      "permissions": [
+        "m2:UpdateApplication",
+        "m2:ListTagsForResource",
+        "m2:TagResource",
+        "m2:UntagResource",
+        "s3:GetObject",
+        "s3:ListBucket"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "elasticloadbalancing:DeleteListener", "elasticloadbalancing:DeleteTargetGroup", "m2:DeleteApplication" ]
+    "delete": {
+      "permissions": [
+        "elasticloadbalancing:DeleteListener",
+        "elasticloadbalancing:DeleteTargetGroup",
+        "m2:DeleteApplication"
+      ]
     },
-    "list" : {
-      "permissions" : [ "m2:ListApplications" ]
+    "list": {
+      "permissions": [
+        "m2:ListApplications"
+      ]
     }
   },
-  "additionalProperties" : false
+  "additionalProperties": false,
+  "title": "AWSM2ApplicationProperties",
+  "type": "object"
 }

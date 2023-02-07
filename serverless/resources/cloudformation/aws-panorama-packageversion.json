@@ -1,0 +1,195 @@
+{
+  "typeName": "AWS::Panorama::PackageVersion",
+  "description": "Schema for PackageVersion Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-panorama.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-panorama.git",
+  "definitions": {
+    "PackageOwnerAccount": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 12,
+          "pattern": "^[0-9a-z\\_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "PackageOwnerAccountDefinition"
+    },
+    "NodePackageId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[a-zA-Z0-9\\-\\_\\/]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "NodePackageIdDefinition"
+    },
+    "NodePackageArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "NodePackageArnDefinition"
+    },
+    "NodePackageName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9\\-\\_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "NodePackageNameDefinition"
+    },
+    "NodePackageVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^([0-9]+)\\.([0-9]+)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "NodePackageVersionDefinition"
+    },
+    "NodePackagePatchVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[a-z0-9]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "NodePackagePatchVersionDefinition"
+    },
+    "PackageVersionStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "REGISTER_PENDING",
+            "REGISTER_COMPLETED",
+            "FAILED",
+            "DELETING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "PackageVersionStatusDefinition"
+    },
+    "PackageVersionStatusDescription": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "PackageVersionStatusDescriptionDefinition"
+    },
+    "TimeStamp": {
+      "type": "integer",
+      "title": "TimeStampDefinition"
+    }
+  },
+  "properties": {
+    "OwnerAccount": {
+      "$ref": "#/definitions/PackageOwnerAccount"
+    },
+    "PackageId": {
+      "$ref": "#/definitions/NodePackageId"
+    },
+    "PackageVersion": {
+      "$ref": "#/definitions/NodePackageVersion"
+    },
+    "PatchVersion": {
+      "$ref": "#/definitions/NodePackagePatchVersion"
+    },
+    "MarkLatest": {
+      "type": "boolean"
+    },
+    "UpdatedLatestPatchVersion": {
+      "$ref": "#/definitions/NodePackagePatchVersion"
+    }
+  },
+  "additionalProperties": false,
+  "taggable": false,
+  "required": [
+    "PackageId",
+    "PackageVersion",
+    "PatchVersion"
+  ],
+  "readOnlyProperties": [
+    "/properties/PackageName",
+    "/properties/PackageArn",
+    "/properties/Status",
+    "/properties/StatusDescription",
+    "/properties/IsLatestPatch",
+    "/properties/RegisteredTime"
+  ],
+  "createOnlyProperties": [
+    "/properties/OwnerAccount",
+    "/properties/PackageId",
+    "/properties/PackageVersion",
+    "/properties/PatchVersion"
+  ],
+  "primaryIdentifier": [
+    "/properties/PackageId",
+    "/properties/PackageVersion",
+    "/properties/PatchVersion"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "panorama:RegisterPackageVersion"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "panorama:DescribePackageVersion"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "panorama:DescribePackageVersion",
+        "panorama:RegisterPackageVersion"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "panorama:DeregisterPackageVersion"
+      ]
+    }
+  },
+  "title": "AWSPanoramaPackageVersionProperties",
+  "type": "object"
+}

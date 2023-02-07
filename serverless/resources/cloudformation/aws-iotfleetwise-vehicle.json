@@ -1,0 +1,182 @@
+{
+  "typeName": "AWS::IoTFleetWise::Vehicle",
+  "description": "Definition of AWS::IoTFleetWise::Vehicle Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "VehicleAssociationBehavior": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CreateIotThing",
+            "ValidateIotThingExists"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "VehicleAssociationBehaviorDefinition"
+    },
+    "attributesMap": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9_.-]+$": {
+          "type": "string"
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false,
+      "title": "attributesMapDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
+    }
+  },
+  "properties": {
+    "AssociationBehavior": {
+      "$ref": "#/definitions/VehicleAssociationBehavior"
+    },
+    "Attributes": {
+      "$ref": "#/definitions/attributesMap"
+    },
+    "DecoderManifestArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z\\d\\-_:]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ModelManifestArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "maxItems": 50,
+      "minItems": 0
+    }
+  },
+  "required": [
+    "Name",
+    "DecoderManifestArn",
+    "ModelManifestArn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags"
+  },
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CreationTime",
+    "/properties/LastModificationTime"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "writeOnlyProperties": [
+    "/properties/AssociationBehavior"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iotfleetwise:GetVehicle",
+        "iotfleetwise:CreateVehicle",
+        "iot:CreateThing",
+        "iot:DescribeThing"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "iotfleetwise:GetVehicle",
+        "iotfleetwise:ListTagsForResource"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "iotfleetwise:GetVehicle",
+        "iotfleetwise:UpdateVehicle",
+        "iotfleetwise:TagResource",
+        "iotfleetwise:UntagResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "iotfleetwise:GetVehicle",
+        "iotfleetwise:DeleteVehicle"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "iotfleetwise:ListVehicles"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "title": "AWSIoTFleetWiseVehicleProperties",
+  "type": "object"
+}

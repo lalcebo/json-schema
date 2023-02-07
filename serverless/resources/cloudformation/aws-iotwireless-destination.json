@@ -1,0 +1,166 @@
+{
+  "typeName": "AWS::IoTWireless::Destination",
+  "description": "Destination's resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "TagDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9:_-]+",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique name of destination"
+    },
+    "Expression": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Destination expression"
+    },
+    "ExpressionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "RuleName",
+            "MqttTopic"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Must be RuleName"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Destination description"
+    },
+    "Tags": {
+      "description": "A list of key-value pairs that contain metadata for the destination.",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 200,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "AWS role ARN that grants access"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "Expression",
+    "ExpressionType",
+    "RoleArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "taggable": true,
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iotwireless:CreateDestination",
+        "iotwireless:TagResource",
+        "iotwireless:ListTagsForResource"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "iotwireless:GetDestination",
+        "iotwireless:ListTagsForResource"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "iotwireless:UpdateDestination",
+        "iotwireless:UntagResource",
+        "iotwireless:ListTagsForResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "iotwireless:DeleteDestination"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "iotwireless:ListDestinations",
+        "iotwireless:ListTagsForResource"
+      ]
+    }
+  },
+  "title": "AWSIoTWirelessDestinationProperties",
+  "type": "object"
+}

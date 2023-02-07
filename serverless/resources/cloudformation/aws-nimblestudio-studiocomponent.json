@@ -1,0 +1,567 @@
+{
+  "typeName": "AWS::NimbleStudio::StudioComponent",
+  "description": "Represents a studio component that connects a non-Nimble Studio resource in your account to your studio. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-nimblestudio",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-nimblestudio",
+  "definitions": {
+    "ActiveDirectoryComputerAttribute": {
+      "type": "object",
+      "description": "<p>An LDAP attribute of an Active Directory computer account, in the form of a name:value\n            pair.</p>",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 40,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The name for the LDAP attribute.</p>"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The value for the LDAP attribute.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "ActiveDirectoryComputerAttributeDefinition"
+    },
+    "ActiveDirectoryConfiguration": {
+      "type": "object",
+      "description": "<p>The configuration for a Microsoft Active Directory (Microsoft AD) studio\n            resource.</p>",
+      "properties": {
+        "ComputerAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ActiveDirectoryComputerAttribute"
+          },
+          "maxItems": 50,
+          "minItems": 0,
+          "description": "<p>A collection of custom attributes for an Active Directory computer.</p>"
+        },
+        "DirectoryId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The directory ID of the Directory Service for Microsoft Active Directory to access\n            using this studio component.</p>"
+        },
+        "OrganizationalUnitDistinguishedName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The distinguished name (DN) and organizational unit (OU) of an Active Directory\n            computer.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "ActiveDirectoryConfigurationDefinition"
+    },
+    "ComputeFarmConfiguration": {
+      "type": "object",
+      "description": "<p>The configuration for a render farm that is associated with a studio resource.</p>",
+      "properties": {
+        "ActiveDirectoryUser": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The name of an Active Directory user that is used on ComputeFarm worker\n            instances.</p>"
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The endpoint of the ComputeFarm that is accessed by the studio component\n            resource.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "ComputeFarmConfigurationDefinition"
+    },
+    "LaunchProfilePlatform": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LINUX",
+            "WINDOWS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "LaunchProfilePlatformDefinition"
+    },
+    "LicenseServiceConfiguration": {
+      "type": "object",
+      "description": "<p>The configuration for a license service that is associated with a studio\n            resource.</p>",
+      "properties": {
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The endpoint of the license service that is accessed by the studio component\n            resource.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "LicenseServiceConfigurationDefinition"
+    },
+    "ScriptParameterKeyValue": {
+      "type": "object",
+      "description": "<p>A parameter for a studio component script, in the form of a key:value pair.</p>",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z_][a-zA-Z0-9_]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>A script parameter key.</p>"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>A script parameter value.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "ScriptParameterKeyValueDefinition"
+    },
+    "SharedFileSystemConfiguration": {
+      "type": "object",
+      "description": "<p>The configuration for a shared file storage system that is associated with a studio\n            resource.</p>",
+      "properties": {
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The endpoint of the shared file system that is accessed by the studio component\n            resource.</p>"
+        },
+        "FileSystemId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The unique identifier for a file system.</p>"
+        },
+        "LinuxMountPoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 0,
+              "pattern": "^(/?|(\\$HOME)?(/[^/\\n\\s\\\\]+)*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The mount location for a shared file system on a Linux virtual workstation.</p>"
+        },
+        "ShareName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The name of the file share.</p>"
+        },
+        "WindowsMountDrive": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The mount location for a shared file system on a Windows virtual workstation.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "SharedFileSystemConfigurationDefinition"
+    },
+    "StudioComponentConfiguration": {
+      "description": "<p>The configuration of the studio component, based on component type.</p>",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "ActiveDirectoryConfiguration",
+          "properties": {
+            "ActiveDirectoryConfiguration": {
+              "$ref": "#/definitions/ActiveDirectoryConfiguration"
+            }
+          },
+          "required": [
+            "ActiveDirectoryConfiguration"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "ComputeFarmConfiguration",
+          "properties": {
+            "ComputeFarmConfiguration": {
+              "$ref": "#/definitions/ComputeFarmConfiguration"
+            }
+          },
+          "required": [
+            "ComputeFarmConfiguration"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "LicenseServiceConfiguration",
+          "properties": {
+            "LicenseServiceConfiguration": {
+              "$ref": "#/definitions/LicenseServiceConfiguration"
+            }
+          },
+          "required": [
+            "LicenseServiceConfiguration"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "SharedFileSystemConfiguration",
+          "properties": {
+            "SharedFileSystemConfiguration": {
+              "$ref": "#/definitions/SharedFileSystemConfiguration"
+            }
+          },
+          "required": [
+            "SharedFileSystemConfiguration"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "StudioComponentConfigurationDefinition"
+    },
+    "StudioComponentInitializationScript": {
+      "type": "object",
+      "description": "<p>Initialization scripts for studio components.</p>",
+      "properties": {
+        "LaunchProfileProtocolVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 10,
+              "minLength": 0,
+              "pattern": "^2021\\-03\\-31$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The version number of the protocol that is used by the launch profile. The only valid\n            version is \"2021-03-31\".</p>"
+        },
+        "Platform": {
+          "$ref": "#/definitions/LaunchProfilePlatform"
+        },
+        "RunContext": {
+          "$ref": "#/definitions/StudioComponentInitializationScriptRunContext"
+        },
+        "Script": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 5120,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The initialization script.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "StudioComponentInitializationScriptDefinition"
+    },
+    "StudioComponentInitializationScriptRunContext": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SYSTEM_INITIALIZATION",
+            "USER_INITIALIZATION"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "StudioComponentInitializationScriptRunContextDefinition"
+    },
+    "StudioComponentSubtype": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS_MANAGED_MICROSOFT_AD",
+            "AMAZON_FSX_FOR_WINDOWS",
+            "AMAZON_FSX_FOR_LUSTRE",
+            "CUSTOM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "StudioComponentSubtypeDefinition"
+    },
+    "StudioComponentType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE_DIRECTORY",
+            "SHARED_FILE_SYSTEM",
+            "COMPUTE_FARM",
+            "LICENSE_SERVICE",
+            "CUSTOM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "StudioComponentTypeDefinition"
+    },
+    "Tags": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "title": "TagsDefinition"
+    }
+  },
+  "properties": {
+    "Configuration": {
+      "$ref": "#/definitions/StudioComponentConfiguration"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "<p>The description.</p>"
+    },
+    "Ec2SecurityGroupIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 30,
+      "minItems": 0,
+      "description": "<p>The EC2 security groups that control access to the studio component.</p>"
+    },
+    "InitializationScripts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/StudioComponentInitializationScript"
+      },
+      "description": "<p>Initialization scripts for studio components.</p>"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "<p>The name for the studio component.</p>"
+    },
+    "RuntimeRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ScriptParameters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ScriptParameterKeyValue"
+      },
+      "maxItems": 30,
+      "minItems": 0,
+      "description": "<p>Parameters for the studio component scripts.</p>"
+    },
+    "SecureInitializationRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "StudioId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "<p>The studio ID. </p>"
+    },
+    "Subtype": {
+      "$ref": "#/definitions/StudioComponentSubtype"
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    },
+    "Type": {
+      "$ref": "#/definitions/StudioComponentType"
+    }
+  },
+  "required": [
+    "StudioId",
+    "Name",
+    "Type"
+  ],
+  "readOnlyProperties": [
+    "/properties/StudioComponentId"
+  ],
+  "createOnlyProperties": [
+    "/properties/StudioId",
+    "/properties/Subtype",
+    "/properties/Tags"
+  ],
+  "primaryIdentifier": [
+    "/properties/StudioComponentId",
+    "/properties/StudioId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iam:PassRole",
+        "nimble:CreateStudioComponent",
+        "nimble:TagResource",
+        "ds:AuthorizeApplication",
+        "ec2:DescribeSecurityGroups",
+        "fsx:DescribeFilesystems",
+        "ds:DescribeDirectories"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "nimble:GetStudioComponent"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "iam:PassRole",
+        "nimble:UpdateStudioComponent",
+        "ds:AuthorizeApplication",
+        "ec2:DescribeSecurityGroups",
+        "fsx:DescribeFilesystems",
+        "ds:DescribeDirectories"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "nimble:DeleteStudioComponent",
+        "nimble:UntagResource",
+        "ds:UnauthorizeApplication"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "nimble:ListStudioComponents"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "title": "AWSNimbleStudioStudioComponentProperties",
+  "type": "object"
+}

@@ -1,145 +1,260 @@
 {
-  "typeName" : "AWS::IoT::DomainConfiguration",
-  "description" : "Create and manage a Domain Configuration",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "definitions" : {
-    "AuthorizerConfig" : {
-      "type" : "object",
-      "properties" : {
-        "AllowAuthorizerOverride" : {
-          "type" : "boolean"
+  "typeName": "AWS::IoT::DomainConfiguration",
+  "description": "Create and manage a Domain Configuration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "AuthorizerConfig": {
+      "type": "object",
+      "properties": {
+        "AllowAuthorizerOverride": {
+          "type": "boolean"
         },
-        "DefaultAuthorizerName" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128,
-          "pattern" : "^[\\w=,@-]+$"
+        "DefaultAuthorizerName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\w=,@-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "AuthorizerConfigDefinition"
     },
-    "ServerCertificateSummary" : {
-      "type" : "object",
-      "properties" : {
-        "ServerCertificateArn" : {
-          "type" : "string",
-          "pattern" : "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$",
-          "minLength" : 1,
-          "maxLength" : 2048
+    "ServerCertificateSummary": {
+      "type": "object",
+      "properties": {
+        "ServerCertificateArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "ServerCertificateStatus" : {
-          "type" : "string",
-          "enum" : [ "INVALID", "VALID" ]
+        "ServerCertificateStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "INVALID",
+                "VALID"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "ServerCertificateStatusDetail" : {
-          "type" : "string"
+        "ServerCertificateStatusDetail": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "ServerCertificateSummaryDefinition"
     },
-    "Tag" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string"
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string"
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Key", "Value" ]
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "properties" : {
-    "DomainConfigurationName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 128,
-      "pattern" : "^[\\w.-]+$"
+  "properties": {
+    "DomainConfigurationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\w.-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "AuthorizerConfig" : {
-      "$ref" : "#/definitions/AuthorizerConfig"
+    "AuthorizerConfig": {
+      "$ref": "#/definitions/AuthorizerConfig"
     },
-    "DomainName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 253
+    "DomainName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 253
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "ServerCertificateArns" : {
-      "type" : "array",
-      "minItems" : 0,
-      "maxItems" : 1,
-      "insertionOrder" : true,
-      "items" : {
-        "type" : "string",
-        "pattern" : "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$",
-        "minLength" : 1,
-        "maxLength" : 2048
+    "ServerCertificateArns": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 1,
+      "insertionOrder": true,
+      "items": {
+        "type": "string",
+        "pattern": "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$",
+        "minLength": 1,
+        "maxLength": 2048
       }
     },
-    "ServiceType" : {
-      "type" : "string",
-      "enum" : [ "DATA", "CREDENTIAL_PROVIDER", "JOBS" ]
+    "ServiceType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DATA",
+            "CREDENTIAL_PROVIDER",
+            "JOBS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "ValidationCertificateArn" : {
-      "type" : "string",
-      "pattern" : "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$"
+    "ValidationCertificateArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "Arn" : {
-      "type" : "string"
+    "DomainConfigurationStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "DomainConfigurationStatus" : {
-      "type" : "string",
-      "enum" : [ "ENABLED", "DISABLED" ]
-    },
-    "DomainType" : {
-      "type" : "string",
-      "enum" : [ "ENDPOINT", "AWS_MANAGED", "CUSTOMER_MANAGED" ]
-    },
-    "ServerCertificates" : {
-      "type" : "array",
-      "insertionOrder" : true,
-      "items" : {
-        "$ref" : "#/definitions/ServerCertificateSummary"
-      }
-    },
-    "Tags" : {
-      "type" : "array",
-      "insertionOrder" : true,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "tagging" : {
-    "taggable" : true,
-    "tagOnCreate" : true,
-    "tagUpdatable" : true,
-    "cloudFormationSystemTags" : true,
-    "tagProperty" : "/properties/Tags"
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags"
   },
-  "additionalProperties" : false,
-  "required" : [ ],
-  "createOnlyProperties" : [ "/properties/DomainConfigurationName", "/properties/DomainName", "/properties/ServiceType", "/properties/ValidationCertificateArn", "/properties/ServerCertificateArns" ],
-  "readOnlyProperties" : [ "/properties/Arn", "/properties/DomainType", "/properties/ServerCertificates" ],
-  "writeOnlyProperties" : [ "/properties/ValidationCertificateArn", "/properties/ServerCertificateArns" ],
-  "primaryIdentifier" : [ "/properties/DomainConfigurationName" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "iot:CreateDomainConfiguration", "iot:UpdateDomainConfiguration", "iot:DescribeDomainConfiguration", "iot:ListTagsForResource" ]
+  "additionalProperties": false,
+  "required": [],
+  "createOnlyProperties": [
+    "/properties/DomainConfigurationName",
+    "/properties/DomainName",
+    "/properties/ServiceType",
+    "/properties/ValidationCertificateArn",
+    "/properties/ServerCertificateArns"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/DomainType",
+    "/properties/ServerCertificates"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ValidationCertificateArn",
+    "/properties/ServerCertificateArns"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainConfigurationName"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iot:CreateDomainConfiguration",
+        "iot:UpdateDomainConfiguration",
+        "iot:DescribeDomainConfiguration",
+        "iot:ListTagsForResource"
+      ]
     },
-    "read" : {
-      "permissions" : [ "iot:DescribeDomainConfiguration", "iot:ListTagsForResource" ]
+    "read": {
+      "permissions": [
+        "iot:DescribeDomainConfiguration",
+        "iot:ListTagsForResource"
+      ]
     },
-    "update" : {
-      "permissions" : [ "iot:UpdateDomainConfiguration", "iot:DescribeDomainConfiguration", "iot:ListTagsForResource", "iot:TagResource", "iot:UntagResource" ]
+    "update": {
+      "permissions": [
+        "iot:UpdateDomainConfiguration",
+        "iot:DescribeDomainConfiguration",
+        "iot:ListTagsForResource",
+        "iot:TagResource",
+        "iot:UntagResource"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "iot:DeleteDomainConfiguration", "iot:UpdateDomainConfiguration" ]
+    "delete": {
+      "permissions": [
+        "iot:DeleteDomainConfiguration",
+        "iot:UpdateDomainConfiguration"
+      ]
     },
-    "list" : {
-      "permissions" : [ "iot:ListDomainConfigurations" ]
+    "list": {
+      "permissions": [
+        "iot:ListDomainConfigurations"
+      ]
     }
-  }
+  },
+  "title": "AWSIoTDomainConfigurationProperties",
+  "type": "object"
 }

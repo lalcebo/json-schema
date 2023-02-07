@@ -1,0 +1,222 @@
+{
+  "typeName": "AWS::Panorama::Package",
+  "description": "Schema for Package CloudFormation Resource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "NodePackageName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9\\-\\_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "NodePackageNameDefinition"
+    },
+    "NodePackageId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[a-zA-Z0-9\\-\\_\\/]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "NodePackageIdDefinition"
+    },
+    "NodePackageArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "NodePackageArnDefinition"
+    },
+    "Timestamp": {
+      "type": "integer",
+      "title": "TimestampDefinition"
+    },
+    "StorageLocation": {
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RepoPrefixLocation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GeneratedPrefixLocation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BinaryPrefixLocation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ManifestPrefixLocation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "StorageLocationDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "^.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
+    },
+    "TagList": {
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "TagListDefinition"
+    }
+  },
+  "properties": {
+    "PackageName": {
+      "$ref": "#/definitions/NodePackageName"
+    },
+    "StorageLocation": {
+      "$ref": "#/definitions/StorageLocation"
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagList"
+    }
+  },
+  "additionalProperties": false,
+  "taggable": true,
+  "required": [
+    "PackageName"
+  ],
+  "readOnlyProperties": [
+    "/properties/PackageId",
+    "/properties/Arn",
+    "/properties/CreatedTime",
+    "/properties/StorageLocation/Bucket",
+    "/properties/StorageLocation/RepoPrefixLocation",
+    "/properties/StorageLocation/GeneratedPrefixLocation",
+    "/properties/StorageLocation/BinaryPrefixLocation",
+    "/properties/StorageLocation/ManifestPrefixLocation"
+  ],
+  "createOnlyProperties": [
+    "/properties/PackageName"
+  ],
+  "primaryIdentifier": [
+    "/properties/PackageId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "panorama:CreatePackage",
+        "panorama:ListTagsForResource",
+        "panorama:TagResource"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "panorama:DescribePackage",
+        "panorama:ListTagsForResource"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "panorama:DescribePackage",
+        "panorama:ListTagsForResource",
+        "panorama:TagResource",
+        "panorama:UntagResource"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "panorama:ListPackages"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "panorama:DeletePackage"
+      ]
+    }
+  },
+  "title": "AWSPanoramaPackageProperties",
+  "type": "object"
+}

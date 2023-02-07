@@ -1,67 +1,137 @@
 {
-  "typeName" : "AWS::RDS::DBSecurityGroup",
-  "description" : "Resource Type definition for AWS::RDS::DBSecurityGroup",
-  "additionalProperties" : false,
-  "properties" : {
-    "Id" : {
-      "type" : "string"
-    },
-    "DBSecurityGroupIngress" : {
-      "type" : "array",
-      "uniqueItems" : true,
-      "items" : {
-        "$ref" : "#/definitions/Ingress"
+  "typeName": "AWS::RDS::DBSecurityGroup",
+  "description": "Resource Type definition for AWS::RDS::DBSecurityGroup. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "DBSecurityGroupIngress": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Ingress"
       }
     },
-    "EC2VpcId" : {
-      "type" : "string"
+    "EC2VpcId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "GroupDescription" : {
-      "type" : "string"
+    "GroupDescription": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "Tags" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "definitions" : {
-    "Ingress" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "CIDRIP" : {
-          "type" : "string"
+  "definitions": {
+    "Ingress": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CIDRIP": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "EC2SecurityGroupId" : {
-          "type" : "string"
+        "EC2SecurityGroupId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "EC2SecurityGroupName" : {
-          "type" : "string"
+        "EC2SecurityGroupName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "EC2SecurityGroupOwnerId" : {
-          "type" : "string"
-        }
-      }
-    },
-    "Tag" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Key" : {
-          "type" : "string"
-        },
-        "Value" : {
-          "type" : "string"
+        "EC2SecurityGroupOwnerId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Value", "Key" ]
+      "title": "IngressDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "required" : [ "GroupDescription", "DBSecurityGroupIngress" ],
-  "createOnlyProperties" : [ "/properties/GroupDescription", "/properties/EC2VpcId" ],
-  "primaryIdentifier" : [ "/properties/Id" ],
-  "readOnlyProperties" : [ "/properties/Id" ]
+  "required": [
+    "GroupDescription",
+    "DBSecurityGroupIngress"
+  ],
+  "createOnlyProperties": [
+    "/properties/GroupDescription",
+    "/properties/EC2VpcId"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id"
+  ],
+  "title": "AWSRDSDBSecurityGroupProperties",
+  "type": "object"
 }

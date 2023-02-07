@@ -1,102 +1,176 @@
 {
-  "typeName" : "AWS::EC2::NetworkInsightsPath",
-  "description" : "Resource schema for AWS::EC2::NetworkInsightsPath",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
-  "definitions" : {
-    "Tags" : {
-      "type" : "array",
-      "uniqueItems" : true,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
-      }
+  "typeName": "AWS::EC2::NetworkInsightsPath",
+  "description": "Resource schema for AWS::EC2::NetworkInsightsPath. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
+  "definitions": {
+    "Tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "TagsDefinition"
     },
-    "Tag" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Key" : {
-          "type" : "string"
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string"
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Key" ]
+      "required": [
+        "Key"
+      ],
+      "title": "TagDefinition"
     },
-    "IpAddress" : {
-      "type" : "string"
+    "IpAddress": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "IpAddressDefinition"
     },
-    "Protocol" : {
-      "type" : "string",
-      "enum" : [ "tcp", "udp" ]
+    "Protocol": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "tcp",
+            "udp"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ProtocolDefinition"
     },
-    "Port" : {
-      "type" : "integer"
+    "Port": {
+      "type": "integer",
+      "title": "PortDefinition"
     }
   },
-  "properties" : {
-    "NetworkInsightsPathId" : {
-      "type" : "string"
+  "properties": {
+    "SourceIp": {
+      "$ref": "#/definitions/IpAddress"
     },
-    "NetworkInsightsPathArn" : {
-      "type" : "string"
+    "DestinationIp": {
+      "$ref": "#/definitions/IpAddress"
     },
-    "CreatedDate" : {
-      "type" : "string"
+    "Source": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "SourceIp" : {
-      "$ref" : "#/definitions/IpAddress"
+    "Destination": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "DestinationIp" : {
-      "$ref" : "#/definitions/IpAddress"
+    "Protocol": {
+      "$ref": "#/definitions/Protocol"
     },
-    "Source" : {
-      "type" : "string"
+    "DestinationPort": {
+      "$ref": "#/definitions/Port"
     },
-    "Destination" : {
-      "type" : "string"
-    },
-    "SourceArn" : {
-      "type" : "string"
-    },
-    "DestinationArn" : {
-      "type" : "string"
-    },
-    "Protocol" : {
-      "$ref" : "#/definitions/Protocol"
-    },
-    "DestinationPort" : {
-      "$ref" : "#/definitions/Port"
-    },
-    "Tags" : {
-      "type" : "array",
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "additionalProperties" : false,
-  "required" : [ "Protocol", "Source", "Destination" ],
-  "readOnlyProperties" : [ "/properties/NetworkInsightsPathId", "/properties/NetworkInsightsPathArn", "/properties/CreatedDate", "/properties/SourceArn", "/properties/DestinationArn" ],
-  "primaryIdentifier" : [ "/properties/NetworkInsightsPathId" ],
-  "createOnlyProperties" : [ "/properties/SourceIp", "/properties/DestinationIp", "/properties/Source", "/properties/Destination", "/properties/Protocol", "/properties/DestinationPort" ],
-  "additionalIdentifiers" : [ [ "/properties/NetworkInsightsPathArn" ] ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "ec2:CreateNetworkInsightsPath" ]
+  "additionalProperties": false,
+  "required": [
+    "Protocol",
+    "Source",
+    "Destination"
+  ],
+  "readOnlyProperties": [
+    "/properties/NetworkInsightsPathId",
+    "/properties/NetworkInsightsPathArn",
+    "/properties/CreatedDate",
+    "/properties/SourceArn",
+    "/properties/DestinationArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/NetworkInsightsPathId"
+  ],
+  "createOnlyProperties": [
+    "/properties/SourceIp",
+    "/properties/DestinationIp",
+    "/properties/Source",
+    "/properties/Destination",
+    "/properties/Protocol",
+    "/properties/DestinationPort"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/NetworkInsightsPathArn"
+    ]
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ec2:CreateNetworkInsightsPath"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "ec2:DeleteNetworkInsightsPath" ]
+    "delete": {
+      "permissions": [
+        "ec2:DeleteNetworkInsightsPath"
+      ]
     },
-    "read" : {
-      "permissions" : [ "ec2:DescribeNetworkInsightsPaths" ]
+    "read": {
+      "permissions": [
+        "ec2:DescribeNetworkInsightsPaths"
+      ]
     },
-    "list" : {
-      "permissions" : [ "ec2:DescribeNetworkInsightsPaths" ]
+    "list": {
+      "permissions": [
+        "ec2:DescribeNetworkInsightsPaths"
+      ]
     },
-    "update" : {
-      "permissions" : [ "ec2:DescribeNetworkInsightsPaths", "ec2:CreateTags", "ec2:DeleteTags" ]
+    "update": {
+      "permissions": [
+        "ec2:DescribeNetworkInsightsPaths",
+        "ec2:CreateTags",
+        "ec2:DeleteTags"
+      ]
     }
-  }
+  },
+  "title": "AWSEC2NetworkInsightsPathProperties",
+  "type": "object"
 }

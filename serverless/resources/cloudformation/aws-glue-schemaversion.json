@@ -1,66 +1,113 @@
 {
-  "typeName" : "AWS::Glue::SchemaVersion",
-  "description" : "This resource represents an individual schema version of a schema defined in Glue Schema Registry.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue.git",
-  "definitions" : {
-    "Schema" : {
-      "description" : "Identifier for the schema where the schema version will be created.",
-      "type" : "object",
-      "properties" : {
-        "SchemaArn" : {
-          "description" : "Amazon Resource Name for the Schema. This attribute can be used to uniquely represent the Schema.",
-          "type" : "string",
-          "pattern" : "arn:(aws|aws-us-gov|aws-cn):glue:.*"
+  "typeName": "AWS::Glue::SchemaVersion",
+  "description": "This resource represents an individual schema version of a schema defined in Glue Schema Registry.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue.git",
+  "definitions": {
+    "Schema": {
+      "description": "Identifier for the schema where the schema version will be created.",
+      "type": "object",
+      "properties": {
+        "SchemaArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:(aws|aws-us-gov|aws-cn):glue:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Amazon Resource Name for the Schema. This attribute can be used to uniquely represent the Schema."
         },
-        "SchemaName" : {
-          "description" : "Name of the schema. This parameter requires RegistryName to be provided.",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 255
+        "SchemaName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the schema. This parameter requires RegistryName to be provided."
         },
-        "RegistryName" : {
-          "description" : "Name of the registry to identify where the Schema is located.",
-          "type" : "string",
-          "maxLength" : 255,
-          "minLength" : 1
+        "RegistryName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the registry to identify where the Schema is located."
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "SchemaDefinition"
     }
   },
-  "properties" : {
-    "Schema" : {
-      "$ref" : "#/definitions/Schema"
+  "properties": {
+    "Schema": {
+      "$ref": "#/definitions/Schema"
     },
-    "SchemaDefinition" : {
-      "type" : "string",
-      "description" : "Complete definition of the schema in plain-text.",
-      "minLength" : 1,
-      "maxLength" : 170000
-    },
-    "VersionId" : {
-      "type" : "string",
-      "description" : "Represents the version ID associated with the schema version.",
-      "pattern" : "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    "SchemaDefinition": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 170000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Complete definition of the schema in plain-text."
     }
   },
-  "required" : [ "Schema", "SchemaDefinition" ],
-  "additionalProperties" : false,
-  "readOnlyProperties" : [ "/properties/VersionId" ],
-  "createOnlyProperties" : [ "/properties/Schema", "/properties/SchemaDefinition" ],
-  "primaryIdentifier" : [ "/properties/VersionId" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "glue:RegisterSchemaVersion", "glue:GetSchemaVersion", "glue:GetSchemaByDefinition" ]
+  "required": [
+    "Schema",
+    "SchemaDefinition"
+  ],
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/VersionId"
+  ],
+  "createOnlyProperties": [
+    "/properties/Schema",
+    "/properties/SchemaDefinition"
+  ],
+  "primaryIdentifier": [
+    "/properties/VersionId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "glue:RegisterSchemaVersion",
+        "glue:GetSchemaVersion",
+        "glue:GetSchemaByDefinition"
+      ]
     },
-    "read" : {
-      "permissions" : [ "glue:GetSchemaVersion" ]
+    "read": {
+      "permissions": [
+        "glue:GetSchemaVersion"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "glue:DeleteSchemaVersions", "glue:GetSchemaVersion" ]
+    "delete": {
+      "permissions": [
+        "glue:DeleteSchemaVersions",
+        "glue:GetSchemaVersion"
+      ]
     },
-    "list" : {
-      "permissions" : [ "glue:ListSchemaVersions" ]
+    "list": {
+      "permissions": [
+        "glue:ListSchemaVersions"
+      ]
     }
-  }
+  },
+  "title": "AWSGlueSchemaVersionProperties",
+  "type": "object"
 }

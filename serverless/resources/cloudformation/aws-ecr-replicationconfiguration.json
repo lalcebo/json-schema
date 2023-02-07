@@ -1,128 +1,196 @@
 {
-  "typeName" : "AWS::ECR::ReplicationConfiguration",
-  "description" : "The AWS::ECR::ReplicationConfiguration resource configures the replication destinations for an Amazon Elastic Container Registry (Amazon Private ECR). For more information, see https://docs.aws.amazon.com/AmazonECR/latest/userguide/replication.html",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ecr.git",
-  "definitions" : {
-    "ReplicationConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "Rules" : {
-          "type" : "array",
-          "minItems" : 0,
-          "maxItems" : 10,
-          "items" : {
-            "$ref" : "#/definitions/ReplicationRule"
+  "typeName": "AWS::ECR::ReplicationConfiguration",
+  "description": "The AWS::ECR::ReplicationConfiguration resource configures the replication destinations for an Amazon Elastic Container Registry (Amazon Private ECR). For more information, see https://docs.aws.amazon.com/AmazonECR/latest/userguide/replication.html. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ecr.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ecr.git",
+  "definitions": {
+    "ReplicationConfiguration": {
+      "type": "object",
+      "properties": {
+        "Rules": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/definitions/ReplicationRule"
           },
-          "description" : "An array of objects representing the replication rules for a replication configuration. A replication configuration may contain a maximum of 10 rules."
+          "description": "An array of objects representing the replication rules for a replication configuration. A replication configuration may contain a maximum of 10 rules."
         }
       },
-      "description" : "An object representing the replication configuration for a registry.",
-      "required" : [ "Rules" ],
-      "additionalProperties" : false
+      "description": "An object representing the replication configuration for a registry.",
+      "required": [
+        "Rules"
+      ],
+      "additionalProperties": false,
+      "title": "ReplicationConfigurationDefinition"
     },
-    "ReplicationRule" : {
-      "type" : "object",
-      "properties" : {
-        "RepositoryFilters" : {
-          "type" : "array",
-          "minItems" : 0,
-          "maxItems" : 100,
-          "items" : {
-            "$ref" : "#/definitions/RepositoryFilter"
+    "ReplicationRule": {
+      "type": "object",
+      "properties": {
+        "RepositoryFilters": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/RepositoryFilter"
           },
-          "description" : "An array of objects representing the details of a repository filter."
+          "description": "An array of objects representing the details of a repository filter."
         },
-        "Destinations" : {
-          "type" : "array",
-          "minItems" : 1,
-          "maxItems" : 25,
-          "items" : {
-            "$ref" : "#/definitions/ReplicationDestination"
+        "Destinations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 25,
+          "items": {
+            "$ref": "#/definitions/ReplicationDestination"
           },
-          "description" : "An array of objects representing the details of a replication destination."
+          "description": "An array of objects representing the details of a replication destination."
         }
       },
-      "description" : "An array of objects representing the details of a replication destination.",
-      "required" : [ "Destinations" ],
-      "additionalProperties" : false
+      "description": "An array of objects representing the details of a replication destination.",
+      "required": [
+        "Destinations"
+      ],
+      "additionalProperties": false,
+      "title": "ReplicationRuleDefinition"
     },
-    "RepositoryFilter" : {
-      "type" : "object",
-      "properties" : {
-        "Filter" : {
-          "$ref" : "#/definitions/Filter"
+    "RepositoryFilter": {
+      "type": "object",
+      "properties": {
+        "Filter": {
+          "$ref": "#/definitions/Filter"
         },
-        "FilterType" : {
-          "$ref" : "#/definitions/FilterType"
+        "FilterType": {
+          "$ref": "#/definitions/FilterType"
         }
       },
-      "description" : "An array of objects representing the details of a repository filter.",
-      "required" : [ "Filter", "FilterType" ],
-      "additionalProperties" : false
+      "description": "An array of objects representing the details of a repository filter.",
+      "required": [
+        "Filter",
+        "FilterType"
+      ],
+      "additionalProperties": false,
+      "title": "RepositoryFilterDefinition"
     },
-    "Filter" : {
-      "type" : "string",
-      "description" : "The repository filter to be applied for replication.",
-      "pattern" : "^(?:[a-z0-9]+(?:[._-][a-z0-9]*)*/)*[a-z0-9]*(?:[._-][a-z0-9]*)*$"
-    },
-    "FilterType" : {
-      "description" : "Type of repository filter",
-      "type" : "string",
-      "enum" : [ "PREFIX_MATCH" ]
-    },
-    "ReplicationDestination" : {
-      "type" : "object",
-      "properties" : {
-        "Region" : {
-          "$ref" : "#/definitions/Region"
+    "Filter": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(?:[a-z0-9]+(?:[._-][a-z0-9]*)*/)*[a-z0-9]*(?:[._-][a-z0-9]*)*$"
         },
-        "RegistryId" : {
-          "$ref" : "#/definitions/RegistryId"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The repository filter to be applied for replication.",
+      "title": "FilterDefinition"
+    },
+    "FilterType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PREFIX_MATCH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of repository filter",
+      "title": "FilterTypeDefinition"
+    },
+    "ReplicationDestination": {
+      "type": "object",
+      "properties": {
+        "Region": {
+          "$ref": "#/definitions/Region"
+        },
+        "RegistryId": {
+          "$ref": "#/definitions/RegistryId"
         }
       },
-      "description" : "An array of objects representing the details of a replication destination.",
-      "required" : [ "Region", "RegistryId" ],
-      "additionalProperties" : false
+      "description": "An array of objects representing the details of a replication destination.",
+      "required": [
+        "Region",
+        "RegistryId"
+      ],
+      "additionalProperties": false,
+      "title": "ReplicationDestinationDefinition"
     },
-    "RegistryId" : {
-      "type" : "string",
-      "description" : "The account ID of the destination registry to replicate to.",
-      "pattern" : "^[0-9]{12}$"
+    "RegistryId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9]{12}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The account ID of the destination registry to replicate to.",
+      "title": "RegistryIdDefinition"
     },
-    "Region" : {
-      "description" : "A Region to replicate to.",
-      "type" : "string",
-      "pattern" : "[0-9a-z-]{2,25}"
+    "Region": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[0-9a-z-]{2,25}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A Region to replicate to.",
+      "title": "RegionDefinition"
     }
   },
-  "properties" : {
-    "ReplicationConfiguration" : {
-      "$ref" : "#/definitions/ReplicationConfiguration"
-    },
-    "RegistryId" : {
-      "type" : "string",
-      "description" : "The RegistryId associated with the aws account."
+  "properties": {
+    "ReplicationConfiguration": {
+      "$ref": "#/definitions/ReplicationConfiguration"
     }
   },
-  "required" : [ "ReplicationConfiguration" ],
-  "primaryIdentifier" : [ "/properties/RegistryId" ],
-  "readOnlyProperties" : [ "/properties/RegistryId" ],
-  "additionalProperties" : false,
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "ecr:DescribeRegistry", "ecr:PutReplicationConfiguration", "iam:CreateServiceLinkedRole" ]
+  "required": [
+    "ReplicationConfiguration"
+  ],
+  "primaryIdentifier": [
+    "/properties/RegistryId"
+  ],
+  "readOnlyProperties": [
+    "/properties/RegistryId"
+  ],
+  "additionalProperties": false,
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ecr:DescribeRegistry",
+        "ecr:PutReplicationConfiguration",
+        "iam:CreateServiceLinkedRole"
+      ]
     },
-    "read" : {
-      "permissions" : [ "ecr:DescribeRegistry" ]
+    "read": {
+      "permissions": [
+        "ecr:DescribeRegistry"
+      ]
     },
-    "update" : {
-      "permissions" : [ "ecr:DescribeRegistry", "ecr:PutReplicationConfiguration", "iam:CreateServiceLinkedRole" ]
+    "update": {
+      "permissions": [
+        "ecr:DescribeRegistry",
+        "ecr:PutReplicationConfiguration",
+        "iam:CreateServiceLinkedRole"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "ecr:DescribeRegistry", "ecr:PutReplicationConfiguration", "iam:CreateServiceLinkedRole" ]
+    "delete": {
+      "permissions": [
+        "ecr:DescribeRegistry",
+        "ecr:PutReplicationConfiguration",
+        "iam:CreateServiceLinkedRole"
+      ]
     },
-    "list" : {
-      "permissions" : [ "ecr:DescribeRegistry" ]
+    "list": {
+      "permissions": [
+        "ecr:DescribeRegistry"
+      ]
     }
-  }
+  },
+  "title": "AWSECRReplicationConfigurationProperties",
+  "type": "object"
 }

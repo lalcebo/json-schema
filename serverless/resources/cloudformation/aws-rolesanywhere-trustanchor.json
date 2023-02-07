@@ -1,117 +1,185 @@
 {
-  "typeName" : "AWS::RolesAnywhere::TrustAnchor",
-  "description" : "Definition of AWS::RolesAnywhere::TrustAnchor Resource Type.",
-  "definitions" : {
-    "Source" : {
-      "type" : "object",
-      "properties" : {
-        "SourceType" : {
-          "$ref" : "#/definitions/TrustAnchorType"
+  "typeName": "AWS::RolesAnywhere::TrustAnchor",
+  "description": "Definition of AWS::RolesAnywhere::TrustAnchor Resource Type.. Source:- No source definition found, add manually please",
+  "definitions": {
+    "Source": {
+      "type": "object",
+      "properties": {
+        "SourceType": {
+          "$ref": "#/definitions/TrustAnchorType"
         },
-        "SourceData" : {
-          "$ref" : "#/definitions/SourceData"
+        "SourceData": {
+          "$ref": "#/definitions/SourceData"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "SourceDefinition"
     },
-    "SourceData" : {
-      "oneOf" : [ {
-        "type" : "object",
-        "title" : "X509CertificateData",
-        "properties" : {
-          "X509CertificateData" : {
-            "type" : "string"
-          }
+    "SourceData": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "X509CertificateData",
+          "properties": {
+            "X509CertificateData": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "X509CertificateData"
+          ],
+          "additionalProperties": false
         },
-        "required" : [ "X509CertificateData" ],
-        "additionalProperties" : false
-      }, {
-        "type" : "object",
-        "title" : "AcmPcaArn",
-        "properties" : {
-          "AcmPcaArn" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "AcmPcaArn" ],
-        "additionalProperties" : false
-      } ]
+        {
+          "type": "object",
+          "title": "AcmPcaArn",
+          "properties": {
+            "AcmPcaArn": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "AcmPcaArn"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "SourceDataDefinition"
     },
-    "Tag" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "maxLength" : 128,
-          "minLength" : 1
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string",
-          "maxLength" : 256,
-          "minLength" : 0
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Key", "Value" ],
-      "additionalProperties" : false
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
     },
-    "TrustAnchorType" : {
-      "type" : "string",
-      "enum" : [ "AWS_ACM_PCA", "CERTIFICATE_BUNDLE", "SELF_SIGNED_REPOSITORY" ]
+    "TrustAnchorType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS_ACM_PCA",
+            "CERTIFICATE_BUNDLE",
+            "SELF_SIGNED_REPOSITORY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "TrustAnchorTypeDefinition"
     }
   },
-  "properties" : {
-    "Enabled" : {
-      "type" : "boolean"
+  "properties": {
+    "Enabled": {
+      "type": "boolean"
     },
-    "Name" : {
-      "type" : "string"
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "Source" : {
-      "$ref" : "#/definitions/Source"
+    "Source": {
+      "$ref": "#/definitions/Source"
     },
-    "Tags" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
       },
-      "maxItems" : 200,
-      "minItems" : 0
-    },
-    "TrustAnchorId" : {
-      "type" : "string",
-      "pattern" : "[a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}"
-    },
-    "TrustAnchorArn" : {
-      "type" : "string",
-      "pattern" : "[a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}"
+      "maxItems": 200,
+      "minItems": 0
     }
   },
-  "tagging" : {
-    "taggable" : true,
-    "tagOnCreate" : true,
-    "tagUpdatable" : true,
-    "cloudFormationSystemTags" : true,
-    "tagProperty" : "/properties/Tags"
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags"
   },
-  "required" : [ ],
-  "readOnlyProperties" : [ "/properties/TrustAnchorId", "/properties/TrustAnchorArn" ],
-  "primaryIdentifier" : [ "/properties/TrustAnchorId" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "iam:CreateServiceLinkedRole", "rolesanywhere:CreateTrustAnchor", "rolesanywhere:ListTagsForResource" ]
+  "required": [
+    "Name",
+    "Source"
+  ],
+  "readOnlyProperties": [
+    "/properties/TrustAnchorId",
+    "/properties/TrustAnchorArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/TrustAnchorId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iam:CreateServiceLinkedRole",
+        "rolesanywhere:CreateTrustAnchor",
+        "rolesanywhere:ListTagsForResource"
+      ]
     },
-    "read" : {
-      "permissions" : [ "rolesanywhere:GetTrustAnchor", "rolesanywhere:ListTagsForResource" ]
+    "read": {
+      "permissions": [
+        "rolesanywhere:GetTrustAnchor",
+        "rolesanywhere:ListTagsForResource"
+      ]
     },
-    "update" : {
-      "permissions" : [ "acm-pca:GetCertificateAuthorityCertificate", "rolesanywhere:ListTagsForResource", "rolesanywhere:TagResource", "rolesanywhere:UntagResource", "rolesanywhere:EnableTrustAnchor", "rolesanywhere:DisableTrustAnchor", "rolesanywhere:UpdateTrustAnchor" ]
+    "update": {
+      "permissions": [
+        "acm-pca:GetCertificateAuthorityCertificate",
+        "rolesanywhere:ListTagsForResource",
+        "rolesanywhere:TagResource",
+        "rolesanywhere:UntagResource",
+        "rolesanywhere:EnableTrustAnchor",
+        "rolesanywhere:DisableTrustAnchor",
+        "rolesanywhere:UpdateTrustAnchor"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "rolesanywhere:DeleteTrustAnchor" ]
+    "delete": {
+      "permissions": [
+        "rolesanywhere:DeleteTrustAnchor"
+      ]
     },
-    "list" : {
-      "permissions" : [ "rolesanywhere:ListTrustAnchors", "rolesanywhere:ListTagsForResource" ]
+    "list": {
+      "permissions": [
+        "rolesanywhere:ListTrustAnchors",
+        "rolesanywhere:ListTagsForResource"
+      ]
     }
   },
-  "additionalProperties" : false
+  "additionalProperties": false,
+  "title": "AWSRolesAnywhereTrustAnchorProperties",
+  "type": "object"
 }

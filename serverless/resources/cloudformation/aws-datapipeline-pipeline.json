@@ -1,145 +1,355 @@
 {
-  "typeName" : "AWS::DataPipeline::Pipeline",
-  "description" : "Resource Type definition for AWS::DataPipeline::Pipeline",
-  "additionalProperties" : false,
-  "properties" : {
-    "PipelineTags" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "$ref" : "#/definitions/PipelineTag"
+  "typeName": "AWS::DataPipeline::Pipeline",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datapipeline",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datapipeline",
+  "properties": {
+    "Activate": {
+      "description": "Indicates whether to validate and start the pipeline or stop an active pipeline. By default, the value is set to true.",
+      "type": "boolean"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the pipeline."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the pipeline."
+    },
+    "ParameterObjects": {
+      "description": "The parameter objects used with the pipeline.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ParameterObject"
       }
     },
-    "ParameterObjects" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "$ref" : "#/definitions/ParameterObject"
+    "ParameterValues": {
+      "description": "The parameter values used with the pipeline.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ParameterValue"
       }
     },
-    "Description" : {
-      "type" : "string"
-    },
-    "Activate" : {
-      "type" : "boolean"
-    },
-    "PipelineObjects" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "$ref" : "#/definitions/PipelineObject"
+    "PipelineObjects": {
+      "description": "The objects that define the pipeline. These objects overwrite the existing pipeline definition. Not all objects, fields, and values can be updated. For information about restrictions, see Editing Your Pipeline in the AWS Data Pipeline Developer Guide.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PipelineObject"
       }
     },
-    "Id" : {
-      "type" : "string"
-    },
-    "ParameterValues" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "$ref" : "#/definitions/ParameterValue"
+    "PipelineTags": {
+      "description": "A list of arbitrary tags (key-value pairs) to associate with the pipeline, which you can use to control permissions. For more information, see Controlling Access to Pipelines and Resources in the AWS Data Pipeline Developer Guide.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PipelineTag"
       }
-    },
-    "Name" : {
-      "type" : "string"
     }
   },
-  "definitions" : {
-    "ParameterAttribute" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "StringValue" : {
-          "type" : "string"
-        },
-        "Key" : {
-          "type" : "string"
-        }
-      },
-      "required" : [ "StringValue", "Key" ]
-    },
-    "PipelineTag" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Value" : {
-          "type" : "string"
-        },
-        "Key" : {
-          "type" : "string"
-        }
-      },
-      "required" : [ "Value", "Key" ]
-    },
-    "Field" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "RefValue" : {
-          "type" : "string"
-        },
-        "StringValue" : {
-          "type" : "string"
-        },
-        "Key" : {
-          "type" : "string"
-        }
-      },
-      "required" : [ "Key" ]
-    },
-    "ParameterValue" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "StringValue" : {
-          "type" : "string"
-        },
-        "Id" : {
-          "type" : "string"
-        }
-      },
-      "required" : [ "Id", "StringValue" ]
-    },
-    "PipelineObject" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Fields" : {
-          "type" : "array",
-          "uniqueItems" : false,
-          "items" : {
-            "$ref" : "#/definitions/Field"
+  "definitions": {
+    "ParameterObject": {
+      "type": "object",
+      "properties": {
+        "Attributes": {
+          "description": "The attributes of the parameter object.",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ParameterAttribute"
           }
         },
-        "Id" : {
-          "type" : "string"
-        },
-        "Name" : {
-          "type" : "string"
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the parameter object."
         }
       },
-      "required" : [ "Fields", "Id", "Name" ]
+      "required": [
+        "Attributes",
+        "Id"
+      ],
+      "additionalProperties": false,
+      "title": "ParameterObjectDefinition"
     },
-    "ParameterObject" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Attributes" : {
-          "type" : "array",
-          "uniqueItems" : false,
-          "items" : {
-            "$ref" : "#/definitions/ParameterAttribute"
+    "ParameterAttribute": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The field identifier."
+        },
+        "StringValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The field value, expressed as a String."
+        }
+      },
+      "required": [
+        "Key",
+        "StringValue"
+      ],
+      "additionalProperties": false,
+      "title": "ParameterAttributeDefinition"
+    },
+    "ParameterValue": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the parameter value."
+        },
+        "StringValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The field value, expressed as a String."
+        }
+      },
+      "required": [
+        "Id",
+        "StringValue"
+      ],
+      "additionalProperties": false,
+      "title": "ParameterValueDefinition"
+    },
+    "Field": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the name of a field for a particular object. To view valid values for a particular field, see Pipeline Object Reference in the AWS Data Pipeline Developer Guide."
+        },
+        "RefValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A field value that you specify as an identifier of another object in the same pipeline definition."
+        },
+        "StringValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A field value that you specify as a string. To view valid values for a particular field, see Pipeline Object Reference in the AWS Data Pipeline Developer Guide."
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "title": "FieldDefinition"
+    },
+    "PipelineObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Fields": {
+          "description": "Key-value pairs that define the properties of the object.",
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/Field"
           }
         },
-        "Id" : {
-          "type" : "string"
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the object."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the object."
         }
       },
-      "required" : [ "Attributes", "Id" ]
+      "required": [
+        "Fields",
+        "Id",
+        "Name"
+      ],
+      "title": "PipelineObjectDefinition"
+    },
+    "PipelineTag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of a tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value to associate with the key name."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "PipelineTagDefinition"
     }
   },
-  "required" : [ "ParameterObjects", "Name" ],
-  "createOnlyProperties" : [ "/properties/Name", "/properties/Description" ],
-  "primaryIdentifier" : [ "/properties/Id" ],
-  "readOnlyProperties" : [ "/properties/Id" ]
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/PipelineTags"
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/PipelineId"
+  ],
+  "createOnlyProperties": [
+    "/properties/Description",
+    "/properties/Name"
+  ],
+  "primaryIdentifier": [
+    "/properties/PipelineId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "datapipeline:CreatePipeline",
+        "datapipeline:PutPipelineDefinition",
+        "datapipeline:GetPipelineDefinition",
+        "datapipeline:DescribePipelines",
+        "datapipeline:ValidatePipelineDefinition",
+        "datapipeline:ActivatePipeline",
+        "datapipeline:AddTags"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "datapipeline:GetPipelineDefinition",
+        "datapipeline:DescribePipelines"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "datapipeline:PutPipelineDefinition",
+        "datapipeline:AddTags",
+        "datapipeline:RemoveTags",
+        "datapipeline:DeactivatePipeline",
+        "datapipeline:GetPipelineDefinition",
+        "datapipeline:ActivatePipeline",
+        "datapipeline:ValidatePipelineDefinition",
+        "datapipeline:DescribePipelines",
+        "datapipeline:AddTags",
+        "datapipeline:RemoveTags"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "datapipeline:DeletePipeline",
+        "datapipeline:DescribePipelines",
+        "datapipeline:RemoveTags"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "datapipeline:ListPipelines"
+      ]
+    }
+  },
+  "title": "AWSDataPipelinePipelineProperties",
+  "type": "object"
 }

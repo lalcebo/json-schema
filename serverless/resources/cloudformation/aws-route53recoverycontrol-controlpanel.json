@@ -1,0 +1,135 @@
+{
+  "typeName": "AWS::Route53RecoveryControl::ControlPanel",
+  "description": "AWS Route53 Recovery Control Control Panel resource schema .. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-route53-recovery-control.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-route53-recovery-control.git",
+  "taggable": true,
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
+    }
+  },
+  "properties": {
+    "ClusterArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Cluster to associate with the Control Panel"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the control panel. You can use any non-white space character in the name."
+    },
+    "Tags": {
+      "description": "A collection of tags associated with a resource",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag",
+        "maxItems": 20
+      },
+      "insertionOrder": false
+    }
+  },
+  "required": [
+    "Name"
+  ],
+  "additionalProperties": false,
+  "createOnlyProperties": [
+    "/properties/ClusterArn",
+    "/properties/Tags"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Tags"
+  ],
+  "primaryIdentifier": [
+    "/properties/ControlPanelArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/ControlPanelArn",
+    "/properties/Status",
+    "/properties/RoutingControlCount",
+    "/properties/DefaultControlPanel"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "route53-recovery-control-config:CreateControlPanel",
+        "route53-recovery-control-config:DescribeCluster",
+        "route53-recovery-control-config:DescribeControlPanel",
+        "route53-recovery-control-config:ListTagsForResource",
+        "route53-recovery-control-config:TagResource"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "route53-recovery-control-config:DescribeControlPanel",
+        "route53-recovery-control-config:ListTagsForResource"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "route53-recovery-control-config:UpdateControlPanel",
+        "route53-recovery-control-config:DescribeControlPanel",
+        "route53-recovery-control-config:ListTagsForResource",
+        "route53-recovery-control-config:TagResource",
+        "route53-recovery-control-config:UntagResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "route53-recovery-control-config:DeleteControlPanel"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "route53-recovery-control-config:ListControlPanels"
+      ]
+    }
+  },
+  "title": "AWSRoute53RecoveryControlControlPanelProperties",
+  "type": "object"
+}

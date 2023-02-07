@@ -1,198 +1,308 @@
 {
-  "typeName" : "AWS::ServiceCatalog::CloudFormationProvisionedProduct",
-  "description" : "Resource Schema for AWS::ServiceCatalog::CloudFormationProvisionedProduct",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "documentationUrl" : "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-servicecatalog-cloudformationprovisionedproduct.html",
-  "definitions" : {
-    "ProvisioningPreferences" : {
-      "type" : "object",
-      "properties" : {
-        "StackSetAccounts" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string",
-            "pattern" : "^[0-9]{12}$"
+  "typeName": "AWS::ServiceCatalog::CloudFormationProvisionedProduct",
+  "description": "Resource Schema for AWS::ServiceCatalog::CloudFormationProvisionedProduct. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "documentationUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-servicecatalog-cloudformationprovisionedproduct.html",
+  "definitions": {
+    "ProvisioningPreferences": {
+      "type": "object",
+      "properties": {
+        "StackSetAccounts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9]{12}$"
           }
         },
-        "StackSetFailureToleranceCount" : {
-          "type" : "integer",
-          "minimum" : 0
+        "StackSetFailureToleranceCount": {
+          "type": "integer",
+          "minimum": 0
         },
-        "StackSetFailureTolerancePercentage" : {
-          "type" : "integer",
-          "minimum" : 0,
-          "maximum" : 100
+        "StackSetFailureTolerancePercentage": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
         },
-        "StackSetMaxConcurrencyCount" : {
-          "type" : "integer",
-          "minimum" : 1
+        "StackSetMaxConcurrencyCount": {
+          "type": "integer",
+          "minimum": 1
         },
-        "StackSetMaxConcurrencyPercentage" : {
-          "type" : "integer",
-          "minimum" : 1,
-          "maximum" : 100
+        "StackSetMaxConcurrencyPercentage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
         },
-        "StackSetOperationType" : {
-          "type" : "string",
-          "enum" : [ "CREATE", "UPDATE", "DELETE" ]
+        "StackSetOperationType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CREATE",
+                "UPDATE",
+                "DELETE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "StackSetRegions" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string",
-            "pattern" : "^[a-z]{2}-([a-z]+-)+[1-9]"
+        "StackSetRegions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z]{2}-([a-z]+-)+[1-9]"
           }
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "ProvisioningPreferencesDefinition"
     },
-    "ProvisioningParameter" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 1000
+    "ProvisioningParameter": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string",
-          "maxLength" : 4096
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4096
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Key", "Value" ]
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "ProvisioningParameterDefinition"
     },
-    "Tag" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128,
-          "pattern" : "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 256,
-          "pattern" : "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Key", "Value" ]
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "TagDefinition"
     },
-    "OutputType" : {
-      "type" : "string"
+    "OutputType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "OutputTypeDefinition"
     }
   },
-  "properties" : {
-    "AcceptLanguage" : {
-      "type" : "string",
-      "enum" : [ "en", "jp", "zh" ]
-    },
-    "NotificationArns" : {
-      "type" : "array",
-      "uniqueItems" : true,
-      "items" : {
-        "type" : "string"
-      },
-      "maxItems" : 5
-    },
-    "PathId" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "PathName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "ProductId" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "ProductName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 128
-    },
-    "ProvisionedProductName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 128
-    },
-    "ProvisioningArtifactId" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "ProvisioningArtifactName" : {
-      "type" : "string"
-    },
-    "ProvisioningParameters" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/ProvisioningParameter"
-      }
-    },
-    "ProvisioningPreferences" : {
-      "$ref" : "#/definitions/ProvisioningPreferences"
-    },
-    "Tags" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/Tag"
-      }
-    },
-    "ProvisionedProductId" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 50
-    },
-    "RecordId" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 50
-    },
-    "CloudformationStackArn" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 256
-    },
-    "Outputs" : {
-      "description" : "List of key-value pair outputs.",
-      "type" : "object",
-      "patternProperties" : {
-        "^[A-Za-z0-9]{1,64}$" : {
-          "$ref" : "#/definitions/OutputType"
+  "properties": {
+    "AcceptLanguage": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "en",
+            "jp",
+            "zh"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
+      ]
+    },
+    "NotificationArns": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
       },
-      "additionalProperties" : false,
-      "maxProperties" : 100
+      "maxItems": 5
+    },
+    "PathId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "PathName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProductId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProductName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProvisionedProductName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProvisioningArtifactId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProvisioningArtifactName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProvisioningParameters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ProvisioningParameter"
+      }
+    },
+    "ProvisioningPreferences": {
+      "$ref": "#/definitions/ProvisioningPreferences"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
-  "additionalProperties" : false,
-  "readOnlyProperties" : [ "/properties/RecordId", "/properties/CloudformationStackArn", "/properties/Outputs", "/properties/ProvisionedProductId" ],
-  "createOnlyProperties" : [ "/properties/NotificationArns", "/properties/ProvisionedProductName" ],
-  "primaryIdentifier" : [ "/properties/ProvisionedProductId" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "*" ],
-      "timeoutInMinutes" : 720
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/RecordId",
+    "/properties/CloudformationStackArn",
+    "/properties/Outputs",
+    "/properties/ProvisionedProductId"
+  ],
+  "createOnlyProperties": [
+    "/properties/NotificationArns",
+    "/properties/ProvisionedProductName"
+  ],
+  "primaryIdentifier": [
+    "/properties/ProvisionedProductId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "*"
+      ],
+      "timeoutInMinutes": 720
     },
-    "read" : {
-      "permissions" : [ "*" ]
+    "read": {
+      "permissions": [
+        "*"
+      ]
     },
-    "update" : {
-      "permissions" : [ "*" ],
-      "timeoutInMinutes" : 720
+    "update": {
+      "permissions": [
+        "*"
+      ],
+      "timeoutInMinutes": 720
     },
-    "delete" : {
-      "permissions" : [ "*" ]
+    "delete": {
+      "permissions": [
+        "*"
+      ]
     }
-  }
+  },
+  "title": "AWSServiceCatalogCloudFormationProvisionedProductProperties",
+  "type": "object"
 }

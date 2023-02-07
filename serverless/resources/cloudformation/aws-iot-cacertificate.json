@@ -1,130 +1,239 @@
 {
-  "typeName" : "AWS::IoT::CACertificate",
-  "description" : "Registers a CA Certificate in IoT.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "definitions" : {
-    "RegistrationConfig" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "TemplateBody" : {
-          "type" : "string",
-          "pattern" : "[\\s\\S]*",
-          "minLength" : 0,
-          "maxLength" : 10240
+  "typeName": "AWS::IoT::CACertificate",
+  "description": "Registers a CA Certificate in IoT.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "RegistrationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TemplateBody": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\s\\S]*",
+              "minLength": 0,
+              "maxLength": 10240
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "RoleArn" : {
-          "type" : "string",
-          "pattern" : "arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+",
-          "minLength" : 20,
-          "maxLength" : 2048
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+",
+              "minLength": 20,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "TemplateName" : {
-          "type" : "string",
-          "pattern" : "^[0-9A-Za-z_-]+$",
-          "minLength" : 1,
-          "maxLength" : 36
-        }
-      }
-    },
-    "Tag" : {
-      "description" : "A key-value pair to associate with a resource.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "description" : "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
-          "pattern" : "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
-          "minLength" : 1,
-          "maxLength" : 127
-        },
-        "Value" : {
-          "type" : "string",
-          "description" : "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
-          "pattern" : "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
-          "minLength" : 1,
-          "maxLength" : 255
+        "TemplateName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9A-Za-z_-]+$",
+              "minLength": 1,
+              "maxLength": 36
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Value", "Key" ]
+      "title": "RegistrationConfigDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "properties" : {
-    "CACertificatePem" : {
-      "type" : "string",
-      "pattern" : "[\\s\\S]*",
-      "minLength" : 1,
-      "maxLength" : 65536
+  "properties": {
+    "CACertificatePem": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\s\\S]*",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "VerificationCertificatePem" : {
-      "type" : "string",
-      "description" : "The private key verification certificate.",
-      "pattern" : "[\\s\\S]*",
-      "minLength" : 1,
-      "maxLength" : 65536
+    "VerificationCertificatePem": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\s\\S]*",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The private key verification certificate."
     },
-    "Status" : {
-      "type" : "string",
-      "enum" : [ "ACTIVE", "INACTIVE" ]
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "CertificateMode" : {
-      "type" : "string",
-      "enum" : [ "DEFAULT", "SNI_ONLY" ]
+    "CertificateMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DEFAULT",
+            "SNI_ONLY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "AutoRegistrationStatus" : {
-      "type" : "string",
-      "enum" : [ "ENABLE", "DISABLE" ]
+    "AutoRegistrationStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLE",
+            "DISABLE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "RemoveAutoRegistration" : {
-      "type" : "boolean"
+    "RemoveAutoRegistration": {
+      "type": "boolean"
     },
-    "RegistrationConfig" : {
-      "$ref" : "#/definitions/RegistrationConfig"
+    "RegistrationConfig": {
+      "$ref": "#/definitions/RegistrationConfig"
     },
-    "Id" : {
-      "type" : "string"
-    },
-    "Arn" : {
-      "type" : "string"
-    },
-    "Tags" : {
-      "description" : "An array of key-value pairs to apply to this resource.",
-      "type" : "array",
-      "uniqueItems" : true,
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "tagging" : {
-    "taggable" : false,
-    "tagOnCreate" : false,
-    "tagUpdatable" : false,
-    "cloudFormationSystemTags" : true
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": true
   },
-  "additionalProperties" : false,
-  "required" : [ "CACertificatePem", "Status" ],
-  "readOnlyProperties" : [ "/properties/Arn", "/properties/Id" ],
-  "createOnlyProperties" : [ "/properties/VerificationCertificatePem", "/properties/CertificateMode", "/properties/CACertificatePem" ],
-  "writeOnlyProperties" : [ "/properties/VerificationCertificatePem" ],
-  "primaryIdentifier" : [ "/properties/Id" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "iam:GetRole", "iam:PassRole", "iot:RegisterCACertificate" ]
+  "additionalProperties": false,
+  "required": [
+    "CACertificatePem",
+    "Status"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/Id"
+  ],
+  "createOnlyProperties": [
+    "/properties/VerificationCertificatePem",
+    "/properties/CertificateMode",
+    "/properties/CACertificatePem"
+  ],
+  "writeOnlyProperties": [
+    "/properties/VerificationCertificatePem"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iam:GetRole",
+        "iam:PassRole",
+        "iot:RegisterCACertificate"
+      ]
     },
-    "read" : {
-      "permissions" : [ "iot:DescribeCACertificate" ]
+    "read": {
+      "permissions": [
+        "iot:DescribeCACertificate"
+      ]
     },
-    "update" : {
-      "permissions" : [ "iam:GetRole", "iam:PassRole", "iot:UpdateCACertificate" ]
+    "update": {
+      "permissions": [
+        "iam:GetRole",
+        "iam:PassRole",
+        "iot:UpdateCACertificate"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "iot:UpdateCACertificate", "iot:DeleteCACertificate" ]
+    "delete": {
+      "permissions": [
+        "iot:UpdateCACertificate",
+        "iot:DeleteCACertificate"
+      ]
     },
-    "list" : {
-      "permissions" : [ "iot:ListCACertificates" ]
+    "list": {
+      "permissions": [
+        "iot:ListCACertificates"
+      ]
     }
-  }
+  },
+  "title": "AWSIoTCACertificateProperties",
+  "type": "object"
 }

@@ -1,52 +1,92 @@
 {
-  "typeName" : "AWS::CloudFormation::ResourceDefaultVersion",
-  "description" : "The default version of a resource that has been registered in the CloudFormation Registry.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudformation",
-  "properties" : {
-    "TypeVersionArn" : {
-      "description" : "The Amazon Resource Name (ARN) of the type version.",
-      "pattern" : "^arn:aws[A-Za-z0-9-]{0,64}:cloudformation:[A-Za-z0-9-]{1,64}:([0-9]{12})?:type/resource/.+$",
-      "type" : "string"
+  "typeName": "AWS::CloudFormation::ResourceDefaultVersion",
+  "description": "The default version of a resource that has been registered in the CloudFormation Registry.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudformation",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudformation",
+  "properties": {
+    "TypeVersionArn": {
+      "oneOf": [
+        {
+          "pattern": "^arn:aws[A-Za-z0-9-]{0,64}:cloudformation:[A-Za-z0-9-]{1,64}:([0-9]{12})?:type/resource/.+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the type version."
     },
-    "TypeName" : {
-      "description" : "The name of the type being registered.\n\nWe recommend that type names adhere to the following pattern: company_or_organization::service::type.",
-      "pattern" : "^[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}$",
-      "type" : "string"
+    "TypeName": {
+      "oneOf": [
+        {
+          "pattern": "^[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}::[A-Za-z0-9]{2,64}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the type being registered.\n\nWe recommend that type names adhere to the following pattern: company_or_organization::service::type."
     },
-    "Arn" : {
-      "description" : "The Amazon Resource Name (ARN) of the type. This is used to uniquely identify a ResourceDefaultVersion",
-      "pattern" : "^arn:aws[A-Za-z0-9-]{0,64}:cloudformation:[A-Za-z0-9-]{1,64}:([0-9]{12})?:type/resource/.+$",
-      "type" : "string"
-    },
-    "VersionId" : {
-      "description" : "The ID of an existing version of the resource to set as the default.",
-      "pattern" : "^[A-Za-z0-9-]{1,128}$",
-      "type" : "string"
+    "VersionId": {
+      "oneOf": [
+        {
+          "pattern": "^[A-Za-z0-9-]{1,128}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of an existing version of the resource to set as the default."
     }
   },
-  "oneOf" : [ {
-    "required" : [ "TypeVersionArn" ]
-  }, {
-    "required" : [ "TypeName", "VersionId" ]
-  } ],
-  "readOnlyProperties" : [ "/properties/Arn" ],
-  "primaryIdentifier" : [ "/properties/Arn" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "cloudformation:SetTypeDefaultVersion" ]
+  "oneOf": [
+    {
+      "required": [
+        "TypeVersionArn"
+      ]
     },
-    "read" : {
-      "permissions" : [ "cloudformation:DescribeType" ]
+    {
+      "required": [
+        "TypeName",
+        "VersionId"
+      ]
+    }
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "cloudformation:SetTypeDefaultVersion"
+      ]
     },
-    "update" : {
-      "permissions" : [ "cloudformation:SetTypeDefaultVersion" ]
+    "read": {
+      "permissions": [
+        "cloudformation:DescribeType"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "" ]
+    "update": {
+      "permissions": [
+        "cloudformation:SetTypeDefaultVersion"
+      ]
     },
-    "list" : {
-      "permissions" : [ "cloudformation:ListTypeVersions" ]
+    "delete": {
+      "permissions": [
+        ""
+      ]
+    },
+    "list": {
+      "permissions": [
+        "cloudformation:ListTypeVersions"
+      ]
     }
   },
-  "additionalProperties" : false
+  "additionalProperties": false,
+  "title": "AWSCloudFormationResourceDefaultVersionProperties",
+  "type": "object"
 }

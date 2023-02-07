@@ -1,0 +1,345 @@
+{
+  "typeName": "AWS::Connect::InstanceStorageConfig",
+  "description": "Resource Type definition for AWS::Connect::InstanceStorageConfig. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "definitions": {
+    "KinesisStreamArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:kinesis:[-a-z0-9]*:[0-9]{12}:stream/[-a-zA-Z0-9_.]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An ARN is a unique AWS resource identifier.",
+      "title": "KinesisStreamArnDefinition"
+    },
+    "FirehoseDeliveryStreamArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:firehose:[-a-z0-9]*:[0-9]{12}:deliverystream/[-a-zA-Z0-9_.]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An ARN is a unique AWS resource identifier.",
+      "title": "FirehoseDeliveryStreamArnDefinition"
+    },
+    "AssociationId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[-a-z0-9]*$",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An associationID is automatically generated when a storage config is associated with an instance",
+      "title": "AssociationIdDefinition"
+    },
+    "InstanceStorageResourceType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CHAT_TRANSCRIPTS",
+            "CALL_RECORDINGS",
+            "SCHEDULED_REPORTS",
+            "MEDIA_STREAMS",
+            "CONTACT_TRACE_RECORDS",
+            "AGENT_EVENTS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the type of storage resource available for the instance",
+      "title": "InstanceStorageResourceTypeDefinition"
+    },
+    "StorageType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "S3",
+            "KINESIS_VIDEO_STREAM",
+            "KINESIS_STREAM",
+            "KINESIS_FIREHOSE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the storage type to be associated with the instance",
+      "title": "StorageTypeDefinition"
+    },
+    "BucketName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A name for the S3 Bucket",
+      "title": "BucketNameDefinition"
+    },
+    "Hours": {
+      "description": "Number of hours",
+      "type": "number",
+      "title": "HoursDefinition"
+    },
+    "Prefix": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Prefixes are used to infer logical hierarchy",
+      "title": "PrefixDefinition"
+    },
+    "EncryptionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "KMS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies default encryption using AWS KMS-Managed Keys",
+      "title": "EncryptionTypeDefinition"
+    },
+    "KeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the encryption key id",
+      "title": "KeyIdDefinition"
+    },
+    "EncryptionConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EncryptionType": {
+          "$ref": "#/definitions/EncryptionType"
+        },
+        "KeyId": {
+          "$ref": "#/definitions/KeyId"
+        }
+      },
+      "required": [
+        "EncryptionType",
+        "KeyId"
+      ],
+      "title": "EncryptionConfigDefinition"
+    },
+    "S3Config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BucketName": {
+          "$ref": "#/definitions/BucketName"
+        },
+        "BucketPrefix": {
+          "$ref": "#/definitions/Prefix"
+        },
+        "EncryptionConfig": {
+          "$ref": "#/definitions/EncryptionConfig"
+        }
+      },
+      "required": [
+        "BucketName",
+        "BucketPrefix"
+      ],
+      "title": "S3ConfigDefinition"
+    },
+    "KinesisVideoStreamConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Prefix": {
+          "$ref": "#/definitions/Prefix"
+        },
+        "RetentionPeriodHours": {
+          "$ref": "#/definitions/Hours"
+        },
+        "EncryptionConfig": {
+          "$ref": "#/definitions/EncryptionConfig"
+        }
+      },
+      "required": [
+        "Prefix",
+        "RetentionPeriodHours"
+      ],
+      "title": "KinesisVideoStreamConfigDefinition"
+    },
+    "KinesisStreamConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StreamArn": {
+          "$ref": "#/definitions/KinesisStreamArn"
+        }
+      },
+      "required": [
+        "StreamArn"
+      ],
+      "title": "KinesisStreamConfigDefinition"
+    },
+    "KinesisFirehoseConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FirehoseArn": {
+          "$ref": "#/definitions/FirehoseDeliveryStreamArn"
+        }
+      },
+      "required": [
+        "FirehoseArn"
+      ],
+      "title": "KinesisFirehoseConfigDefinition"
+    }
+  },
+  "properties": {
+    "InstanceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Connect Instance ID with which the storage config will be associated"
+    },
+    "ResourceType": {
+      "$ref": "#/definitions/InstanceStorageResourceType"
+    },
+    "StorageType": {
+      "$ref": "#/definitions/StorageType"
+    },
+    "S3Config": {
+      "$ref": "#/definitions/S3Config"
+    },
+    "KinesisVideoStreamConfig": {
+      "$ref": "#/definitions/KinesisVideoStreamConfig"
+    },
+    "KinesisStreamConfig": {
+      "$ref": "#/definitions/KinesisStreamConfig"
+    },
+    "KinesisFirehoseConfig": {
+      "$ref": "#/definitions/KinesisFirehoseConfig"
+    }
+  },
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "required": [
+    "InstanceArn",
+    "ResourceType",
+    "StorageType"
+  ],
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/AssociationId"
+  ],
+  "createOnlyProperties": [
+    "/properties/InstanceArn",
+    "/properties/ResourceType"
+  ],
+  "primaryIdentifier": [
+    "/properties/InstanceArn",
+    "/properties/AssociationId",
+    "/properties/ResourceType"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "connect:AssociateInstanceStorageConfig",
+        "connect:DescribeInstance",
+        "ds:DescribeDirectories",
+        "s3:GetBucketAcl",
+        "s3:GetBucketLocation",
+        "iam:PutRolePolicy",
+        "kinesis:DescribeStream",
+        "kms:DescribeKey",
+        "kms:CreateGrant",
+        "firehose:DescribeDeliveryStream"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "connect:DescribeInstanceStorageConfig",
+        "connect:ListInstanceStorageConfigs",
+        "connect:DescribeInstance",
+        "ds:DescribeDirectories",
+        "s3:GetBucketAcl",
+        "s3:GetBucketLocation"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "connect:UpdateInstanceStorageConfig",
+        "ds:DescribeDirectories",
+        "s3:GetBucketAcl",
+        "s3:GetBucketLocation",
+        "kinesis:DescribeStream",
+        "iam:PutRolePolicy",
+        "kms:DescribeKey",
+        "kms:CreateGrant",
+        "kms:RetireGrant",
+        "firehose:DescribeDeliveryStream"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "connect:DisassociateInstanceStorageConfig",
+        "connect:DescribeInstance",
+        "s3:GetBucketAcl",
+        "s3:GetBucketLocation",
+        "kms:RetireGrant"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "connect:DescribeInstance",
+        "connect:ListInstanceStorageConfigs",
+        "ds:DescribeDirectories"
+      ]
+    }
+  },
+  "title": "AWSConnectInstanceStorageConfigProperties",
+  "type": "object"
+}

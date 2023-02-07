@@ -2,95 +2,95 @@ const fs = require("fs");
 const path = require("path");
 
 function applyIntrinsicFunctions(schema) {
-  if (schema.properties) {
-    schema.properties = applyCFStringFunctions(schema.properties)
-  }
-  if (schema.definitions) {
-    schema.definitions = applyCFStringFunctions(schema.definitions)
-  }
-  return schema
+    if (schema.properties) {
+        schema.properties = applyCFStringFunctions(schema.properties)
+    }
+    if (schema.definitions) {
+        schema.definitions = applyCFStringFunctions(schema.definitions)
+    }
+    return schema
 }
 
 function applyCFStringFunctions(obj) {
-  Object.keys(obj).forEach((key) => {
-    let val = obj[key];
-    if (val.type === "string") {
-      const {description} = val
-      if (description) {
-        delete val.description
-      }
-      val = {
-        "oneOf": [
-          {
-            ...val
-          },
-          {
-            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-          }
-        ]
-      }
-      if (description) {
-        val.description = description
-      }
-      obj[key] = val
-    } else if (val.type === "object") {
-      if (
-        obj[key].properties
-      ) {
-        obj[key].properties = applyCFStringFunctions(obj[key].properties)
-      }
-    }
-  })
-  return obj
+    Object.keys(obj).forEach((key) => {
+        let val = obj[key];
+        if (val.type === "string") {
+            const {description} = val
+            if (description) {
+                delete val.description
+            }
+            val = {
+                "oneOf": [
+                    {
+                        ...val
+                    },
+                    {
+                        "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                ]
+            }
+            if (description) {
+                val.description = description
+            }
+            obj[key] = val
+        } else if (val.type === "object") {
+            if (
+                obj[key].properties
+            ) {
+                obj[key].properties = applyCFStringFunctions(obj[key].properties)
+            }
+        }
+    })
+    return obj
 }
 
 (async () => {
     const sharedAttributes = {
         "DeletionPolicy": {
-          "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html",
-          "type": "string",
-          "enum": [
-            "Delete",
-            "Retain",
-            "Snapshot"
-          ]
+            "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html",
+            "type": "string",
+            "enum": [
+                "Delete",
+                "Retain",
+                "Snapshot"
+            ]
         },
         "UpdateReplacePolicy": {
-          "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html",
-          "type": "string",
-          "enum": [
-            "Delete",
-            "Retain",
-            "Snapshot"
-          ]
+            "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html",
+            "type": "string",
+            "enum": [
+                "Delete",
+                "Retain",
+                "Snapshot"
+            ]
         },
         "Metadata": {
-          "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-metadata.html",
-          "type": "object"
+            "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-metadata.html",
+            "type": "object"
         },
         "CreationPolicy": {
-          "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-creationpolicy.html",
-          "type": "object"
+            "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-creationpolicy.html",
+            "type": "object"
         },
         "UpdatePolicy": {
-          "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatepolicy.html",
-          "type": "object"
+            "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatepolicy.html",
+            "type": "object"
         },
         "DependsOn": {
-          "type": [
-            "string",
-            "array"
-          ],
-          "items": {
-            "type": "string"
-          }
+            "type": [
+                "string",
+                "array"
+            ],
+            "items": {
+                "type": "string"
+            }
         }
     }
     /**
      * These resource files are downloaded from cloudformation for us-east-1
      * https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-type-schemas.html
      */
-    const resources = fs.readdirSync(path.join(__dirname, "serverless/resources/cloudformation"));
+    const resources = fs.readdirSync(path.join(__dirname, "/cloudformation"));
     const resourcesSchema = {
         $comment: "DO NOT EDIT THIS FILE DIRECTLY! PLEASE CHANGE THE INDIVIDUAL RESOURCE FILES AND THEN RUN THE SCRIPT TO GENERATE THIS FILE",
         $schema: "http://json-schema.org/draft-07/schema#",
@@ -101,7 +101,7 @@ function applyCFStringFunctions(obj) {
         properties: {}
     }
     for (const resource of resources) {
-        let schema = require(`./serverless/resources/cloudformation/${resource}`);
+        let schema = require(`./cloudformation/${resource}`);
         resourcesSchema.definitions[schema.typeName.split("::").join("")] = {
             title: schema.typeName.split("::").join(""),
             type: "object",
@@ -114,23 +114,23 @@ function applyCFStringFunctions(obj) {
                     ],
                 },
                 Properties: {
-                  $ref: `cloudformation-modified/${resource}`
+                    $ref: `cloudformation-modified/${resource}`
                 },
                 ...sharedAttributes
             },
             required: [
-              "Type",
-              "Properties"
+                "Type",
+                "Properties"
             ]
         }
         schema.title = `${schema.typeName.split("::").join("")}Properties`
         schema.type = "object"
         let {description, sourceUrl} = schema
         if (!description) {
-          description = "No description available"
+            description = "No description available"
         }
         if (!sourceUrl) {
-          sourceUrl = "No source definition found, add manually please"
+            sourceUrl = "No source definition found, add manually please"
         }
         schema.description = `${description}. Source:- ${sourceUrl}`
 
@@ -138,26 +138,26 @@ function applyCFStringFunctions(obj) {
         schema = applyIntrinsicFunctions(schema)
         // remove readonly properties
         if (schema.readOnlyProperties) {
-          schema.readOnlyProperties.forEach(rP => {
-            const parts = rP.trim().split("/")
-            const property = parts[parts.length - 1]
-            if (schema.properties[property]) {
-              delete schema.properties[property]
-            }
-          })
+            schema.readOnlyProperties.forEach(rP => {
+                const parts = rP.trim().split("/")
+                const property = parts[parts.length - 1]
+                if (schema.properties[property]) {
+                    delete schema.properties[property]
+                }
+            })
         }
         // Add title to every definition
         if (schema.definitions) {
-          Object.keys(schema.definitions).forEach((key) => {
-            if (schema.definitions[key]) {
-              if (!schema.definitions[key].title) {
-                schema.definitions[key].title = `${key}Definition`
-              }
-            }
-          })
+            Object.keys(schema.definitions).forEach((key) => {
+                if (schema.definitions[key]) {
+                    if (!schema.definitions[key].title) {
+                        schema.definitions[key].title = `${key}Definition`
+                    }
+                }
+            })
         }
         fs.writeFileSync(
-            path.join(__dirname, `serverless/resources/cloudformation-modified/${resource}`),
+            path.join(__dirname, `serverless/resources/cloudformation/${resource}`),
             JSON.stringify(schema, null, 2)
         )
     }

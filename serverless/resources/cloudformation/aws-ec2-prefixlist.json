@@ -1,109 +1,175 @@
 {
-  "typeName" : "AWS::EC2::PrefixList",
-  "description" : "Resource schema of AWS::EC2::PrefixList Type",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "definitions" : {
-    "Tag" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128
+  "typeName": "AWS::EC2::PrefixList",
+  "description": "Resource schema of AWS::EC2::PrefixList Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string",
-          "maxLength" : 256
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Key" ],
-      "additionalProperties" : false
+      "required": [
+        "Key"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
     },
-    "Entry" : {
-      "type" : "object",
-      "properties" : {
-        "Cidr" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 46
+    "Entry": {
+      "type": "object",
+      "properties": {
+        "Cidr": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 46
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Description" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 255
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Cidr" ],
-      "additionalProperties" : false
+      "required": [
+        "Cidr"
+      ],
+      "additionalProperties": false,
+      "title": "EntryDefinition"
     }
   },
-  "properties" : {
-    "PrefixListName" : {
-      "description" : "Name of Prefix List.",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 255
+  "properties": {
+    "PrefixListName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of Prefix List."
     },
-    "PrefixListId" : {
-      "description" : "Id of Prefix List.",
-      "type" : "string"
+    "AddressFamily": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPv4",
+            "IPv6"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Ip Version of Prefix List."
     },
-    "OwnerId" : {
-      "description" : "Owner Id of Prefix List.",
-      "type" : "string"
+    "MaxEntries": {
+      "description": "Max Entries of Prefix List.",
+      "type": "integer",
+      "minimum": 1
     },
-    "AddressFamily" : {
-      "description" : "Ip Version of Prefix List.",
-      "type" : "string",
-      "enum" : [ "IPv4", "IPv6" ]
-    },
-    "MaxEntries" : {
-      "description" : "Max Entries of Prefix List.",
-      "type" : "integer",
-      "minimum" : 1
-    },
-    "Version" : {
-      "description" : "Version of Prefix List.",
-      "type" : "integer"
-    },
-    "Tags" : {
-      "description" : "Tags for Prefix List",
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "description": "Tags for Prefix List",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     },
-    "Entries" : {
-      "description" : "Entries of Prefix List.",
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/Entry"
+    "Entries": {
+      "description": "Entries of Prefix List.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Entry"
       }
-    },
-    "Arn" : {
-      "description" : "The Amazon Resource Name (ARN) of the Prefix List.",
-      "type" : "string"
     }
   },
-  "required" : [ "PrefixListName", "MaxEntries", "AddressFamily" ],
-  "readOnlyProperties" : [ "/properties/PrefixListId", "/properties/OwnerId", "/properties/Version", "/properties/Arn" ],
-  "primaryIdentifier" : [ "/properties/PrefixListId" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "EC2:CreateManagedPrefixList", "EC2:DescribeManagedPrefixLists" ]
+  "required": [
+    "PrefixListName",
+    "MaxEntries",
+    "AddressFamily"
+  ],
+  "readOnlyProperties": [
+    "/properties/PrefixListId",
+    "/properties/OwnerId",
+    "/properties/Version",
+    "/properties/Arn"
+  ],
+  "primaryIdentifier": [
+    "/properties/PrefixListId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "EC2:CreateManagedPrefixList",
+        "EC2:DescribeManagedPrefixLists"
+      ]
     },
-    "read" : {
-      "permissions" : [ "EC2:GetManagedPrefixListEntries", "EC2:DescribeManagedPrefixLists" ]
+    "read": {
+      "permissions": [
+        "EC2:GetManagedPrefixListEntries",
+        "EC2:DescribeManagedPrefixLists"
+      ]
     },
-    "update" : {
-      "permissions" : [ "EC2:DescribeManagedPrefixLists", "EC2:GetManagedPrefixListEntries", "EC2:ModifyManagedPrefixList", "EC2:CreateTags", "EC2:DeleteTags" ]
+    "update": {
+      "permissions": [
+        "EC2:DescribeManagedPrefixLists",
+        "EC2:GetManagedPrefixListEntries",
+        "EC2:ModifyManagedPrefixList",
+        "EC2:CreateTags",
+        "EC2:DeleteTags"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "EC2:DeleteManagedPrefixList", "EC2:DescribeManagedPrefixLists" ]
+    "delete": {
+      "permissions": [
+        "EC2:DeleteManagedPrefixList",
+        "EC2:DescribeManagedPrefixLists"
+      ]
     },
-    "list" : {
-      "permissions" : [ "EC2:DescribeManagedPrefixLists", "EC2:GetManagedPrefixListEntries" ]
+    "list": {
+      "permissions": [
+        "EC2:DescribeManagedPrefixLists",
+        "EC2:GetManagedPrefixListEntries"
+      ]
     }
   },
-  "additionalProperties" : false
+  "additionalProperties": false,
+  "title": "AWSEC2PrefixListProperties",
+  "type": "object"
 }

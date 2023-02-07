@@ -1,1486 +1,2267 @@
 {
-  "typeName" : "AWS::Kendra::DataSource",
-  "description" : "Kendra DataSource",
-  "sourceUrl" : "https://docs.aws.amazon.com/kendra/latest/dg/hiw-data-source.html",
-  "definitions" : {
-    "IndexId" : {
-      "description" : "ID of Index",
-      "type" : "string",
-      "minLength" : 36,
-      "maxLength" : 36
-    },
-    "Tag" : {
-      "description" : "A label for tagging Kendra resources",
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "description" : "A string used to identify this tag",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128
+  "typeName": "AWS::Kendra::DataSource",
+  "description": "Kendra DataSource. Source:- https://docs.aws.amazon.com/kendra/latest/dg/hiw-data-source.html",
+  "sourceUrl": "https://docs.aws.amazon.com/kendra/latest/dg/hiw-data-source.html",
+  "definitions": {
+    "IndexId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36
         },
-        "Value" : {
-          "description" : "A string containing the value for the tag",
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 256
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "ID of Index",
+      "title": "IndexIdDefinition"
+    },
+    "Tag": {
+      "description": "A label for tagging Kendra resources",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for the tag"
         }
       },
-      "required" : [ "Key", "Value" ],
-      "additionalProperties" : false
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
     },
-    "TagList" : {
-      "description" : "List of tags",
-      "type" : "array",
-      "maxItems" : 200,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
-      }
+    "TagList": {
+      "description": "List of tags",
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "TagListDefinition"
     },
-    "DataSourceInclusionsExclusionsStrings" : {
-      "type" : "array",
-      "maxItems" : 100,
-      "items" : {
-        "type" : "string",
-        "minLength" : 1,
-        "maxLength" : 50
-      }
+    "DataSourceInclusionsExclusionsStrings": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "title": "DataSourceInclusionsExclusionsStringsDefinition"
     },
-    "S3Path" : {
-      "type" : "object",
-      "properties" : {
-        "Bucket" : {
-          "$ref" : "#/definitions/S3BucketName"
+    "S3Path": {
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "$ref": "#/definitions/S3BucketName"
         },
-        "Key" : {
-          "$ref" : "#/definitions/S3ObjectKey"
+        "Key": {
+          "$ref": "#/definitions/S3ObjectKey"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Bucket", "Key" ]
+      "additionalProperties": false,
+      "required": [
+        "Bucket",
+        "Key"
+      ],
+      "title": "S3PathDefinition"
     },
-    "S3BucketName" : {
-      "type" : "string",
-      "minLength" : 3,
-      "maxLength" : 63,
-      "pattern" : "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"
+    "S3BucketName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63,
+          "pattern": "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "S3BucketNameDefinition"
     },
-    "S3ObjectKey" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1024
+    "S3ObjectKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "S3ObjectKeyDefinition"
     },
-    "DocumentsMetadataConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "S3Prefix" : {
-          "$ref" : "#/definitions/S3ObjectKey"
+    "DocumentsMetadataConfiguration": {
+      "type": "object",
+      "properties": {
+        "S3Prefix": {
+          "$ref": "#/definitions/S3ObjectKey"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "DocumentsMetadataConfigurationDefinition"
     },
-    "AccessControlListConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "KeyPath" : {
-          "$ref" : "#/definitions/S3ObjectKey"
+    "AccessControlListConfiguration": {
+      "type": "object",
+      "properties": {
+        "KeyPath": {
+          "$ref": "#/definitions/S3ObjectKey"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "AccessControlListConfigurationDefinition"
     },
-    "S3DataSourceConfiguration" : {
-      "description" : "S3 data source configuration",
-      "type" : "object",
-      "properties" : {
-        "BucketName" : {
-          "$ref" : "#/definitions/S3BucketName"
+    "S3DataSourceConfiguration": {
+      "description": "S3 data source configuration",
+      "type": "object",
+      "properties": {
+        "BucketName": {
+          "$ref": "#/definitions/S3BucketName"
         },
-        "InclusionPrefixes" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "InclusionPrefixes": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "InclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "InclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "DocumentsMetadataConfiguration" : {
-          "$ref" : "#/definitions/DocumentsMetadataConfiguration"
+        "DocumentsMetadataConfiguration": {
+          "$ref": "#/definitions/DocumentsMetadataConfiguration"
         },
-        "AccessControlListConfiguration" : {
-          "$ref" : "#/definitions/AccessControlListConfiguration"
+        "AccessControlListConfiguration": {
+          "$ref": "#/definitions/AccessControlListConfiguration"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "BucketName" ]
+      "additionalProperties": false,
+      "required": [
+        "BucketName"
+      ],
+      "title": "S3DataSourceConfigurationDefinition"
     },
-    "Url" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048,
-      "pattern" : "^(https?|ftp|file)://([^\\s]*)"
+    "Url": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(https?|ftp|file)://([^\\s]*)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "UrlDefinition"
     },
-    "SecretArn" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1284,
-      "pattern" : "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+    "SecretArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1284,
+          "pattern": "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "SecretArnDefinition"
     },
-    "DataSourceVpcConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "SubnetIds" : {
-          "type" : "array",
-          "maxItems" : 6,
-          "items" : {
-            "type" : "string",
-            "minLength" : 1,
-            "maxLength" : 200,
-            "pattern" : "[\\-0-9a-zA-Z]+"
+    "DataSourceVpcConfiguration": {
+      "type": "object",
+      "properties": {
+        "SubnetIds": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "[\\-0-9a-zA-Z]+"
           }
         },
-        "SecurityGroupIds" : {
-          "type" : "array",
-          "maxItems" : 10,
-          "items" : {
-            "type" : "string",
-            "minLength" : 1,
-            "maxLength" : 200,
-            "pattern" : "[\\-0-9a-zA-Z]+"
+        "SecurityGroupIds": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "[\\-0-9a-zA-Z]+"
           }
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "SubnetIds", "SecurityGroupIds" ]
+      "additionalProperties": false,
+      "required": [
+        "SubnetIds",
+        "SecurityGroupIds"
+      ],
+      "title": "DataSourceVpcConfigurationDefinition"
     },
-    "DataSourceFieldName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
+    "DataSourceFieldName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DataSourceFieldNameDefinition"
     },
-    "DataSourceToIndexFieldMapping" : {
-      "type" : "object",
-      "properties" : {
-        "DataSourceFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+    "DataSourceToIndexFieldMapping": {
+      "type": "object",
+      "properties": {
+        "DataSourceFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "DateFieldFormat" : {
-          "$ref" : "#/definitions/DateFieldFormat"
+        "DateFieldFormat": {
+          "$ref": "#/definitions/DateFieldFormat"
         },
-        "IndexFieldName" : {
-          "$ref" : "#/definitions/IndexFieldName"
+        "IndexFieldName": {
+          "$ref": "#/definitions/IndexFieldName"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DataSourceFieldName", "IndexFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DataSourceFieldName",
+        "IndexFieldName"
+      ],
+      "title": "DataSourceToIndexFieldMappingDefinition"
     },
-    "DateFieldFormat" : {
-      "type" : "string",
-      "minLength" : 4,
-      "maxLength" : 40
-    },
-    "IndexFieldName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 30
-    },
-    "DataSourceToIndexFieldMappingList" : {
-      "type" : "array",
-      "maxItems" : 100,
-      "items" : {
-        "$ref" : "#/definitions/DataSourceToIndexFieldMapping"
-      }
-    },
-    "DisableLocalGroups" : {
-      "type" : "boolean"
-    },
-    "SharePointConfiguration" : {
-      "description" : "SharePoint configuration",
-      "type" : "object",
-      "properties" : {
-        "SharePointVersion" : {
-          "type" : "string",
-          "enum" : [ "SHAREPOINT_ONLINE", "SHAREPOINT_2013", "SHAREPOINT_2016" ]
+    "DateFieldFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 40
         },
-        "Urls" : {
-          "type" : "array",
-          "maxItems" : 100,
-          "items" : {
-            "$ref" : "#/definitions/Url"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DateFieldFormatDefinition"
+    },
+    "IndexFieldName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "IndexFieldNameDefinition"
+    },
+    "DataSourceToIndexFieldMappingList": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/DataSourceToIndexFieldMapping"
+      },
+      "title": "DataSourceToIndexFieldMappingListDefinition"
+    },
+    "DisableLocalGroups": {
+      "type": "boolean",
+      "title": "DisableLocalGroupsDefinition"
+    },
+    "SharePointConfiguration": {
+      "description": "SharePoint configuration",
+      "type": "object",
+      "properties": {
+        "SharePointVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SHAREPOINT_ONLINE",
+                "SHAREPOINT_2013",
+                "SHAREPOINT_2016"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Urls": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/definitions/Url"
           }
         },
-        "SecretArn" : {
-          "$ref" : "#/definitions/SecretArn"
+        "SecretArn": {
+          "$ref": "#/definitions/SecretArn"
         },
-        "CrawlAttachments" : {
-          "type" : "boolean"
+        "CrawlAttachments": {
+          "type": "boolean"
         },
-        "UseChangeLog" : {
-          "type" : "boolean"
+        "UseChangeLog": {
+          "type": "boolean"
         },
-        "InclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "InclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "VpcConfiguration" : {
-          "$ref" : "#/definitions/DataSourceVpcConfiguration"
+        "VpcConfiguration": {
+          "$ref": "#/definitions/DataSourceVpcConfiguration"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         },
-        "DocumentTitleFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentTitleFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "DisableLocalGroups" : {
-          "$ref" : "#/definitions/DisableLocalGroups"
+        "DisableLocalGroups": {
+          "$ref": "#/definitions/DisableLocalGroups"
         },
-        "SslCertificateS3Path" : {
-          "$ref" : "#/definitions/S3Path"
+        "SslCertificateS3Path": {
+          "$ref": "#/definitions/S3Path"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Urls", "SecretArn", "SharePointVersion" ]
+      "additionalProperties": false,
+      "required": [
+        "Urls",
+        "SecretArn",
+        "SharePointVersion"
+      ],
+      "title": "SharePointConfigurationDefinition"
     },
-    "SalesforceConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "ServerUrl" : {
-          "$ref" : "#/definitions/Url"
+    "SalesforceConfiguration": {
+      "type": "object",
+      "properties": {
+        "ServerUrl": {
+          "$ref": "#/definitions/Url"
         },
-        "SecretArn" : {
-          "$ref" : "#/definitions/SecretArn"
+        "SecretArn": {
+          "$ref": "#/definitions/SecretArn"
         },
-        "StandardObjectConfigurations" : {
-          "$ref" : "#/definitions/SalesforceStandardObjectConfigurationList"
+        "StandardObjectConfigurations": {
+          "$ref": "#/definitions/SalesforceStandardObjectConfigurationList"
         },
-        "KnowledgeArticleConfiguration" : {
-          "$ref" : "#/definitions/SalesforceKnowledgeArticleConfiguration"
+        "KnowledgeArticleConfiguration": {
+          "$ref": "#/definitions/SalesforceKnowledgeArticleConfiguration"
         },
-        "ChatterFeedConfiguration" : {
-          "$ref" : "#/definitions/SalesforceChatterFeedConfiguration"
+        "ChatterFeedConfiguration": {
+          "$ref": "#/definitions/SalesforceChatterFeedConfiguration"
         },
-        "CrawlAttachments" : {
-          "type" : "boolean"
+        "CrawlAttachments": {
+          "type": "boolean"
         },
-        "StandardObjectAttachmentConfiguration" : {
-          "$ref" : "#/definitions/SalesforceStandardObjectAttachmentConfiguration"
+        "StandardObjectAttachmentConfiguration": {
+          "$ref": "#/definitions/SalesforceStandardObjectAttachmentConfiguration"
         },
-        "IncludeAttachmentFilePatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "IncludeAttachmentFilePatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExcludeAttachmentFilePatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExcludeAttachmentFilePatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "ServerUrl", "SecretArn" ]
+      "additionalProperties": false,
+      "required": [
+        "ServerUrl",
+        "SecretArn"
+      ],
+      "title": "SalesforceConfigurationDefinition"
     },
-    "SalesforceStandardObjectConfigurationList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 17,
-      "items" : {
-        "$ref" : "#/definitions/SalesforceStandardObjectConfiguration"
-      }
+    "SalesforceStandardObjectConfigurationList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 17,
+      "items": {
+        "$ref": "#/definitions/SalesforceStandardObjectConfiguration"
+      },
+      "title": "SalesforceStandardObjectConfigurationListDefinition"
     },
-    "SalesforceStandardObjectConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "Name" : {
-          "$ref" : "#/definitions/SalesforceStandardObjectName"
+    "SalesforceStandardObjectConfiguration": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "$ref": "#/definitions/SalesforceStandardObjectName"
         },
-        "DocumentDataFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentDataFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "DocumentTitleFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentTitleFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Name", "DocumentDataFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "DocumentDataFieldName"
+      ],
+      "title": "SalesforceStandardObjectConfigurationDefinition"
     },
-    "SalesforceStandardObjectName" : {
-      "type" : "string",
-      "enum" : [ "ACCOUNT", "CAMPAIGN", "CASE", "CONTACT", "CONTRACT", "DOCUMENT", "GROUP", "IDEA", "LEAD", "OPPORTUNITY", "PARTNER", "PRICEBOOK", "PRODUCT", "PROFILE", "SOLUTION", "TASK", "USER" ]
+    "SalesforceStandardObjectName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACCOUNT",
+            "CAMPAIGN",
+            "CASE",
+            "CONTACT",
+            "CONTRACT",
+            "DOCUMENT",
+            "GROUP",
+            "IDEA",
+            "LEAD",
+            "OPPORTUNITY",
+            "PARTNER",
+            "PRICEBOOK",
+            "PRODUCT",
+            "PROFILE",
+            "SOLUTION",
+            "TASK",
+            "USER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "SalesforceStandardObjectNameDefinition"
     },
-    "SalesforceKnowledgeArticleConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "IncludedStates" : {
-          "$ref" : "#/definitions/SalesforceKnowledgeArticleStateList"
+    "SalesforceKnowledgeArticleConfiguration": {
+      "type": "object",
+      "properties": {
+        "IncludedStates": {
+          "$ref": "#/definitions/SalesforceKnowledgeArticleStateList"
         },
-        "StandardKnowledgeArticleTypeConfiguration" : {
-          "$ref" : "#/definitions/SalesforceStandardKnowledgeArticleTypeConfiguration"
+        "StandardKnowledgeArticleTypeConfiguration": {
+          "$ref": "#/definitions/SalesforceStandardKnowledgeArticleTypeConfiguration"
         },
-        "CustomKnowledgeArticleTypeConfigurations" : {
-          "$ref" : "#/definitions/SalesforceCustomKnowledgeArticleTypeConfigurationList"
+        "CustomKnowledgeArticleTypeConfigurations": {
+          "$ref": "#/definitions/SalesforceCustomKnowledgeArticleTypeConfigurationList"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "IncludedStates" ]
+      "additionalProperties": false,
+      "required": [
+        "IncludedStates"
+      ],
+      "title": "SalesforceKnowledgeArticleConfigurationDefinition"
     },
-    "SalesforceKnowledgeArticleStateList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 3,
-      "items" : {
-        "$ref" : "#/definitions/SalesforceKnowledgeArticleState"
-      }
+    "SalesforceKnowledgeArticleStateList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/definitions/SalesforceKnowledgeArticleState"
+      },
+      "title": "SalesforceKnowledgeArticleStateListDefinition"
     },
-    "SalesforceKnowledgeArticleState" : {
-      "type" : "string",
-      "enum" : [ "DRAFT", "PUBLISHED", "ARCHIVED" ]
-    },
-    "SalesforceStandardKnowledgeArticleTypeConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "DocumentDataFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+    "SalesforceKnowledgeArticleState": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DRAFT",
+            "PUBLISHED",
+            "ARCHIVED"
+          ]
         },
-        "DocumentTitleFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "SalesforceKnowledgeArticleStateDefinition"
+    },
+    "SalesforceStandardKnowledgeArticleTypeConfiguration": {
+      "type": "object",
+      "properties": {
+        "DocumentDataFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "DocumentTitleFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
+        },
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DocumentDataFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DocumentDataFieldName"
+      ],
+      "title": "SalesforceStandardKnowledgeArticleTypeConfigurationDefinition"
     },
-    "SalesforceCustomKnowledgeArticleTypeConfigurationList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 10,
-      "items" : {
-        "$ref" : "#/definitions/SalesforceCustomKnowledgeArticleTypeConfiguration"
-      }
+    "SalesforceCustomKnowledgeArticleTypeConfigurationList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/definitions/SalesforceCustomKnowledgeArticleTypeConfiguration"
+      },
+      "title": "SalesforceCustomKnowledgeArticleTypeConfigurationListDefinition"
     },
-    "SalesforceCustomKnowledgeArticleTypeConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "Name" : {
-          "$ref" : "#/definitions/SalesforceCustomKnowledgeArticleTypeName"
+    "SalesforceCustomKnowledgeArticleTypeConfiguration": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "$ref": "#/definitions/SalesforceCustomKnowledgeArticleTypeName"
         },
-        "DocumentDataFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentDataFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "DocumentTitleFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentTitleFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Name", "DocumentDataFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "DocumentDataFieldName"
+      ],
+      "title": "SalesforceCustomKnowledgeArticleTypeConfigurationDefinition"
     },
-    "SalesforceCustomKnowledgeArticleTypeName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
+    "SalesforceCustomKnowledgeArticleTypeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "SalesforceCustomKnowledgeArticleTypeNameDefinition"
     },
-    "SalesforceChatterFeedConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "DocumentDataFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+    "SalesforceChatterFeedConfiguration": {
+      "type": "object",
+      "properties": {
+        "DocumentDataFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "DocumentTitleFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentTitleFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         },
-        "IncludeFilterTypes" : {
-          "$ref" : "#/definitions/SalesforceChatterFeedIncludeFilterTypes"
+        "IncludeFilterTypes": {
+          "$ref": "#/definitions/SalesforceChatterFeedIncludeFilterTypes"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DocumentDataFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DocumentDataFieldName"
+      ],
+      "title": "SalesforceChatterFeedConfigurationDefinition"
     },
-    "SalesforceChatterFeedIncludeFilterTypes" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 2,
-      "items" : {
-        "$ref" : "#/definitions/SalesforceChatterFeedIncludeFilterType"
-      }
+    "SalesforceChatterFeedIncludeFilterTypes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/definitions/SalesforceChatterFeedIncludeFilterType"
+      },
+      "title": "SalesforceChatterFeedIncludeFilterTypesDefinition"
     },
-    "SalesforceChatterFeedIncludeFilterType" : {
-      "type" : "string",
-      "enum" : [ "ACTIVE_USER", "STANDARD_USER" ]
-    },
-    "SalesforceStandardObjectAttachmentConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "DocumentTitleFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+    "SalesforceChatterFeedIncludeFilterType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE_USER",
+            "STANDARD_USER"
+          ]
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "SalesforceChatterFeedIncludeFilterTypeDefinition"
+    },
+    "SalesforceStandardObjectAttachmentConfiguration": {
+      "type": "object",
+      "properties": {
+        "DocumentTitleFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
+        },
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "SalesforceStandardObjectAttachmentConfigurationDefinition"
     },
-    "DatabaseConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "DatabaseEngineType" : {
-          "$ref" : "#/definitions/DatabaseEngineType"
+    "DatabaseConfiguration": {
+      "type": "object",
+      "properties": {
+        "DatabaseEngineType": {
+          "$ref": "#/definitions/DatabaseEngineType"
         },
-        "ConnectionConfiguration" : {
-          "$ref" : "#/definitions/ConnectionConfiguration"
+        "ConnectionConfiguration": {
+          "$ref": "#/definitions/ConnectionConfiguration"
         },
-        "VpcConfiguration" : {
-          "$ref" : "#/definitions/DataSourceVpcConfiguration"
+        "VpcConfiguration": {
+          "$ref": "#/definitions/DataSourceVpcConfiguration"
         },
-        "ColumnConfiguration" : {
-          "$ref" : "#/definitions/ColumnConfiguration"
+        "ColumnConfiguration": {
+          "$ref": "#/definitions/ColumnConfiguration"
         },
-        "AclConfiguration" : {
-          "$ref" : "#/definitions/AclConfiguration"
+        "AclConfiguration": {
+          "$ref": "#/definitions/AclConfiguration"
         },
-        "SqlConfiguration" : {
-          "$ref" : "#/definitions/SqlConfiguration"
+        "SqlConfiguration": {
+          "$ref": "#/definitions/SqlConfiguration"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "ConnectionConfiguration", "ColumnConfiguration", "DatabaseEngineType" ]
+      "additionalProperties": false,
+      "required": [
+        "ConnectionConfiguration",
+        "ColumnConfiguration",
+        "DatabaseEngineType"
+      ],
+      "title": "DatabaseConfigurationDefinition"
     },
-    "DatabaseEngineType" : {
-      "type" : "string",
-      "enum" : [ "RDS_AURORA_MYSQL", "RDS_AURORA_POSTGRESQL", "RDS_MYSQL", "RDS_POSTGRESQL" ]
+    "DatabaseEngineType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "RDS_AURORA_MYSQL",
+            "RDS_AURORA_POSTGRESQL",
+            "RDS_MYSQL",
+            "RDS_POSTGRESQL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DatabaseEngineTypeDefinition"
     },
-    "ConnectionConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "DatabaseHost" : {
-          "$ref" : "#/definitions/DatabaseHost"
+    "ConnectionConfiguration": {
+      "type": "object",
+      "properties": {
+        "DatabaseHost": {
+          "$ref": "#/definitions/DatabaseHost"
         },
-        "DatabasePort" : {
-          "$ref" : "#/definitions/DatabasePort"
+        "DatabasePort": {
+          "$ref": "#/definitions/DatabasePort"
         },
-        "DatabaseName" : {
-          "$ref" : "#/definitions/DatabaseName"
+        "DatabaseName": {
+          "$ref": "#/definitions/DatabaseName"
         },
-        "TableName" : {
-          "$ref" : "#/definitions/TableName"
+        "TableName": {
+          "$ref": "#/definitions/TableName"
         },
-        "SecretArn" : {
-          "$ref" : "#/definitions/SecretArn"
+        "SecretArn": {
+          "$ref": "#/definitions/SecretArn"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DatabaseHost", "DatabasePort", "DatabaseName", "TableName", "SecretArn" ]
+      "additionalProperties": false,
+      "required": [
+        "DatabaseHost",
+        "DatabasePort",
+        "DatabaseName",
+        "TableName",
+        "SecretArn"
+      ],
+      "title": "ConnectionConfigurationDefinition"
     },
-    "DatabaseHost" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 253
-    },
-    "DatabasePort" : {
-      "type" : "integer",
-      "minimum" : 1,
-      "maximum" : 65535
-    },
-    "DatabaseName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "TableName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "ColumnConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "DocumentIdColumnName" : {
-          "$ref" : "#/definitions/ColumnName"
+    "DatabaseHost": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 253
         },
-        "DocumentDataColumnName" : {
-          "$ref" : "#/definitions/ColumnName"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DatabaseHostDefinition"
+    },
+    "DatabasePort": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535,
+      "title": "DatabasePortDefinition"
+    },
+    "DatabaseName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
         },
-        "DocumentTitleColumnName" : {
-          "$ref" : "#/definitions/ColumnName"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DatabaseNameDefinition"
+    },
+    "TableName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "TableNameDefinition"
+    },
+    "ColumnConfiguration": {
+      "type": "object",
+      "properties": {
+        "DocumentIdColumnName": {
+          "$ref": "#/definitions/ColumnName"
         },
-        "ChangeDetectingColumns" : {
-          "$ref" : "#/definitions/ChangeDetectingColumns"
+        "DocumentDataColumnName": {
+          "$ref": "#/definitions/ColumnName"
+        },
+        "DocumentTitleColumnName": {
+          "$ref": "#/definitions/ColumnName"
+        },
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
+        },
+        "ChangeDetectingColumns": {
+          "$ref": "#/definitions/ChangeDetectingColumns"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DocumentIdColumnName", "DocumentDataColumnName", "ChangeDetectingColumns" ]
+      "additionalProperties": false,
+      "required": [
+        "DocumentIdColumnName",
+        "DocumentDataColumnName",
+        "ChangeDetectingColumns"
+      ],
+      "title": "ColumnConfigurationDefinition"
     },
-    "ChangeDetectingColumns" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 5,
-      "items" : {
-        "$ref" : "#/definitions/ColumnName"
-      }
+    "ChangeDetectingColumns": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/definitions/ColumnName"
+      },
+      "title": "ChangeDetectingColumnsDefinition"
     },
-    "ColumnName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
+    "ColumnName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ColumnNameDefinition"
     },
-    "SqlConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "QueryIdentifiersEnclosingOption" : {
-          "$ref" : "#/definitions/QueryIdentifiersEnclosingOption"
+    "SqlConfiguration": {
+      "type": "object",
+      "properties": {
+        "QueryIdentifiersEnclosingOption": {
+          "$ref": "#/definitions/QueryIdentifiersEnclosingOption"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "SqlConfigurationDefinition"
     },
-    "QueryIdentifiersEnclosingOption" : {
-      "type" : "string",
-      "enum" : [ "DOUBLE_QUOTES", "NONE" ]
+    "QueryIdentifiersEnclosingOption": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DOUBLE_QUOTES",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "QueryIdentifiersEnclosingOptionDefinition"
     },
-    "AclConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "AllowedGroupsColumnName" : {
-          "$ref" : "#/definitions/ColumnName"
+    "AclConfiguration": {
+      "type": "object",
+      "properties": {
+        "AllowedGroupsColumnName": {
+          "$ref": "#/definitions/ColumnName"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "AllowedGroupsColumnName" ]
+      "additionalProperties": false,
+      "required": [
+        "AllowedGroupsColumnName"
+      ],
+      "title": "AclConfigurationDefinition"
     },
-    "OneDriveConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "TenantDomain" : {
-          "$ref" : "#/definitions/TenantDomain"
+    "OneDriveConfiguration": {
+      "type": "object",
+      "properties": {
+        "TenantDomain": {
+          "$ref": "#/definitions/TenantDomain"
         },
-        "SecretArn" : {
-          "$ref" : "#/definitions/SecretArn"
+        "SecretArn": {
+          "$ref": "#/definitions/SecretArn"
         },
-        "OneDriveUsers" : {
-          "$ref" : "#/definitions/OneDriveUsers"
+        "OneDriveUsers": {
+          "$ref": "#/definitions/OneDriveUsers"
         },
-        "InclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "InclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         },
-        "DisableLocalGroups" : {
-          "$ref" : "#/definitions/DisableLocalGroups"
+        "DisableLocalGroups": {
+          "$ref": "#/definitions/DisableLocalGroups"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "TenantDomain", "SecretArn", "OneDriveUsers" ]
+      "additionalProperties": false,
+      "required": [
+        "TenantDomain",
+        "SecretArn",
+        "OneDriveUsers"
+      ],
+      "title": "OneDriveConfigurationDefinition"
     },
-    "TenantDomain" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 256,
-      "pattern" : "^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*\\.)+[a-z]{2,}$"
-    },
-    "OneDriveUsers" : {
-      "type" : "object",
-      "properties" : {
-        "OneDriveUserList" : {
-          "$ref" : "#/definitions/OneDriveUserList"
+    "TenantDomain": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*\\.)+[a-z]{2,}$"
         },
-        "OneDriveUserS3Path" : {
-          "$ref" : "#/definitions/S3Path"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "TenantDomainDefinition"
+    },
+    "OneDriveUsers": {
+      "type": "object",
+      "properties": {
+        "OneDriveUserList": {
+          "$ref": "#/definitions/OneDriveUserList"
+        },
+        "OneDriveUserS3Path": {
+          "$ref": "#/definitions/S3Path"
         }
       },
-      "additionalProperties" : false,
-      "oneOf" : [ {
-        "required" : [ "OneDriveUserList" ]
-      }, {
-        "required" : [ "OneDriveUserS3Path" ]
-      } ]
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "OneDriveUserList"
+          ]
+        },
+        {
+          "required": [
+            "OneDriveUserS3Path"
+          ]
+        }
+      ],
+      "title": "OneDriveUsersDefinition"
     },
-    "OneDriveUserList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 100,
-      "items" : {
-        "$ref" : "#/definitions/OneDriveUser"
-      }
+    "OneDriveUserList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/OneDriveUser"
+      },
+      "title": "OneDriveUserListDefinition"
     },
-    "OneDriveUser" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 256,
-      "pattern" : "^(?!\\s).+@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+    "OneDriveUser": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^(?!\\s).+@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "OneDriveUserDefinition"
     },
-    "ServiceNowConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "HostUrl" : {
-          "$ref" : "#/definitions/ServiceNowHostUrl"
+    "ServiceNowConfiguration": {
+      "type": "object",
+      "properties": {
+        "HostUrl": {
+          "$ref": "#/definitions/ServiceNowHostUrl"
         },
-        "SecretArn" : {
-          "$ref" : "#/definitions/SecretArn"
+        "SecretArn": {
+          "$ref": "#/definitions/SecretArn"
         },
-        "ServiceNowBuildVersion" : {
-          "$ref" : "#/definitions/ServiceNowBuildVersionType"
+        "ServiceNowBuildVersion": {
+          "$ref": "#/definitions/ServiceNowBuildVersionType"
         },
-        "AuthenticationType" : {
-          "$ref" : "#/definitions/ServiceNowAuthenticationType"
+        "AuthenticationType": {
+          "$ref": "#/definitions/ServiceNowAuthenticationType"
         },
-        "KnowledgeArticleConfiguration" : {
-          "$ref" : "#/definitions/ServiceNowKnowledgeArticleConfiguration"
+        "KnowledgeArticleConfiguration": {
+          "$ref": "#/definitions/ServiceNowKnowledgeArticleConfiguration"
         },
-        "ServiceCatalogConfiguration" : {
-          "$ref" : "#/definitions/ServiceNowServiceCatalogConfiguration"
+        "ServiceCatalogConfiguration": {
+          "$ref": "#/definitions/ServiceNowServiceCatalogConfiguration"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "HostUrl", "SecretArn", "ServiceNowBuildVersion" ]
+      "additionalProperties": false,
+      "required": [
+        "HostUrl",
+        "SecretArn",
+        "ServiceNowBuildVersion"
+      ],
+      "title": "ServiceNowConfigurationDefinition"
     },
-    "ServiceNowBuildVersionType" : {
-      "type" : "string",
-      "enum" : [ "LONDON", "OTHERS" ]
+    "ServiceNowBuildVersionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LONDON",
+            "OTHERS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ServiceNowBuildVersionTypeDefinition"
     },
-    "ServiceNowAuthenticationType" : {
-      "type" : "string",
-      "enum" : [ "HTTP_BASIC", "OAUTH2" ]
+    "ServiceNowAuthenticationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "HTTP_BASIC",
+            "OAUTH2"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ServiceNowAuthenticationTypeDefinition"
     },
-    "ServiceNowServiceCatalogConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "CrawlAttachments" : {
-          "type" : "boolean"
+    "ServiceNowServiceCatalogConfiguration": {
+      "type": "object",
+      "properties": {
+        "CrawlAttachments": {
+          "type": "boolean"
         },
-        "IncludeAttachmentFilePatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "IncludeAttachmentFilePatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExcludeAttachmentFilePatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExcludeAttachmentFilePatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "DocumentDataFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentDataFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "DocumentTitleFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentTitleFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DocumentDataFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DocumentDataFieldName"
+      ],
+      "title": "ServiceNowServiceCatalogConfigurationDefinition"
     },
-    "ServiceNowHostUrl" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048,
-      "pattern" : "^(?!(^(https?|ftp|file):\\/\\/))[a-z0-9-]+(\\.service-now\\.com)$"
+    "ServiceNowHostUrl": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(?!(^(https?|ftp|file):\\/\\/))[a-z0-9-]+(\\.service-now\\.com)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ServiceNowHostUrlDefinition"
     },
-    "ServiceNowKnowledgeArticleConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "CrawlAttachments" : {
-          "type" : "boolean"
+    "ServiceNowKnowledgeArticleConfiguration": {
+      "type": "object",
+      "properties": {
+        "CrawlAttachments": {
+          "type": "boolean"
         },
-        "IncludeAttachmentFilePatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "IncludeAttachmentFilePatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExcludeAttachmentFilePatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExcludeAttachmentFilePatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "DocumentDataFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentDataFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "DocumentTitleFieldName" : {
-          "$ref" : "#/definitions/DataSourceFieldName"
+        "DocumentTitleFieldName": {
+          "$ref": "#/definitions/DataSourceFieldName"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         },
-        "FilterQuery" : {
-          "$ref" : "#/definitions/ServiceNowKnowledgeArticleFilterQuery"
+        "FilterQuery": {
+          "$ref": "#/definitions/ServiceNowKnowledgeArticleFilterQuery"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DocumentDataFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DocumentDataFieldName"
+      ],
+      "title": "ServiceNowKnowledgeArticleConfigurationDefinition"
     },
-    "ServiceNowKnowledgeArticleFilterQuery" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048
+    "ServiceNowKnowledgeArticleFilterQuery": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ServiceNowKnowledgeArticleFilterQueryDefinition"
     },
-    "ConfluenceConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "ServerUrl" : {
-          "$ref" : "#/definitions/Url"
+    "ConfluenceConfiguration": {
+      "type": "object",
+      "properties": {
+        "ServerUrl": {
+          "$ref": "#/definitions/Url"
         },
-        "SecretArn" : {
-          "$ref" : "#/definitions/SecretArn"
+        "SecretArn": {
+          "$ref": "#/definitions/SecretArn"
         },
-        "Version" : {
-          "$ref" : "#/definitions/ConfluenceVersion"
+        "Version": {
+          "$ref": "#/definitions/ConfluenceVersion"
         },
-        "SpaceConfiguration" : {
-          "$ref" : "#/definitions/ConfluenceSpaceConfiguration"
+        "SpaceConfiguration": {
+          "$ref": "#/definitions/ConfluenceSpaceConfiguration"
         },
-        "PageConfiguration" : {
-          "$ref" : "#/definitions/ConfluencePageConfiguration"
+        "PageConfiguration": {
+          "$ref": "#/definitions/ConfluencePageConfiguration"
         },
-        "BlogConfiguration" : {
-          "$ref" : "#/definitions/ConfluenceBlogConfiguration"
+        "BlogConfiguration": {
+          "$ref": "#/definitions/ConfluenceBlogConfiguration"
         },
-        "AttachmentConfiguration" : {
-          "$ref" : "#/definitions/ConfluenceAttachmentConfiguration"
+        "AttachmentConfiguration": {
+          "$ref": "#/definitions/ConfluenceAttachmentConfiguration"
         },
-        "VpcConfiguration" : {
-          "$ref" : "#/definitions/DataSourceVpcConfiguration"
+        "VpcConfiguration": {
+          "$ref": "#/definitions/DataSourceVpcConfiguration"
         },
-        "InclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "InclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "ServerUrl", "SecretArn", "Version" ]
+      "additionalProperties": false,
+      "required": [
+        "ServerUrl",
+        "SecretArn",
+        "Version"
+      ],
+      "title": "ConfluenceConfigurationDefinition"
     },
-    "ConfluenceVersion" : {
-      "type" : "string",
-      "enum" : [ "CLOUD", "SERVER" ]
+    "ConfluenceVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CLOUD",
+            "SERVER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ConfluenceVersionDefinition"
     },
-    "ConfluenceSpaceConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "CrawlPersonalSpaces" : {
-          "type" : "boolean"
+    "ConfluenceSpaceConfiguration": {
+      "type": "object",
+      "properties": {
+        "CrawlPersonalSpaces": {
+          "type": "boolean"
         },
-        "CrawlArchivedSpaces" : {
-          "type" : "boolean"
+        "CrawlArchivedSpaces": {
+          "type": "boolean"
         },
-        "IncludeSpaces" : {
-          "$ref" : "#/definitions/ConfluenceSpaceList"
+        "IncludeSpaces": {
+          "$ref": "#/definitions/ConfluenceSpaceList"
         },
-        "ExcludeSpaces" : {
-          "$ref" : "#/definitions/ConfluenceSpaceList"
+        "ExcludeSpaces": {
+          "$ref": "#/definitions/ConfluenceSpaceList"
         },
-        "SpaceFieldMappings" : {
-          "$ref" : "#/definitions/ConfluenceSpaceFieldMappingsList"
+        "SpaceFieldMappings": {
+          "$ref": "#/definitions/ConfluenceSpaceFieldMappingsList"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "ConfluenceSpaceConfigurationDefinition"
     },
-    "ConfluenceSpaceFieldMappingsList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 4,
-      "items" : {
-        "$ref" : "#/definitions/ConfluenceSpaceToIndexFieldMapping"
-      }
+    "ConfluenceSpaceFieldMappingsList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/definitions/ConfluenceSpaceToIndexFieldMapping"
+      },
+      "title": "ConfluenceSpaceFieldMappingsListDefinition"
     },
-    "ConfluenceSpaceToIndexFieldMapping" : {
-      "type" : "object",
-      "properties" : {
-        "DataSourceFieldName" : {
-          "$ref" : "#/definitions/ConfluenceSpaceFieldName"
+    "ConfluenceSpaceToIndexFieldMapping": {
+      "type": "object",
+      "properties": {
+        "DataSourceFieldName": {
+          "$ref": "#/definitions/ConfluenceSpaceFieldName"
         },
-        "DateFieldFormat" : {
-          "$ref" : "#/definitions/DateFieldFormat"
+        "DateFieldFormat": {
+          "$ref": "#/definitions/DateFieldFormat"
         },
-        "IndexFieldName" : {
-          "$ref" : "#/definitions/IndexFieldName"
+        "IndexFieldName": {
+          "$ref": "#/definitions/IndexFieldName"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DataSourceFieldName", "IndexFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DataSourceFieldName",
+        "IndexFieldName"
+      ],
+      "title": "ConfluenceSpaceToIndexFieldMappingDefinition"
     },
-    "ConfluenceSpaceFieldName" : {
-      "type" : "string",
-      "enum" : [ "DISPLAY_URL", "ITEM_TYPE", "SPACE_KEY", "URL" ]
+    "ConfluenceSpaceFieldName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DISPLAY_URL",
+            "ITEM_TYPE",
+            "SPACE_KEY",
+            "URL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ConfluenceSpaceFieldNameDefinition"
     },
-    "ConfluenceSpaceList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "items" : {
-        "$ref" : "#/definitions/ConfluenceSpaceIdentifier"
-      }
+    "ConfluenceSpaceList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/ConfluenceSpaceIdentifier"
+      },
+      "title": "ConfluenceSpaceListDefinition"
     },
-    "ConfluenceSpaceIdentifier" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 255
+    "ConfluenceSpaceIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ConfluenceSpaceIdentifierDefinition"
     },
-    "ConfluencePageConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "PageFieldMappings" : {
-          "$ref" : "#/definitions/ConfluencePageFieldMappingsList"
+    "ConfluencePageConfiguration": {
+      "type": "object",
+      "properties": {
+        "PageFieldMappings": {
+          "$ref": "#/definitions/ConfluencePageFieldMappingsList"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "ConfluencePageConfigurationDefinition"
     },
-    "ConfluencePageFieldMappingsList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 12,
-      "items" : {
-        "$ref" : "#/definitions/ConfluencePageToIndexFieldMapping"
-      }
+    "ConfluencePageFieldMappingsList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/definitions/ConfluencePageToIndexFieldMapping"
+      },
+      "title": "ConfluencePageFieldMappingsListDefinition"
     },
-    "ConfluencePageToIndexFieldMapping" : {
-      "type" : "object",
-      "properties" : {
-        "DataSourceFieldName" : {
-          "$ref" : "#/definitions/ConfluencePageFieldName"
+    "ConfluencePageToIndexFieldMapping": {
+      "type": "object",
+      "properties": {
+        "DataSourceFieldName": {
+          "$ref": "#/definitions/ConfluencePageFieldName"
         },
-        "DateFieldFormat" : {
-          "$ref" : "#/definitions/DateFieldFormat"
+        "DateFieldFormat": {
+          "$ref": "#/definitions/DateFieldFormat"
         },
-        "IndexFieldName" : {
-          "$ref" : "#/definitions/IndexFieldName"
+        "IndexFieldName": {
+          "$ref": "#/definitions/IndexFieldName"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DataSourceFieldName", "IndexFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DataSourceFieldName",
+        "IndexFieldName"
+      ],
+      "title": "ConfluencePageToIndexFieldMappingDefinition"
     },
-    "ConfluencePageFieldName" : {
-      "type" : "string",
-      "enum" : [ "AUTHOR", "CONTENT_STATUS", "CREATED_DATE", "DISPLAY_URL", "ITEM_TYPE", "LABELS", "MODIFIED_DATE", "PARENT_ID", "SPACE_KEY", "SPACE_NAME", "URL", "VERSION" ]
+    "ConfluencePageFieldName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AUTHOR",
+            "CONTENT_STATUS",
+            "CREATED_DATE",
+            "DISPLAY_URL",
+            "ITEM_TYPE",
+            "LABELS",
+            "MODIFIED_DATE",
+            "PARENT_ID",
+            "SPACE_KEY",
+            "SPACE_NAME",
+            "URL",
+            "VERSION"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ConfluencePageFieldNameDefinition"
     },
-    "ConfluenceBlogConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "BlogFieldMappings" : {
-          "$ref" : "#/definitions/ConfluenceBlogFieldMappingsList"
+    "ConfluenceBlogConfiguration": {
+      "type": "object",
+      "properties": {
+        "BlogFieldMappings": {
+          "$ref": "#/definitions/ConfluenceBlogFieldMappingsList"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "ConfluenceBlogConfigurationDefinition"
     },
-    "ConfluenceBlogFieldMappingsList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 9,
-      "items" : {
-        "$ref" : "#/definitions/ConfluenceBlogToIndexFieldMapping"
-      }
+    "ConfluenceBlogFieldMappingsList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/definitions/ConfluenceBlogToIndexFieldMapping"
+      },
+      "title": "ConfluenceBlogFieldMappingsListDefinition"
     },
-    "ConfluenceBlogToIndexFieldMapping" : {
-      "type" : "object",
-      "properties" : {
-        "DataSourceFieldName" : {
-          "$ref" : "#/definitions/ConfluenceBlogFieldName"
+    "ConfluenceBlogToIndexFieldMapping": {
+      "type": "object",
+      "properties": {
+        "DataSourceFieldName": {
+          "$ref": "#/definitions/ConfluenceBlogFieldName"
         },
-        "DateFieldFormat" : {
-          "$ref" : "#/definitions/DateFieldFormat"
+        "DateFieldFormat": {
+          "$ref": "#/definitions/DateFieldFormat"
         },
-        "IndexFieldName" : {
-          "$ref" : "#/definitions/IndexFieldName"
+        "IndexFieldName": {
+          "$ref": "#/definitions/IndexFieldName"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DataSourceFieldName", "IndexFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DataSourceFieldName",
+        "IndexFieldName"
+      ],
+      "title": "ConfluenceBlogToIndexFieldMappingDefinition"
     },
-    "ConfluenceBlogFieldName" : {
-      "type" : "string",
-      "enum" : [ "AUTHOR", "DISPLAY_URL", "ITEM_TYPE", "LABELS", "PUBLISH_DATE", "SPACE_KEY", "SPACE_NAME", "URL", "VERSION" ]
-    },
-    "ConfluenceAttachmentConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "CrawlAttachments" : {
-          "type" : "boolean"
+    "ConfluenceBlogFieldName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AUTHOR",
+            "DISPLAY_URL",
+            "ITEM_TYPE",
+            "LABELS",
+            "PUBLISH_DATE",
+            "SPACE_KEY",
+            "SPACE_NAME",
+            "URL",
+            "VERSION"
+          ]
         },
-        "AttachmentFieldMappings" : {
-          "$ref" : "#/definitions/ConfluenceAttachmentFieldMappingsList"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ConfluenceBlogFieldNameDefinition"
+    },
+    "ConfluenceAttachmentConfiguration": {
+      "type": "object",
+      "properties": {
+        "CrawlAttachments": {
+          "type": "boolean"
+        },
+        "AttachmentFieldMappings": {
+          "$ref": "#/definitions/ConfluenceAttachmentFieldMappingsList"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "ConfluenceAttachmentConfigurationDefinition"
     },
-    "ConfluenceAttachmentFieldMappingsList" : {
-      "type" : "array",
-      "minItems" : 1,
-      "maxItems" : 11,
-      "items" : {
-        "$ref" : "#/definitions/ConfluenceAttachmentToIndexFieldMapping"
-      }
+    "ConfluenceAttachmentFieldMappingsList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 11,
+      "items": {
+        "$ref": "#/definitions/ConfluenceAttachmentToIndexFieldMapping"
+      },
+      "title": "ConfluenceAttachmentFieldMappingsListDefinition"
     },
-    "ConfluenceAttachmentToIndexFieldMapping" : {
-      "type" : "object",
-      "properties" : {
-        "DataSourceFieldName" : {
-          "$ref" : "#/definitions/ConfluenceAttachmentFieldName"
+    "ConfluenceAttachmentToIndexFieldMapping": {
+      "type": "object",
+      "properties": {
+        "DataSourceFieldName": {
+          "$ref": "#/definitions/ConfluenceAttachmentFieldName"
         },
-        "DateFieldFormat" : {
-          "$ref" : "#/definitions/DateFieldFormat"
+        "DateFieldFormat": {
+          "$ref": "#/definitions/DateFieldFormat"
         },
-        "IndexFieldName" : {
-          "$ref" : "#/definitions/IndexFieldName"
+        "IndexFieldName": {
+          "$ref": "#/definitions/IndexFieldName"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "DataSourceFieldName", "IndexFieldName" ]
+      "additionalProperties": false,
+      "required": [
+        "DataSourceFieldName",
+        "IndexFieldName"
+      ],
+      "title": "ConfluenceAttachmentToIndexFieldMappingDefinition"
     },
-    "GoogleDriveConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "SecretArn" : {
-          "$ref" : "#/definitions/SecretArn"
+    "GoogleDriveConfiguration": {
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "$ref": "#/definitions/SecretArn"
         },
-        "InclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "InclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         },
-        "ExcludeMimeTypes" : {
-          "$ref" : "#/definitions/ExcludeMimeTypesList"
+        "ExcludeMimeTypes": {
+          "$ref": "#/definitions/ExcludeMimeTypesList"
         },
-        "ExcludeUserAccounts" : {
-          "$ref" : "#/definitions/ExcludeUserAccountsList"
+        "ExcludeUserAccounts": {
+          "$ref": "#/definitions/ExcludeUserAccountsList"
         },
-        "ExcludeSharedDrives" : {
-          "$ref" : "#/definitions/ExcludeSharedDrivesList"
+        "ExcludeSharedDrives": {
+          "$ref": "#/definitions/ExcludeSharedDrivesList"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "SecretArn" ]
+      "additionalProperties": false,
+      "required": [
+        "SecretArn"
+      ],
+      "title": "GoogleDriveConfigurationDefinition"
     },
-    "ExcludeMimeTypesList" : {
-      "type" : "array",
-      "minItems" : 0,
-      "maxItems" : 30,
-      "items" : {
-        "$ref" : "#/definitions/MimeType"
-      }
+    "ExcludeMimeTypesList": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 30,
+      "items": {
+        "$ref": "#/definitions/MimeType"
+      },
+      "title": "ExcludeMimeTypesListDefinition"
     },
-    "MimeType" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 256
+    "MimeType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "MimeTypeDefinition"
     },
-    "ExcludeUserAccountsList" : {
-      "type" : "array",
-      "minItems" : 0,
-      "maxItems" : 100,
-      "items" : {
-        "$ref" : "#/definitions/UserAccount"
-      }
+    "ExcludeUserAccountsList": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/UserAccount"
+      },
+      "title": "ExcludeUserAccountsListDefinition"
     },
-    "UserAccount" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 256
+    "UserAccount": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "UserAccountDefinition"
     },
-    "ExcludeSharedDrivesList" : {
-      "type" : "array",
-      "minItems" : 0,
-      "maxItems" : 100,
-      "items" : {
-        "$ref" : "#/definitions/SharedDriveId"
-      }
+    "ExcludeSharedDrivesList": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/SharedDriveId"
+      },
+      "title": "ExcludeSharedDrivesListDefinition"
     },
-    "SharedDriveId" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 256
+    "SharedDriveId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "SharedDriveIdDefinition"
     },
-    "ConfluenceAttachmentFieldName" : {
-      "type" : "string",
-      "enum" : [ "AUTHOR", "CONTENT_TYPE", "CREATED_DATE", "DISPLAY_URL", "FILE_SIZE", "ITEM_TYPE", "PARENT_ID", "SPACE_KEY", "SPACE_NAME", "URL", "VERSION" ]
+    "ConfluenceAttachmentFieldName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AUTHOR",
+            "CONTENT_TYPE",
+            "CREATED_DATE",
+            "DISPLAY_URL",
+            "FILE_SIZE",
+            "ITEM_TYPE",
+            "PARENT_ID",
+            "SPACE_KEY",
+            "SPACE_NAME",
+            "URL",
+            "VERSION"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ConfluenceAttachmentFieldNameDefinition"
     },
-    "WebCrawlerSiteMap" : {
-      "type" : "string",
-      "pattern" : "^(https?):\\/\\/([^\\s]*)",
-      "minLength" : 1,
-      "maxLength" : 2048
+    "WebCrawlerSiteMap": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(https?):\\/\\/([^\\s]*)",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "WebCrawlerSiteMapDefinition"
     },
-    "WebCrawlerSiteMaps" : {
-      "type" : "array",
-      "minItems" : 0,
-      "maxItems" : 3,
-      "items" : {
-        "$ref" : "#/definitions/WebCrawlerSiteMap"
-      }
+    "WebCrawlerSiteMaps": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/definitions/WebCrawlerSiteMap"
+      },
+      "title": "WebCrawlerSiteMapsDefinition"
     },
-    "WebCrawlerSiteMapsConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "SiteMaps" : {
-          "$ref" : "#/definitions/WebCrawlerSiteMaps"
+    "WebCrawlerSiteMapsConfiguration": {
+      "type": "object",
+      "properties": {
+        "SiteMaps": {
+          "$ref": "#/definitions/WebCrawlerSiteMaps"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "SiteMaps" ]
+      "additionalProperties": false,
+      "required": [
+        "SiteMaps"
+      ],
+      "title": "WebCrawlerSiteMapsConfigurationDefinition"
     },
-    "WebCrawlerSeedUrl" : {
-      "type" : "string",
-      "pattern" : "^(https?)://([^\\s]*)",
-      "minLength" : 1,
-      "maxLength" : 2048
-    },
-    "WebCrawlerSeedUrlList" : {
-      "type" : "array",
-      "minItems" : 0,
-      "maxItems" : 100,
-      "items" : {
-        "$ref" : "#/definitions/WebCrawlerSeedUrl"
-      }
-    },
-    "WebCrawlerSeedUrlConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "SeedUrls" : {
-          "$ref" : "#/definitions/WebCrawlerSeedUrlList"
+    "WebCrawlerSeedUrl": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(https?)://([^\\s]*)",
+          "minLength": 1,
+          "maxLength": 2048
         },
-        "WebCrawlerMode" : {
-          "type" : "string",
-          "enum" : [ "HOST_ONLY", "SUBDOMAINS", "EVERYTHING" ]
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "WebCrawlerSeedUrlDefinition"
+    },
+    "WebCrawlerSeedUrlList": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/WebCrawlerSeedUrl"
+      },
+      "title": "WebCrawlerSeedUrlListDefinition"
+    },
+    "WebCrawlerSeedUrlConfiguration": {
+      "type": "object",
+      "properties": {
+        "SeedUrls": {
+          "$ref": "#/definitions/WebCrawlerSeedUrlList"
+        },
+        "WebCrawlerMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HOST_ONLY",
+                "SUBDOMAINS",
+                "EVERYTHING"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "SeedUrls" ]
+      "additionalProperties": false,
+      "required": [
+        "SeedUrls"
+      ],
+      "title": "WebCrawlerSeedUrlConfigurationDefinition"
     },
-    "WebCrawlerUrls" : {
-      "type" : "object",
-      "properties" : {
-        "SeedUrlConfiguration" : {
-          "$ref" : "#/definitions/WebCrawlerSeedUrlConfiguration"
+    "WebCrawlerUrls": {
+      "type": "object",
+      "properties": {
+        "SeedUrlConfiguration": {
+          "$ref": "#/definitions/WebCrawlerSeedUrlConfiguration"
         },
-        "SiteMapsConfiguration" : {
-          "$ref" : "#/definitions/WebCrawlerSiteMapsConfiguration"
+        "SiteMapsConfiguration": {
+          "$ref": "#/definitions/WebCrawlerSiteMapsConfiguration"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "WebCrawlerUrlsDefinition"
     },
-    "ProxyConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "Host" : {
-          "type" : "string",
-          "pattern" : "([^\\s]*)",
-          "minLength" : 1,
-          "maxLength" : 253
+    "ProxyConfiguration": {
+      "type": "object",
+      "properties": {
+        "Host": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "([^\\s]*)",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Port" : {
-          "type" : "integer",
-          "minimum" : 1,
-          "maximum" : 65535
+        "Port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
         },
-        "Credentials" : {
-          "$ref" : "#/definitions/SecretArn"
+        "Credentials": {
+          "$ref": "#/definitions/SecretArn"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Host", "Port" ]
+      "additionalProperties": false,
+      "required": [
+        "Host",
+        "Port"
+      ],
+      "title": "ProxyConfigurationDefinition"
     },
-    "WebCrawlerBasicAuthentication" : {
-      "type" : "object",
-      "properties" : {
-        "Host" : {
-          "type" : "string",
-          "pattern" : "([^\\s]*)",
-          "minLength" : 1,
-          "maxLength" : 253
+    "WebCrawlerBasicAuthentication": {
+      "type": "object",
+      "properties": {
+        "Host": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "([^\\s]*)",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Port" : {
-          "type" : "integer",
-          "minimum" : 1,
-          "maximum" : 65535
+        "Port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
         },
-        "Credentials" : {
-          "$ref" : "#/definitions/SecretArn"
+        "Credentials": {
+          "$ref": "#/definitions/SecretArn"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Host", "Port", "Credentials" ]
+      "additionalProperties": false,
+      "required": [
+        "Host",
+        "Port",
+        "Credentials"
+      ],
+      "title": "WebCrawlerBasicAuthenticationDefinition"
     },
-    "WebCrawlerBasicAuthenticationList" : {
-      "type" : "array",
-      "maxItems" : 10,
-      "items" : {
-        "$ref" : "#/definitions/WebCrawlerBasicAuthentication"
-      }
+    "WebCrawlerBasicAuthenticationList": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/definitions/WebCrawlerBasicAuthentication"
+      },
+      "title": "WebCrawlerBasicAuthenticationListDefinition"
     },
-    "WebCrawlerAuthenticationConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "BasicAuthentication" : {
-          "$ref" : "#/definitions/WebCrawlerBasicAuthenticationList"
+    "WebCrawlerAuthenticationConfiguration": {
+      "type": "object",
+      "properties": {
+        "BasicAuthentication": {
+          "$ref": "#/definitions/WebCrawlerBasicAuthenticationList"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "WebCrawlerAuthenticationConfigurationDefinition"
     },
-    "WebCrawlerConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "Urls" : {
-          "$ref" : "#/definitions/WebCrawlerUrls"
+    "WebCrawlerConfiguration": {
+      "type": "object",
+      "properties": {
+        "Urls": {
+          "$ref": "#/definitions/WebCrawlerUrls"
         },
-        "CrawlDepth" : {
-          "type" : "integer",
-          "minimum" : 1,
-          "maximum" : 10
+        "CrawlDepth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
         },
-        "MaxLinksPerPage" : {
-          "type" : "integer",
-          "minimum" : 1,
-          "maximum" : 1000
+        "MaxLinksPerPage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
         },
-        "MaxContentSizePerPageInMegaBytes" : {
-          "type" : "number",
-          "minimum" : 0,
-          "maximum" : 50
+        "MaxContentSizePerPageInMegaBytes": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 50
         },
-        "MaxUrlsPerMinuteCrawlRate" : {
-          "type" : "integer",
-          "minimum" : 1,
-          "maximum" : 300
+        "MaxUrlsPerMinuteCrawlRate": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300
         },
-        "UrlInclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "UrlInclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "UrlExclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "UrlExclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ProxyConfiguration" : {
-          "$ref" : "#/definitions/ProxyConfiguration"
+        "ProxyConfiguration": {
+          "$ref": "#/definitions/ProxyConfiguration"
         },
-        "AuthenticationConfiguration" : {
-          "$ref" : "#/definitions/WebCrawlerAuthenticationConfiguration"
+        "AuthenticationConfiguration": {
+          "$ref": "#/definitions/WebCrawlerAuthenticationConfiguration"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Urls" ]
+      "additionalProperties": false,
+      "required": [
+        "Urls"
+      ],
+      "title": "WebCrawlerConfigurationDefinition"
     },
-    "WorkDocsConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "OrganizationId" : {
-          "type" : "string",
-          "minLength" : 12,
-          "maxLength" : 12,
-          "pattern" : "d-[0-9a-fA-F]{10}"
+    "WorkDocsConfiguration": {
+      "type": "object",
+      "properties": {
+        "OrganizationId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 12,
+              "maxLength": 12,
+              "pattern": "d-[0-9a-fA-F]{10}"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "CrawlComments" : {
-          "type" : "boolean"
+        "CrawlComments": {
+          "type": "boolean"
         },
-        "UseChangeLog" : {
-          "type" : "boolean"
+        "UseChangeLog": {
+          "type": "boolean"
         },
-        "InclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "InclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "ExclusionPatterns" : {
-          "$ref" : "#/definitions/DataSourceInclusionsExclusionsStrings"
+        "ExclusionPatterns": {
+          "$ref": "#/definitions/DataSourceInclusionsExclusionsStrings"
         },
-        "FieldMappings" : {
-          "$ref" : "#/definitions/DataSourceToIndexFieldMappingList"
+        "FieldMappings": {
+          "$ref": "#/definitions/DataSourceToIndexFieldMappingList"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "OrganizationId" ]
+      "additionalProperties": false,
+      "required": [
+        "OrganizationId"
+      ],
+      "title": "WorkDocsConfigurationDefinition"
     },
-    "DataSourceConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "S3Configuration" : {
-          "$ref" : "#/definitions/S3DataSourceConfiguration"
+    "DataSourceConfiguration": {
+      "type": "object",
+      "properties": {
+        "S3Configuration": {
+          "$ref": "#/definitions/S3DataSourceConfiguration"
         },
-        "SharePointConfiguration" : {
-          "$ref" : "#/definitions/SharePointConfiguration"
+        "SharePointConfiguration": {
+          "$ref": "#/definitions/SharePointConfiguration"
         },
-        "SalesforceConfiguration" : {
-          "$ref" : "#/definitions/SalesforceConfiguration"
+        "SalesforceConfiguration": {
+          "$ref": "#/definitions/SalesforceConfiguration"
         },
-        "OneDriveConfiguration" : {
-          "$ref" : "#/definitions/OneDriveConfiguration"
+        "OneDriveConfiguration": {
+          "$ref": "#/definitions/OneDriveConfiguration"
         },
-        "ServiceNowConfiguration" : {
-          "$ref" : "#/definitions/ServiceNowConfiguration"
+        "ServiceNowConfiguration": {
+          "$ref": "#/definitions/ServiceNowConfiguration"
         },
-        "DatabaseConfiguration" : {
-          "$ref" : "#/definitions/DatabaseConfiguration"
+        "DatabaseConfiguration": {
+          "$ref": "#/definitions/DatabaseConfiguration"
         },
-        "ConfluenceConfiguration" : {
-          "$ref" : "#/definitions/ConfluenceConfiguration"
+        "ConfluenceConfiguration": {
+          "$ref": "#/definitions/ConfluenceConfiguration"
         },
-        "GoogleDriveConfiguration" : {
-          "$ref" : "#/definitions/GoogleDriveConfiguration"
+        "GoogleDriveConfiguration": {
+          "$ref": "#/definitions/GoogleDriveConfiguration"
         },
-        "WebCrawlerConfiguration" : {
-          "$ref" : "#/definitions/WebCrawlerConfiguration"
+        "WebCrawlerConfiguration": {
+          "$ref": "#/definitions/WebCrawlerConfiguration"
         },
-        "WorkDocsConfiguration" : {
-          "$ref" : "#/definitions/WorkDocsConfiguration"
+        "WorkDocsConfiguration": {
+          "$ref": "#/definitions/WorkDocsConfiguration"
         }
       },
-      "additionalProperties" : false,
-      "oneOf" : [ {
-        "required" : [ "S3Configuration" ]
-      }, {
-        "required" : [ "SharePointConfiguration" ]
-      }, {
-        "required" : [ "SalesforceConfiguration" ]
-      }, {
-        "required" : [ "OneDriveConfiguration" ]
-      }, {
-        "required" : [ "ServiceNowConfiguration" ]
-      }, {
-        "required" : [ "DatabaseConfiguration" ]
-      }, {
-        "required" : [ "ConfluenceConfiguration" ]
-      }, {
-        "required" : [ "GoogleDriveConfiguration" ]
-      }, {
-        "required" : [ "WebCrawlerConfiguration" ]
-      }, {
-        "required" : [ "WorkDocsConfiguration" ]
-      } ]
-    },
-    "Name" : {
-      "description" : "Name of data source",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1000
-    },
-    "Type" : {
-      "description" : "Data source type",
-      "type" : "string",
-      "enum" : [ "S3", "SHAREPOINT", "SALESFORCE", "ONEDRIVE", "SERVICENOW", "DATABASE", "CUSTOM", "CONFLUENCE", "GOOGLEDRIVE", "WEBCRAWLER", "WORKDOCS" ]
-    },
-    "Description" : {
-      "description" : "Description of data source",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1000
-    },
-    "RoleArn" : {
-      "description" : "Role ARN",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1284,
-      "pattern" : "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
-    },
-    "Schedule" : {
-      "description" : "Schedule",
-      "type" : "string",
-      "maxLength" : 1000
-    },
-    "Id" : {
-      "description" : "ID of data source",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "Arn" : {
-      "type" : "string",
-      "maxLength" : 1000
-    },
-    "CustomDocumentEnrichmentConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "InlineConfigurations" : {
-          "$ref" : "#/definitions/InlineConfigurations"
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "S3Configuration"
+          ]
         },
-        "PreExtractionHookConfiguration" : {
-          "$ref" : "#/definitions/HookConfiguration"
+        {
+          "required": [
+            "SharePointConfiguration"
+          ]
         },
-        "PostExtractionHookConfiguration" : {
-          "$ref" : "#/definitions/HookConfiguration"
+        {
+          "required": [
+            "SalesforceConfiguration"
+          ]
         },
-        "RoleArn" : {
-          "$ref" : "#/definitions/RoleArn"
+        {
+          "required": [
+            "OneDriveConfiguration"
+          ]
+        },
+        {
+          "required": [
+            "ServiceNowConfiguration"
+          ]
+        },
+        {
+          "required": [
+            "DatabaseConfiguration"
+          ]
+        },
+        {
+          "required": [
+            "ConfluenceConfiguration"
+          ]
+        },
+        {
+          "required": [
+            "GoogleDriveConfiguration"
+          ]
+        },
+        {
+          "required": [
+            "WebCrawlerConfiguration"
+          ]
+        },
+        {
+          "required": [
+            "WorkDocsConfiguration"
+          ]
+        }
+      ],
+      "title": "DataSourceConfigurationDefinition"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of data source",
+      "title": "NameDefinition"
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "S3",
+            "SHAREPOINT",
+            "SALESFORCE",
+            "ONEDRIVE",
+            "SERVICENOW",
+            "DATABASE",
+            "CUSTOM",
+            "CONFLUENCE",
+            "GOOGLEDRIVE",
+            "WEBCRAWLER",
+            "WORKDOCS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Data source type",
+      "title": "TypeDefinition"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Description of data source",
+      "title": "DescriptionDefinition"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1284,
+          "pattern": "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Role ARN",
+      "title": "RoleArnDefinition"
+    },
+    "Schedule": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Schedule",
+      "title": "ScheduleDefinition"
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "ID of data source",
+      "title": "IdDefinition"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ArnDefinition"
+    },
+    "CustomDocumentEnrichmentConfiguration": {
+      "type": "object",
+      "properties": {
+        "InlineConfigurations": {
+          "$ref": "#/definitions/InlineConfigurations"
+        },
+        "PreExtractionHookConfiguration": {
+          "$ref": "#/definitions/HookConfiguration"
+        },
+        "PostExtractionHookConfiguration": {
+          "$ref": "#/definitions/HookConfiguration"
+        },
+        "RoleArn": {
+          "$ref": "#/definitions/RoleArn"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "CustomDocumentEnrichmentConfigurationDefinition"
     },
-    "InlineConfigurations" : {
-      "description" : "List of InlineCustomDocumentEnrichmentConfigurations",
-      "type" : "array",
-      "maxItems" : 100,
-      "items" : {
-        "$ref" : "#/definitions/InlineCustomDocumentEnrichmentConfiguration"
-      }
+    "InlineConfigurations": {
+      "description": "List of InlineCustomDocumentEnrichmentConfigurations",
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/InlineCustomDocumentEnrichmentConfiguration"
+      },
+      "title": "InlineConfigurationsDefinition"
     },
-    "InlineCustomDocumentEnrichmentConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "Condition" : {
-          "$ref" : "#/definitions/DocumentAttributeCondition"
+    "InlineCustomDocumentEnrichmentConfiguration": {
+      "type": "object",
+      "properties": {
+        "Condition": {
+          "$ref": "#/definitions/DocumentAttributeCondition"
         },
-        "Target" : {
-          "$ref" : "#/definitions/DocumentAttributeTarget"
+        "Target": {
+          "$ref": "#/definitions/DocumentAttributeTarget"
         },
-        "DocumentContentDeletion" : {
-          "type" : "boolean"
+        "DocumentContentDeletion": {
+          "type": "boolean"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "InlineCustomDocumentEnrichmentConfigurationDefinition"
     },
-    "DocumentAttributeCondition" : {
-      "type" : "object",
-      "properties" : {
-        "ConditionDocumentAttributeKey" : {
-          "$ref" : "#/definitions/DocumentAttributeKey"
+    "DocumentAttributeCondition": {
+      "type": "object",
+      "properties": {
+        "ConditionDocumentAttributeKey": {
+          "$ref": "#/definitions/DocumentAttributeKey"
         },
-        "Operator" : {
-          "$ref" : "#/definitions/ConditionOperator"
+        "Operator": {
+          "$ref": "#/definitions/ConditionOperator"
         },
-        "ConditionOnValue" : {
-          "$ref" : "#/definitions/DocumentAttributeValue"
+        "ConditionOnValue": {
+          "$ref": "#/definitions/DocumentAttributeValue"
         }
       },
-      "required" : [ "ConditionDocumentAttributeKey", "Operator" ],
-      "additionalProperties" : false
+      "required": [
+        "ConditionDocumentAttributeKey",
+        "Operator"
+      ],
+      "additionalProperties": false,
+      "title": "DocumentAttributeConditionDefinition"
     },
-    "DocumentAttributeTarget" : {
-      "type" : "object",
-      "properties" : {
-        "TargetDocumentAttributeKey" : {
-          "$ref" : "#/definitions/DocumentAttributeKey"
+    "DocumentAttributeTarget": {
+      "type": "object",
+      "properties": {
+        "TargetDocumentAttributeKey": {
+          "$ref": "#/definitions/DocumentAttributeKey"
         },
-        "TargetDocumentAttributeValueDeletion" : {
-          "type" : "boolean"
+        "TargetDocumentAttributeValueDeletion": {
+          "type": "boolean"
         },
-        "TargetDocumentAttributeValue" : {
-          "$ref" : "#/definitions/DocumentAttributeValue"
+        "TargetDocumentAttributeValue": {
+          "$ref": "#/definitions/DocumentAttributeValue"
         }
       },
-      "required" : [ "TargetDocumentAttributeKey" ],
-      "additionalProperties" : false
+      "required": [
+        "TargetDocumentAttributeKey"
+      ],
+      "additionalProperties": false,
+      "title": "DocumentAttributeTargetDefinition"
     },
-    "ConditionOperator" : {
-      "type" : "string",
-      "enum" : [ "GreaterThan", "GreaterThanOrEquals", "LessThan", "LessThanOrEquals", "Equals", "NotEquals", "Contains", "NotContains", "Exists", "NotExists", "BeginsWith" ]
-    },
-    "DocumentAttributeKey" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 200,
-      "pattern" : "[a-zA-Z0-9_][a-zA-Z0-9_-]*"
-    },
-    "DocumentAttributeValue" : {
-      "type" : "object",
-      "properties" : {
-        "StringValue" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 2048
+    "ConditionOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GreaterThan",
+            "GreaterThanOrEquals",
+            "LessThan",
+            "LessThanOrEquals",
+            "Equals",
+            "NotEquals",
+            "Contains",
+            "NotContains",
+            "Exists",
+            "NotExists",
+            "BeginsWith"
+          ]
         },
-        "StringListValue" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ConditionOperatorDefinition"
+    },
+    "DocumentAttributeKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "[a-zA-Z0-9_][a-zA-Z0-9_-]*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DocumentAttributeKeyDefinition"
+    },
+    "DocumentAttributeValue": {
+      "type": "object",
+      "properties": {
+        "StringValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StringListValue": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
-        "LongValue" : {
-          "$ref" : "#/definitions/Long"
+        "LongValue": {
+          "$ref": "#/definitions/Long"
         },
-        "DateValue" : {
-          "$ref" : "#/definitions/Timestamp"
+        "DateValue": {
+          "$ref": "#/definitions/Timestamp"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "DocumentAttributeValueDefinition"
     },
-    "Long" : {
-      "type" : "integer",
-      "format" : "int64"
+    "Long": {
+      "type": "integer",
+      "format": "int64",
+      "title": "LongDefinition"
     },
-    "Timestamp" : {
-      "type" : "string"
-    },
-    "HookConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "InvocationCondition" : {
-          "$ref" : "#/definitions/DocumentAttributeCondition"
+    "Timestamp": {
+      "oneOf": [
+        {
+          "type": "string"
         },
-        "LambdaArn" : {
-          "$ref" : "#/definitions/LambdaArn"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "TimestampDefinition"
+    },
+    "HookConfiguration": {
+      "type": "object",
+      "properties": {
+        "InvocationCondition": {
+          "$ref": "#/definitions/DocumentAttributeCondition"
         },
-        "S3Bucket" : {
-          "$ref" : "#/definitions/S3BucketName"
+        "LambdaArn": {
+          "$ref": "#/definitions/LambdaArn"
+        },
+        "S3Bucket": {
+          "$ref": "#/definitions/S3BucketName"
         }
       },
-      "required" : [ "LambdaArn", "S3Bucket" ],
-      "additionalProperties" : false
+      "required": [
+        "LambdaArn",
+        "S3Bucket"
+      ],
+      "additionalProperties": false,
+      "title": "HookConfigurationDefinition"
     },
-    "LambdaArn" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048
+    "LambdaArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "LambdaArnDefinition"
     }
   },
-  "properties" : {
-    "Id" : {
-      "$ref" : "#/definitions/Id"
+  "properties": {
+    "Name": {
+      "$ref": "#/definitions/Name"
     },
-    "Arn" : {
-      "$ref" : "#/definitions/Arn"
+    "IndexId": {
+      "$ref": "#/definitions/IndexId"
     },
-    "Name" : {
-      "$ref" : "#/definitions/Name"
+    "Type": {
+      "$ref": "#/definitions/Type"
     },
-    "IndexId" : {
-      "$ref" : "#/definitions/IndexId"
+    "DataSourceConfiguration": {
+      "$ref": "#/definitions/DataSourceConfiguration"
     },
-    "Type" : {
-      "$ref" : "#/definitions/Type"
+    "Description": {
+      "$ref": "#/definitions/Description"
     },
-    "DataSourceConfiguration" : {
-      "$ref" : "#/definitions/DataSourceConfiguration"
+    "Schedule": {
+      "$ref": "#/definitions/Schedule"
     },
-    "Description" : {
-      "$ref" : "#/definitions/Description"
+    "RoleArn": {
+      "$ref": "#/definitions/RoleArn"
     },
-    "Schedule" : {
-      "$ref" : "#/definitions/Schedule"
+    "Tags": {
+      "description": "Tags for labeling the data source",
+      "$ref": "#/definitions/TagList"
     },
-    "RoleArn" : {
-      "$ref" : "#/definitions/RoleArn"
-    },
-    "Tags" : {
-      "description" : "Tags for labeling the data source",
-      "$ref" : "#/definitions/TagList"
-    },
-    "CustomDocumentEnrichmentConfiguration" : {
-      "$ref" : "#/definitions/CustomDocumentEnrichmentConfiguration"
+    "CustomDocumentEnrichmentConfiguration": {
+      "$ref": "#/definitions/CustomDocumentEnrichmentConfiguration"
     }
   },
-  "required" : [ "Name", "IndexId", "Type" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "kendra:CreateDataSource", "kendra:DescribeDataSource", "kendra:ListTagsForResource", "iam:PassRole", "kendra:TagResource" ]
+  "required": [
+    "Name",
+    "IndexId",
+    "Type"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "kendra:CreateDataSource",
+        "kendra:DescribeDataSource",
+        "kendra:ListTagsForResource",
+        "iam:PassRole",
+        "kendra:TagResource"
+      ]
     },
-    "read" : {
-      "permissions" : [ "kendra:DescribeDataSource", "kendra:ListTagsForResource" ]
+    "read": {
+      "permissions": [
+        "kendra:DescribeDataSource",
+        "kendra:ListTagsForResource"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "kendra:DescribeDataSource", "kendra:DeleteDataSource" ],
-      "timeoutInMinutes" : 720
+    "delete": {
+      "permissions": [
+        "kendra:DescribeDataSource",
+        "kendra:DeleteDataSource"
+      ],
+      "timeoutInMinutes": 720
     },
-    "list" : {
-      "permissions" : [ "kendra:ListDataSources" ]
+    "list": {
+      "permissions": [
+        "kendra:ListDataSources"
+      ]
     },
-    "update" : {
-      "permissions" : [ "kendra:DescribeDataSource", "kendra:UpdateDataSource", "kendra:ListTagsForResource", "kendra:TagResource", "kendra:UntagResource", "iam:PassRole" ]
+    "update": {
+      "permissions": [
+        "kendra:DescribeDataSource",
+        "kendra:UpdateDataSource",
+        "kendra:ListTagsForResource",
+        "kendra:TagResource",
+        "kendra:UntagResource",
+        "iam:PassRole"
+      ]
     }
   },
-  "additionalProperties" : false,
-  "primaryIdentifier" : [ "/properties/Id", "/properties/IndexId" ],
-  "readOnlyProperties" : [ "/properties/Id", "/properties/Arn" ],
-  "createOnlyProperties" : [ "/properties/Type" ]
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Id",
+    "/properties/IndexId"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Type"
+  ],
+  "title": "AWSKendraDataSourceProperties",
+  "type": "object"
 }

@@ -1,0 +1,149 @@
+{
+  "typeName": "AWS::Omics::ReferenceStore",
+  "description": "Definition of AWS::Omics::ReferenceStore Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "EncryptionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "KMS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "EncryptionTypeDefinition"
+    },
+    "SseConfig": {
+      "type": "object",
+      "description": "Server-side encryption (SSE) settings for a store.",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/EncryptionType"
+        },
+        "KeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "arn:([^:\n]*):([^:\n]*):([^:\n]*):([0-9]{12}):([^:\n]*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An encryption key ARN."
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "SseConfigDefinition"
+    },
+    "TagMap": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0
+        }
+      },
+      "additionalProperties": false,
+      "title": "TagMapDefinition"
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "pattern": "^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description for the store."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 127,
+          "minLength": 1,
+          "pattern": "^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A name for the store."
+    },
+    "SseConfig": {
+      "$ref": "#/definitions/SseConfig"
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "required": [
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CreationTime",
+    "/properties/ReferenceStoreId"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Tags"
+  ],
+  "createOnlyProperties": [
+    "/properties/Description",
+    "/properties/Name",
+    "/properties/SseConfig",
+    "/properties/Tags"
+  ],
+  "primaryIdentifier": [
+    "/properties/ReferenceStoreId"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": true
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "omics:CreateReferenceStore",
+        "omics:TagResource"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "omics:GetReferenceStore",
+        "omics:ListTagsForResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "omics:DeleteReferenceStore"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "omics:ListReferenceStores"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "title": "AWSOmicsReferenceStoreProperties",
+  "type": "object"
+}

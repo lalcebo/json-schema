@@ -1,114 +1,162 @@
 {
-  "typeName" : "AWS::S3Outposts::Endpoint",
-  "description" : "Resource Type Definition for AWS::S3Outposts::Endpoint",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3outposts.git",
-  "definitions" : {
-    "iso8601UTC" : {
-      "description" : "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
-      "type" : "string",
-      "pattern" : "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"
+  "typeName": "AWS::S3Outposts::Endpoint",
+  "description": "Resource Type Definition for AWS::S3Outposts::Endpoint. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3outposts.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3outposts.git",
+  "definitions": {
+    "iso8601UTC": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
+      "title": "iso8601UTCDefinition"
     },
-    "NetworkInterface" : {
-      "description" : "The container for the network interface.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "NetworkInterfaceId" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 100
+    "NetworkInterface": {
+      "description": "The container for the network interface.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "NetworkInterfaceId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "NetworkInterfaceId" ]
+      "required": [
+        "NetworkInterfaceId"
+      ],
+      "title": "NetworkInterfaceDefinition"
     }
   },
-  "properties" : {
-    "Arn" : {
-      "description" : "The Amazon Resource Name (ARN) of the endpoint.",
-      "minLength" : 5,
-      "maxLength" : 500,
-      "type" : "string",
-      "pattern" : "^arn:[^:]+:s3-outposts:[a-zA-Z0-9\\-]+:\\d{12}:outpost\\/[^:]+\\/endpoint/[a-zA-Z0-9]{19}$"
+  "properties": {
+    "OutpostId": {
+      "oneOf": [
+        {
+          "pattern": "^(op-[a-f0-9]{17}|\\d{12}|ec2)$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The id of the customer outpost on which the bucket resides."
     },
-    "CidrBlock" : {
-      "description" : "The VPC CIDR committed by this endpoint.",
-      "minLength" : 1,
-      "maxLength" : 20,
-      "type" : "string"
+    "SecurityGroupId": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "maxLength": 100,
+          "type": "string",
+          "pattern": "^sg-([0-9a-f]{8}|[0-9a-f]{17})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the security group to use with the endpoint."
     },
-    "CreationTime" : {
-      "description" : "The time the endpoint was created.",
-      "$ref" : "#/definitions/iso8601UTC"
+    "SubnetId": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "maxLength": 100,
+          "type": "string",
+          "pattern": "^subnet-([0-9a-f]{8}|[0-9a-f]{17})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the subnet in the selected VPC. The subnet must belong to the Outpost."
     },
-    "Id" : {
-      "description" : "The ID of the endpoint.",
-      "minLength" : 5,
-      "maxLength" : 500,
-      "type" : "string",
-      "pattern" : "^[a-zA-Z0-9]{19}$"
+    "AccessType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CustomerOwnedIp",
+            "Private"
+          ],
+          "default": "Private"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of access for the on-premise network connectivity for the Outpost endpoint. To access endpoint from an on-premises network, you must specify the access type and provide the customer owned Ipv4 pool."
     },
-    "NetworkInterfaces" : {
-      "description" : "The network interfaces of the endpoint.",
-      "type" : "array",
-      "insertionOrder" : false,
-      "uniqueItems" : true,
-      "items" : {
-        "$ref" : "#/definitions/NetworkInterface"
-      }
-    },
-    "OutpostId" : {
-      "description" : "The id of the customer outpost on which the bucket resides.",
-      "pattern" : "^(op-[a-f0-9]{17}|\\d{12}|ec2)$",
-      "type" : "string"
-    },
-    "SecurityGroupId" : {
-      "description" : "The ID of the security group to use with the endpoint.",
-      "minLength" : 1,
-      "maxLength" : 100,
-      "type" : "string",
-      "pattern" : "^sg-([0-9a-f]{8}|[0-9a-f]{17})$"
-    },
-    "Status" : {
-      "type" : "string",
-      "enum" : [ "Available", "Pending", "Deleting" ]
-    },
-    "SubnetId" : {
-      "description" : "The ID of the subnet in the selected VPC. The subnet must belong to the Outpost.",
-      "minLength" : 1,
-      "maxLength" : 100,
-      "type" : "string",
-      "pattern" : "^subnet-([0-9a-f]{8}|[0-9a-f]{17})$"
-    },
-    "AccessType" : {
-      "description" : "The type of access for the on-premise network connectivity for the Outpost endpoint. To access endpoint from an on-premises network, you must specify the access type and provide the customer owned Ipv4 pool.",
-      "type" : "string",
-      "enum" : [ "CustomerOwnedIp", "Private" ],
-      "default" : "Private"
-    },
-    "CustomerOwnedIpv4Pool" : {
-      "description" : "The ID of the customer-owned IPv4 pool for the Endpoint. IP addresses will be allocated from this pool for the endpoint.",
-      "type" : "string",
-      "pattern" : "^ipv4pool-coip-([0-9a-f]{17})$"
+    "CustomerOwnedIpv4Pool": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^ipv4pool-coip-([0-9a-f]{17})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the customer-owned IPv4 pool for the Endpoint. IP addresses will be allocated from this pool for the endpoint."
     }
   },
-  "taggable" : false,
-  "additionalProperties" : false,
-  "required" : [ "OutpostId", "SecurityGroupId", "SubnetId" ],
-  "createOnlyProperties" : [ "/properties/OutpostId", "/properties/SecurityGroupId", "/properties/SubnetId", "/properties/AccessType", "/properties/CustomerOwnedIpv4Pool" ],
-  "readOnlyProperties" : [ "/properties/Arn", "/properties/CidrBlock", "/properties/CreationTime", "/properties/Id", "/properties/NetworkInterfaces", "/properties/Status" ],
-  "primaryIdentifier" : [ "/properties/Arn" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "s3-outposts:CreateEndpoint" ]
+  "taggable": false,
+  "additionalProperties": false,
+  "required": [
+    "OutpostId",
+    "SecurityGroupId",
+    "SubnetId"
+  ],
+  "createOnlyProperties": [
+    "/properties/OutpostId",
+    "/properties/SecurityGroupId",
+    "/properties/SubnetId",
+    "/properties/AccessType",
+    "/properties/CustomerOwnedIpv4Pool"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CidrBlock",
+    "/properties/CreationTime",
+    "/properties/Id",
+    "/properties/NetworkInterfaces",
+    "/properties/Status"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "s3-outposts:CreateEndpoint"
+      ]
     },
-    "read" : {
-      "permissions" : [ "s3-outposts:ListEndpoints" ]
+    "read": {
+      "permissions": [
+        "s3-outposts:ListEndpoints"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "s3-outposts:DeleteEndpoint" ]
+    "delete": {
+      "permissions": [
+        "s3-outposts:DeleteEndpoint"
+      ]
     },
-    "list" : {
-      "permissions" : [ "s3-outposts:ListEndpoints" ]
+    "list": {
+      "permissions": [
+        "s3-outposts:ListEndpoints"
+      ]
     }
-  }
+  },
+  "title": "AWSS3OutpostsEndpointProperties",
+  "type": "object"
 }

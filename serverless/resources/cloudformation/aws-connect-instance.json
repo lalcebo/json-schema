@@ -1,0 +1,205 @@
+{
+  "typeName": "AWS::Connect::Instance",
+  "description": "Resource Type definition for AWS::Connect::Instance. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "definitions": {
+    "InboundCalls": {
+      "description": "Mandatory element which enables inbound calls on new instance.",
+      "type": "boolean",
+      "title": "InboundCallsDefinition"
+    },
+    "OutboundCalls": {
+      "description": "Mandatory element which enables outbound calls on new instance.",
+      "type": "boolean",
+      "title": "OutboundCallsDefinition"
+    },
+    "ContactflowLogs": {
+      "description": "Boolean flag which enables CONTACTFLOW_LOGS on an instance.",
+      "type": "boolean",
+      "title": "ContactflowLogsDefinition"
+    },
+    "ContactLens": {
+      "description": "Boolean flag which enables CONTACT_LENS on an instance.",
+      "type": "boolean",
+      "title": "ContactLensDefinition"
+    },
+    "AutoResolveBestVoices": {
+      "description": "Boolean flag which enables AUTO_RESOLVE_BEST_VOICES on an instance.",
+      "type": "boolean",
+      "title": "AutoResolveBestVoicesDefinition"
+    },
+    "UseCustomTTSVoices": {
+      "description": "Boolean flag which enables USE_CUSTOM_TTS_VOICES on an instance.",
+      "type": "boolean",
+      "title": "UseCustomTTSVoicesDefinition"
+    },
+    "EarlyMedia": {
+      "description": "Boolean flag which enables EARLY_MEDIA on an instance.",
+      "type": "boolean",
+      "title": "EarlyMediaDefinition"
+    },
+    "Attributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InboundCalls": {
+          "$ref": "#/definitions/InboundCalls"
+        },
+        "OutboundCalls": {
+          "$ref": "#/definitions/OutboundCalls"
+        },
+        "ContactflowLogs": {
+          "$ref": "#/definitions/ContactflowLogs"
+        },
+        "ContactLens": {
+          "$ref": "#/definitions/ContactLens"
+        },
+        "AutoResolveBestVoices": {
+          "$ref": "#/definitions/AutoResolveBestVoices"
+        },
+        "UseCustomTTSVoices": {
+          "$ref": "#/definitions/UseCustomTTSVoices"
+        },
+        "EarlyMedia": {
+          "$ref": "#/definitions/EarlyMedia"
+        }
+      },
+      "required": [
+        "InboundCalls",
+        "OutboundCalls"
+      ],
+      "title": "AttributesDefinition"
+    }
+  },
+  "properties": {
+    "IdentityManagementType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SAML",
+            "CONNECT_MANAGED",
+            "EXISTING_DIRECTORY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the type of directory integration for new instance."
+    },
+    "InstanceAlias": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(?!d-)([\\da-zA-Z]+)([-]*[\\da-zA-Z])*$",
+          "minLength": 1,
+          "maxLength": 62
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Alias of the new directory created as part of new instance creation."
+    },
+    "DirectoryId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^d-[0-9a-f]{10}$",
+          "minLength": 12,
+          "maxLength": 12
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Existing directoryId user wants to map to the new Connect instance."
+    },
+    "Attributes": {
+      "description": "The attributes for the instance.",
+      "$ref": "#/definitions/Attributes"
+    }
+  },
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "additionalProperties": false,
+  "required": [
+    "IdentityManagementType",
+    "Attributes"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Arn",
+    "/properties/ServiceRole",
+    "/properties/CreatedTime",
+    "/properties/InstanceStatus"
+  ],
+  "createOnlyProperties": [
+    "/properties/DirectoryId",
+    "/properties/InstanceAlias",
+    "/properties/IdentityManagementType"
+  ],
+  "writeOnlyProperties": [
+    "/properties/DirectoryId"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "connect:CreateInstance",
+        "connect:DescribeInstance",
+        "connect:UpdateInstanceAttribute",
+        "ds:CheckAlias",
+        "ds:CreateAlias",
+        "ds:AuthorizeApplication",
+        "ds:UnauthorizeApplication",
+        "ds:CreateIdentityPoolDirectory",
+        "ds:CreateDirectory",
+        "ds:DescribeDirectories",
+        "iam:CreateServiceLinkedRole",
+        "iam:PutRolePolicy",
+        "logs:CreateLogGroup"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "connect:DescribeInstance",
+        "connect:ListInstanceAttributes",
+        "ds:DescribeDirectories"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "connect:ListInstanceAttributes",
+        "connect:UpdateInstanceAttribute",
+        "iam:CreateServiceLinkedRole",
+        "iam:PutRolePolicy"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "connect:DeleteInstance",
+        "connect:DescribeInstance",
+        "ds:DeleteDirectory",
+        "ds:UnauthorizeApplication",
+        "ds:DescribeDirectories"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "connect:ListInstances",
+        "connect:ListInstanceAttributes",
+        "ds:DescribeDirectories"
+      ]
+    }
+  },
+  "title": "AWSConnectInstanceProperties",
+  "type": "object"
+}

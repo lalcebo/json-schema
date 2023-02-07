@@ -1,91 +1,189 @@
 {
-  "typeName" : "AWS::IoT::ProvisioningTemplate",
-  "description" : "Creates a fleet provisioning template.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "definitions" : {
-    "ProvisioningHook" : {
-      "type" : "object",
-      "properties" : {
-        "TargetArn" : {
-          "type" : "string"
+  "typeName": "AWS::IoT::ProvisioningTemplate",
+  "description": "Creates a fleet provisioning template.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "ProvisioningHook": {
+      "type": "object",
+      "properties": {
+        "TargetArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "PayloadVersion" : {
-          "type" : "string"
-        }
-      }
-    },
-    "Tag" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string"
-        },
-        "Value" : {
-          "type" : "string"
+        "PayloadVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Key", "Value" ]
+      "title": "ProvisioningHookDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "properties" : {
-    "TemplateArn" : {
-      "type" : "string"
+  "properties": {
+    "TemplateName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z_-]+$",
+          "minLength": 1,
+          "maxLength": 36
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "TemplateName" : {
-      "type" : "string",
-      "pattern" : "^[0-9A-Za-z_-]+$",
-      "minLength" : 1,
-      "maxLength" : 36
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 500
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "Description" : {
-      "type" : "string",
-      "maxLength" : 500
+    "Enabled": {
+      "type": "boolean"
     },
-    "Enabled" : {
-      "type" : "boolean"
+    "ProvisioningRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "ProvisioningRoleArn" : {
-      "type" : "string"
+    "TemplateBody": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "TemplateBody" : {
-      "type" : "string"
+    "TemplateType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "FLEET_PROVISIONING",
+            "JITP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "TemplateType" : {
-      "type" : "string",
-      "enum" : [ "FLEET_PROVISIONING", "JITP" ]
+    "PreProvisioningHook": {
+      "$ref": "#/definitions/ProvisioningHook"
     },
-    "PreProvisioningHook" : {
-      "$ref" : "#/definitions/ProvisioningHook"
-    },
-    "Tags" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "taggable" : true,
-  "additionalProperties" : false,
-  "required" : [ "ProvisioningRoleArn", "TemplateBody" ],
-  "createOnlyProperties" : [ "/properties/TemplateName", "/properties/TemplateType" ],
-  "readOnlyProperties" : [ "/properties/TemplateArn" ],
-  "primaryIdentifier" : [ "/properties/TemplateName" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "iam:GetRole", "iam:PassRole", "iot:CreateProvisioningTemplate" ]
+  "taggable": true,
+  "additionalProperties": false,
+  "required": [
+    "ProvisioningRoleArn",
+    "TemplateBody"
+  ],
+  "createOnlyProperties": [
+    "/properties/TemplateName",
+    "/properties/TemplateType"
+  ],
+  "readOnlyProperties": [
+    "/properties/TemplateArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/TemplateName"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iam:GetRole",
+        "iam:PassRole",
+        "iot:CreateProvisioningTemplate"
+      ]
     },
-    "read" : {
-      "permissions" : [ "iot:DescribeProvisioningTemplate" ]
+    "read": {
+      "permissions": [
+        "iot:DescribeProvisioningTemplate"
+      ]
     },
-    "update" : {
-      "permissions" : [ "iam:GetRole", "iam:PassRole", "iot:UpdateProvisioningTemplate", "iot:CreateProvisioningTemplateVersion", "iot:ListProvisioningTemplateVersions", "iot:DeleteProvisioningTemplateVersion" ]
+    "update": {
+      "permissions": [
+        "iam:GetRole",
+        "iam:PassRole",
+        "iot:UpdateProvisioningTemplate",
+        "iot:CreateProvisioningTemplateVersion",
+        "iot:ListProvisioningTemplateVersions",
+        "iot:DeleteProvisioningTemplateVersion"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "iot:DeleteProvisioningTemplate", "iot:DescribeProvisioningTemplate" ]
+    "delete": {
+      "permissions": [
+        "iot:DeleteProvisioningTemplate",
+        "iot:DescribeProvisioningTemplate"
+      ]
     },
-    "list" : {
-      "permissions" : [ "iot:ListProvisioningTemplates" ]
+    "list": {
+      "permissions": [
+        "iot:ListProvisioningTemplates"
+      ]
     }
-  }
+  },
+  "title": "AWSIoTProvisioningTemplateProperties",
+  "type": "object"
 }

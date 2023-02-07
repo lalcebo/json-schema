@@ -1,328 +1,582 @@
 {
-  "typeName" : "AWS::IoTSiteWise::AssetModel",
-  "description" : "Resource schema for AWS::IoTSiteWise::AssetModel",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-IoTSiteWise.git",
-  "definitions" : {
-    "AssetModelCompositeModel" : {
-      "description" : "Contains a composite model definition in an asset model. This composite model definition is applied to all assets created from the asset model.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "required" : [ "Name", "Type" ],
-      "properties" : {
-        "Description" : {
-          "description" : "A description for the asset composite model.",
-          "type" : "string"
+  "typeName": "AWS::IoTSiteWise::AssetModel",
+  "description": "Resource schema for AWS::IoTSiteWise::AssetModel. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-IoTSiteWise.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-IoTSiteWise.git",
+  "definitions": {
+    "AssetModelCompositeModel": {
+      "description": "Contains a composite model definition in an asset model. This composite model definition is applied to all assets created from the asset model.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "Type"
+      ],
+      "properties": {
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A description for the asset composite model."
         },
-        "Name" : {
-          "description" : "A unique, friendly name for the asset composite model.",
-          "type" : "string"
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A unique, friendly name for the asset composite model."
         },
-        "Type" : {
-          "description" : "The type of the composite model. For alarm composite models, this type is AWS/ALARM",
-          "type" : "string"
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of the composite model. For alarm composite models, this type is AWS/ALARM"
         },
-        "CompositeModelProperties" : {
-          "description" : "The property definitions of the asset model. You can specify up to 200 properties per asset model.",
-          "type" : "array",
-          "insertionOrder" : false,
-          "items" : {
-            "$ref" : "#/definitions/AssetModelProperty"
-          }
-        }
-      }
-    },
-    "AssetModelProperty" : {
-      "description" : "Contains information about an asset model property.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "required" : [ "LogicalId", "Name", "DataType", "Type" ],
-      "properties" : {
-        "LogicalId" : {
-          "description" : "Customer provided ID for property.",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 256,
-          "pattern" : "[^\\u0000-\\u001F\\u007F]+"
-        },
-        "Name" : {
-          "description" : "The name of the asset model property.",
-          "type" : "string"
-        },
-        "DataType" : {
-          "description" : "The data type of the asset model property.",
-          "$ref" : "#/definitions/DataType"
-        },
-        "DataTypeSpec" : {
-          "description" : "The data type of the structure for this property.",
-          "$ref" : "#/definitions/DataTypeSpec"
-        },
-        "Unit" : {
-          "description" : "The unit of the asset model property, such as Newtons or RPM.",
-          "type" : "string"
-        },
-        "Type" : {
-          "description" : "The property type",
-          "$ref" : "#/definitions/PropertyType"
-        }
-      }
-    },
-    "DataType" : {
-      "type" : "string",
-      "enum" : [ "STRING", "INTEGER", "DOUBLE", "BOOLEAN", "STRUCT" ]
-    },
-    "DataTypeSpec" : {
-      "type" : "string",
-      "enum" : [ "AWS/ALARM_STATE" ]
-    },
-    "PropertyType" : {
-      "description" : "Contains a property type, which can be one of attribute, measurement, metric, or transform.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "required" : [ "TypeName" ],
-      "properties" : {
-        "TypeName" : {
-          "$ref" : "#/definitions/TypeName"
-        },
-        "Attribute" : {
-          "$ref" : "#/definitions/Attribute"
-        },
-        "Transform" : {
-          "$ref" : "#/definitions/Transform"
-        },
-        "Metric" : {
-          "$ref" : "#/definitions/Metric"
-        }
-      }
-    },
-    "TypeName" : {
-      "type" : "string",
-      "enum" : [ "Measurement", "Attribute", "Transform", "Metric" ]
-    },
-    "Attribute" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "DefaultValue" : {
-          "type" : "string"
-        }
-      }
-    },
-    "Transform" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Expression" : {
-          "description" : "The mathematical expression that defines the transformation function. You can specify up to 10 functions per expression.",
-          "type" : "string"
-        },
-        "Variables" : {
-          "description" : "The list of variables used in the expression.",
-          "type" : "array",
-          "insertionOrder" : false,
-          "items" : {
-            "$ref" : "#/definitions/ExpressionVariable"
+        "CompositeModelProperties": {
+          "description": "The property definitions of the asset model. You can specify up to 200 properties per asset model.",
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AssetModelProperty"
           }
         }
       },
-      "required" : [ "Expression", "Variables" ]
+      "title": "AssetModelCompositeModelDefinition"
     },
-    "Metric" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Expression" : {
-          "description" : "The mathematical expression that defines the metric aggregation function. You can specify up to 10 functions per expression.",
-          "type" : "string"
+    "AssetModelProperty": {
+      "description": "Contains information about an asset model property.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "LogicalId",
+        "Name",
+        "DataType",
+        "Type"
+      ],
+      "properties": {
+        "LogicalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[^\\u0000-\\u001F\\u007F]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Customer provided ID for property."
         },
-        "Variables" : {
-          "description" : "The list of variables used in the expression.",
-          "insertionOrder" : false,
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/ExpressionVariable"
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the asset model property."
+        },
+        "DataType": {
+          "description": "The data type of the asset model property.",
+          "$ref": "#/definitions/DataType"
+        },
+        "DataTypeSpec": {
+          "description": "The data type of the structure for this property.",
+          "$ref": "#/definitions/DataTypeSpec"
+        },
+        "Unit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The unit of the asset model property, such as Newtons or RPM."
+        },
+        "Type": {
+          "description": "The property type",
+          "$ref": "#/definitions/PropertyType"
+        }
+      },
+      "title": "AssetModelPropertyDefinition"
+    },
+    "DataType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STRING",
+            "INTEGER",
+            "DOUBLE",
+            "BOOLEAN",
+            "STRUCT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DataTypeDefinition"
+    },
+    "DataTypeSpec": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS/ALARM_STATE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DataTypeSpecDefinition"
+    },
+    "PropertyType": {
+      "description": "Contains a property type, which can be one of attribute, measurement, metric, or transform.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "TypeName"
+      ],
+      "properties": {
+        "TypeName": {
+          "$ref": "#/definitions/TypeName"
+        },
+        "Attribute": {
+          "$ref": "#/definitions/Attribute"
+        },
+        "Transform": {
+          "$ref": "#/definitions/Transform"
+        },
+        "Metric": {
+          "$ref": "#/definitions/Metric"
+        }
+      },
+      "title": "PropertyTypeDefinition"
+    },
+    "TypeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Measurement",
+            "Attribute",
+            "Transform",
+            "Metric"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "TypeNameDefinition"
+    },
+    "Attribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AttributeDefinition"
+    },
+    "Transform": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The mathematical expression that defines the transformation function. You can specify up to 10 functions per expression."
+        },
+        "Variables": {
+          "description": "The list of variables used in the expression.",
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ExpressionVariable"
+          }
+        }
+      },
+      "required": [
+        "Expression",
+        "Variables"
+      ],
+      "title": "TransformDefinition"
+    },
+    "Metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The mathematical expression that defines the metric aggregation function. You can specify up to 10 functions per expression."
+        },
+        "Variables": {
+          "description": "The list of variables used in the expression.",
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExpressionVariable"
           }
         },
-        "Window" : {
-          "description" : "The window (time interval) over which AWS IoT SiteWise computes the metric's aggregation expression",
-          "$ref" : "#/definitions/MetricWindow"
+        "Window": {
+          "description": "The window (time interval) over which AWS IoT SiteWise computes the metric's aggregation expression",
+          "$ref": "#/definitions/MetricWindow"
         }
       },
-      "required" : [ "Expression", "Variables", "Window" ]
+      "required": [
+        "Expression",
+        "Variables",
+        "Window"
+      ],
+      "title": "MetricDefinition"
     },
-    "MetricWindow" : {
-      "description" : "Contains a time interval window used for data aggregate computations (for example, average, sum, count, and so on).",
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Tumbling" : {
-          "$ref" : "#/definitions/TumblingWindow"
-        }
-      }
-    },
-    "TumblingWindow" : {
-      "description" : "Contains a tumbling window, which is a repeating fixed-sized, non-overlapping, and contiguous time interval. This window is used in metric and aggregation computations.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Interval" : {
-          "$ref" : "#/definitions/Interval"
-        },
-        "Offset" : {
-          "$ref" : "#/definitions/Offset"
+    "MetricWindow": {
+      "description": "Contains a time interval window used for data aggregate computations (for example, average, sum, count, and so on).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Tumbling": {
+          "$ref": "#/definitions/TumblingWindow"
         }
       },
-      "required" : [ "Interval" ]
+      "title": "MetricWindowDefinition"
     },
-    "Interval" : {
-      "description" : "The time interval for the tumbling window.",
-      "type" : "string"
-    },
-    "Offset" : {
-      "description" : "The shift or reference point on timeline for the contiguous time intervals.",
-      "type" : "string"
-    },
-    "ExpressionVariable" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Name" : {
-          "description" : "The friendly name of the variable to be used in the expression.",
-          "type" : "string"
+    "TumblingWindow": {
+      "description": "Contains a tumbling window, which is a repeating fixed-sized, non-overlapping, and contiguous time interval. This window is used in metric and aggregation computations.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Interval": {
+          "$ref": "#/definitions/Interval"
         },
-        "Value" : {
-          "description" : "The variable that identifies an asset property from which to use values.",
-          "$ref" : "#/definitions/VariableValue"
+        "Offset": {
+          "$ref": "#/definitions/Offset"
         }
       },
-      "required" : [ "Name", "Value" ]
+      "required": [
+        "Interval"
+      ],
+      "title": "TumblingWindowDefinition"
     },
-    "VariableValue" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "PropertyLogicalId" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 256,
-          "pattern" : "[^\\u0000-\\u001F\\u007F]+"
+    "Interval": {
+      "oneOf": [
+        {
+          "type": "string"
         },
-        "HierarchyLogicalId" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 256,
-          "pattern" : "[^\\u0000-\\u001F\\u007F]+"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The time interval for the tumbling window.",
+      "title": "IntervalDefinition"
+    },
+    "Offset": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The shift or reference point on timeline for the contiguous time intervals.",
+      "title": "OffsetDefinition"
+    },
+    "ExpressionVariable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The friendly name of the variable to be used in the expression."
+        },
+        "Value": {
+          "description": "The variable that identifies an asset property from which to use values.",
+          "$ref": "#/definitions/VariableValue"
         }
       },
-      "required" : [ "PropertyLogicalId" ]
+      "required": [
+        "Name",
+        "Value"
+      ],
+      "title": "ExpressionVariableDefinition"
     },
-    "AssetModelHierarchy" : {
-      "description" : "Contains information about an asset model hierarchy.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "required" : [ "LogicalId", "Name", "ChildAssetModelId" ],
-      "properties" : {
-        "LogicalId" : {
-          "description" : "Customer provided ID for hierarchy.",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 256,
-          "pattern" : "[^\\u0000-\\u001F\\u007F]+"
+    "VariableValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PropertyLogicalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[^\\u0000-\\u001F\\u007F]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Name" : {
-          "description" : "The name of the asset model hierarchy.",
-          "type" : "string"
-        },
-        "ChildAssetModelId" : {
-          "description" : "The ID of the asset model. All assets in this hierarchy must be instances of the child AssetModelId asset model.",
-          "type" : "string"
-        }
-      }
-    },
-    "Tag" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Key" : {
-          "type" : "string"
-        },
-        "Value" : {
-          "type" : "string"
+        "HierarchyLogicalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[^\\u0000-\\u001F\\u007F]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Value", "Key" ]
+      "required": [
+        "PropertyLogicalId"
+      ],
+      "title": "VariableValueDefinition"
+    },
+    "AssetModelHierarchy": {
+      "description": "Contains information about an asset model hierarchy.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "LogicalId",
+        "Name",
+        "ChildAssetModelId"
+      ],
+      "properties": {
+        "LogicalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[^\\u0000-\\u001F\\u007F]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Customer provided ID for hierarchy."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the asset model hierarchy."
+        },
+        "ChildAssetModelId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the asset model. All assets in this hierarchy must be instances of the child AssetModelId asset model."
+        }
+      },
+      "title": "AssetModelHierarchyDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "properties" : {
-    "AssetModelId" : {
-      "description" : "The ID of the asset model.",
-      "type" : "string"
+  "properties": {
+    "AssetModelName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique, friendly name for the asset model."
     },
-    "AssetModelArn" : {
-      "description" : "The ARN of the asset model, which has the following format.",
-      "type" : "string"
+    "AssetModelDescription": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description for the asset model."
     },
-    "AssetModelName" : {
-      "description" : "A unique, friendly name for the asset model.",
-      "type" : "string"
-    },
-    "AssetModelDescription" : {
-      "description" : "A description for the asset model.",
-      "type" : "string"
-    },
-    "AssetModelProperties" : {
-      "description" : "The property definitions of the asset model. You can specify up to 200 properties per asset model.",
-      "type" : "array",
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/AssetModelProperty"
+    "AssetModelProperties": {
+      "description": "The property definitions of the asset model. You can specify up to 200 properties per asset model.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AssetModelProperty"
       }
     },
-    "AssetModelCompositeModels" : {
-      "description" : "The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties.",
-      "type" : "array",
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/AssetModelCompositeModel"
+    "AssetModelCompositeModels": {
+      "description": "The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AssetModelCompositeModel"
       }
     },
-    "AssetModelHierarchies" : {
-      "description" : "The hierarchy definitions of the asset model. Each hierarchy specifies an asset model whose assets can be children of any other assets created from this asset model. You can specify up to 10 hierarchies per asset model.",
-      "type" : "array",
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/AssetModelHierarchy"
+    "AssetModelHierarchies": {
+      "description": "The hierarchy definitions of the asset model. Each hierarchy specifies an asset model whose assets can be children of any other assets created from this asset model. You can specify up to 10 hierarchies per asset model.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AssetModelHierarchy"
       }
     },
-    "Tags" : {
-      "description" : "A list of key-value pairs that contain metadata for the asset model.",
-      "type" : "array",
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "description": "A list of key-value pairs that contain metadata for the asset model.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "additionalProperties" : false,
-  "taggable" : true,
-  "required" : [ "AssetModelName" ],
-  "writeOnlyProperties" : [ "/properties/AssetModelProperties/*/DataTypeSpec", "/properties/AssetModelProperties/*/Type/Transform/Variables/*/Value/HierarchyLogicalId", "/properties/AssetModelCompositeModels/*/CompositeModelProperties/*/Type/Transform", "/properties/AssetModelCompositeModels/*/CompositeModelProperties/*/Type/Metric" ],
-  "readOnlyProperties" : [ "/properties/AssetModelArn", "/properties/AssetModelId" ],
-  "primaryIdentifier" : [ "/properties/AssetModelId" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "iotsitewise:CreateAssetModel", "iotsitewise:DescribeAssetModel" ]
+  "additionalProperties": false,
+  "taggable": true,
+  "required": [
+    "AssetModelName"
+  ],
+  "writeOnlyProperties": [
+    "/properties/AssetModelProperties/*/DataTypeSpec",
+    "/properties/AssetModelProperties/*/Type/Transform/Variables/*/Value/HierarchyLogicalId",
+    "/properties/AssetModelCompositeModels/*/CompositeModelProperties/*/Type/Transform",
+    "/properties/AssetModelCompositeModels/*/CompositeModelProperties/*/Type/Metric"
+  ],
+  "readOnlyProperties": [
+    "/properties/AssetModelArn",
+    "/properties/AssetModelId"
+  ],
+  "primaryIdentifier": [
+    "/properties/AssetModelId"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iotsitewise:CreateAssetModel",
+        "iotsitewise:DescribeAssetModel"
+      ]
     },
-    "read" : {
-      "permissions" : [ "iotsitewise:DescribeAssetModel", "iotsitewise:ListTagsForResource" ]
+    "read": {
+      "permissions": [
+        "iotsitewise:DescribeAssetModel",
+        "iotsitewise:ListTagsForResource"
+      ]
     },
-    "update" : {
-      "permissions" : [ "iotsitewise:DescribeAssetModel", "iotsitewise:ListTagsForResource", "iotsitewise:TagResource", "iotsitewise:UntagResource", "iotsitewise:UpdateAssetModel" ]
+    "update": {
+      "permissions": [
+        "iotsitewise:DescribeAssetModel",
+        "iotsitewise:ListTagsForResource",
+        "iotsitewise:TagResource",
+        "iotsitewise:UntagResource",
+        "iotsitewise:UpdateAssetModel"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "iotsitewise:DescribeAssetModel", "iotsitewise:DeleteAssetModel" ]
+    "delete": {
+      "permissions": [
+        "iotsitewise:DescribeAssetModel",
+        "iotsitewise:DeleteAssetModel"
+      ]
     },
-    "list" : {
-      "permissions" : [ "iotsitewise:DescribeAssetModel", "iotsitewise:ListAssetModels", "iotsitewise:ListTagsForResource" ]
+    "list": {
+      "permissions": [
+        "iotsitewise:DescribeAssetModel",
+        "iotsitewise:ListAssetModels",
+        "iotsitewise:ListTagsForResource"
+      ]
     }
-  }
+  },
+  "title": "AWSIoTSiteWiseAssetModelProperties",
+  "type": "object"
 }

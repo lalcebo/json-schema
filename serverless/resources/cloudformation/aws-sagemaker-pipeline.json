@@ -1,132 +1,245 @@
 {
-  "typeName" : "AWS::SageMaker::Pipeline",
-  "description" : "Resource Type definition for AWS::SageMaker::Pipeline",
-  "additionalProperties" : false,
-  "properties" : {
-    "PipelineName" : {
-      "type" : "string",
-      "description" : "The name of the Pipeline.",
-      "minLength" : 1,
-      "maxLength" : 256,
-      "pattern" : "^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
-    },
-    "PipelineDisplayName" : {
-      "type" : "string",
-      "description" : "The display name of the Pipeline.",
-      "minLength" : 1,
-      "maxLength" : 256,
-      "pattern" : "^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
-    },
-    "PipelineDescription" : {
-      "type" : "string",
-      "description" : "The description of the Pipeline.",
-      "minLength" : 0,
-      "maxLength" : 3072
-    },
-    "PipelineDefinition" : {
-      "type" : "object",
-      "oneOf" : [ {
-        "additionalProperties" : false,
-        "properties" : {
-          "PipelineDefinitionBody" : {
-            "type" : "string",
-            "description" : "A specification that defines the pipeline in JSON format."
-          }
+  "typeName": "AWS::SageMaker::Pipeline",
+  "description": "Resource Type definition for AWS::SageMaker::Pipeline. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "PipelineName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
         },
-        "required" : [ "PipelineDefinitionBody" ]
-      }, {
-        "additionalProperties" : false,
-        "properties" : {
-          "PipelineDefinitionS3Location" : {
-            "$ref" : "#/definitions/S3Location"
-          }
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the Pipeline."
+    },
+    "PipelineDisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
         },
-        "required" : [ "PipelineDefinitionS3Location" ]
-      } ]
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The display name of the Pipeline."
     },
-    "RoleArn" : {
-      "type" : "string",
-      "description" : "Role Arn",
-      "minLength" : 20,
-      "maxLength" : 2048,
-      "pattern" : "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+    "PipelineDescription": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 3072
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the Pipeline."
     },
-    "Tags" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "PipelineDefinition": {
+      "type": "object",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "PipelineDefinitionBody": {
+              "type": "string",
+              "description": "A specification that defines the pipeline in JSON format."
+            }
+          },
+          "required": [
+            "PipelineDefinitionBody"
+          ]
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "PipelineDefinitionS3Location": {
+              "$ref": "#/definitions/S3Location"
+            }
+          },
+          "required": [
+            "PipelineDefinitionS3Location"
+          ]
+        }
+      ]
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Role Arn"
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     },
-    "ParallelismConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "MaxParallelExecutionSteps" : {
-          "description" : "Maximum parallel execution steps",
-          "type" : "integer",
-          "minimum" : 1
+    "ParallelismConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaxParallelExecutionSteps": {
+          "description": "Maximum parallel execution steps",
+          "type": "integer",
+          "minimum": 1
         }
       },
-      "required" : [ "MaxParallelExecutionSteps" ]
+      "required": [
+        "MaxParallelExecutionSteps"
+      ]
     }
   },
-  "definitions" : {
-    "S3Location" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Bucket" : {
-          "description" : "The name of the S3 bucket where the PipelineDefinition file is stored.",
-          "type" : "string"
+  "definitions": {
+    "S3Location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the S3 bucket where the PipelineDefinition file is stored."
         },
-        "Key" : {
-          "description" : "The file name of the PipelineDefinition file (Amazon S3 object name).",
-          "type" : "string"
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The file name of the PipelineDefinition file (Amazon S3 object name)."
         },
-        "Version" : {
-          "description" : "For versioning-enabled buckets, a specific version of the PipelineDefinition file.",
-          "type" : "string"
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "For versioning-enabled buckets, a specific version of the PipelineDefinition file."
         },
-        "ETag" : {
-          "description" : "The Amazon S3 ETag (a file checksum) of the PipelineDefinition file. If you don't specify a value, SageMaker skips ETag validation of your PipelineDefinition file.",
-          "type" : "string"
+        "ETag": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 ETag (a file checksum) of the PipelineDefinition file. If you don't specify a value, SageMaker skips ETag validation of your PipelineDefinition file."
         }
       },
-      "required" : [ "Bucket", "Key" ]
+      "required": [
+        "Bucket",
+        "Key"
+      ],
+      "title": "S3LocationDefinition"
     },
-    "Tag" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Value" : {
-          "type" : "string"
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Key" : {
-          "type" : "string"
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Value", "Key" ]
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "required" : [ "PipelineName", "PipelineDefinition", "RoleArn" ],
-  "createOnlyProperties" : [ "/properties/PipelineName" ],
-  "primaryIdentifier" : [ "/properties/PipelineName" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "iam:PassRole", "s3:GetObject", "sagemaker:CreatePipeline", "sagemaker:DescribePipeline" ]
+  "required": [
+    "PipelineName",
+    "PipelineDefinition",
+    "RoleArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/PipelineName"
+  ],
+  "primaryIdentifier": [
+    "/properties/PipelineName"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iam:PassRole",
+        "s3:GetObject",
+        "sagemaker:CreatePipeline",
+        "sagemaker:DescribePipeline"
+      ]
     },
-    "read" : {
-      "permissions" : [ "sagemaker:DescribePipeline" ]
+    "read": {
+      "permissions": [
+        "sagemaker:DescribePipeline"
+      ]
     },
-    "update" : {
-      "permissions" : [ "iam:PassRole", "s3:GetObject", "sagemaker:UpdatePipeline", "sagemaker:DescribePipeline" ]
+    "update": {
+      "permissions": [
+        "iam:PassRole",
+        "s3:GetObject",
+        "sagemaker:UpdatePipeline",
+        "sagemaker:DescribePipeline"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "sagemaker:DeletePipeline" ]
+    "delete": {
+      "permissions": [
+        "sagemaker:DeletePipeline"
+      ]
     },
-    "list" : {
-      "permissions" : [ "sagemaker:ListPipelines" ]
+    "list": {
+      "permissions": [
+        "sagemaker:ListPipelines"
+      ]
     }
-  }
+  },
+  "title": "AWSSageMakerPipelineProperties",
+  "type": "object"
 }

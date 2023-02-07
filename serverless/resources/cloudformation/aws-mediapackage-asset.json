@@ -1,99 +1,180 @@
 {
-  "typeName" : "AWS::MediaPackage::Asset",
-  "description" : "Resource schema for AWS::MediaPackage::Asset",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "properties" : {
-    "Arn" : {
-      "description" : "The ARN of the Asset.",
-      "type" : "string"
+  "typeName": "AWS::MediaPackage::Asset",
+  "description": "Resource schema for AWS::MediaPackage::Asset. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "properties": {
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The unique identifier for the Asset."
     },
-    "CreatedAt" : {
-      "description" : "The time the Asset was initially submitted for Ingest.",
-      "type" : "string"
+    "PackagingGroupId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the PackagingGroup for the Asset."
     },
-    "EgressEndpoints" : {
-      "description" : "The list of egress endpoints available for the Asset.",
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/EgressEndpoint"
-      }
+    "ResourceId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The resource ID to include in SPEKE key requests."
     },
-    "Id" : {
-      "description" : "The unique identifier for the Asset.",
-      "type" : "string"
+    "SourceArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "ARN of the source object in S3."
     },
-    "PackagingGroupId" : {
-      "description" : "The ID of the PackagingGroup for the Asset.",
-      "type" : "string"
+    "SourceRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The IAM role_arn used to access the source S3 bucket."
     },
-    "ResourceId" : {
-      "description" : "The resource ID to include in SPEKE key requests.",
-      "type" : "string"
-    },
-    "SourceArn" : {
-      "description" : "ARN of the source object in S3.",
-      "type" : "string"
-    },
-    "SourceRoleArn" : {
-      "description" : "The IAM role_arn used to access the source S3 bucket.",
-      "type" : "string"
-    },
-    "Tags" : {
-      "description" : "A collection of tags associated with a resource",
-      "type" : "array",
-      "uniqueItems" : true,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "description": "A collection of tags associated with a resource",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "definitions" : {
-    "EgressEndpoint" : {
-      "description" : "The endpoint URL used to access an Asset using one PackagingConfiguration.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "PackagingConfigurationId" : {
-          "description" : "The ID of the PackagingConfiguration being applied to the Asset.",
-          "type" : "string"
+  "definitions": {
+    "EgressEndpoint": {
+      "description": "The endpoint URL used to access an Asset using one PackagingConfiguration.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PackagingConfigurationId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the PackagingConfiguration being applied to the Asset."
         },
-        "Url" : {
-          "description" : "The URL of the parent manifest for the repackaged Asset.",
-          "type" : "string"
+        "Url": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The URL of the parent manifest for the repackaged Asset."
         }
       },
-      "required" : [ "PackagingConfigurationId", "Url" ]
+      "required": [
+        "PackagingConfigurationId",
+        "Url"
+      ],
+      "title": "EgressEndpointDefinition"
     },
-    "Tag" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Key" : {
-          "type" : "string"
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string"
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Value", "Key" ]
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "additionalProperties" : false,
-  "required" : [ "Id", "PackagingGroupId", "SourceArn", "SourceRoleArn" ],
-  "readOnlyProperties" : [ "/properties/Arn", "/properties/CreatedAt", "/properties/EgressEndpoints" ],
-  "primaryIdentifier" : [ "/properties/Id" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "mediapackage-vod:CreateAsset", "mediapackage-vod:DescribePackagingGroup", "mediapackage-vod:TagResource", "iam:PassRole" ]
+  "additionalProperties": false,
+  "required": [
+    "Id",
+    "PackagingGroupId",
+    "SourceArn",
+    "SourceRoleArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CreatedAt",
+    "/properties/EgressEndpoints"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "mediapackage-vod:CreateAsset",
+        "mediapackage-vod:DescribePackagingGroup",
+        "mediapackage-vod:TagResource",
+        "iam:PassRole"
+      ]
     },
-    "read" : {
-      "permissions" : [ "mediapackage-vod:DescribeAsset" ]
+    "read": {
+      "permissions": [
+        "mediapackage-vod:DescribeAsset"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "mediapackage-vod:DeleteAsset" ]
+    "delete": {
+      "permissions": [
+        "mediapackage-vod:DeleteAsset"
+      ]
     },
-    "list" : {
-      "permissions" : [ "mediapackage-vod:ListAssets", "mediapackage-vod:DescribePackagingGroup" ]
+    "list": {
+      "permissions": [
+        "mediapackage-vod:ListAssets",
+        "mediapackage-vod:DescribePackagingGroup"
+      ]
     }
-  }
+  },
+  "title": "AWSMediaPackageAssetProperties",
+  "type": "object"
 }

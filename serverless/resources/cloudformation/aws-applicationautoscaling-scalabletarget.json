@@ -1,96 +1,179 @@
 {
-  "typeName" : "AWS::ApplicationAutoScaling::ScalableTarget",
-  "description" : "Resource Type definition for AWS::ApplicationAutoScaling::ScalableTarget",
-  "additionalProperties" : false,
-  "properties" : {
-    "ScheduledActions" : {
-      "type" : "array",
-      "uniqueItems" : true,
-      "items" : {
-        "$ref" : "#/definitions/ScheduledAction"
+  "typeName": "AWS::ApplicationAutoScaling::ScalableTarget",
+  "description": "Resource Type definition for AWS::ApplicationAutoScaling::ScalableTarget. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "ScheduledActions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/ScheduledAction"
       }
     },
-    "ResourceId" : {
-      "type" : "string"
+    "ResourceId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "ServiceNamespace" : {
-      "type" : "string"
+    "ServiceNamespace": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "ScalableDimension" : {
-      "type" : "string"
+    "ScalableDimension": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "SuspendedState" : {
-      "$ref" : "#/definitions/SuspendedState"
+    "SuspendedState": {
+      "$ref": "#/definitions/SuspendedState"
     },
-    "Id" : {
-      "type" : "string"
+    "MinCapacity": {
+      "type": "integer"
     },
-    "MinCapacity" : {
-      "type" : "integer"
+    "RoleARN": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "RoleARN" : {
-      "type" : "string"
-    },
-    "MaxCapacity" : {
-      "type" : "integer"
+    "MaxCapacity": {
+      "type": "integer"
     }
   },
-  "definitions" : {
-    "SuspendedState" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "ScheduledScalingSuspended" : {
-          "type" : "boolean"
+  "definitions": {
+    "SuspendedState": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ScheduledScalingSuspended": {
+          "type": "boolean"
         },
-        "DynamicScalingOutSuspended" : {
-          "type" : "boolean"
+        "DynamicScalingOutSuspended": {
+          "type": "boolean"
         },
-        "DynamicScalingInSuspended" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "ScheduledAction" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Timezone" : {
-          "type" : "string"
-        },
-        "ScheduledActionName" : {
-          "type" : "string"
-        },
-        "EndTime" : {
-          "type" : "string"
-        },
-        "Schedule" : {
-          "type" : "string"
-        },
-        "StartTime" : {
-          "type" : "string"
-        },
-        "ScalableTargetAction" : {
-          "$ref" : "#/definitions/ScalableTargetAction"
+        "DynamicScalingInSuspended": {
+          "type": "boolean"
         }
       },
-      "required" : [ "ScheduledActionName", "Schedule" ]
+      "title": "SuspendedStateDefinition"
     },
-    "ScalableTargetAction" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "MinCapacity" : {
-          "type" : "integer"
+    "ScheduledAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Timezone": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "MaxCapacity" : {
-          "type" : "integer"
+        "ScheduledActionName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EndTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Schedule": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StartTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ScalableTargetAction": {
+          "$ref": "#/definitions/ScalableTargetAction"
         }
-      }
+      },
+      "required": [
+        "ScheduledActionName",
+        "Schedule"
+      ],
+      "title": "ScheduledActionDefinition"
+    },
+    "ScalableTargetAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MinCapacity": {
+          "type": "integer"
+        },
+        "MaxCapacity": {
+          "type": "integer"
+        }
+      },
+      "title": "ScalableTargetActionDefinition"
     }
   },
-  "required" : [ "ResourceId", "ServiceNamespace", "ScalableDimension", "MinCapacity", "RoleARN", "MaxCapacity" ],
-  "createOnlyProperties" : [ "/properties/ResourceId", "/properties/ScalableDimension", "/properties/ServiceNamespace" ],
-  "primaryIdentifier" : [ "/properties/Id" ],
-  "readOnlyProperties" : [ "/properties/Id" ]
+  "required": [
+    "ResourceId",
+    "ServiceNamespace",
+    "ScalableDimension",
+    "MinCapacity",
+    "RoleARN",
+    "MaxCapacity"
+  ],
+  "createOnlyProperties": [
+    "/properties/ResourceId",
+    "/properties/ScalableDimension",
+    "/properties/ServiceNamespace"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id"
+  ],
+  "title": "AWSApplicationAutoScalingScalableTargetProperties",
+  "type": "object"
 }

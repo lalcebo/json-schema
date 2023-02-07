@@ -1,85 +1,134 @@
 {
-  "typeName" : "AWS::Location::Map",
-  "description" : "Definition of AWS::Location::Map Resource Type",
-  "definitions" : {
-    "MapConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "Style" : {
-          "type" : "string",
-          "maxLength" : 100,
-          "minLength" : 1,
-          "pattern" : "^[-._\\w]+$"
+  "typeName": "AWS::Location::Map",
+  "description": "Definition of AWS::Location::Map Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "MapConfiguration": {
+      "type": "object",
+      "properties": {
+        "Style": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^[-._\\w]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Style" ]
+      "additionalProperties": false,
+      "required": [
+        "Style"
+      ],
+      "title": "MapConfigurationDefinition"
     },
-    "PricingPlan" : {
-      "type" : "string",
-      "enum" : [ "RequestBasedUsage" ]
+    "PricingPlan": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "RequestBasedUsage"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "PricingPlanDefinition"
     },
-    "iso8601UTC" : {
-      "description" : "The datetime value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ss.sssZ)",
-      "type" : "string",
-      "pattern" : "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"
+    "iso8601UTC": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The datetime value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ss.sssZ)",
+      "title": "iso8601UTCDefinition"
     }
   },
-  "properties" : {
-    "Configuration" : {
-      "$ref" : "#/definitions/MapConfiguration"
+  "properties": {
+    "Configuration": {
+      "$ref": "#/definitions/MapConfiguration"
     },
-    "CreateTime" : {
-      "$ref" : "#/definitions/iso8601UTC"
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "DataSource" : {
-      "type" : "string"
+    "MapName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[-._\\w]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "Description" : {
-      "type" : "string",
-      "maxLength" : 1000,
-      "minLength" : 0
-    },
-    "MapArn" : {
-      "type" : "string",
-      "maxLength" : 1600,
-      "pattern" : "^arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:([^/].*)?$"
-    },
-    "Arn" : {
-      "type" : "string",
-      "maxLength" : 1600,
-      "pattern" : "^arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:([^/].*)?$"
-    },
-    "MapName" : {
-      "type" : "string",
-      "maxLength" : 100,
-      "minLength" : 1,
-      "pattern" : "^[-._\\w]+$"
-    },
-    "PricingPlan" : {
-      "$ref" : "#/definitions/PricingPlan"
-    },
-    "UpdateTime" : {
-      "$ref" : "#/definitions/iso8601UTC"
+    "PricingPlan": {
+      "$ref": "#/definitions/PricingPlan"
     }
   },
-  "readOnlyProperties" : [ "/properties/CreateTime", "/properties/DataSource", "/properties/MapArn", "/properties/Arn", "/properties/UpdateTime" ],
-  "createOnlyProperties" : [ "/properties/MapName", "/properties/Configuration", "/properties/Description", "/properties/PricingPlan" ],
-  "required" : [ "MapName", "Configuration" ],
-  "primaryIdentifier" : [ "/properties/MapName" ],
-  "additionalProperties" : false,
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "geo:CreateMap" ]
+  "readOnlyProperties": [
+    "/properties/CreateTime",
+    "/properties/DataSource",
+    "/properties/MapArn",
+    "/properties/Arn",
+    "/properties/UpdateTime"
+  ],
+  "createOnlyProperties": [
+    "/properties/MapName",
+    "/properties/Configuration",
+    "/properties/Description",
+    "/properties/PricingPlan"
+  ],
+  "required": [
+    "MapName",
+    "Configuration"
+  ],
+  "primaryIdentifier": [
+    "/properties/MapName"
+  ],
+  "additionalProperties": false,
+  "handlers": {
+    "create": {
+      "permissions": [
+        "geo:CreateMap"
+      ]
     },
-    "read" : {
-      "permissions" : [ "geo:DescribeMap" ]
+    "read": {
+      "permissions": [
+        "geo:DescribeMap"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "geo:DeleteMap" ]
+    "delete": {
+      "permissions": [
+        "geo:DeleteMap"
+      ]
     },
-    "list" : {
-      "permissions" : [ "geo:ListMaps" ]
+    "list": {
+      "permissions": [
+        "geo:ListMaps"
+      ]
     }
-  }
+  },
+  "title": "AWSLocationMapProperties",
+  "type": "object"
 }

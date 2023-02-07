@@ -1,101 +1,200 @@
 {
-  "typeName" : "AWS::CodeStarNotifications::NotificationRule",
-  "description" : "Resource Type definition for AWS::CodeStarNotifications::NotificationRule",
-  "additionalProperties" : false,
-  "properties" : {
-    "EventTypeId" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048
+  "typeName": "AWS::CodeStarNotifications::NotificationRule",
+  "description": "Resource Type definition for AWS::CodeStarNotifications::NotificationRule. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "EventTypeId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "CreatedBy" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048
+    "CreatedBy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "TargetAddress" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048
+    "TargetAddress": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "EventTypeIds" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "type" : "string",
-        "minLength" : 1,
-        "maxLength" : 200
+    "EventTypeIds": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
       }
     },
-    "Status" : {
-      "type" : "string",
-      "enum" : [ "ENABLED", "DISABLED" ]
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "DetailType" : {
-      "type" : "string",
-      "enum" : [ "BASIC", "FULL" ]
+    "DetailType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BASIC",
+            "FULL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "Resource" : {
-      "type" : "string",
-      "pattern" : "^arn:aws[^:\\s]*:[^:\\s]*:[^:\\s]*:[0-9]{12}:[^\\s]+$"
+    "Resource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[^:\\s]*:[^:\\s]*:[^:\\s]*:[0-9]{12}:[^\\s]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "Targets" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "$ref" : "#/definitions/Target"
+    "Targets": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Target"
       },
-      "maxItems" : 10
+      "maxItems": 10
     },
-    "Tags" : {
-      "type" : "object"
+    "Tags": {
+      "type": "object"
     },
-    "Name" : {
-      "type" : "string",
-      "pattern" : "[A-Za-z0-9\\-_ ]+$",
-      "minLength" : 1,
-      "maxLength" : 64
-    },
-    "Arn" : {
-      "type" : "string",
-      "pattern" : "^arn:aws[^:\\s]*:codestar-notifications:[^:\\s]+:\\d{12}:notificationrule\\/(.*\\S)?$"
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[A-Za-z0-9\\-_ ]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     }
   },
-  "definitions" : {
-    "Target" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "TargetType" : {
-          "type" : "string"
+  "definitions": {
+    "Target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TargetType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "TargetAddress" : {
-          "type" : "string"
+        "TargetAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "TargetType", "TargetAddress" ]
+      "required": [
+        "TargetType",
+        "TargetAddress"
+      ],
+      "title": "TargetDefinition"
     }
   },
-  "required" : [ "EventTypeIds", "Resource", "DetailType", "Targets", "Name" ],
-  "createOnlyProperties" : [ "/properties/Resource" ],
-  "primaryIdentifier" : [ "/properties/Arn" ],
-  "readOnlyProperties" : [ "/properties/Arn" ],
-  "writeOnlyProperties" : [ "/properties/EventTypeId", "/properties/TargetAddress" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "codestar-notifications:createNotificationRule" ]
+  "required": [
+    "EventTypeIds",
+    "Resource",
+    "DetailType",
+    "Targets",
+    "Name"
+  ],
+  "createOnlyProperties": [
+    "/properties/Resource"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "writeOnlyProperties": [
+    "/properties/EventTypeId",
+    "/properties/TargetAddress"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "codestar-notifications:createNotificationRule"
+      ]
     },
-    "list" : {
-      "permissions" : [ "codestar-notifications:listNotificationRules" ]
+    "list": {
+      "permissions": [
+        "codestar-notifications:listNotificationRules"
+      ]
     },
-    "read" : {
-      "permissions" : [ "codestar-notifications:describeNotificationRule" ]
+    "read": {
+      "permissions": [
+        "codestar-notifications:describeNotificationRule"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "codestar-notifications:deleteNotificationRule", "codestar-notifications:describeNotificationRule" ]
+    "delete": {
+      "permissions": [
+        "codestar-notifications:deleteNotificationRule",
+        "codestar-notifications:describeNotificationRule"
+      ]
     },
-    "update" : {
-      "permissions" : [ "codestar-notifications:updateNotificationRule", "codestar-notifications:TagResource", "codestar-notifications:UntagResource" ]
+    "update": {
+      "permissions": [
+        "codestar-notifications:updateNotificationRule",
+        "codestar-notifications:TagResource",
+        "codestar-notifications:UntagResource"
+      ]
     }
-  }
+  },
+  "title": "AWSCodeStarNotificationsNotificationRuleProperties",
+  "type": "object"
 }

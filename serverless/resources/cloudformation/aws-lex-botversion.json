@@ -1,0 +1,162 @@
+{
+  "typeName": "AWS::Lex::BotVersion",
+  "description": "A version is a numbered snapshot of your work that you can publish for use in different parts of your workflow, such as development, beta deployment, and production.. Source:- https://docs.aws.amazon.com/lexv2/latest/dg/API_CreateBotVersion.html",
+  "sourceUrl": "https://docs.aws.amazon.com/lexv2/latest/dg/API_CreateBotVersion.html",
+  "definitions": {
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9a-zA-Z]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique ID of resource",
+      "title": "IdDefinition"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the version. Use the description to help identify the version in lists.",
+      "title": "DescriptionDefinition"
+    },
+    "LocaleId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the language and locale that the bot will be used in.",
+      "title": "LocaleIdDefinition"
+    },
+    "BotVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5,
+          "pattern": "^(DRAFT|[0-9]+)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The version of a bot.",
+      "title": "BotVersionDefinition"
+    },
+    "BotVersionLocaleDetails": {
+      "description": "The version of a bot used for a bot locale.",
+      "type": "object",
+      "properties": {
+        "SourceBotVersion": {
+          "$ref": "#/definitions/BotVersion"
+        }
+      },
+      "required": [
+        "SourceBotVersion"
+      ],
+      "additionalProperties": false,
+      "title": "BotVersionLocaleDetailsDefinition"
+    },
+    "BotVersionLocaleSpecification": {
+      "type": "object",
+      "properties": {
+        "LocaleId": {
+          "$ref": "#/definitions/LocaleId"
+        },
+        "BotVersionLocaleDetails": {
+          "$ref": "#/definitions/BotVersionLocaleDetails"
+        }
+      },
+      "required": [
+        "LocaleId",
+        "BotVersionLocaleDetails"
+      ],
+      "additionalProperties": false,
+      "title": "BotVersionLocaleSpecificationDefinition"
+    },
+    "BotVersionLocaleSpecificationList": {
+      "description": "Specifies the locales that Amazon Lex adds to this version. You can choose the Draft version or any other previously published version for each locale.",
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/BotVersionLocaleSpecification"
+      },
+      "title": "BotVersionLocaleSpecificationListDefinition"
+    }
+  },
+  "properties": {
+    "BotId": {
+      "$ref": "#/definitions/Id"
+    },
+    "Description": {
+      "$ref": "#/definitions/Description"
+    },
+    "BotVersionLocaleSpecification": {
+      "$ref": "#/definitions/BotVersionLocaleSpecificationList"
+    }
+  },
+  "taggable": false,
+  "additionalProperties": false,
+  "required": [
+    "BotId",
+    "BotVersionLocaleSpecification"
+  ],
+  "readOnlyProperties": [
+    "/properties/BotVersion"
+  ],
+  "createOnlyProperties": [
+    "/properties/BotId"
+  ],
+  "writeOnlyProperties": [
+    "/properties/BotVersionLocaleSpecification"
+  ],
+  "primaryIdentifier": [
+    "/properties/BotId",
+    "/properties/BotVersion"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "lex:CreateBotVersion",
+        "lex:DescribeBotVersion",
+        "lex:DescribeBot",
+        "lex:DescribeBotLocale",
+        "lex:BuildBotLocale"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "lex:DescribeBotVersion"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "lex:DeleteBotVersion",
+        "lex:DescribeBotVersion"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "lex:ListBotVersions"
+      ]
+    }
+  },
+  "title": "AWSLexBotVersionProperties",
+  "type": "object"
+}

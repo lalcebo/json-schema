@@ -1,0 +1,163 @@
+{
+  "typeName": "AWS::IVS::Channel",
+  "description": "Resource Type definition for AWS::IVS::Channel. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "TagDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "default": "-"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Channel"
+    },
+    "Authorized": {
+      "description": "Whether the channel is authorized.",
+      "type": "boolean",
+      "default": false
+    },
+    "LatencyMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NORMAL",
+            "LOW"
+          ],
+          "default": "LOW"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Channel latency mode."
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "BASIC"
+          ],
+          "default": "STANDARD"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Channel type, which determines the allowable resolution and bitrate. If you exceed the allowable resolution or bitrate, the stream probably will disconnect immediately."
+    },
+    "Tags": {
+      "description": "A list of key-value pairs that contain metadata for the asset model.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "RecordingConfigurationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "",
+          "pattern": "^$|arn:aws:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+$",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Recording Configuration ARN. A value other than an empty string indicates that recording is enabled. Default: \"\" (recording is disabled)."
+    }
+  },
+  "additionalProperties": false,
+  "required": [],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/PlaybackUrl",
+    "/properties/IngestEndpoint"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ivs:CreateChannel"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "ivs:GetChannel"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "ivs:UpdateChannel",
+        "ivs:TagResource",
+        "ivs:UnTagResource",
+        "ivs:ListTagsForResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "ivs:DeleteChannel"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "ivs:ListChannels"
+      ]
+    }
+  },
+  "title": "AWSIVSChannelProperties",
+  "type": "object"
+}

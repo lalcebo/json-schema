@@ -1,91 +1,163 @@
 {
-  "typeName" : "AWS::NetworkManager::Site",
-  "description" : "The AWS::NetworkManager::Site type describes a site.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager.git",
-  "definitions" : {
-    "Tag" : {
-      "description" : "A key-value pair to associate with a site resource.",
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string"
+  "typeName": "AWS::NetworkManager::Site",
+  "description": "The AWS::NetworkManager::Site type describes a site.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager.git",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a site resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string"
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "TagDefinition"
     },
-    "Location" : {
-      "description" : "The location of the site",
-      "type" : "object",
-      "properties" : {
-        "Address" : {
-          "description" : "The physical address.",
-          "type" : "string"
+    "Location": {
+      "description": "The location of the site",
+      "type": "object",
+      "properties": {
+        "Address": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The physical address."
         },
-        "Latitude" : {
-          "description" : "The latitude.",
-          "type" : "string"
+        "Latitude": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latitude."
         },
-        "Longitude" : {
-          "description" : "The longitude.",
-          "type" : "string"
+        "Longitude": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The longitude."
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "LocationDefinition"
     }
   },
-  "properties" : {
-    "SiteArn" : {
-      "description" : "The Amazon Resource Name (ARN) of the site.",
-      "type" : "string"
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the site."
     },
-    "SiteId" : {
-      "description" : "The ID of the site.",
-      "type" : "string"
-    },
-    "Description" : {
-      "description" : "The description of the site.",
-      "type" : "string"
-    },
-    "Tags" : {
-      "description" : "The tags for the site.",
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "description": "The tags for the site.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     },
-    "GlobalNetworkId" : {
-      "description" : "The ID of the global network.",
-      "type" : "string"
+    "GlobalNetworkId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the global network."
     },
-    "Location" : {
-      "description" : "The location of the site.",
-      "$ref" : "#/definitions/Location"
+    "Location": {
+      "description": "The location of the site.",
+      "$ref": "#/definitions/Location"
     }
   },
-  "additionalProperties" : false,
-  "required" : [ "GlobalNetworkId" ],
-  "readOnlyProperties" : [ "/properties/SiteId", "/properties/SiteArn" ],
-  "createOnlyProperties" : [ "/properties/GlobalNetworkId" ],
-  "primaryIdentifier" : [ "/properties/GlobalNetworkId", "/properties/SiteId" ],
-  "additionalIdentifiers" : [ [ "/properties/SiteArn" ] ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "networkmanager:CreateSite" ]
+  "additionalProperties": false,
+  "required": [
+    "GlobalNetworkId"
+  ],
+  "readOnlyProperties": [
+    "/properties/SiteId",
+    "/properties/SiteArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/GlobalNetworkId"
+  ],
+  "primaryIdentifier": [
+    "/properties/GlobalNetworkId",
+    "/properties/SiteId"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/SiteArn"
+    ]
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "networkmanager:CreateSite"
+      ]
     },
-    "read" : {
-      "permissions" : [ "networkmanager:GetSites" ]
+    "read": {
+      "permissions": [
+        "networkmanager:GetSites"
+      ]
     },
-    "update" : {
-      "permissions" : [ "networkmanager:ListTagsForResource", "networkmanager:TagResource", "networkmanager:UntagResource", "networkmanager:UpdateSite" ]
+    "update": {
+      "permissions": [
+        "networkmanager:ListTagsForResource",
+        "networkmanager:TagResource",
+        "networkmanager:UntagResource",
+        "networkmanager:UpdateSite"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "networkmanager:DeleteSite" ]
+    "delete": {
+      "permissions": [
+        "networkmanager:DeleteSite"
+      ]
     },
-    "list" : {
-      "permissions" : [ "networkmanager:GetSites" ]
+    "list": {
+      "permissions": [
+        "networkmanager:GetSites"
+      ]
     }
-  }
+  },
+  "title": "AWSNetworkManagerSiteProperties",
+  "type": "object"
 }

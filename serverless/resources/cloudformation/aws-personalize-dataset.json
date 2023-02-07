@@ -1,114 +1,209 @@
 {
-  "typeName" : "AWS::Personalize::Dataset",
-  "description" : "Resource schema for AWS::Personalize::Dataset.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-personalize",
-  "definitions" : {
-    "DatasetImportJob" : {
-      "description" : "Initial DatasetImportJob for the created dataset",
-      "type" : "object",
-      "properties" : {
-        "JobName" : {
-          "description" : "The name for the dataset import job.",
-          "type" : "string",
-          "pattern" : "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
-          "minLength" : 1,
-          "maxLength" : 63
+  "typeName": "AWS::Personalize::Dataset",
+  "description": "Resource schema for AWS::Personalize::Dataset.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-personalize",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-personalize",
+  "definitions": {
+    "DatasetImportJob": {
+      "description": "Initial DatasetImportJob for the created dataset",
+      "type": "object",
+      "properties": {
+        "JobName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
+              "minLength": 1,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name for the dataset import job."
         },
-        "DatasetImportJobArn" : {
-          "description" : "The ARN of the dataset import job",
-          "type" : "string",
-          "pattern" : "arn:([a-z\\d-]+):personalize:.*:.*:.+",
-          "maxLength" : 256
+        "DatasetImportJobArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the dataset import job"
         },
-        "DatasetArn" : {
-          "description" : "The ARN of the dataset that receives the imported data",
-          "type" : "string",
-          "pattern" : "arn:([a-z\\d-]+):personalize:.*:.*:.+",
-          "maxLength" : 256
+        "DatasetArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the dataset that receives the imported data"
         },
-        "DataSource" : {
-          "type" : "object",
-          "description" : "The Amazon S3 bucket that contains the training data to import.",
-          "properties" : {
-            "DataLocation" : {
-              "description" : "The path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored.",
-              "type" : "string",
-              "maxLength" : 256,
-              "pattern" : "(s3|http|https)://.+"
+        "DataSource": {
+          "type": "object",
+          "description": "The Amazon S3 bucket that contains the training data to import.",
+          "properties": {
+            "DataLocation": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 256,
+                  "pattern": "(s3|http|https)://.+"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored."
             }
           },
-          "additionalProperties" : false
+          "additionalProperties": false
         },
-        "RoleArn" : {
-          "description" : "The ARN of the IAM role that has permissions to read from the Amazon S3 data source.",
-          "type" : "string",
-          "maxLength" : 256,
-          "pattern" : "arn:([a-z\\d-]+):iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "arn:([a-z\\d-]+):iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the IAM role that has permissions to read from the Amazon S3 data source."
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "DatasetImportJobDefinition"
     }
   },
-  "properties" : {
-    "Name" : {
-      "description" : "The name for the dataset",
-      "type" : "string",
-      "pattern" : "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
-      "minLength" : 1,
-      "maxLength" : 63
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name for the dataset"
     },
-    "DatasetArn" : {
-      "description" : "The ARN of the dataset",
-      "type" : "string",
-      "pattern" : "arn:([a-z\\d-]+):personalize:.*:.*:.+",
-      "maxLength" : 256
+    "DatasetType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Interactions",
+            "Items",
+            "Users"
+          ],
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of dataset"
     },
-    "DatasetType" : {
-      "description" : "The type of dataset",
-      "type" : "string",
-      "enum" : [ "Interactions", "Items", "Users" ],
-      "maxLength" : 256
+    "DatasetGroupArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the dataset group to add the dataset to"
     },
-    "DatasetGroupArn" : {
-      "description" : "The Amazon Resource Name (ARN) of the dataset group to add the dataset to",
-      "type" : "string",
-      "maxLength" : 256,
-      "pattern" : "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+    "SchemaArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the schema to associate with the dataset. The schema defines the dataset fields."
     },
-    "SchemaArn" : {
-      "description" : "The ARN of the schema to associate with the dataset. The schema defines the dataset fields.",
-      "type" : "string",
-      "maxLength" : 256,
-      "pattern" : "arn:([a-z\\d-]+):personalize:.*:.*:.+"
-    },
-    "DatasetImportJob" : {
-      "$ref" : "#/definitions/DatasetImportJob"
+    "DatasetImportJob": {
+      "$ref": "#/definitions/DatasetImportJob"
     }
   },
-  "additionalProperties" : false,
-  "required" : [ "Name", "DatasetType", "DatasetGroupArn", "SchemaArn" ],
-  "createOnlyProperties" : [ "/properties/Name", "/properties/DatasetType", "/properties/DatasetGroupArn", "/properties/SchemaArn" ],
-  "replacementStrategy" : "delete_then_create",
-  "taggable" : false,
-  "readOnlyProperties" : [ "/properties/DatasetArn" ],
-  "primaryIdentifier" : [ "/properties/DatasetArn" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "personalize:CreateDataset", "personalize:DescribeDataset", "personalize:CreateDatasetImportJob", "personalize:DescribeDatasetImportJob", "iam:PassRole" ],
-      "timeoutInMinutes" : 2160
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "DatasetType",
+    "DatasetGroupArn",
+    "SchemaArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/DatasetType",
+    "/properties/DatasetGroupArn",
+    "/properties/SchemaArn"
+  ],
+  "replacementStrategy": "delete_then_create",
+  "taggable": false,
+  "readOnlyProperties": [
+    "/properties/DatasetArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/DatasetArn"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "personalize:CreateDataset",
+        "personalize:DescribeDataset",
+        "personalize:CreateDatasetImportJob",
+        "personalize:DescribeDatasetImportJob",
+        "iam:PassRole"
+      ],
+      "timeoutInMinutes": 2160
     },
-    "read" : {
-      "permissions" : [ "personalize:DescribeDataset" ]
+    "read": {
+      "permissions": [
+        "personalize:DescribeDataset"
+      ]
     },
-    "update" : {
-      "permissions" : [ "personalize:CreateDatasetImportJob", "personalize:DescribeDatasetImportJob", "iam:PassRole" ],
-      "timeoutInMinutes" : 2160
+    "update": {
+      "permissions": [
+        "personalize:CreateDatasetImportJob",
+        "personalize:DescribeDatasetImportJob",
+        "iam:PassRole"
+      ],
+      "timeoutInMinutes": 2160
     },
-    "delete" : {
-      "permissions" : [ "personalize:DeleteDataset", "personalize:DescribeDataset" ]
+    "delete": {
+      "permissions": [
+        "personalize:DeleteDataset",
+        "personalize:DescribeDataset"
+      ]
     },
-    "list" : {
-      "permissions" : [ "personalize:ListDatasets" ]
+    "list": {
+      "permissions": [
+        "personalize:ListDatasets"
+      ]
     }
-  }
+  },
+  "title": "AWSPersonalizeDatasetProperties",
+  "type": "object"
 }

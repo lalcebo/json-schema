@@ -1,78 +1,139 @@
 {
-  "typeName" : "AWS::RDS::DBSubnetGroup",
-  "description" : "The AWS::RDS::DBSubnetGroup resource creates a database subnet group. Subnet groups must contain at least two subnets in two different Availability Zones in the same region.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-rds",
-  "properties" : {
-    "DBSubnetGroupDescription" : {
-      "type" : "string"
+  "typeName": "AWS::RDS::DBSubnetGroup",
+  "description": "The AWS::RDS::DBSubnetGroup resource creates a database subnet group. Subnet groups must contain at least two subnets in two different Availability Zones in the same region.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-rds",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-rds",
+  "properties": {
+    "DBSubnetGroupDescription": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "DBSubnetGroupName" : {
-      "type" : "string",
-      "pattern" : "^(?!default$)[a-zA-Z]{1}[a-zA-Z0-9-_\\.\\s]{0,254}$"
+    "DBSubnetGroupName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(?!default$)[a-zA-Z]{1}[a-zA-Z0-9-_\\.\\s]{0,254}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "SubnetIds" : {
-      "type" : "array",
-      "uniqueItems" : false,
-      "items" : {
-        "type" : "string"
+    "SubnetIds": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "type": "string"
       }
     },
-    "Tags" : {
-      "type" : "array",
-      "maxItems" : 50,
-      "uniqueItems" : false,
-      "insertionOrder" : false,
-      "description" : "An array of key-value pairs to apply to this resource.",
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "definitions" : {
-    "Tag" : {
-      "description" : "A key-value pair to associate with a resource.",
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "description" : "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. ",
-          "minLength" : 1,
-          "maxLength" : 128
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
         },
-        "Value" : {
-          "type" : "string",
-          "description" : "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. ",
-          "minLength" : 0,
-          "maxLength" : 256
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
         }
       },
-      "required" : [ "Key" ]
+      "required": [
+        "Key"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "additionalProperties" : false,
-  "required" : [ "DBSubnetGroupDescription", "SubnetIds" ],
-  "propertyTransform" : {
-    "/properties/DBSubnetGroupName" : "$lowercase(DBSubnetGroupName)"
+  "additionalProperties": false,
+  "required": [
+    "DBSubnetGroupDescription",
+    "SubnetIds"
+  ],
+  "propertyTransform": {
+    "/properties/DBSubnetGroupName": "$lowercase(DBSubnetGroupName)"
   },
-  "createOnlyProperties" : [ "/properties/DBSubnetGroupName" ],
-  "primaryIdentifier" : [ "/properties/DBSubnetGroupName" ],
-  "writeOnlyProperties" : [ "/properties/SubnetIds" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "rds:CreateDBSubnetGroup", "rds:DescribeDBSubnetGroups", "rds:ListTagsForResource" ]
+  "createOnlyProperties": [
+    "/properties/DBSubnetGroupName"
+  ],
+  "primaryIdentifier": [
+    "/properties/DBSubnetGroupName"
+  ],
+  "writeOnlyProperties": [
+    "/properties/SubnetIds"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "rds:CreateDBSubnetGroup",
+        "rds:DescribeDBSubnetGroups",
+        "rds:ListTagsForResource"
+      ]
     },
-    "read" : {
-      "permissions" : [ "rds:DescribeDBSubnetGroups", "rds:ListTagsForResource" ]
+    "read": {
+      "permissions": [
+        "rds:DescribeDBSubnetGroups",
+        "rds:ListTagsForResource"
+      ]
     },
-    "update" : {
-      "permissions" : [ "rds:ModifyDBSubnetGroup", "rds:DescribeDBSubnetGroups", "rds:AddTagsToResource", "rds:RemoveTagsFromResource", "rds:ListTagsForResource" ]
+    "update": {
+      "permissions": [
+        "rds:ModifyDBSubnetGroup",
+        "rds:DescribeDBSubnetGroups",
+        "rds:AddTagsToResource",
+        "rds:RemoveTagsFromResource",
+        "rds:ListTagsForResource"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "rds:DeleteDBSubnetGroup", "rds:DescribeDBSubnetGroups", "rds:ListTagsForResource" ]
+    "delete": {
+      "permissions": [
+        "rds:DeleteDBSubnetGroup",
+        "rds:DescribeDBSubnetGroups",
+        "rds:ListTagsForResource"
+      ]
     },
-    "list" : {
-      "permissions" : [ "rds:DescribeDBSubnetGroups" ]
+    "list": {
+      "permissions": [
+        "rds:DescribeDBSubnetGroups"
+      ]
     }
-  }
+  },
+  "title": "AWSRDSDBSubnetGroupProperties",
+  "type": "object"
 }

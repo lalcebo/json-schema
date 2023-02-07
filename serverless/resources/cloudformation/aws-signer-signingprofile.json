@@ -1,105 +1,176 @@
 {
-  "typeName" : "AWS::Signer::SigningProfile",
-  "description" : "A signing profile is a signing template that can be used to carry out a pre-defined signing job.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "definitions" : {
-    "PlatformId" : {
-      "type" : "string",
-      "enum" : [ "AWSLambda-SHA384-ECDSA" ]
-    },
-    "Arn" : {
-      "type" : "string",
-      "pattern" : "^arn:aws(-(cn|gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
-    },
-    "ProfileVersion" : {
-      "type" : "string",
-      "pattern" : "^[0-9a-zA-Z]{10}$"
-    },
-    "SignatureValidityPeriod" : {
-      "type" : "object",
-      "properties" : {
-        "Value" : {
-          "type" : "integer"
+  "typeName": "AWS::Signer::SigningProfile",
+  "description": "A signing profile is a signing template that can be used to carry out a pre-defined signing job.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "PlatformId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWSLambda-SHA384-ECDSA"
+          ]
         },
-        "Type" : {
-          "type" : "string",
-          "enum" : [ "DAYS", "MONTHS", "YEARS" ]
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "PlatformIdDefinition"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws(-(cn|gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ArnDefinition"
+    },
+    "ProfileVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-zA-Z]{10}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ProfileVersionDefinition"
+    },
+    "SignatureValidityPeriod": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "type": "integer"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DAYS",
+                "MONTHS",
+                "YEARS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "SignatureValidityPeriodDefinition"
     },
-    "Tag" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 127,
-          "pattern" : "^(?!aws:)[a-zA-Z+-=._:/]+$"
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127,
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 255
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "TagDefinition"
     }
   },
-  "properties" : {
-    "ProfileName" : {
-      "description" : "A name for the signing profile. AWS CloudFormation generates a unique physical ID and uses that ID for the signing profile name. ",
-      "type" : "string"
+  "properties": {
+    "SignatureValidityPeriod": {
+      "description": "Signature validity period of the profile.",
+      "$ref": "#/definitions/SignatureValidityPeriod"
     },
-    "ProfileVersion" : {
-      "description" : "A version for the signing profile. AWS Signer generates a unique version for each profile of the same profile name.",
-      "$ref" : "#/definitions/ProfileVersion"
+    "PlatformId": {
+      "description": "The ID of the target signing platform.",
+      "$ref": "#/definitions/PlatformId"
     },
-    "Arn" : {
-      "description" : "The Amazon Resource Name (ARN) of the specified signing profile.",
-      "$ref" : "#/definitions/Arn"
-    },
-    "ProfileVersionArn" : {
-      "description" : "The Amazon Resource Name (ARN) of the specified signing profile version.",
-      "$ref" : "#/definitions/Arn"
-    },
-    "SignatureValidityPeriod" : {
-      "description" : "Signature validity period of the profile.",
-      "$ref" : "#/definitions/SignatureValidityPeriod"
-    },
-    "PlatformId" : {
-      "description" : "The ID of the target signing platform.",
-      "$ref" : "#/definitions/PlatformId"
-    },
-    "Tags" : {
-      "type" : "array",
-      "description" : "A list of tags associated with the signing profile.",
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "description": "A list of tags associated with the signing profile.",
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "additionalProperties" : false,
-  "required" : [ "PlatformId" ],
-  "createOnlyProperties" : [ "/properties/PlatformId", "/properties/SignatureValidityPeriod" ],
-  "readOnlyProperties" : [ "/properties/ProfileName", "/properties/ProfileVersion", "/properties/Arn", "/properties/ProfileVersionArn" ],
-  "primaryIdentifier" : [ "/properties/Arn" ],
-  "additionalIdentifiers" : [ [ "/properties/ProfileName" ], [ "/properties/ProfileVersionArn" ] ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "signer:PutSigningProfile" ]
+  "additionalProperties": false,
+  "required": [
+    "PlatformId"
+  ],
+  "createOnlyProperties": [
+    "/properties/PlatformId",
+    "/properties/SignatureValidityPeriod"
+  ],
+  "readOnlyProperties": [
+    "/properties/ProfileName",
+    "/properties/ProfileVersion",
+    "/properties/Arn",
+    "/properties/ProfileVersionArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/ProfileName"
+    ],
+    [
+      "/properties/ProfileVersionArn"
+    ]
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "signer:PutSigningProfile"
+      ]
     },
-    "read" : {
-      "permissions" : [ "signer:GetSigningProfile" ]
+    "read": {
+      "permissions": [
+        "signer:GetSigningProfile"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "signer:CancelSigningProfile", "signer:GetSigningProfile" ]
+    "delete": {
+      "permissions": [
+        "signer:CancelSigningProfile",
+        "signer:GetSigningProfile"
+      ]
     },
-    "list" : {
-      "permissions" : [ "signer:ListSigningProfiles" ]
+    "list": {
+      "permissions": [
+        "signer:ListSigningProfiles"
+      ]
     },
-    "update" : {
-      "permissions" : [ "signer:TagResource", "signer:UntagResource", "signer:GetSigningProfile" ]
+    "update": {
+      "permissions": [
+        "signer:TagResource",
+        "signer:UntagResource",
+        "signer:GetSigningProfile"
+      ]
     }
-  }
+  },
+  "title": "AWSSignerSigningProfileProperties",
+  "type": "object"
 }

@@ -1,379 +1,624 @@
 {
-  "typeName" : "AWS::Kendra::Index",
-  "description" : "A Kendra index",
-  "sourceUrl" : "https://docs.aws.amazon.com/kendra/latest/dg/hiw-index.html",
-  "definitions" : {
-    "ServerSideEncryptionConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "KmsKeyId" : {
-          "$ref" : "#/definitions/KmsKeyId"
+  "typeName": "AWS::Kendra::Index",
+  "description": "A Kendra index. Source:- https://docs.aws.amazon.com/kendra/latest/dg/hiw-index.html",
+  "sourceUrl": "https://docs.aws.amazon.com/kendra/latest/dg/hiw-index.html",
+  "definitions": {
+    "ServerSideEncryptionConfiguration": {
+      "type": "object",
+      "properties": {
+        "KmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "ServerSideEncryptionConfigurationDefinition"
     },
-    "Description" : {
-      "type" : "string",
-      "maxLength" : 1000
-    },
-    "KmsKeyId" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048
-    },
-    "Tag" : {
-      "description" : "A label for tagging Kendra resources",
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "description" : "A string used to identify this tag",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000
         },
-        "Value" : {
-          "description" : "A string containing the value for the tag",
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 256
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DescriptionDefinition"
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "KmsKeyIdDefinition"
+    },
+    "Tag": {
+      "description": "A label for tagging Kendra resources",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for the tag"
         }
       },
-      "required" : [ "Key", "Value" ],
-      "additionalProperties" : false
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
     },
-    "TagList" : {
-      "description" : "List of tags",
-      "type" : "array",
-      "maxItems" : 200,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
-      }
+    "TagList": {
+      "description": "List of tags",
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "TagListDefinition"
     },
-    "Importance" : {
-      "type" : "integer",
-      "minimum" : 1,
-      "maximum" : 10
+    "Importance": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "title": "ImportanceDefinition"
     },
-    "Freshness" : {
-      "type" : "boolean"
+    "Freshness": {
+      "type": "boolean",
+      "title": "FreshnessDefinition"
     },
-    "Duration" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 10,
-      "pattern" : "[0-9]+[s]"
-    },
-    "Order" : {
-      "type" : "string",
-      "enum" : [ "ASCENDING", "DESCENDING" ]
-    },
-    "Relevance" : {
-      "type" : "object",
-      "properties" : {
-        "Freshness" : {
-          "$ref" : "#/definitions/Freshness"
+    "Duration": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10,
+          "pattern": "[0-9]+[s]"
         },
-        "Importance" : {
-          "$ref" : "#/definitions/Importance"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DurationDefinition"
+    },
+    "Order": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ASCENDING",
+            "DESCENDING"
+          ]
         },
-        "Duration" : {
-          "$ref" : "#/definitions/Duration"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "OrderDefinition"
+    },
+    "Relevance": {
+      "type": "object",
+      "properties": {
+        "Freshness": {
+          "$ref": "#/definitions/Freshness"
         },
-        "RankOrder" : {
-          "$ref" : "#/definitions/Order"
+        "Importance": {
+          "$ref": "#/definitions/Importance"
         },
-        "ValueImportanceItems" : {
-          "$ref" : "#/definitions/ValueImportanceItems"
+        "Duration": {
+          "$ref": "#/definitions/Duration"
+        },
+        "RankOrder": {
+          "$ref": "#/definitions/Order"
+        },
+        "ValueImportanceItems": {
+          "$ref": "#/definitions/ValueImportanceItems"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "RelevanceDefinition"
     },
-    "ValueImportanceItems" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/ValueImportanceItem"
-      }
+    "ValueImportanceItems": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ValueImportanceItem"
+      },
+      "title": "ValueImportanceItemsDefinition"
     },
-    "ValueImportanceItem" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "$ref" : "#/definitions/ValueImportanceItemKey"
+    "ValueImportanceItem": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "$ref": "#/definitions/ValueImportanceItemKey"
         },
-        "Value" : {
-          "$ref" : "#/definitions/Importance"
+        "Value": {
+          "$ref": "#/definitions/Importance"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "ValueImportanceItemDefinition"
     },
-    "ValueImportanceItemKey" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 50
+    "ValueImportanceItemKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ValueImportanceItemKeyDefinition"
     },
-    "Search" : {
-      "type" : "object",
-      "properties" : {
-        "Facetable" : {
-          "type" : "boolean"
+    "Search": {
+      "type": "object",
+      "properties": {
+        "Facetable": {
+          "type": "boolean"
         },
-        "Searchable" : {
-          "type" : "boolean"
+        "Searchable": {
+          "type": "boolean"
         },
-        "Displayable" : {
-          "type" : "boolean"
+        "Displayable": {
+          "type": "boolean"
         },
-        "Sortable" : {
-          "type" : "boolean"
+        "Sortable": {
+          "type": "boolean"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "SearchDefinition"
     },
-    "DocumentMetadataConfigurationName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 30
+    "DocumentMetadataConfigurationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DocumentMetadataConfigurationNameDefinition"
     },
-    "DocumentAttributeValueType" : {
-      "type" : "string",
-      "enum" : [ "STRING_VALUE", "STRING_LIST_VALUE", "LONG_VALUE", "DATE_VALUE" ]
+    "DocumentAttributeValueType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STRING_VALUE",
+            "STRING_LIST_VALUE",
+            "LONG_VALUE",
+            "DATE_VALUE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "DocumentAttributeValueTypeDefinition"
     },
-    "DocumentMetadataConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "Name" : {
-          "$ref" : "#/definitions/DocumentMetadataConfigurationName"
+    "DocumentMetadataConfiguration": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "$ref": "#/definitions/DocumentMetadataConfigurationName"
         },
-        "Type" : {
-          "$ref" : "#/definitions/DocumentAttributeValueType"
+        "Type": {
+          "$ref": "#/definitions/DocumentAttributeValueType"
         },
-        "Relevance" : {
-          "$ref" : "#/definitions/Relevance"
+        "Relevance": {
+          "$ref": "#/definitions/Relevance"
         },
-        "Search" : {
-          "$ref" : "#/definitions/Search"
+        "Search": {
+          "$ref": "#/definitions/Search"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Name", "Type" ]
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "Type"
+      ],
+      "title": "DocumentMetadataConfigurationDefinition"
     },
-    "DocumentMetadataConfigurationList" : {
-      "type" : "array",
-      "maxItems" : 500,
-      "items" : {
-        "$ref" : "#/definitions/DocumentMetadataConfiguration"
-      }
+    "DocumentMetadataConfigurationList": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "$ref": "#/definitions/DocumentMetadataConfiguration"
+      },
+      "title": "DocumentMetadataConfigurationListDefinition"
     },
-    "StorageCapacityUnits" : {
-      "type" : "integer",
-      "minimum" : 0
+    "StorageCapacityUnits": {
+      "type": "integer",
+      "minimum": 0,
+      "title": "StorageCapacityUnitsDefinition"
     },
-    "QueryCapacityUnits" : {
-      "type" : "integer",
-      "minimum" : 0
+    "QueryCapacityUnits": {
+      "type": "integer",
+      "minimum": 0,
+      "title": "QueryCapacityUnitsDefinition"
     },
-    "CapacityUnitsConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "StorageCapacityUnits" : {
-          "$ref" : "#/definitions/StorageCapacityUnits"
+    "CapacityUnitsConfiguration": {
+      "type": "object",
+      "properties": {
+        "StorageCapacityUnits": {
+          "$ref": "#/definitions/StorageCapacityUnits"
         },
-        "QueryCapacityUnits" : {
-          "$ref" : "#/definitions/QueryCapacityUnits"
+        "QueryCapacityUnits": {
+          "$ref": "#/definitions/QueryCapacityUnits"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "StorageCapacityUnits", "QueryCapacityUnits" ]
+      "additionalProperties": false,
+      "required": [
+        "StorageCapacityUnits",
+        "QueryCapacityUnits"
+      ],
+      "title": "CapacityUnitsConfigurationDefinition"
     },
-    "Edition" : {
-      "description" : "Edition of index",
-      "type" : "string",
-      "enum" : [ "DEVELOPER_EDITION", "ENTERPRISE_EDITION" ]
-    },
-    "Name" : {
-      "description" : "Name of index",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1000
-    },
-    "RoleArn" : {
-      "description" : "Role Arn",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1284,
-      "pattern" : "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
-    },
-    "Id" : {
-      "description" : "Unique ID of index",
-      "type" : "string",
-      "minLength" : 36,
-      "maxLength" : 36
-    },
-    "Arn" : {
-      "type" : "string",
-      "maxLength" : 1000
-    },
-    "UserContextPolicy" : {
-      "type" : "string",
-      "enum" : [ "ATTRIBUTE_FILTER", "USER_TOKEN" ]
-    },
-    "UserNameAttributeField" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "GroupAttributeField" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "KeyLocation" : {
-      "type" : "string",
-      "enum" : [ "URL", "SECRET_MANAGER" ]
-    },
-    "Issuer" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 65
-    },
-    "ClaimRegex" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
-    },
-    "Url" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 2048,
-      "pattern" : "^(https?|ftp|file):\\/\\/([^\\s]*)"
-    },
-    "JsonTokenTypeConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "UserNameAttributeField" : {
-          "$ref" : "#/definitions/UserNameAttributeField"
+    "Edition": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DEVELOPER_EDITION",
+            "ENTERPRISE_EDITION"
+          ]
         },
-        "GroupAttributeField" : {
-          "$ref" : "#/definitions/GroupAttributeField"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Edition of index",
+      "title": "EditionDefinition"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of index",
+      "title": "NameDefinition"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1284,
+          "pattern": "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Role Arn",
+      "title": "RoleArnDefinition"
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique ID of index",
+      "title": "IdDefinition"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ArnDefinition"
+    },
+    "UserContextPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ATTRIBUTE_FILTER",
+            "USER_TOKEN"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "UserContextPolicyDefinition"
+    },
+    "UserNameAttributeField": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "UserNameAttributeFieldDefinition"
+    },
+    "GroupAttributeField": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "GroupAttributeFieldDefinition"
+    },
+    "KeyLocation": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "URL",
+            "SECRET_MANAGER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "KeyLocationDefinition"
+    },
+    "Issuer": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "IssuerDefinition"
+    },
+    "ClaimRegex": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "ClaimRegexDefinition"
+    },
+    "Url": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^(https?|ftp|file):\\/\\/([^\\s]*)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "UrlDefinition"
+    },
+    "JsonTokenTypeConfiguration": {
+      "type": "object",
+      "properties": {
+        "UserNameAttributeField": {
+          "$ref": "#/definitions/UserNameAttributeField"
+        },
+        "GroupAttributeField": {
+          "$ref": "#/definitions/GroupAttributeField"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "UserNameAttributeField", "GroupAttributeField" ]
+      "additionalProperties": false,
+      "required": [
+        "UserNameAttributeField",
+        "GroupAttributeField"
+      ],
+      "title": "JsonTokenTypeConfigurationDefinition"
     },
-    "JwtTokenTypeConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "KeyLocation" : {
-          "$ref" : "#/definitions/KeyLocation"
+    "JwtTokenTypeConfiguration": {
+      "type": "object",
+      "properties": {
+        "KeyLocation": {
+          "$ref": "#/definitions/KeyLocation"
         },
-        "URL" : {
-          "$ref" : "#/definitions/Url"
+        "URL": {
+          "$ref": "#/definitions/Url"
         },
-        "SecretManagerArn" : {
-          "$ref" : "#/definitions/RoleArn"
+        "SecretManagerArn": {
+          "$ref": "#/definitions/RoleArn"
         },
-        "UserNameAttributeField" : {
-          "$ref" : "#/definitions/UserNameAttributeField"
+        "UserNameAttributeField": {
+          "$ref": "#/definitions/UserNameAttributeField"
         },
-        "GroupAttributeField" : {
-          "$ref" : "#/definitions/GroupAttributeField"
+        "GroupAttributeField": {
+          "$ref": "#/definitions/GroupAttributeField"
         },
-        "Issuer" : {
-          "$ref" : "#/definitions/Issuer"
+        "Issuer": {
+          "$ref": "#/definitions/Issuer"
         },
-        "ClaimRegex" : {
-          "$ref" : "#/definitions/ClaimRegex"
+        "ClaimRegex": {
+          "$ref": "#/definitions/ClaimRegex"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "KeyLocation" ]
+      "additionalProperties": false,
+      "required": [
+        "KeyLocation"
+      ],
+      "title": "JwtTokenTypeConfigurationDefinition"
     },
-    "UserTokenConfiguration" : {
-      "type" : "object",
-      "properties" : {
-        "JwtTokenTypeConfiguration" : {
-          "$ref" : "#/definitions/JwtTokenTypeConfiguration"
+    "UserTokenConfiguration": {
+      "type": "object",
+      "properties": {
+        "JwtTokenTypeConfiguration": {
+          "$ref": "#/definitions/JwtTokenTypeConfiguration"
         },
-        "JsonTokenTypeConfiguration" : {
-          "$ref" : "#/definitions/JsonTokenTypeConfiguration"
+        "JsonTokenTypeConfiguration": {
+          "$ref": "#/definitions/JsonTokenTypeConfiguration"
         }
       },
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "UserTokenConfigurationDefinition"
     },
-    "UserTokenConfigurationList" : {
-      "type" : "array",
-      "maxItems" : 1,
-      "items" : {
-        "$ref" : "#/definitions/UserTokenConfiguration"
-      }
+    "UserTokenConfigurationList": {
+      "type": "array",
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/definitions/UserTokenConfiguration"
+      },
+      "title": "UserTokenConfigurationListDefinition"
     }
   },
-  "properties" : {
-    "Id" : {
-      "$ref" : "#/definitions/Id"
+  "properties": {
+    "Description": {
+      "description": "A description for the index",
+      "$ref": "#/definitions/Description"
     },
-    "Arn" : {
-      "$ref" : "#/definitions/Arn"
+    "ServerSideEncryptionConfiguration": {
+      "description": "Server side encryption configuration",
+      "$ref": "#/definitions/ServerSideEncryptionConfiguration"
     },
-    "Description" : {
-      "description" : "A description for the index",
-      "$ref" : "#/definitions/Description"
+    "Tags": {
+      "description": "Tags for labeling the index",
+      "$ref": "#/definitions/TagList"
     },
-    "ServerSideEncryptionConfiguration" : {
-      "description" : "Server side encryption configuration",
-      "$ref" : "#/definitions/ServerSideEncryptionConfiguration"
+    "Name": {
+      "$ref": "#/definitions/Name"
     },
-    "Tags" : {
-      "description" : "Tags for labeling the index",
-      "$ref" : "#/definitions/TagList"
+    "RoleArn": {
+      "$ref": "#/definitions/RoleArn"
     },
-    "Name" : {
-      "$ref" : "#/definitions/Name"
+    "Edition": {
+      "$ref": "#/definitions/Edition"
     },
-    "RoleArn" : {
-      "$ref" : "#/definitions/RoleArn"
+    "DocumentMetadataConfigurations": {
+      "description": "Document metadata configurations",
+      "$ref": "#/definitions/DocumentMetadataConfigurationList"
     },
-    "Edition" : {
-      "$ref" : "#/definitions/Edition"
+    "CapacityUnits": {
+      "description": "Capacity units",
+      "$ref": "#/definitions/CapacityUnitsConfiguration"
     },
-    "DocumentMetadataConfigurations" : {
-      "description" : "Document metadata configurations",
-      "$ref" : "#/definitions/DocumentMetadataConfigurationList"
+    "UserContextPolicy": {
+      "$ref": "#/definitions/UserContextPolicy"
     },
-    "CapacityUnits" : {
-      "description" : "Capacity units",
-      "$ref" : "#/definitions/CapacityUnitsConfiguration"
-    },
-    "UserContextPolicy" : {
-      "$ref" : "#/definitions/UserContextPolicy"
-    },
-    "UserTokenConfigurations" : {
-      "$ref" : "#/definitions/UserTokenConfigurationList"
+    "UserTokenConfigurations": {
+      "$ref": "#/definitions/UserTokenConfigurationList"
     }
   },
-  "required" : [ "Name", "RoleArn", "Edition" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "kendra:CreateIndex", "kendra:DescribeIndex", "kendra:UpdateIndex", "kendra:ListTagsForResource", "iam:PassRole", "kendra:TagResource" ],
-      "timeoutInMinutes" : 240
+  "required": [
+    "Name",
+    "RoleArn",
+    "Edition"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "kendra:CreateIndex",
+        "kendra:DescribeIndex",
+        "kendra:UpdateIndex",
+        "kendra:ListTagsForResource",
+        "iam:PassRole",
+        "kendra:TagResource"
+      ],
+      "timeoutInMinutes": 240
     },
-    "read" : {
-      "permissions" : [ "kendra:DescribeIndex", "kendra:ListTagsForResource" ]
+    "read": {
+      "permissions": [
+        "kendra:DescribeIndex",
+        "kendra:ListTagsForResource"
+      ]
     },
-    "update" : {
-      "permissions" : [ "kendra:DescribeIndex", "kendra:UpdateIndex", "kendra:ListTagsForResource", "kendra:TagResource", "kendra:UntagResource", "iam:PassRole" ],
-      "timeoutInMinutes" : 240
+    "update": {
+      "permissions": [
+        "kendra:DescribeIndex",
+        "kendra:UpdateIndex",
+        "kendra:ListTagsForResource",
+        "kendra:TagResource",
+        "kendra:UntagResource",
+        "iam:PassRole"
+      ],
+      "timeoutInMinutes": 240
     },
-    "delete" : {
-      "permissions" : [ "kendra:DescribeIndex", "kendra:DeleteIndex" ],
-      "timeoutInMinutes" : 720
+    "delete": {
+      "permissions": [
+        "kendra:DescribeIndex",
+        "kendra:DeleteIndex"
+      ],
+      "timeoutInMinutes": 720
     },
-    "list" : {
-      "permissions" : [ "kendra:ListIndices" ]
+    "list": {
+      "permissions": [
+        "kendra:ListIndices"
+      ]
     }
   },
-  "additionalProperties" : false,
-  "primaryIdentifier" : [ "/properties/Id" ],
-  "readOnlyProperties" : [ "/properties/Id", "/properties/Arn" ],
-  "createOnlyProperties" : [ "/properties/Edition", "/properties/ServerSideEncryptionConfiguration" ]
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Edition",
+    "/properties/ServerSideEncryptionConfiguration"
+  ],
+  "title": "AWSKendraIndexProperties",
+  "type": "object"
 }

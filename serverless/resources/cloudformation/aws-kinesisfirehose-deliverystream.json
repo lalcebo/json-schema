@@ -1,1028 +1,1750 @@
 {
-  "typeName" : "AWS::KinesisFirehose::DeliveryStream",
-  "description" : "Resource Type definition for AWS::KinesisFirehose::DeliveryStream",
-  "additionalProperties" : false,
-  "properties" : {
-    "Arn" : {
-      "type" : "string"
+  "typeName": "AWS::KinesisFirehose::DeliveryStream",
+  "description": "Resource Type definition for AWS::KinesisFirehose::DeliveryStream. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "DeliveryStreamEncryptionConfigurationInput": {
+      "$ref": "#/definitions/DeliveryStreamEncryptionConfigurationInput"
     },
-    "DeliveryStreamEncryptionConfigurationInput" : {
-      "$ref" : "#/definitions/DeliveryStreamEncryptionConfigurationInput"
+    "DeliveryStreamName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "[a-zA-Z0-9._-]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "DeliveryStreamName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 64,
-      "pattern" : "[a-zA-Z0-9._-]+"
+    "DeliveryStreamType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DirectPut",
+            "KinesisStreamAsSource"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
-    "DeliveryStreamType" : {
-      "type" : "string",
-      "enum" : [ "DirectPut", "KinesisStreamAsSource" ]
+    "ElasticsearchDestinationConfiguration": {
+      "$ref": "#/definitions/ElasticsearchDestinationConfiguration"
     },
-    "ElasticsearchDestinationConfiguration" : {
-      "$ref" : "#/definitions/ElasticsearchDestinationConfiguration"
+    "AmazonopensearchserviceDestinationConfiguration": {
+      "$ref": "#/definitions/AmazonopensearchserviceDestinationConfiguration"
     },
-    "AmazonopensearchserviceDestinationConfiguration" : {
-      "$ref" : "#/definitions/AmazonopensearchserviceDestinationConfiguration"
+    "AmazonOpenSearchServerlessDestinationConfiguration": {
+      "$ref": "#/definitions/AmazonOpenSearchServerlessDestinationConfiguration"
     },
-    "AmazonOpenSearchServerlessDestinationConfiguration" : {
-      "$ref" : "#/definitions/AmazonOpenSearchServerlessDestinationConfiguration"
+    "ExtendedS3DestinationConfiguration": {
+      "$ref": "#/definitions/ExtendedS3DestinationConfiguration"
     },
-    "ExtendedS3DestinationConfiguration" : {
-      "$ref" : "#/definitions/ExtendedS3DestinationConfiguration"
+    "KinesisStreamSourceConfiguration": {
+      "$ref": "#/definitions/KinesisStreamSourceConfiguration"
     },
-    "KinesisStreamSourceConfiguration" : {
-      "$ref" : "#/definitions/KinesisStreamSourceConfiguration"
+    "RedshiftDestinationConfiguration": {
+      "$ref": "#/definitions/RedshiftDestinationConfiguration"
     },
-    "RedshiftDestinationConfiguration" : {
-      "$ref" : "#/definitions/RedshiftDestinationConfiguration"
+    "S3DestinationConfiguration": {
+      "$ref": "#/definitions/S3DestinationConfiguration"
     },
-    "S3DestinationConfiguration" : {
-      "$ref" : "#/definitions/S3DestinationConfiguration"
+    "SplunkDestinationConfiguration": {
+      "$ref": "#/definitions/SplunkDestinationConfiguration"
     },
-    "SplunkDestinationConfiguration" : {
-      "$ref" : "#/definitions/SplunkDestinationConfiguration"
+    "HttpEndpointDestinationConfiguration": {
+      "$ref": "#/definitions/HttpEndpointDestinationConfiguration"
     },
-    "HttpEndpointDestinationConfiguration" : {
-      "$ref" : "#/definitions/HttpEndpointDestinationConfiguration"
-    },
-    "Tags" : {
-      "type" : "array",
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
       },
-      "minItems" : 1,
-      "maxItems" : 50
+      "minItems": 1,
+      "maxItems": 50
     }
   },
-  "definitions" : {
-    "DeliveryStreamEncryptionConfigurationInput" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "KeyARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+  "definitions": {
+    "DeliveryStreamEncryptionConfigurationInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "KeyARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "KeyType" : {
-          "type" : "string",
-          "enum" : [ "AWS_OWNED_CMK", "CUSTOMER_MANAGED_CMK" ]
+        "KeyType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AWS_OWNED_CMK",
+                "CUSTOMER_MANAGED_CMK"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "KeyType" ]
+      "required": [
+        "KeyType"
+      ],
+      "title": "DeliveryStreamEncryptionConfigurationInputDefinition"
     },
-    "SplunkDestinationConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "CloudWatchLoggingOptions" : {
-          "$ref" : "#/definitions/CloudWatchLoggingOptions"
+    "SplunkDestinationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CloudWatchLoggingOptions": {
+          "$ref": "#/definitions/CloudWatchLoggingOptions"
         },
-        "HECAcknowledgmentTimeoutInSeconds" : {
-          "type" : "integer",
-          "minimum" : 180,
-          "maximum" : 600
+        "HECAcknowledgmentTimeoutInSeconds": {
+          "type": "integer",
+          "minimum": 180,
+          "maximum": 600
         },
-        "HECEndpoint" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 2048
+        "HECEndpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "HECEndpointType" : {
-          "type" : "string",
-          "enum" : [ "Raw", "Event" ]
+        "HECEndpointType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Raw",
+                "Event"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "HECToken" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 2048
+        "HECToken": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "ProcessingConfiguration" : {
-          "$ref" : "#/definitions/ProcessingConfiguration"
+        "ProcessingConfiguration": {
+          "$ref": "#/definitions/ProcessingConfiguration"
         },
-        "RetryOptions" : {
-          "$ref" : "#/definitions/SplunkRetryOptions"
+        "RetryOptions": {
+          "$ref": "#/definitions/SplunkRetryOptions"
         },
-        "S3BackupMode" : {
-          "type" : "string"
+        "S3BackupMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3Configuration" : {
-          "$ref" : "#/definitions/S3DestinationConfiguration"
+        "S3Configuration": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
         }
       },
-      "required" : [ "HECEndpoint", "S3Configuration", "HECToken", "HECEndpointType" ]
+      "required": [
+        "HECEndpoint",
+        "S3Configuration",
+        "HECToken",
+        "HECEndpointType"
+      ],
+      "title": "SplunkDestinationConfigurationDefinition"
     },
-    "HttpEndpointDestinationConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+    "HttpEndpointDestinationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "EndpointConfiguration" : {
-          "$ref" : "#/definitions/HttpEndpointConfiguration"
+        "EndpointConfiguration": {
+          "$ref": "#/definitions/HttpEndpointConfiguration"
         },
-        "RequestConfiguration" : {
-          "$ref" : "#/definitions/HttpEndpointRequestConfiguration"
+        "RequestConfiguration": {
+          "$ref": "#/definitions/HttpEndpointRequestConfiguration"
         },
-        "BufferingHints" : {
-          "$ref" : "#/definitions/BufferingHints"
+        "BufferingHints": {
+          "$ref": "#/definitions/BufferingHints"
         },
-        "CloudWatchLoggingOptions" : {
-          "$ref" : "#/definitions/CloudWatchLoggingOptions"
+        "CloudWatchLoggingOptions": {
+          "$ref": "#/definitions/CloudWatchLoggingOptions"
         },
-        "ProcessingConfiguration" : {
-          "$ref" : "#/definitions/ProcessingConfiguration"
+        "ProcessingConfiguration": {
+          "$ref": "#/definitions/ProcessingConfiguration"
         },
-        "RetryOptions" : {
-          "$ref" : "#/definitions/RetryOptions"
+        "RetryOptions": {
+          "$ref": "#/definitions/RetryOptions"
         },
-        "S3BackupMode" : {
-          "type" : "string"
+        "S3BackupMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3Configuration" : {
-          "$ref" : "#/definitions/S3DestinationConfiguration"
+        "S3Configuration": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
         }
       },
-      "required" : [ "EndpointConfiguration", "S3Configuration" ]
+      "required": [
+        "EndpointConfiguration",
+        "S3Configuration"
+      ],
+      "title": "HttpEndpointDestinationConfigurationDefinition"
     },
-    "KinesisStreamSourceConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "KinesisStreamARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+    "KinesisStreamSourceConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "KinesisStreamARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "RoleARN", "KinesisStreamARN" ]
+      "required": [
+        "RoleARN",
+        "KinesisStreamARN"
+      ],
+      "title": "KinesisStreamSourceConfigurationDefinition"
     },
-    "VpcConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+    "VpcConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "SubnetIds" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string",
-            "minLength" : 1,
-            "maxLength" : 1024
+        "SubnetIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
           },
-          "minItems" : 1,
-          "maxItems" : 16
+          "minItems": 1,
+          "maxItems": 16
         },
-        "SecurityGroupIds" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string",
-            "minLength" : 1,
-            "maxLength" : 1024
+        "SecurityGroupIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
           },
-          "minItems" : 1,
-          "maxItems" : 5
+          "minItems": 1,
+          "maxItems": 5
         }
       },
-      "required" : [ "RoleARN", "SubnetIds", "SecurityGroupIds" ]
+      "required": [
+        "RoleARN",
+        "SubnetIds",
+        "SecurityGroupIds"
+      ],
+      "title": "VpcConfigurationDefinition"
     },
-    "ExtendedS3DestinationConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "BucketARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 2048,
-          "pattern" : "arn:.*"
+    "ExtendedS3DestinationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BucketARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "BufferingHints" : {
-          "$ref" : "#/definitions/BufferingHints"
+        "BufferingHints": {
+          "$ref": "#/definitions/BufferingHints"
         },
-        "CloudWatchLoggingOptions" : {
-          "$ref" : "#/definitions/CloudWatchLoggingOptions"
+        "CloudWatchLoggingOptions": {
+          "$ref": "#/definitions/CloudWatchLoggingOptions"
         },
-        "CompressionFormat" : {
-          "type" : "string",
-          "enum" : [ "UNCOMPRESSED", "GZIP", "ZIP", "Snappy", "HADOOP_SNAPPY" ]
+        "CompressionFormat": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "UNCOMPRESSED",
+                "GZIP",
+                "ZIP",
+                "Snappy",
+                "HADOOP_SNAPPY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "DataFormatConversionConfiguration" : {
-          "$ref" : "#/definitions/DataFormatConversionConfiguration"
+        "DataFormatConversionConfiguration": {
+          "$ref": "#/definitions/DataFormatConversionConfiguration"
         },
-        "DynamicPartitioningConfiguration" : {
-          "$ref" : "#/definitions/DynamicPartitioningConfiguration"
+        "DynamicPartitioningConfiguration": {
+          "$ref": "#/definitions/DynamicPartitioningConfiguration"
         },
-        "EncryptionConfiguration" : {
-          "$ref" : "#/definitions/EncryptionConfiguration"
+        "EncryptionConfiguration": {
+          "$ref": "#/definitions/EncryptionConfiguration"
         },
-        "ErrorOutputPrefix" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 1024
+        "ErrorOutputPrefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Prefix" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 1024
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "ProcessingConfiguration" : {
-          "$ref" : "#/definitions/ProcessingConfiguration"
+        "ProcessingConfiguration": {
+          "$ref": "#/definitions/ProcessingConfiguration"
         },
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3BackupConfiguration" : {
-          "$ref" : "#/definitions/S3DestinationConfiguration"
+        "S3BackupConfiguration": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
         },
-        "S3BackupMode" : {
-          "type" : "string",
-          "enum" : [ "Disabled", "Enabled" ]
+        "S3BackupMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Disabled",
+                "Enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "BucketARN", "RoleARN" ]
+      "required": [
+        "BucketARN",
+        "RoleARN"
+      ],
+      "title": "ExtendedS3DestinationConfigurationDefinition"
     },
-    "S3DestinationConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "BucketARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 2048,
-          "pattern" : "arn:.*"
+    "S3DestinationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BucketARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "BufferingHints" : {
-          "$ref" : "#/definitions/BufferingHints"
+        "BufferingHints": {
+          "$ref": "#/definitions/BufferingHints"
         },
-        "CloudWatchLoggingOptions" : {
-          "$ref" : "#/definitions/CloudWatchLoggingOptions"
+        "CloudWatchLoggingOptions": {
+          "$ref": "#/definitions/CloudWatchLoggingOptions"
         },
-        "CompressionFormat" : {
-          "type" : "string",
-          "enum" : [ "UNCOMPRESSED", "GZIP", "ZIP", "Snappy", "HADOOP_SNAPPY" ]
+        "CompressionFormat": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "UNCOMPRESSED",
+                "GZIP",
+                "ZIP",
+                "Snappy",
+                "HADOOP_SNAPPY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "EncryptionConfiguration" : {
-          "$ref" : "#/definitions/EncryptionConfiguration"
+        "EncryptionConfiguration": {
+          "$ref": "#/definitions/EncryptionConfiguration"
         },
-        "ErrorOutputPrefix" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 1024
+        "ErrorOutputPrefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Prefix" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 1024
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "BucketARN", "RoleARN" ]
+      "required": [
+        "BucketARN",
+        "RoleARN"
+      ],
+      "title": "S3DestinationConfigurationDefinition"
     },
-    "RedshiftDestinationConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "CloudWatchLoggingOptions" : {
-          "$ref" : "#/definitions/CloudWatchLoggingOptions"
+    "RedshiftDestinationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CloudWatchLoggingOptions": {
+          "$ref": "#/definitions/CloudWatchLoggingOptions"
         },
-        "ClusterJDBCURL" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512
+        "ClusterJDBCURL": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "CopyCommand" : {
-          "$ref" : "#/definitions/CopyCommand"
+        "CopyCommand": {
+          "$ref": "#/definitions/CopyCommand"
         },
-        "Password" : {
-          "type" : "string",
-          "minLength" : 6,
-          "maxLength" : 512
+        "Password": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "ProcessingConfiguration" : {
-          "$ref" : "#/definitions/ProcessingConfiguration"
+        "ProcessingConfiguration": {
+          "$ref": "#/definitions/ProcessingConfiguration"
         },
-        "RetryOptions" : {
-          "$ref" : "#/definitions/RedshiftRetryOptions"
+        "RetryOptions": {
+          "$ref": "#/definitions/RedshiftRetryOptions"
         },
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3BackupConfiguration" : {
-          "$ref" : "#/definitions/S3DestinationConfiguration"
+        "S3BackupConfiguration": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
         },
-        "S3BackupMode" : {
-          "type" : "string",
-          "enum" : [ "Disabled", "Enabled" ]
+        "S3BackupMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Disabled",
+                "Enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3Configuration" : {
-          "$ref" : "#/definitions/S3DestinationConfiguration"
+        "S3Configuration": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
         },
-        "Username" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512
+        "Username": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "S3Configuration", "Username", "ClusterJDBCURL", "CopyCommand", "RoleARN", "Password" ]
+      "required": [
+        "S3Configuration",
+        "Username",
+        "ClusterJDBCURL",
+        "CopyCommand",
+        "RoleARN",
+        "Password"
+      ],
+      "title": "RedshiftDestinationConfigurationDefinition"
     },
-    "ElasticsearchDestinationConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "BufferingHints" : {
-          "$ref" : "#/definitions/ElasticsearchBufferingHints"
+    "ElasticsearchDestinationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BufferingHints": {
+          "$ref": "#/definitions/ElasticsearchBufferingHints"
         },
-        "CloudWatchLoggingOptions" : {
-          "$ref" : "#/definitions/CloudWatchLoggingOptions"
+        "CloudWatchLoggingOptions": {
+          "$ref": "#/definitions/CloudWatchLoggingOptions"
         },
-        "DomainARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "DomainARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "IndexName" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 80
+        "IndexName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "IndexRotationPeriod" : {
-          "type" : "string",
-          "enum" : [ "NoRotation", "OneHour", "OneDay", "OneWeek", "OneMonth" ]
+        "IndexRotationPeriod": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NoRotation",
+                "OneHour",
+                "OneDay",
+                "OneWeek",
+                "OneMonth"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "ProcessingConfiguration" : {
-          "$ref" : "#/definitions/ProcessingConfiguration"
+        "ProcessingConfiguration": {
+          "$ref": "#/definitions/ProcessingConfiguration"
         },
-        "RetryOptions" : {
-          "$ref" : "#/definitions/ElasticsearchRetryOptions"
+        "RetryOptions": {
+          "$ref": "#/definitions/ElasticsearchRetryOptions"
         },
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3BackupMode" : {
-          "type" : "string",
-          "enum" : [ "FailedDocumentsOnly", "AllDocuments" ]
+        "S3BackupMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FailedDocumentsOnly",
+                "AllDocuments"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3Configuration" : {
-          "$ref" : "#/definitions/S3DestinationConfiguration"
+        "S3Configuration": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
         },
-        "ClusterEndpoint" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "https:.*"
+        "ClusterEndpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "https:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "TypeName" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 100
+        "TypeName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "VpcConfiguration" : {
-          "$ref" : "#/definitions/VpcConfiguration"
+        "VpcConfiguration": {
+          "$ref": "#/definitions/VpcConfiguration"
         }
       },
-      "required" : [ "IndexName", "S3Configuration", "RoleARN" ]
+      "required": [
+        "IndexName",
+        "S3Configuration",
+        "RoleARN"
+      ],
+      "title": "ElasticsearchDestinationConfigurationDefinition"
     },
-    "AmazonopensearchserviceDestinationConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "BufferingHints" : {
-          "$ref" : "#/definitions/AmazonopensearchserviceBufferingHints"
+    "AmazonopensearchserviceDestinationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BufferingHints": {
+          "$ref": "#/definitions/AmazonopensearchserviceBufferingHints"
         },
-        "CloudWatchLoggingOptions" : {
-          "$ref" : "#/definitions/CloudWatchLoggingOptions"
+        "CloudWatchLoggingOptions": {
+          "$ref": "#/definitions/CloudWatchLoggingOptions"
         },
-        "DomainARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "DomainARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "IndexName" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 80
+        "IndexName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "IndexRotationPeriod" : {
-          "type" : "string",
-          "enum" : [ "NoRotation", "OneHour", "OneDay", "OneWeek", "OneMonth" ]
+        "IndexRotationPeriod": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NoRotation",
+                "OneHour",
+                "OneDay",
+                "OneWeek",
+                "OneMonth"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "ProcessingConfiguration" : {
-          "$ref" : "#/definitions/ProcessingConfiguration"
+        "ProcessingConfiguration": {
+          "$ref": "#/definitions/ProcessingConfiguration"
         },
-        "RetryOptions" : {
-          "$ref" : "#/definitions/AmazonopensearchserviceRetryOptions"
+        "RetryOptions": {
+          "$ref": "#/definitions/AmazonopensearchserviceRetryOptions"
         },
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3BackupMode" : {
-          "type" : "string",
-          "enum" : [ "FailedDocumentsOnly", "AllDocuments" ]
+        "S3BackupMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FailedDocumentsOnly",
+                "AllDocuments"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3Configuration" : {
-          "$ref" : "#/definitions/S3DestinationConfiguration"
+        "S3Configuration": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
         },
-        "ClusterEndpoint" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "https:.*"
+        "ClusterEndpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "https:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "TypeName" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 100
+        "TypeName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "VpcConfiguration" : {
-          "$ref" : "#/definitions/VpcConfiguration"
+        "VpcConfiguration": {
+          "$ref": "#/definitions/VpcConfiguration"
         }
       },
-      "required" : [ "IndexName", "S3Configuration", "RoleARN" ]
+      "required": [
+        "IndexName",
+        "S3Configuration",
+        "RoleARN"
+      ],
+      "title": "AmazonopensearchserviceDestinationConfigurationDefinition"
     },
-    "AmazonOpenSearchServerlessDestinationConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "BufferingHints" : {
-          "$ref" : "#/definitions/AmazonOpenSearchServerlessBufferingHints"
+    "AmazonOpenSearchServerlessDestinationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BufferingHints": {
+          "$ref": "#/definitions/AmazonOpenSearchServerlessBufferingHints"
         },
-        "CloudWatchLoggingOptions" : {
-          "$ref" : "#/definitions/CloudWatchLoggingOptions"
+        "CloudWatchLoggingOptions": {
+          "$ref": "#/definitions/CloudWatchLoggingOptions"
         },
-        "IndexName" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 80
+        "IndexName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "ProcessingConfiguration" : {
-          "$ref" : "#/definitions/ProcessingConfiguration"
+        "ProcessingConfiguration": {
+          "$ref": "#/definitions/ProcessingConfiguration"
         },
-        "RetryOptions" : {
-          "$ref" : "#/definitions/AmazonOpenSearchServerlessRetryOptions"
+        "RetryOptions": {
+          "$ref": "#/definitions/AmazonOpenSearchServerlessRetryOptions"
         },
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3BackupMode" : {
-          "type" : "string",
-          "enum" : [ "FailedDocumentsOnly", "AllDocuments" ]
+        "S3BackupMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FailedDocumentsOnly",
+                "AllDocuments"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "S3Configuration" : {
-          "$ref" : "#/definitions/S3DestinationConfiguration"
+        "S3Configuration": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
         },
-        "CollectionEndpoint" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "https:.*"
+        "CollectionEndpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "https:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "VpcConfiguration" : {
-          "$ref" : "#/definitions/VpcConfiguration"
+        "VpcConfiguration": {
+          "$ref": "#/definitions/VpcConfiguration"
         }
       },
-      "required" : [ "IndexName", "S3Configuration", "RoleARN" ]
+      "required": [
+        "IndexName",
+        "S3Configuration",
+        "RoleARN"
+      ],
+      "title": "AmazonOpenSearchServerlessDestinationConfigurationDefinition"
     },
-    "BufferingHints" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "IntervalInSeconds" : {
-          "type" : "integer"
+    "BufferingHints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IntervalInSeconds": {
+          "type": "integer"
         },
-        "SizeInMBs" : {
-          "type" : "integer"
+        "SizeInMBs": {
+          "type": "integer"
         }
-      }
+      },
+      "title": "BufferingHintsDefinition"
     },
-    "ProcessingConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Enabled" : {
-          "type" : "boolean"
+    "ProcessingConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
         },
-        "Processors" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/Processor"
+        "Processors": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/Processor"
           }
         }
-      }
+      },
+      "title": "ProcessingConfigurationDefinition"
     },
-    "SplunkRetryOptions" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "DurationInSeconds" : {
-          "type" : "integer"
-        }
-      }
-    },
-    "ElasticsearchRetryOptions" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "DurationInSeconds" : {
-          "type" : "integer"
-        }
-      }
-    },
-    "AmazonopensearchserviceRetryOptions" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "DurationInSeconds" : {
-          "type" : "integer"
-        }
-      }
-    },
-    "AmazonOpenSearchServerlessRetryOptions" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "DurationInSeconds" : {
-          "type" : "integer"
-        }
-      }
-    },
-    "RedshiftRetryOptions" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "DurationInSeconds" : {
-          "type" : "integer"
-        }
-      }
-    },
-    "RetryOptions" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "DurationInSeconds" : {
-          "type" : "integer"
-        }
-      }
-    },
-    "DataFormatConversionConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Enabled" : {
-          "type" : "boolean"
-        },
-        "InputFormatConfiguration" : {
-          "$ref" : "#/definitions/InputFormatConfiguration"
-        },
-        "OutputFormatConfiguration" : {
-          "$ref" : "#/definitions/OutputFormatConfiguration"
-        },
-        "SchemaConfiguration" : {
-          "$ref" : "#/definitions/SchemaConfiguration"
-        }
-      }
-    },
-    "DynamicPartitioningConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Enabled" : {
-          "type" : "boolean"
-        },
-        "RetryOptions" : {
-          "$ref" : "#/definitions/RetryOptions"
-        }
-      }
-    },
-    "CopyCommand" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "CopyOptions" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 204800
-        },
-        "DataTableColumns" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 204800
-        },
-        "DataTableName" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512
+    "SplunkRetryOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DurationInSeconds": {
+          "type": "integer"
         }
       },
-      "required" : [ "DataTableName" ]
+      "title": "SplunkRetryOptionsDefinition"
     },
-    "EncryptionConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "KMSEncryptionConfig" : {
-          "$ref" : "#/definitions/KMSEncryptionConfig"
-        },
-        "NoEncryptionConfig" : {
-          "type" : "string",
-          "enum" : [ "NoEncryption" ]
+    "ElasticsearchRetryOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DurationInSeconds": {
+          "type": "integer"
         }
-      }
+      },
+      "title": "ElasticsearchRetryOptionsDefinition"
     },
-    "ElasticsearchBufferingHints" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "IntervalInSeconds" : {
-          "type" : "integer"
-        },
-        "SizeInMBs" : {
-          "type" : "integer"
+    "AmazonopensearchserviceRetryOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DurationInSeconds": {
+          "type": "integer"
         }
-      }
+      },
+      "title": "AmazonopensearchserviceRetryOptionsDefinition"
     },
-    "AmazonopensearchserviceBufferingHints" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "IntervalInSeconds" : {
-          "type" : "integer"
-        },
-        "SizeInMBs" : {
-          "type" : "integer"
+    "AmazonOpenSearchServerlessRetryOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DurationInSeconds": {
+          "type": "integer"
         }
-      }
+      },
+      "title": "AmazonOpenSearchServerlessRetryOptionsDefinition"
     },
-    "AmazonOpenSearchServerlessBufferingHints" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "IntervalInSeconds" : {
-          "type" : "integer"
-        },
-        "SizeInMBs" : {
-          "type" : "integer"
+    "RedshiftRetryOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DurationInSeconds": {
+          "type": "integer"
         }
-      }
+      },
+      "title": "RedshiftRetryOptionsDefinition"
     },
-    "CloudWatchLoggingOptions" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Enabled" : {
-          "type" : "boolean"
-        },
-        "LogGroupName" : {
-          "type" : "string"
-        },
-        "LogStreamName" : {
-          "type" : "string"
+    "RetryOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DurationInSeconds": {
+          "type": "integer"
         }
-      }
+      },
+      "title": "RetryOptionsDefinition"
     },
-    "OutputFormatConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Serializer" : {
-          "$ref" : "#/definitions/Serializer"
+    "DataFormatConversionConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "InputFormatConfiguration": {
+          "$ref": "#/definitions/InputFormatConfiguration"
+        },
+        "OutputFormatConfiguration": {
+          "$ref": "#/definitions/OutputFormatConfiguration"
+        },
+        "SchemaConfiguration": {
+          "$ref": "#/definitions/SchemaConfiguration"
         }
-      }
+      },
+      "title": "DataFormatConversionConfigurationDefinition"
     },
-    "Processor" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Parameters" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/ProcessorParameter"
+    "DynamicPartitioningConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "RetryOptions": {
+          "$ref": "#/definitions/RetryOptions"
+        }
+      },
+      "title": "DynamicPartitioningConfigurationDefinition"
+    },
+    "CopyCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CopyOptions": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 204800
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DataTableColumns": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 204800
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DataTableName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DataTableName"
+      ],
+      "title": "CopyCommandDefinition"
+    },
+    "EncryptionConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "KMSEncryptionConfig": {
+          "$ref": "#/definitions/KMSEncryptionConfig"
+        },
+        "NoEncryptionConfig": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NoEncryption"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "EncryptionConfigurationDefinition"
+    },
+    "ElasticsearchBufferingHints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IntervalInSeconds": {
+          "type": "integer"
+        },
+        "SizeInMBs": {
+          "type": "integer"
+        }
+      },
+      "title": "ElasticsearchBufferingHintsDefinition"
+    },
+    "AmazonopensearchserviceBufferingHints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IntervalInSeconds": {
+          "type": "integer"
+        },
+        "SizeInMBs": {
+          "type": "integer"
+        }
+      },
+      "title": "AmazonopensearchserviceBufferingHintsDefinition"
+    },
+    "AmazonOpenSearchServerlessBufferingHints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IntervalInSeconds": {
+          "type": "integer"
+        },
+        "SizeInMBs": {
+          "type": "integer"
+        }
+      },
+      "title": "AmazonOpenSearchServerlessBufferingHintsDefinition"
+    },
+    "CloudWatchLoggingOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "LogGroupName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LogStreamName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "CloudWatchLoggingOptionsDefinition"
+    },
+    "OutputFormatConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Serializer": {
+          "$ref": "#/definitions/Serializer"
+        }
+      },
+      "title": "OutputFormatConfigurationDefinition"
+    },
+    "Processor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Parameters": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/ProcessorParameter"
           }
         },
-        "Type" : {
-          "type" : "string",
-          "enum" : [ "RecordDeAggregation", "Lambda", "MetadataExtraction", "AppendDelimiterToRecord" ]
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "RecordDeAggregation",
+                "Lambda",
+                "MetadataExtraction",
+                "AppendDelimiterToRecord"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Type" ]
+      "required": [
+        "Type"
+      ],
+      "title": "ProcessorDefinition"
     },
-    "KMSEncryptionConfig" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "AWSKMSKeyARN" : {
-          "type" : "string"
+    "KMSEncryptionConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AWSKMSKeyARN": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "AWSKMSKeyARN" ]
+      "required": [
+        "AWSKMSKeyARN"
+      ],
+      "title": "KMSEncryptionConfigDefinition"
     },
-    "InputFormatConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Deserializer" : {
-          "$ref" : "#/definitions/Deserializer"
-        }
-      }
-    },
-    "SchemaConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "CatalogId" : {
-          "type" : "string"
-        },
-        "DatabaseName" : {
-          "type" : "string"
-        },
-        "Region" : {
-          "type" : "string"
-        },
-        "RoleARN" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 512,
-          "pattern" : "arn:.*"
-        },
-        "TableName" : {
-          "type" : "string"
-        },
-        "VersionId" : {
-          "type" : "string"
-        }
-      }
-    },
-    "Serializer" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "OrcSerDe" : {
-          "$ref" : "#/definitions/OrcSerDe"
-        },
-        "ParquetSerDe" : {
-          "$ref" : "#/definitions/ParquetSerDe"
-        }
-      }
-    },
-    "ProcessorParameter" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "ParameterName" : {
-          "type" : "string"
-        },
-        "ParameterValue" : {
-          "type" : "string"
+    "InputFormatConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Deserializer": {
+          "$ref": "#/definitions/Deserializer"
         }
       },
-      "required" : [ "ParameterValue", "ParameterName" ]
+      "title": "InputFormatConfigurationDefinition"
     },
-    "Deserializer" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "HiveJsonSerDe" : {
-          "$ref" : "#/definitions/HiveJsonSerDe"
+    "SchemaConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CatalogId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "OpenXJsonSerDe" : {
-          "$ref" : "#/definitions/OpenXJsonSerDe"
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "arn:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TableName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "VersionId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
-      }
+      },
+      "title": "SchemaConfigurationDefinition"
     },
-    "HiveJsonSerDe" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "TimestampFormats" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string"
+    "Serializer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "OrcSerDe": {
+          "$ref": "#/definitions/OrcSerDe"
+        },
+        "ParquetSerDe": {
+          "$ref": "#/definitions/ParquetSerDe"
+        }
+      },
+      "title": "SerializerDefinition"
+    },
+    "ProcessorParameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ParameterName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ParameterValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ParameterValue",
+        "ParameterName"
+      ],
+      "title": "ProcessorParameterDefinition"
+    },
+    "Deserializer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HiveJsonSerDe": {
+          "$ref": "#/definitions/HiveJsonSerDe"
+        },
+        "OpenXJsonSerDe": {
+          "$ref": "#/definitions/OpenXJsonSerDe"
+        }
+      },
+      "title": "DeserializerDefinition"
+    },
+    "HiveJsonSerDe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TimestampFormats": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
           }
         }
-      }
+      },
+      "title": "HiveJsonSerDeDefinition"
     },
-    "OrcSerDe" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "BlockSizeBytes" : {
-          "type" : "integer"
+    "OrcSerDe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BlockSizeBytes": {
+          "type": "integer"
         },
-        "BloomFilterColumns" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string"
+        "BloomFilterColumns": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
           }
         },
-        "BloomFilterFalsePositiveProbability" : {
-          "type" : "number"
+        "BloomFilterFalsePositiveProbability": {
+          "type": "number"
         },
-        "Compression" : {
-          "type" : "string"
+        "Compression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "DictionaryKeyThreshold" : {
-          "type" : "number"
+        "DictionaryKeyThreshold": {
+          "type": "number"
         },
-        "EnablePadding" : {
-          "type" : "boolean"
+        "EnablePadding": {
+          "type": "boolean"
         },
-        "FormatVersion" : {
-          "type" : "string"
+        "FormatVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "PaddingTolerance" : {
-          "type" : "number"
+        "PaddingTolerance": {
+          "type": "number"
         },
-        "RowIndexStride" : {
-          "type" : "integer"
+        "RowIndexStride": {
+          "type": "integer"
         },
-        "StripeSizeBytes" : {
-          "type" : "integer"
+        "StripeSizeBytes": {
+          "type": "integer"
         }
-      }
+      },
+      "title": "OrcSerDeDefinition"
     },
-    "ParquetSerDe" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "BlockSizeBytes" : {
-          "type" : "integer"
+    "ParquetSerDe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BlockSizeBytes": {
+          "type": "integer"
         },
-        "Compression" : {
-          "type" : "string"
+        "Compression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "EnableDictionaryCompression" : {
-          "type" : "boolean"
+        "EnableDictionaryCompression": {
+          "type": "boolean"
         },
-        "MaxPaddingBytes" : {
-          "type" : "integer"
+        "MaxPaddingBytes": {
+          "type": "integer"
         },
-        "PageSizeBytes" : {
-          "type" : "integer"
+        "PageSizeBytes": {
+          "type": "integer"
         },
-        "WriterVersion" : {
-          "type" : "string"
+        "WriterVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
-      }
+      },
+      "title": "ParquetSerDeDefinition"
     },
-    "OpenXJsonSerDe" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "CaseInsensitive" : {
-          "type" : "boolean"
+    "OpenXJsonSerDe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CaseInsensitive": {
+          "type": "boolean"
         },
-        "ColumnToJsonKeyMappings" : {
-          "type" : "object",
-          "patternProperties" : {
-            "[a-zA-Z0-9]+" : {
-              "type" : "string"
+        "ColumnToJsonKeyMappings": {
+          "type": "object",
+          "patternProperties": {
+            "[a-zA-Z0-9]+": {
+              "type": "string"
             }
           }
         },
-        "ConvertDotsInJsonKeysToUnderscores" : {
-          "type" : "boolean"
+        "ConvertDotsInJsonKeysToUnderscores": {
+          "type": "boolean"
         }
-      }
+      },
+      "title": "OpenXJsonSerDeDefinition"
     },
-    "HttpEndpointRequestConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "ContentEncoding" : {
-          "type" : "string",
-          "enum" : [ "NONE", "GZIP" ]
+    "HttpEndpointRequestConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ContentEncoding": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "GZIP"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "CommonAttributes" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/HttpEndpointCommonAttribute"
+        "CommonAttributes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/HttpEndpointCommonAttribute"
           },
-          "minItems" : 0,
-          "maxItems" : 50
-        }
-      }
-    },
-    "HttpEndpointCommonAttribute" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "AttributeName" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 256
-        },
-        "AttributeValue" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 1024
+          "minItems": 0,
+          "maxItems": 50
         }
       },
-      "required" : [ "AttributeName", "AttributeValue" ]
+      "title": "HttpEndpointRequestConfigurationDefinition"
     },
-    "HttpEndpointConfiguration" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "properties" : {
-        "Url" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 1000
+    "HttpEndpointCommonAttribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AttributeName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "AccessKey" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 4096
-        },
-        "Name" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 256
+        "AttributeValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Url" ]
+      "required": [
+        "AttributeName",
+        "AttributeValue"
+      ],
+      "title": "HttpEndpointCommonAttributeDefinition"
     },
-    "Tag" : {
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "pattern" : "^(?!aws:)[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@%]*$",
-          "minLength" : 1,
-          "maxLength" : 128
+    "HttpEndpointConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Url": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Value" : {
-          "type" : "string",
-          "pattern" : "^[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@%]*$",
-          "minLength" : 0,
-          "maxLength" : 256
+        "AccessKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 4096
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "required" : [ "Key" ]
+      "required": [
+        "Url"
+      ],
+      "title": "HttpEndpointConfigurationDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@%]*$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@%]*$",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "title": "TagDefinition"
     }
   },
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "firehose:CreateDeliveryStream", "firehose:DescribeDeliveryStream", "iam:GetRole", "iam:PassRole", "kms:CreateGrant", "kms:DescribeKey" ]
+  "handlers": {
+    "create": {
+      "permissions": [
+        "firehose:CreateDeliveryStream",
+        "firehose:DescribeDeliveryStream",
+        "iam:GetRole",
+        "iam:PassRole",
+        "kms:CreateGrant",
+        "kms:DescribeKey"
+      ]
     },
-    "read" : {
-      "permissions" : [ "firehose:DescribeDeliveryStream", "firehose:ListTagsForDeliveryStream" ]
+    "read": {
+      "permissions": [
+        "firehose:DescribeDeliveryStream",
+        "firehose:ListTagsForDeliveryStream"
+      ]
     },
-    "update" : {
-      "permissions" : [ "firehose:UpdateDestination", "firehose:DescribeDeliveryStream", "firehose:StartDeliveryStreamEncryption", "firehose:StopDeliveryStreamEncryption", "firehose:ListTagsForDeliveryStream", "firehose:TagDeliveryStream", "firehose:UntagDeliveryStream", "kms:CreateGrant", "kms:RevokeGrant", "kms:DescribeKey" ]
+    "update": {
+      "permissions": [
+        "firehose:UpdateDestination",
+        "firehose:DescribeDeliveryStream",
+        "firehose:StartDeliveryStreamEncryption",
+        "firehose:StopDeliveryStreamEncryption",
+        "firehose:ListTagsForDeliveryStream",
+        "firehose:TagDeliveryStream",
+        "firehose:UntagDeliveryStream",
+        "kms:CreateGrant",
+        "kms:RevokeGrant",
+        "kms:DescribeKey"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "firehose:DeleteDeliveryStream", "firehose:DescribeDeliveryStream", "kms:RevokeGrant", "kms:DescribeKey" ]
+    "delete": {
+      "permissions": [
+        "firehose:DeleteDeliveryStream",
+        "firehose:DescribeDeliveryStream",
+        "kms:RevokeGrant",
+        "kms:DescribeKey"
+      ]
     },
-    "list" : {
-      "permissions" : [ "firehose:ListDeliveryStreams" ]
+    "list": {
+      "permissions": [
+        "firehose:ListDeliveryStreams"
+      ]
     }
   },
-  "readOnlyProperties" : [ "/properties/Arn" ],
-  "createOnlyProperties" : [ "/properties/DeliveryStreamName", "/properties/DeliveryStreamType", "/properties/ElasticsearchDestinationConfiguration/VpcConfiguration", "/properties/AmazonopensearchserviceDestinationConfiguration/VpcConfiguration", "/properties/AmazonOpenSearchServerlessDestinationConfiguration/VpcConfiguration", "/properties/KinesisStreamSourceConfiguration" ],
-  "primaryIdentifier" : [ "/properties/DeliveryStreamName" ]
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/DeliveryStreamName",
+    "/properties/DeliveryStreamType",
+    "/properties/ElasticsearchDestinationConfiguration/VpcConfiguration",
+    "/properties/AmazonopensearchserviceDestinationConfiguration/VpcConfiguration",
+    "/properties/AmazonOpenSearchServerlessDestinationConfiguration/VpcConfiguration",
+    "/properties/KinesisStreamSourceConfiguration"
+  ],
+  "primaryIdentifier": [
+    "/properties/DeliveryStreamName"
+  ],
+  "title": "AWSKinesisFirehoseDeliveryStreamProperties",
+  "type": "object"
 }

@@ -1,152 +1,274 @@
 {
-  "typeName" : "AWS::Kendra::Faq",
-  "description" : "A Kendra FAQ resource",
-  "sourceUrl" : "https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html",
-  "definitions" : {
-    "Tag" : {
-      "description" : "A label for tagging Kendra resources",
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "description" : "A string used to identify this tag",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128
+  "typeName": "AWS::Kendra::Faq",
+  "description": "A Kendra FAQ resource. Source:- https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html",
+  "sourceUrl": "https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html",
+  "definitions": {
+    "Tag": {
+      "description": "A label for tagging Kendra resources",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag"
         },
-        "Value" : {
-          "description" : "A string containing the value for the tag",
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 256
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for the tag"
         }
       },
-      "required" : [ "Key", "Value" ],
-      "additionalProperties" : false
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "TagDefinition"
     },
-    "TagList" : {
-      "description" : "List of tags",
-      "type" : "array",
-      "maxItems" : 200,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
-      }
+    "TagList": {
+      "description": "List of tags",
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "TagListDefinition"
     },
-    "IndexId" : {
-      "description" : "Unique ID of Index",
-      "type" : "string",
-      "minLength" : 36,
-      "maxLength" : 36
-    },
-    "Description" : {
-      "description" : "Description of the FAQ",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1000
-    },
-    "FileFormat" : {
-      "description" : "Format of the input file",
-      "enum" : [ "CSV", "CSV_WITH_HEADER", "JSON" ],
-      "type" : "string"
-    },
-    "S3Path" : {
-      "type" : "object",
-      "properties" : {
-        "Bucket" : {
-          "$ref" : "#/definitions/S3BucketName"
+    "IndexId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36
         },
-        "Key" : {
-          "$ref" : "#/definitions/S3ObjectKey"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique ID of Index",
+      "title": "IndexIdDefinition"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Description of the FAQ",
+      "title": "DescriptionDefinition"
+    },
+    "FileFormat": {
+      "oneOf": [
+        {
+          "enum": [
+            "CSV",
+            "CSV_WITH_HEADER",
+            "JSON"
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Format of the input file",
+      "title": "FileFormatDefinition"
+    },
+    "S3Path": {
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "$ref": "#/definitions/S3BucketName"
+        },
+        "Key": {
+          "$ref": "#/definitions/S3ObjectKey"
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Bucket", "Key" ]
+      "additionalProperties": false,
+      "required": [
+        "Bucket",
+        "Key"
+      ],
+      "title": "S3PathDefinition"
     },
-    "S3BucketName" : {
-      "type" : "string",
-      "minLength" : 3,
-      "maxLength" : 63,
-      "pattern" : "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"
+    "S3BucketName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63,
+          "pattern": "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "S3BucketNameDefinition"
     },
-    "S3ObjectKey" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1024
+    "S3ObjectKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "S3ObjectKeyDefinition"
     },
-    "FaqName" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
+    "FaqName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "FaqNameDefinition"
     },
-    "RoleArn" : {
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 1284,
-      "pattern" : "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1284,
+          "pattern": "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "RoleArnDefinition"
     },
-    "Id" : {
-      "description" : "Unique ID of the FAQ",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique ID of the FAQ",
+      "title": "IdDefinition"
     }
   },
-  "properties" : {
-    "Id" : {
-      "$ref" : "#/definitions/Id"
+  "properties": {
+    "IndexId": {
+      "description": "Index ID",
+      "$ref": "#/definitions/IndexId"
     },
-    "IndexId" : {
-      "description" : "Index ID",
-      "$ref" : "#/definitions/IndexId"
+    "Name": {
+      "description": "FAQ name",
+      "$ref": "#/definitions/FaqName"
     },
-    "Name" : {
-      "description" : "FAQ name",
-      "$ref" : "#/definitions/FaqName"
+    "Description": {
+      "description": "FAQ description",
+      "$ref": "#/definitions/Description"
     },
-    "Description" : {
-      "description" : "FAQ description",
-      "$ref" : "#/definitions/Description"
+    "FileFormat": {
+      "description": "FAQ file format",
+      "$ref": "#/definitions/FileFormat"
     },
-    "FileFormat" : {
-      "description" : "FAQ file format",
-      "$ref" : "#/definitions/FileFormat"
+    "S3Path": {
+      "description": "FAQ S3 path",
+      "$ref": "#/definitions/S3Path"
     },
-    "S3Path" : {
-      "description" : "FAQ S3 path",
-      "$ref" : "#/definitions/S3Path"
+    "RoleArn": {
+      "description": "FAQ role ARN",
+      "$ref": "#/definitions/RoleArn"
     },
-    "RoleArn" : {
-      "description" : "FAQ role ARN",
-      "$ref" : "#/definitions/RoleArn"
-    },
-    "Tags" : {
-      "description" : "Tags for labeling the FAQ",
-      "$ref" : "#/definitions/TagList"
-    },
-    "Arn" : {
-      "type" : "string",
-      "maxLength" : 1000
+    "Tags": {
+      "description": "Tags for labeling the FAQ",
+      "$ref": "#/definitions/TagList"
     }
   },
-  "required" : [ "IndexId", "Name", "S3Path", "RoleArn" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "kendra:CreateFaq", "kendra:DescribeFaq", "iam:PassRole", "kendra:ListTagsForResource", "kendra:TagResource" ]
+  "required": [
+    "IndexId",
+    "Name",
+    "S3Path",
+    "RoleArn"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "kendra:CreateFaq",
+        "kendra:DescribeFaq",
+        "iam:PassRole",
+        "kendra:ListTagsForResource",
+        "kendra:TagResource"
+      ]
     },
-    "update" : {
-      "permissions" : [ "kendra:ListTagsForResource", "kendra:UntagResource", "kendra:TagResource" ]
+    "update": {
+      "permissions": [
+        "kendra:ListTagsForResource",
+        "kendra:UntagResource",
+        "kendra:TagResource"
+      ]
     },
-    "read" : {
-      "permissions" : [ "kendra:DescribeFaq", "kendra:ListTagsForResource" ]
+    "read": {
+      "permissions": [
+        "kendra:DescribeFaq",
+        "kendra:ListTagsForResource"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "kendra:DeleteFaq", "kendra:DescribeFaq" ]
+    "delete": {
+      "permissions": [
+        "kendra:DeleteFaq",
+        "kendra:DescribeFaq"
+      ]
     },
-    "list" : {
-      "permissions" : [ "kendra:ListFaqs" ]
+    "list": {
+      "permissions": [
+        "kendra:ListFaqs"
+      ]
     }
   },
-  "additionalProperties" : false,
-  "readOnlyProperties" : [ "/properties/Id", "/properties/Arn" ],
-  "createOnlyProperties" : [ "/properties/IndexId", "/properties/Name", "/properties/S3Path", "/properties/RoleArn", "/properties/Description", "/properties/FileFormat" ],
-  "primaryIdentifier" : [ "/properties/Id", "/properties/IndexId" ]
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/IndexId",
+    "/properties/Name",
+    "/properties/S3Path",
+    "/properties/RoleArn",
+    "/properties/Description",
+    "/properties/FileFormat"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id",
+    "/properties/IndexId"
+  ],
+  "title": "AWSKendraFaqProperties",
+  "type": "object"
 }

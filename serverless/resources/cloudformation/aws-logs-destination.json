@@ -1,57 +1,107 @@
 {
-  "typeName" : "AWS::Logs::Destination",
-  "description" : "The AWS::Logs::Destination resource specifies a CloudWatch Logs destination. A destination encapsulates a physical resource (such as an Amazon Kinesis data stream) and enables you to subscribe that resource to a stream of log events.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
-  "tagging" : {
-    "taggable" : false
+  "typeName": "AWS::Logs::Destination",
+  "description": "The AWS::Logs::Destination resource specifies a CloudWatch Logs destination. A destination encapsulates a physical resource (such as an Amazon Kinesis data stream) and enables you to subscribe that resource to a stream of log events.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
+  "tagging": {
+    "taggable": false
   },
-  "properties" : {
-    "Arn" : {
-      "type" : "string"
+  "properties": {
+    "DestinationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[^:*]{1,512}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the destination resource"
     },
-    "DestinationName" : {
-      "description" : "The name of the destination resource",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 512,
-      "pattern" : "^[^:*]{1,512}$"
+    "DestinationPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An IAM policy document that governs which AWS accounts can create subscription filters against this destination."
     },
-    "DestinationPolicy" : {
-      "description" : "An IAM policy document that governs which AWS accounts can create subscription filters against this destination.",
-      "type" : "string",
-      "minLength" : 1
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of an IAM role that permits CloudWatch Logs to send data to the specified AWS resource"
     },
-    "RoleArn" : {
-      "description" : "The ARN of an IAM role that permits CloudWatch Logs to send data to the specified AWS resource",
-      "type" : "string",
-      "minLength" : 1
-    },
-    "TargetArn" : {
-      "description" : "The ARN of the physical target where the log events are delivered (for example, a Kinesis stream)",
-      "type" : "string",
-      "minLength" : 1
+    "TargetArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the physical target where the log events are delivered (for example, a Kinesis stream)"
     }
   },
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "logs:PutDestination", "logs:PutDestinationPolicy", "iam:PassRole" ]
+  "handlers": {
+    "create": {
+      "permissions": [
+        "logs:PutDestination",
+        "logs:PutDestinationPolicy",
+        "iam:PassRole"
+      ]
     },
-    "read" : {
-      "permissions" : [ "logs:DescribeDestinations" ]
+    "read": {
+      "permissions": [
+        "logs:DescribeDestinations"
+      ]
     },
-    "update" : {
-      "permissions" : [ "logs:PutDestination", "logs:PutDestinationPolicy" ]
+    "update": {
+      "permissions": [
+        "logs:PutDestination",
+        "logs:PutDestinationPolicy"
+      ]
     },
-    "delete" : {
-      "permissions" : [ "logs:DeleteDestination" ]
+    "delete": {
+      "permissions": [
+        "logs:DeleteDestination"
+      ]
     },
-    "list" : {
-      "permissions" : [ "logs:DescribeDestinations" ]
+    "list": {
+      "permissions": [
+        "logs:DescribeDestinations"
+      ]
     }
   },
-  "required" : [ "DestinationName", "TargetArn", "RoleArn" ],
-  "readOnlyProperties" : [ "/properties/Arn" ],
-  "createOnlyProperties" : [ "/properties/DestinationName" ],
-  "primaryIdentifier" : [ "/properties/DestinationName" ],
-  "additionalProperties" : false
+  "required": [
+    "DestinationName",
+    "TargetArn",
+    "RoleArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/DestinationName"
+  ],
+  "primaryIdentifier": [
+    "/properties/DestinationName"
+  ],
+  "additionalProperties": false,
+  "title": "AWSLogsDestinationProperties",
+  "type": "object"
 }
