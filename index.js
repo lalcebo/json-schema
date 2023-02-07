@@ -114,7 +114,7 @@ function applyCFStringFunctions(obj) {
                     ],
                 },
                 Properties: {
-                    $ref: `cloudformation-modified/${resource}`
+                    $ref: `cloudformation/${resource}`
                 },
                 ...sharedAttributes
             },
