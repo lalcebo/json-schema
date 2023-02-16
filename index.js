@@ -102,8 +102,9 @@ function applyCFStringFunctions(obj) {
     }
     for (const resource of resources) {
         let schema = require(`./serverless/resources/cloudformation/${resource}`);
-        resourcesSchema.definitions[schema.typeName.split("::").join("")] = {
-            title: schema.typeName.split("::").join(""),
+        const resourceName = schema.typeName.split("::").join("")
+        resourcesSchema.definitions[resourceName] = {
+            title: resourceName,
             type: "object",
             additionalProperties: false,
             properties: {
@@ -123,7 +124,7 @@ function applyCFStringFunctions(obj) {
               "Properties"
             ]
         }
-        schema.title = `${schema.typeName.split("::").join("")}Properties`
+        schema.title = `${resourceName}Properties`
         schema.type = "object"
         let {description, sourceUrl} = schema
         if (!description) {
@@ -151,7 +152,11 @@ function applyCFStringFunctions(obj) {
           Object.keys(schema.definitions).forEach((key) => {
             if (schema.definitions[key]) {
               if (!schema.definitions[key].title) {
-                schema.definitions[key].title = `${key}Definition`
+                let newTitle = `${resourceName}${key}`
+                if (!newTitle.toLowerCase().trim().endsWith('definition')) {
+                  newTitle += 'Definition'
+                }
+                schema.definitions[key].title = newTitle
               }
             }
           })
