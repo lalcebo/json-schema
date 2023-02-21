@@ -13,7 +13,12 @@
     "BillingMode": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "PROVISIONED",
+            "PAY_PER_REQUEST"
+          ],
+          "default": "PROVISIONED"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -21,6 +26,7 @@
       ]
     },
     "GlobalSecondaryIndexes": {
+      "description": "Global Secondary indices don't play very nice with our usual Cloudformation expectations and there are some catches. Please go and read them here:- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html#cfn-dynamodb-table-globalsecondaryindexes",
       "type": "array",
       "uniqueItems": false,
       "items": {
@@ -47,7 +53,11 @@
     "TableClass": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "STANDARD_INFREQUENT_ACCESS"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -66,7 +76,10 @@
     "TableName": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 255,
+          "pattern": "[a-zA-Z0-9_.-]+"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -104,7 +117,13 @@
         "StreamViewType": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "KEYS_ONLY",
+                "NEW_AND_OLD_IMAGES",
+                "NEW_IMAGE",
+                "OLD_IMAGE"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -215,7 +234,9 @@
         "StreamArn": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 37,
+              "maxLength": 1024
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -235,7 +256,9 @@
         "AttributeName": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -259,7 +282,10 @@
         "IndexName": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 255,
+              "pattern": "[a-zA-Z0-9_.-]+"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -271,7 +297,8 @@
           "uniqueItems": true,
           "items": {
             "$ref": "#/definitions/KeySchema"
-          }
+          },
+          "maxItems": 2
         },
         "Projection": {
           "$ref": "#/definitions/Projection"
@@ -291,7 +318,10 @@
         "IndexName": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 255,
+              "pattern": "[a-zA-Z0-9_.-]+"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -303,7 +333,8 @@
           "uniqueItems": true,
           "items": {
             "$ref": "#/definitions/KeySchema"
-          }
+          },
+          "maxItems": 2
         },
         "Projection": {
           "$ref": "#/definitions/Projection"
@@ -342,7 +373,10 @@
         "SSEType": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "KMS"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -451,12 +485,18 @@
           "uniqueItems": false,
           "items": {
             "type": "string"
-          }
+          },
+          "maxItems": 20
         },
         "ProjectionType": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "ALL",
+                "INCLUDE",
+                "KEYS_ONLY"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -489,7 +529,12 @@
         "InputFormat": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "CSV",
+                "DYNAMODB_JSON",
+                "ION"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -502,7 +547,12 @@
         "InputCompressionType": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "GZIP",
+                "NONE",
+                "ZSTD"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -523,7 +573,8 @@
         "S3BucketOwner": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "[0-9]{12}"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -533,7 +584,9 @@
         "S3Bucket": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "maxLength": 255,
+              "pattern": "^[a-z0-9A-Z]+[\\.\\-\\w]*[a-z0-9A-Z]+$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -543,7 +596,8 @@
         "S3KeyPrefix": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "maxLength": 1024
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -574,13 +628,17 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 255
           }
         },
         "Delimiter": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1,
+              "pattern": "[,;:|\t ]"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
