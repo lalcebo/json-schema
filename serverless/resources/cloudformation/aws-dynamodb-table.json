@@ -17,9 +17,15 @@
       }
     },
     "BillingMode" : {
-      "type" : "string"
+      "type" : "string",
+      "enum": [
+        "PROVISIONED",
+        "PAY_PER_REQUEST"
+      ],
+      "default": "PROVISIONED"
     },
     "GlobalSecondaryIndexes" : {
+      "description": "Global Secondary indices don't play very nice with our usual Cloudformation expectations and there are some catches. Please go and read them here:- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html#cfn-dynamodb-table-globalsecondaryindexes",
       "type" : "array",
       "uniqueItems" : false,
       "items" : {
@@ -44,7 +50,11 @@
       "$ref" : "#/definitions/PointInTimeRecoverySpecification"
     },
     "TableClass" : {
-      "type" : "string"
+      "type" : "string",
+      "enum": [
+        "STANDARD",
+        "STANDARD_INFREQUENT_ACCESS"
+      ]
     },
     "ProvisionedThroughput" : {
       "$ref" : "#/definitions/ProvisionedThroughput"
@@ -56,7 +66,10 @@
       "$ref" : "#/definitions/StreamSpecification"
     },
     "TableName" : {
-      "type" : "string"
+      "type" : "string",
+      "minLength": 3,
+      "maxLength": 255,
+      "pattern": "[a-zA-Z0-9_.-]+"
     },
     "Tags" : {
       "type" : "array",
@@ -87,7 +100,13 @@
       "additionalProperties" : false,
       "properties" : {
         "StreamViewType" : {
-          "type" : "string"
+          "type" : "string",
+          "enum": [
+            "KEYS_ONLY",
+            "NEW_AND_OLD_IMAGES",
+            "NEW_IMAGE",
+            "OLD_IMAGE"
+          ]
         }
       },
       "required" : [ "StreamViewType" ]
@@ -148,7 +167,9 @@
       "additionalProperties" : false,
       "properties" : {
         "StreamArn" : {
-          "type" : "string"
+          "type" : "string",
+          "minLength": 37,
+          "maxLength": 1024
         }
       },
       "required" : [ "StreamArn" ]
@@ -158,7 +179,9 @@
       "additionalProperties" : false,
       "properties" : {
         "AttributeName" : {
-          "type" : "string"
+          "type" : "string",
+          "minLength": 1,
+          "maxLength": 255
         },
         "Enabled" : {
           "type" : "boolean"
@@ -171,14 +194,18 @@
       "additionalProperties" : false,
       "properties" : {
         "IndexName" : {
-          "type" : "string"
+          "type" : "string",
+          "minLength": 3,
+          "maxLength": 255,
+          "pattern": "[a-zA-Z0-9_.-]+"
         },
         "KeySchema" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/KeySchema"
-          }
+          },
+          "maxItems": 2
         },
         "Projection" : {
           "$ref" : "#/definitions/Projection"
@@ -191,14 +218,18 @@
       "additionalProperties" : false,
       "properties" : {
         "IndexName" : {
-          "type" : "string"
+          "type" : "string",
+          "minLength": 3,
+          "maxLength": 255,
+          "pattern": "[a-zA-Z0-9_.-]+"
         },
         "KeySchema" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/KeySchema"
-          }
+          },
+          "maxItems": 2
         },
         "Projection" : {
           "$ref" : "#/definitions/Projection"
@@ -223,7 +254,10 @@
           "type" : "boolean"
         },
         "SSEType" : {
-          "type" : "string"
+          "type" : "string",
+          "enum": [
+            "KMS"
+          ]
         }
       },
       "required" : [ "SSEEnabled" ]
@@ -284,10 +318,16 @@
           "uniqueItems" : false,
           "items" : {
             "type" : "string"
-          }
+          },
+          "maxItems": 20
         },
         "ProjectionType" : {
-          "type" : "string"
+          "type" : "string",
+          "enum": [
+            "ALL",
+            "INCLUDE",
+            "KEYS_ONLY"
+          ]
         }
       }
     },
@@ -309,13 +349,23 @@
           "$ref" : "#/definitions/S3BucketSource"
         },
         "InputFormat" : {
-          "type" : "string"
+          "type" : "string",
+          "enum": [
+            "CSV",
+            "DYNAMODB_JSON",
+            "ION"
+          ]
         },
         "InputFormatOptions" : {
           "$ref" : "#/definitions/InputFormatOptions"
         },
         "InputCompressionType" : {
-          "type" : "string"
+          "type" : "string",
+          "enum": [
+            "GZIP",
+            "NONE",
+            "ZSTD"
+          ]
         }
       },
       "required" : [ "S3BucketSource", "InputFormat" ]
@@ -325,13 +375,17 @@
       "additionalProperties" : false,
       "properties" : {
         "S3BucketOwner" : {
-          "type" : "string"
+          "type" : "string",
+          "pattern": "[0-9]{12}"
         },
         "S3Bucket" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength": 255,
+          "pattern": "^[a-z0-9A-Z]+[\\.\\-\\w]*[a-z0-9A-Z]+$"
         },
         "S3KeyPrefix" : {
-          "type" : "string"
+          "type" : "string",
+          "maxLength": 1024
         }
       },
       "required" : [ "S3Bucket" ]
@@ -353,11 +407,15 @@
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "type" : "string"
+            "type" : "string",
+            "maxLength": 255
           }
         },
         "Delimiter" : {
-          "type" : "string"
+          "type" : "string",
+          "minLength": 1,
+          "maxLength": 1,
+          "pattern": "[,;:|\t ]"
         }
       }
     }
