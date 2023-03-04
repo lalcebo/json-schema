@@ -1,0 +1,252 @@
+{
+  "id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/components/api.gateway.v2.json",
+  "schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Collection of Configurations for Api Gateway V2(httpApi in serverless)",
+  "additionalProperties": false,
+  "AwsHttpApi": {
+    "title": "AwsHttpApi",
+    "description": "Configuration for Api Gateway V2, that can be modified in provider",
+    "type": "object",
+    "properties": {
+      "id": {
+        "description": "Attach to an externally created HTTP API via its ID:",
+        "type": "string"
+      },
+      "name": {
+        "description": "Set a custom name for the API Gateway API (default: ${sls:stage}-${self:service})",
+        "type": "string"
+      },
+      "payload": {
+        "description": "Payload format version (note: use quotes in YAML: '1.0' or '2.0') (default: '2.0')",
+        "type": "string",
+        "enum": ["1.0", "2.0"],
+        "default": "2.0"
+      },
+      "disableDefaultEndpoint": {
+        "description": "Disable the default 'execute-api' HTTP endpoint (default: false). Useful when using a custom domain.",
+        "type": "boolean",
+        "default": false
+      },
+      "metrics": {
+        "description": "Enable detailed CloudWatch metrics (default: false)",
+        "type": "boolean"
+      },
+      "authorizers": {
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "$ref": "#/AwsHttpApiLambdaAuthorizerWithFunctionArn"
+            },
+            {
+              "$ref": "#/AwsHttpApiLambdaAuthorizerWithFunctionName"
+            },
+            {
+              "$ref": "#/AwsHttpApiJwtAuthorizer"
+            }
+          ]
+        }
+      },
+      "cors": {
+        "anyOf": [
+          {
+            "$ref": "#/AwsHttpApiCors"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      }
+    }
+  },
+  "AwsHttpApiLambdaAuthorizerWithFunctionArn": {
+    "title": "AwsHttpApiLambdaAuthorizerWithFunctionArn",
+    "properties": {
+      "type": {
+        "description": "Should be set to 'request' for custom Lambda authorizers",
+        "enum": ["request"],
+        "type": "string"
+      },
+      "functionArn": {
+        "description": "Mutually exclusive with `functionName`",
+        "type": "string"
+      },
+      "name": {
+        "description": "Optional. Custom name for created authorizer",
+        "type": "string"
+      },
+      "resultTtlInSeconds": {
+        "description": "Optional. Time to live for cached authorizer results, accepts values from 0 (no caching) to 3600 (1 hour). When set to non-zero value, 'identitySource' must be defined as well",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 3600,
+        "default": 0
+      },
+      "enableSimpleResponses": {
+        "description": "Set if authorizer function will return authorization responses in simple format (default: false)",
+        "type": "boolean",
+        "default": false
+      },
+      "payloadVersion": {
+        "description": "Version of payload that will be sent to authorizer function (default: '2.0')",
+        "type": "string",
+        "enum": [
+          "1.0",
+          "2.0"
+        ],
+        "default": "2.0"
+      },
+      "identitySource": {
+        "description": "Optional. One or more mapping expressions of the request parameters in form of e.g `$request.header.Auth`. Specified values are verified to be non-empty and not null by authorizer. It is a required property when `resultTtlInSeconds` is non-zero as `identitySource` is additionally used as cache key for authorizer responses caching.",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "managedExternally": {
+        "description": "Optional. Applicable only when using externally defined authorizer functions to prevent creation of permission resource",
+        "type": "boolean"
+      }
+    },
+    "type": "object",
+    "required": [
+      "type",
+      "functionArn"
+    ]
+  },
+  "AwsHttpApiLambdaAuthorizerWithFunctionName": {
+    "title": "AwsHttpApiLambdaAuthorizerWithFunctionName",
+    "properties": {
+      "type": {
+        "description": "Should be set to 'request' for custom Lambda authorizers",
+        "enum": ["request"],
+        "type": "string"
+      },
+      "functionName": {
+        "description": "Mutually exclusive with `functionArn`",
+        "type": "string"
+      },
+      "name": {
+        "description": "Optional. Custom name for created authorizer",
+        "type": "string"
+      },
+      "resultTtlInSeconds": {
+        "description": "Optional. Time to live for cached authorizer results, accepts values from 0 (no caching) to 3600 (1 hour). When set to non-zero value, 'identitySource' must be defined as well",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 3600,
+        "default": 0
+      },
+      "enableSimpleResponses": {
+        "description": "Set if authorizer function will return authorization responses in simple format (default: false)",
+        "type": "boolean",
+        "default": false
+      },
+      "payloadVersion": {
+        "description": "Version of payload that will be sent to authorizer function (default: '2.0')",
+        "type": "string",
+        "enum": [
+          "1.0",
+          "2.0"
+        ],
+        "default": "2.0"
+      },
+      "identitySource": {
+        "description": "Optional. One or more mapping expressions of the request parameters in form of e.g `$request.header.Auth`. Specified values are verified to be non-empty and not null by authorizer. It is a required property when `resultTtlInSeconds` is non-zero as `identitySource` is additionally used as cache key for authorizer responses caching.",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "managedExternally": {
+        "description": "Optional. Applicable only when using externally defined authorizer functions to prevent creation of permission resource",
+        "type": "boolean"
+      }
+    },
+    "type": "object",
+    "required": [
+      "type",
+      "functionName"
+    ]
+  },
+  "AwsHttpApiJwtAuthorizer": {
+    "title": "AwsHttpApiJwtAuthorizer",
+    "description": "Configuration for JWT based authorizer",
+    "properties": {
+      "audience": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "identitySource": {
+        "type": "string"
+      },
+      "issuerUrl": {
+        "type": "string"
+      }
+    },
+    "type": "object",
+    "required": [
+      "issuerUrl",
+      "identitySource"
+    ]
+  },
+  "AwsHttpApiCors": {
+    "properties": {
+      "allowCredentials": {
+        "type": "boolean"
+      },
+      "allowHeaders": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "maxAge": {
+        "type": "number"
+      },
+      "allowOrigins": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "allowMethods": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "type": "object"
+  },
+  "required": [
+    "AwsHttpApi",
+    "AwsHttpApiLambdaAuthorizerWithFunctionArn",
+    "AwsHttpApiLambdaAuthorizerWithFunctionName",
+    "AwsHttpApiJwtAuthorizer",
+    "AwsHttpApiCors"
+  ]
+}
