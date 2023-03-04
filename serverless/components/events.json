@@ -221,11 +221,124 @@
     },
     "type": "object"
   },
+  "AwsCloudwatchEvent": {
+    "properties": {
+      "description": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "event": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "#/AwsCloudwatchEventInternal"
+          }
+        ]
+      },
+      "input": {
+        "type": "object",
+        "additionalProperties": {}
+      },
+      "inputPath": {
+        "type": "string"
+      },
+      "inputTransformer": {
+        "$ref": "#/AwsEventInputTransformer"
+      },
+      "name": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsCloudwatchEventInternal": {
+    "properties": {
+      "source": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "detail-type": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "detail": {
+        "type": "object"
+      },
+      "region": {
+        "type": "string"
+      },
+      "resources": {
+        "type": "array",
+        "description": "This is an array of arns",
+        "items": {
+          "type": "string"
+        }
+      },
+      "version": {
+        "type": "string"
+      },
+      "id": {
+        "type": "string"
+      },
+      "time": {
+        "type": "string"
+      },
+      "account": {
+        "type": "string"
+      }
+    },
+    "required": ["source"]
+  },
+  "AwsEventInputTransformer": {
+    "title": "AwsEventInputTransformer",
+    "properties": {
+      "inputPathsMap": {
+        "additionalProperties": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": "object"
+      },
+      "inputTemplate": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 8192
+      }
+    },
+    "type": "object",
+    "required": [
+      "inputTemplate"
+    ]
+  },
   "required": [
     "AwsActiveMq",
     "AwsSns",
     "AwsSnsDeadLetterTargetImport",
     "AwsSnsRedrivePolicy",
-    "AwsSqs"
+    "AwsSqs",
+    "AwsCloudwatchEvent"
   ]
 }
