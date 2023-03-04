@@ -164,25 +164,6 @@
       },
       "type": "object"
     },
-    "Aws.Authorizers": {
-      "additionalProperties": {
-        "anyOf": [
-          {
-            "$ref": "#/definitions/Aws.CognitoAuthorizer"
-          },
-          {
-            "$ref": "#/definitions/Aws.LambdaAuthorizer"
-          },
-          {
-            "$ref": "#/definitions/Aws.OidcAuthorizer"
-          },
-          {
-            "$ref": "#/definitions/Aws.JwtAuthorizer"
-          }
-        ]
-      },
-      "type": "object"
-    },
     "AwsFunction": {
       "properties": {
         "awsKmsKeyArn": {
@@ -459,47 +440,6 @@
           "type": "string"
         },
         "logGroup": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "Aws.CognitoAuthorizer": {
-      "properties": {
-        "allowUnauthenticated": {
-          "type": "boolean"
-        },
-        "requestExtraParams": {
-          "properties": {
-            "prompt": {
-              "type": "string"
-            },
-            "redirect": {
-              "type": "boolean"
-            }
-          },
-          "type": "object"
-        },
-        "scope": {
-          "type": "string"
-        },
-        "sessionCookieName": {
-          "type": "string"
-        },
-        "sessionTimeout": {
-          "type": ["string", "number"]
-        },
-        "type": {
-          "enum": ["cognito"],
-          "type": "string"
-        },
-        "userPoolArn": {
-          "type": "string"
-        },
-        "userPoolClientId": {
-          "type": "string"
-        },
-        "userPoolDomain": {
           "type": "string"
         }
       },
@@ -1152,68 +1092,6 @@
       },
       "type": "object"
     },
-    "Aws.JwtAuthorizer": {
-      "properties": {
-        "audience": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "identitySource": {
-          "type": "string"
-        },
-        "issuerUrl": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "Aws.LambdaAuthorizer": {
-      "properties": {
-        "type": {
-          "description": "Should be set to 'request' for custom Lambda authorizers",
-          "enum": ["request"],
-          "type": "string"
-        },
-        "functionName": {
-          "description": "Mutually exclusive with `functionArn`",
-          "type": "string"
-        },
-        "functionArn": {
-          "description": "Mutually exclusive with `functionName`",
-          "type": "string"
-        },
-        "name": {
-          "description": "Optional. Custom name for created authorizer",
-          "type": "string"
-        },
-        "resultTtlInSeconds": {
-          "description": "Optional. Time to live for cached authorizer results, accepts values from 0 (no caching) to 3600 (1 hour). When set to non-zero value, 'identitySource' must be defined as well",
-          "type": "number"
-        },
-        "enableSimpleResponses": {
-          "description": "Set if authorizer function will return authorization responses in simple format (default: false)",
-          "type": "boolean"
-        },
-        "payloadVersion": {
-          "description": "Version of payload that will be sent to authorizer function (default: '2.0')",
-          "type": "string"
-        },
-        "identitySource": {
-          "description": "Optional. One or more mapping expressions of the request parameters in form of e.g `$request.header.Auth`. Specified values are verified to be non-empty and not null by authorizer. It is a required property when `resultTtlInSeconds` is non-zero as `identitySource` is additionally used as cache key for authorizer responses caching.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "managedExternally": {
-          "description": "Optional. Applicable only when using externally defined authorizer functions to prevent creation of permission resource",
-          "type": "boolean"
-        }
-      },
-      "type": "object"
-    },
     "AwsLayer": {
       "type": "object",
       "properties": {
@@ -1305,59 +1183,6 @@
             "type": "string"
           },
           "type": "array"
-        }
-      },
-      "type": "object"
-    },
-    "Aws.OidcAuthorizer": {
-      "properties": {
-        "allowUnauthenticated": {
-          "type": "boolean"
-        },
-        "authorizationEndpoint": {
-          "type": "string"
-        },
-        "clientId": {
-          "type": "string"
-        },
-        "clientSecret": {
-          "type": "string"
-        },
-        "issuer": {
-          "type": "string"
-        },
-        "requestExtraParams": {
-          "properties": {
-            "prompt": {
-              "type": "string"
-            },
-            "redirect": {
-              "type": "boolean"
-            }
-          },
-          "type": "object"
-        },
-        "scope": {
-          "type": "string"
-        },
-        "sessionCookieName": {
-          "type": "string"
-        },
-        "sessionTimeout": {
-          "type": ["string", "number"]
-        },
-        "tokenEndpoint": {
-          "type": "string"
-        },
-        "type": {
-          "enum": ["oidc"],
-          "type": "string"
-        },
-        "useExistingClientSecret": {
-          "type": "boolean"
-        },
-        "userInfoEndpoint": {
-          "type": "string"
         }
       },
       "type": "object"
