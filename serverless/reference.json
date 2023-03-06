@@ -1194,229 +1194,227 @@
       "default": "x86_64"
     },
     "AwsProvider": {
-      "oneOf": [
-        {
+      "title": "AwsProvider",
+      "description": "Configuration for Serverless AWS ",
+      "type": "object",
+      "properties": {
+        "alb": {
+          "$ref": "components/alb.json#/AwsAlb"
+        },
+        "ecr": {
           "type": "object",
           "properties": {
-            "alb": {
-              "$ref": "components/alb.json#/AwsAlb"
-            },
-            "ecr": {
-              "type": "object",
-              "properties": {
-                "scanOnPush": {
-                  "description": "Enabling this will make AWS scan image for CVE(Common Vulnerabilities and Exposures)",
-                  "type": "boolean"
-                },
-                "images": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "oneOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "uri": {
-                            "description": "URI of an existing Docker image in ECR",
-                            "type": "string"
-                          }
-                        }
-                      },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "path": {
-                            "description": "Path to the Docker context that will be used when building that image locally (default: '.')",
-                            "type": "string"
-                          },
-                          "file": {
-                            "type": "string",
-                            "description": "Dockerfile that will be used when building the image locally (default: 'Dockerfile')"
-                          },
-                          "buildArgs": {
-                            "type": "object"
-                          },
-                          "cacheFrom": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            },
-            "apiGateway": {
-              "$ref": "#/definitions/AwsApiGateway"
-            },
-            "apiKeys": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "apiName": {
-              "description": "Change this to use a custom name for the API Gateway API",
-              "type": "string"
-            },
-            "cfnRole": {
-              "type": "string"
-            },
-            "deploymentBucket": {
-              "$ref": "#/definitions/AwsDeploymentBucket"
-            },
-            "deploymentPrefix": {
-              "type": "string"
-            },
-            "endpointType": {
-              "enum": ["EDGE", "PRIVATE", "REGIONAL"],
-              "type": "string"
-            },
-            "environment": {
-              "$ref": "#/definitions/AwsEnvironment"
-            },
-            "httpApi": {
-              "$ref": "components/api.gateway.v2.json#AwsHttpApi"
-            },
-            "iamManagedPolicies": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "iamRoleStatements": {
-              "items": {
-                "$ref": "#/definitions/AwsIamRoleStatement"
-              },
-              "type": "array"
-            },
-            "logRetentionInDays": {
-              "type": ["string", "number"]
-            },
-            "logs": {
-              "$ref": "#/definitions/AwsLogs"
-            },
-            "memorySize": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "description": "Note: API Gateway has a maximum timeout of 30 seconds",
-                  "type": "number",
-                  "minimum": 128,
-                  "maximum": 10240
-                }
-              ],
-              "type": ["string", "number"]
-            },
-            "name": {
-              "enum": ["aws"],
-              "type": "string"
-            },
-            "notificationArns": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "profile": {
-              "type": "string"
-            },
-            "region": {
-              "$ref": "components/common.json#/AwsRegion"
-            },
-            "reservedConcurrency": {
-              "type": ["string", "number"]
-            },
-            "resourcePolicy": {
-              "items": {
-                "$ref": "#/definitions/AwsResourcePolicy"
-              },
-              "type": "array"
-            },
-            "role": {
-              "type": "string"
-            },
-            "rolePermissionsBoundary": {
-              "type": "string"
-            },
-            "rollbackConfiguration": {
-              "$ref": "#/definitions/AwsRollbackConfiguration"
-            },
-            "runtime": {
-              "$ref": "components/lambda.json#/AwsRuntime"
-            },
-            "stackName": {
-              "type": "string"
-            },
-            "stackParameters": {
-              "items": {
-                "$ref": "#/definitions/AwsStackParameters"
-              },
-              "type": "array"
-            },
-            "stackPolicy": {
-              "items": {
-                "$ref": "#/definitions/AwsResourcePolicy"
-              },
-              "type": "array"
-            },
-            "stackTags": {
-              "$ref": "#/definitions/AwsTags"
-            },
-            "stage": {
-              "type": "string"
-            },
-            "tags": {
-              "$ref": "#/definitions/AwsTags"
-            },
-            "timeout": {
-              "type": ["string", "number"]
-            },
-            "tracing": {
-              "$ref": "#/definitions/AwsTracing"
-            },
-            "usagePlan": {
-              "$ref": "#/definitions/AwsUsagePlan"
-            },
-            "versionFunctions": {
-              "description": "Use function versioning (enabled by default)",
+            "scanOnPush": {
+              "description": "Enabling this will make AWS scan image for CVE(Common Vulnerabilities and Exposures)",
               "type": "boolean"
             },
-            "architecture": {
-              "$ref": "#/definitions/AwsSupportedArchitecture"
-            },
-            "vpc": {
-              "$ref": "#/definitions/AwsVpc"
-            },
-            "websocketsApiName": {
-              "type": "string"
-            },
-            "websocketsApiRouteSelectionExpression": {
-              "type": "string"
-            },
-            "websocketsDescription": {
-              "type": "string"
-            },
-            "deploymentMethod": {
-              "description": "Method used for CloudFormation deployments: 'changesets' or 'direct' (default: changesets). See https://www.serverless.com/framework/docs/providers/aws/guide/deploying#deployment-method",
-              "type": "string",
-              "enum": ["direct", "changesets"]
-            },
-            "disableRollback": {
-              "type": "boolean",
-              "description": "Disable automatic rollback by CloudFormation on failure. To be used for non-production environments."
-            },
-            "logDataProtectionPolicy": {
-              "$ref": "components/cloudwatch.json#/LogDataProtectionPolicy"
+            "images": {
+              "type": "object",
+              "additionalProperties": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "uri": {
+                        "description": "URI of an existing Docker image in ECR",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "description": "Path to the Docker context that will be used when building that image locally (default: '.')",
+                        "type": "string"
+                      },
+                      "file": {
+                        "type": "string",
+                        "description": "Dockerfile that will be used when building the image locally (default: 'Dockerfile')"
+                      },
+                      "buildArgs": {
+                        "type": "object"
+                      },
+                      "cacheFrom": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
             }
+          }
+        },
+        "apiGateway": {
+          "$ref": "#/definitions/AwsApiGateway"
+        },
+        "apiKeys": {
+          "items": {
+            "type": "string"
           },
-          "required": ["name"]
+          "type": "array"
+        },
+        "apiName": {
+          "description": "Change this to use a custom name for the API Gateway API",
+          "type": "string"
+        },
+        "cfnRole": {
+          "type": "string"
+        },
+        "deploymentBucket": {
+          "$ref": "#/definitions/AwsDeploymentBucket"
+        },
+        "deploymentPrefix": {
+          "type": "string"
+        },
+        "endpointType": {
+          "enum": ["EDGE", "PRIVATE", "REGIONAL"],
+          "type": "string"
+        },
+        "environment": {
+          "$ref": "#/definitions/AwsEnvironment"
+        },
+        "httpApi": {
+          "$ref": "components/api.gateway.v2.json#AwsHttpApi"
+        },
+        "iamManagedPolicies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "iamRoleStatements": {
+          "items": {
+            "$ref": "#/definitions/AwsIamRoleStatement"
+          },
+          "type": "array"
+        },
+        "logRetentionInDays": {
+          "type": ["string", "number"]
+        },
+        "logs": {
+          "$ref": "#/definitions/AwsLogs"
+        },
+        "memorySize": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "description": "Note: API Gateway has a maximum timeout of 30 seconds",
+              "type": "number",
+              "minimum": 128,
+              "maximum": 10240
+            }
+          ],
+          "type": ["string", "number"]
+        },
+        "name": {
+          "enum": ["aws"],
+          "type": "string"
+        },
+        "notificationArns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "region": {
+          "$ref": "components/common.json#/AwsRegion"
+        },
+        "reservedConcurrency": {
+          "type": ["string", "number"]
+        },
+        "resourcePolicy": {
+          "items": {
+            "$ref": "#/definitions/AwsResourcePolicy"
+          },
+          "type": "array"
+        },
+        "role": {
+          "type": "string"
+        },
+        "rolePermissionsBoundary": {
+          "type": "string"
+        },
+        "rollbackConfiguration": {
+          "$ref": "#/definitions/AwsRollbackConfiguration"
+        },
+        "runtime": {
+          "$ref": "components/lambda.json#/AwsRuntime"
+        },
+        "stackName": {
+          "type": "string"
+        },
+        "stackParameters": {
+          "items": {
+            "$ref": "#/definitions/AwsStackParameters"
+          },
+          "type": "array"
+        },
+        "stackPolicy": {
+          "items": {
+            "$ref": "#/definitions/AwsResourcePolicy"
+          },
+          "type": "array"
+        },
+        "stackTags": {
+          "$ref": "#/definitions/AwsTags"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "tags": {
+          "$ref": "#/definitions/AwsTags"
+        },
+        "timeout": {
+          "type": ["string", "number"]
+        },
+        "tracing": {
+          "$ref": "#/definitions/AwsTracing"
+        },
+        "usagePlan": {
+          "$ref": "#/definitions/AwsUsagePlan"
+        },
+        "versionFunctions": {
+          "description": "Use function versioning (enabled by default)",
+          "type": "boolean"
+        },
+        "architecture": {
+          "$ref": "#/definitions/AwsSupportedArchitecture"
+        },
+        "vpc": {
+          "$ref": "#/definitions/AwsVpc"
+        },
+        "websocketsApiName": {
+          "type": "string"
+        },
+        "websocketsApiRouteSelectionExpression": {
+          "type": "string"
+        },
+        "websocketsDescription": {
+          "type": "string"
+        },
+        "deploymentMethod": {
+          "description": "Method used for CloudFormation deployments: 'changesets' or 'direct' (default: changesets). See https://www.serverless.com/framework/docs/providers/aws/guide/deploying#deployment-method",
+          "type": "string",
+          "enum": ["direct", "changesets"]
+        },
+        "disableRollback": {
+          "type": "boolean",
+          "description": "Disable automatic rollback by CloudFormation on failure. To be used for non-production environments."
+        },
+        "logDataProtectionPolicy": {
+          "$ref": "components/cloudwatch.json#/LogDataProtectionPolicy"
         }
-      ]
+      },
+      "required": ["name"]
     },
     "AwsQuota": {
       "properties": {
