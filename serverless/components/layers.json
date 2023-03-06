@@ -26,7 +26,66 @@
     ],
     "description": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
   },
+  "AwsLayer": {
+    "type": "object",
+    "properties": {
+      "allowedAccounts": {
+        "description": "**Uncommenting this will give all AWS users access to this layer unconditionally.**",
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "compatibleArchitectures": {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/AwsSupportedArchitecture"
+        }
+      },
+      "compatibleRuntimes": {
+        "type": "array",
+        "items": {
+          "$ref": "layers.json#/LayerAwsCompatibleRuntime"
+        }
+      },
+      "description": {
+        "type": "string"
+      },
+      "licenseInfo": {
+        "type": "string"
+      },
+      "name": {
+        "description": "Deployed Lambda layer name",
+        "type": "string"
+      },
+      "package": {
+        "$ref": "common.json#/AwsPackage"
+      },
+      "path": {
+        "type": "string"
+      },
+      "retain": {
+        "description": "If true, layer versions are not deleted as new ones are created",
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "required": [
+      "path"
+    ],
+    "additionalProperties": false
+  },
+  "AwsLayers": {
+    "additionalProperties": {
+      "$ref": "layers.json#/AwsLayer"
+    },
+    "description": "Configuration to deploy layers using serverless framework, https://www.serverless.com/framework/docs/providers/aws/guide/layers",
+    "maxProperties": 5,
+    "type": "object"
+  },
   "required": [
-    "LayerAwsCompatibleRuntime"
+    "LayerAwsCompatibleRuntime",
+    "AwsLayers",
+    "AwsLayer"
   ]
 }
