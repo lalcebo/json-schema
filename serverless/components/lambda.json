@@ -28,7 +28,50 @@
     ],
     "description": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
   },
+  "AwsLambdaRuntimeManagement": {
+    "title": "AwsLambdaRuntimeManagement",
+    "description": "Fine-grained control of the runtime being used for a lambda function:- https://www.serverless.com/framework/docs/providers/aws/guide/functions#runtime-management",
+    "oneOf": [
+      {
+        "type": "string",
+        "enum": [
+          "auto",
+          "onFunctionUpdate"
+        ]
+      },
+      {
+        "title": "AwsLambdaRuntimeManagementConfig",
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "onFunctionUpdate",
+              "manual"
+            ]
+          },
+          "arn": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^arn:(aws[a-zA-Z-]*):lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}::runtime:.+$"
+              },
+              {
+                "$ref": "cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "mode"
+        ]
+      }
+    ]
+  },
   "required": [
-    "AwsRuntime"
+    "AwsRuntime",
+    "AwsLambdaRuntimeManagement"
   ]
 }
