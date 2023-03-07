@@ -25,6 +25,17 @@ I'll try to maintain this project as simple as possible, but Pull Requests are w
 This project uses Cloudformation as the source of truth and hence the definitions for individual functions is taken from Cloudformation and maintained into their individual definition files, see [here](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-type-schemas.html)
 It's absolutely necessary that these files be kept to up to date.
 
+## Supported Plugins
+
+- [Serverless ESbuild](https://www.npmjs.com/package/serverless-esbuild)
+- [Serverless Prune Plugin](https://www.npmjs.com/package/serverless-prune-plugin)
+- [Serverless Python Requirements](https://www.npmjs.com/package/serverless-python-requirements)
+- [Serverless WSGI](https://github.com/logandk/serverless-wsgi)
+- [Serverless Split Stacks](https://www.npmjs.com/package/serverless-plugin-split-stacks)
+- [Serverless Step Functions](https://github.com/serverless-operations/serverless-step-functions)
+- [Serverless SSM Publish](https://github.com/mysense-ai/ServerlessPlugin-SSMPublish)
+- [Serverless Webpack](https://www.npmjs.com/package/serverless-webpack)
+
 ## License
 
 The MIT License (MIT). Please see [License File][link-license] for more information.
