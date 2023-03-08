@@ -1,21 +1,113 @@
 {
-  "typeName": "AWS::EC2::NetworkInsightsAnalysis",
-  "description": "Resource schema for AWS::EC2::NetworkInsightsAnalysis. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
+  "handlers": {
+    "read": {
+      "permissions": [
+        "ec2:Describe*"
+      ]
+    },
+    "create": {
+      "permissions": [
+        "ec2:StartNetworkInsightsAnalysis",
+        "ec2:GetTransitGatewayRouteTablePropagations",
+        "ec2:SearchTransitGatewayRoutes",
+        "ec2:Describe*",
+        "ec2:GetManagedPrefixListEntries",
+        "elasticloadbalancing:Describe*",
+        "directconnect:Describe*",
+        "tiros:CreateQuery",
+        "tiros:GetQueryAnswer",
+        "tiros:GetQueryExplanation"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "ec2:CreateTags",
+        "ec2:Describe*",
+        "ec2:DeleteTags"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "ec2:Describe*"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "ec2:DeleteNetworkInsightsAnalysis"
+      ]
+    }
+  },
+  "typeName": "AWS::EC2::NetworkInsightsAnalysis",
+  "readOnlyProperties": [
+    "/properties/NetworkInsightsAnalysisId",
+    "/properties/NetworkInsightsAnalysisArn",
+    "/properties/StartDate",
+    "/properties/Status",
+    "/properties/StatusMessage",
+    "/properties/ErrorCode",
+    "/properties/ErrorMessage",
+    "/properties/NetworkPathFound",
+    "/properties/ForwardPathComponents",
+    "/properties/ReturnPathComponents",
+    "/properties/Explanations",
+    "/properties/AlternatePathHints",
+    "/properties/SuggestedAccounts"
+  ],
+  "description": "Resource schema for AWS::EC2::NetworkInsightsAnalysis. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
+  "additionalIdentifiers": [
+    [
+      "/properties/NetworkInsightsAnalysisArn"
+    ]
+  ],
+  "createOnlyProperties": [
+    "/properties/NetworkInsightsPathId",
+    "/properties/FilterInArns"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/NetworkInsightsAnalysisId"
+  ],
   "definitions": {
-    "Tags": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      },
-      "title": "AWSEC2NetworkInsightsAnalysisTagsDefinition"
-    },
-    "Tag": {
-      "type": "object",
+    "PathComponent": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "Key": {
+        "AdditionalDetails": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AdditionalDetail"
+          }
+        },
+        "InboundHeader": {
+          "$ref": "#/definitions/AnalysisPacketHeader"
+        },
+        "Vpc": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "DestinationVpc": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "SecurityGroupRule": {
+          "$ref": "#/definitions/AnalysisSecurityGroupRule"
+        },
+        "TransitGateway": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "ElasticLoadBalancerListener": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Explanations": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Explanation"
+          }
+        },
+        "ServiceName": {
           "oneOf": [
             {
               "type": "string"
@@ -25,7 +117,60 @@
             }
           ]
         },
-        "Value": {
+        "SequenceNumber": {
+          "type": "integer"
+        },
+        "SourceVpc": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "OutboundHeader": {
+          "$ref": "#/definitions/AnalysisPacketHeader"
+        },
+        "AclRule": {
+          "$ref": "#/definitions/AnalysisAclRule"
+        },
+        "TransitGatewayRouteTableRoute": {
+          "$ref": "#/definitions/TransitGatewayRouteTableRoute"
+        },
+        "Component": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Subnet": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "RouteTableRoute": {
+          "$ref": "#/definitions/AnalysisRouteTableRoute"
+        }
+      },
+      "title": "AWSEC2NetworkInsightsAnalysisPathComponentDefinition"
+    },
+    "AnalysisLoadBalancerListener": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "InstancePort": {
+          "$ref": "#/definitions/Port"
+        },
+        "LoadBalancerPort": {
+          "$ref": "#/definitions/Port"
+        }
+      },
+      "title": "AWSEC2NetworkInsightsAnalysisAnalysisLoadBalancerListenerDefinition"
+    },
+    "AnalysisLoadBalancerTarget": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Address": {
+          "$ref": "#/definitions/IpAddress"
+        },
+        "Instance": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Port": {
+          "$ref": "#/definitions/Port"
+        },
+        "AvailabilityZone": {
           "oneOf": [
             {
               "type": "string"
@@ -36,34 +181,439 @@
           ]
         }
       },
-      "required": [
-        "Key"
-      ],
-      "title": "AWSEC2NetworkInsightsAnalysisTagDefinition"
+      "title": "AWSEC2NetworkInsightsAnalysisAnalysisLoadBalancerTargetDefinition"
     },
-    "ResourceArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSEC2NetworkInsightsAnalysisResourceArnDefinition"
-    },
-    "PortRange": {
-      "type": "object",
+    "Explanation": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "From": {
-          "type": "integer"
+        "VpnGateway": {
+          "$ref": "#/definitions/AnalysisComponent"
         },
-        "To": {
-          "type": "integer"
+        "PacketField": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TransitGatewayAttachment": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Protocols": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Protocol"
+          }
+        },
+        "IngressRouteTable": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "ClassicLoadBalancerListener": {
+          "$ref": "#/definitions/AnalysisLoadBalancerListener"
+        },
+        "VpcPeeringConnection": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Address": {
+          "$ref": "#/definitions/IpAddress"
+        },
+        "Port": {
+          "$ref": "#/definitions/Port"
+        },
+        "Addresses": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IpAddress"
+          }
+        },
+        "ElasticLoadBalancerListener": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "TransitGatewayRouteTable": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "ExplanationCode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "InternetGateway": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "SourceVpc": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "AttachedTo": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "PrefixList": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "TransitGatewayRouteTableRoute": {
+          "$ref": "#/definitions/TransitGatewayRouteTableRoute"
+        },
+        "ComponentRegion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoadBalancerTargetGroup": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "NetworkInterface": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "CustomerGateway": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "DestinationVpc": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "SecurityGroup": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "TransitGateway": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "RouteTable": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "State": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoadBalancerListenerPort": {
+          "$ref": "#/definitions/Port"
+        },
+        "vpcEndpoint": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Subnet": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Cidrs": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Destination": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "SecurityGroups": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnalysisComponent"
+          }
+        },
+        "ComponentAccount": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "VpnConnection": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Vpc": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "NatGateway": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "Direction": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoadBalancerTargetPort": {
+          "$ref": "#/definitions/Port"
+        },
+        "LoadBalancerTarget": {
+          "$ref": "#/definitions/AnalysisLoadBalancerTarget"
+        },
+        "LoadBalancerTargetGroups": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnalysisComponent"
+          }
+        },
+        "Component": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "MissingComponent": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RouteTableRoute": {
+          "$ref": "#/definitions/AnalysisRouteTableRoute"
+        },
+        "AvailabilityZones": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "PortRanges": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PortRange"
+          }
+        },
+        "Acl": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "SecurityGroupRule": {
+          "$ref": "#/definitions/AnalysisSecurityGroupRule"
+        },
+        "SubnetRouteTable": {
+          "$ref": "#/definitions/AnalysisComponent"
+        },
+        "LoadBalancerArn": {
+          "$ref": "#/definitions/ResourceArn"
+        },
+        "AclRule": {
+          "$ref": "#/definitions/AnalysisAclRule"
         }
       },
-      "title": "AWSEC2NetworkInsightsAnalysisPortRangeDefinition"
+      "title": "AWSEC2NetworkInsightsAnalysisExplanationDefinition"
+    },
+    "Port": {
+      "type": "integer",
+      "title": "AWSEC2NetworkInsightsAnalysisPortDefinition"
+    },
+    "AnalysisPacketHeader": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "DestinationPortRanges": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PortRange"
+          }
+        },
+        "SourcePortRanges": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PortRange"
+          }
+        },
+        "DestinationAddresses": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IpAddress"
+          }
+        },
+        "Protocol": {
+          "$ref": "#/definitions/Protocol"
+        },
+        "SourceAddresses": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IpAddress"
+          }
+        }
+      },
+      "title": "AWSEC2NetworkInsightsAnalysisAnalysisPacketHeaderDefinition"
+    },
+    "AdditionalDetail": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ServiceName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AdditionalDetailType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoadBalancers": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AnalysisComponent"
+          }
+        },
+        "Component": {
+          "$ref": "#/definitions/AnalysisComponent"
+        }
+      },
+      "title": "AWSEC2NetworkInsightsAnalysisAdditionalDetailDefinition"
+    },
+    "AlternatePathHint": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ComponentArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ComponentId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEC2NetworkInsightsAnalysisAlternatePathHintDefinition"
+    },
+    "TransitGatewayRouteTableRoute": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PrefixListId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResourceId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "State": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResourceType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RouteOrigin": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DestinationCidr": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AttachmentId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEC2NetworkInsightsAnalysisTransitGatewayRouteTableRouteDefinition"
     },
     "Protocol": {
       "oneOf": [
@@ -76,10 +626,21 @@
       ],
       "title": "AWSEC2NetworkInsightsAnalysisProtocolDefinition"
     },
-    "AnalysisAclRule": {
-      "type": "object",
+    "Tags": {
+      "uniqueItems": true,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSEC2NetworkInsightsAnalysisTagsDefinition"
+    },
+    "AnalysisSecurityGroupRule": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
+        "PortRange": {
+          "$ref": "#/definitions/PortRange"
+        },
         "Cidr": {
           "oneOf": [
             {
@@ -90,16 +651,7 @@
             }
           ]
         },
-        "Egress": {
-          "type": "boolean"
-        },
-        "PortRange": {
-          "$ref": "#/definitions/PortRange"
-        },
-        "Protocol": {
-          "$ref": "#/definitions/Protocol"
-        },
-        "RuleAction": {
+        "PrefixListId": {
           "oneOf": [
             {
               "type": "string"
@@ -109,110 +661,35 @@
             }
           ]
         },
-        "RuleNumber": {
-          "type": "integer"
-        }
-      },
-      "title": "AWSEC2NetworkInsightsAnalysisAnalysisAclRuleDefinition"
-    },
-    "AnalysisPacketHeader": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "DestinationAddresses": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/IpAddress"
-          }
-        },
-        "DestinationPortRanges": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PortRange"
-          }
+        "SecurityGroupId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Protocol": {
           "$ref": "#/definitions/Protocol"
         },
-        "SourceAddresses": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/IpAddress"
-          }
-        },
-        "SourcePortRanges": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PortRange"
-          }
+        "Direction": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "title": "AWSEC2NetworkInsightsAnalysisAnalysisPacketHeaderDefinition"
-    },
-    "PathComponent": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "SequenceNumber": {
-          "type": "integer"
-        },
-        "AclRule": {
-          "$ref": "#/definitions/AnalysisAclRule"
-        },
-        "AdditionalDetails": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AdditionalDetail"
-          }
-        },
-        "Component": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "DestinationVpc": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "Explanations": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Explanation"
-          }
-        },
-        "ElasticLoadBalancerListener": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "OutboundHeader": {
-          "$ref": "#/definitions/AnalysisPacketHeader"
-        },
-        "InboundHeader": {
-          "$ref": "#/definitions/AnalysisPacketHeader"
-        },
-        "RouteTableRoute": {
-          "$ref": "#/definitions/AnalysisRouteTableRoute"
-        },
-        "SecurityGroupRule": {
-          "$ref": "#/definitions/AnalysisSecurityGroupRule"
-        },
-        "SourceVpc": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "Subnet": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "Vpc": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "TransitGateway": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "TransitGatewayRouteTableRoute": {
-          "$ref": "#/definitions/TransitGatewayRouteTableRoute"
-        }
-      },
-      "title": "AWSEC2NetworkInsightsAnalysisPathComponentDefinition"
+      "title": "AWSEC2NetworkInsightsAnalysisAnalysisSecurityGroupRuleDefinition"
     },
     "AnalysisComponent": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Id": {
           "oneOf": [
@@ -237,38 +714,14 @@
       },
       "title": "AWSEC2NetworkInsightsAnalysisAnalysisComponentDefinition"
     },
-    "IpAddress": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSEC2NetworkInsightsAnalysisIpAddressDefinition"
-    },
-    "AnalysisLoadBalancerListener": {
-      "type": "object",
+    "AnalysisAclRule": {
       "additionalProperties": false,
-      "properties": {
-        "InstancePort": {
-          "$ref": "#/definitions/Port"
-        },
-        "LoadBalancerPort": {
-          "$ref": "#/definitions/Port"
-        }
-      },
-      "title": "AWSEC2NetworkInsightsAnalysisAnalysisLoadBalancerListenerDefinition"
-    },
-    "AnalysisLoadBalancerTarget": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "Address": {
-          "$ref": "#/definitions/IpAddress"
+        "PortRange": {
+          "$ref": "#/definitions/PortRange"
         },
-        "AvailabilityZone": {
+        "Cidr": {
           "oneOf": [
             {
               "type": "string"
@@ -278,24 +731,33 @@
             }
           ]
         },
-        "Instance": {
-          "$ref": "#/definitions/AnalysisComponent"
+        "RuleAction": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Port": {
-          "$ref": "#/definitions/Port"
+        "Egress": {
+          "type": "boolean"
+        },
+        "RuleNumber": {
+          "type": "integer"
+        },
+        "Protocol": {
+          "$ref": "#/definitions/Protocol"
         }
       },
-      "title": "AWSEC2NetworkInsightsAnalysisAnalysisLoadBalancerTargetDefinition"
-    },
-    "Port": {
-      "type": "integer",
-      "title": "AWSEC2NetworkInsightsAnalysisPortDefinition"
+      "title": "AWSEC2NetworkInsightsAnalysisAnalysisAclRuleDefinition"
     },
     "AnalysisRouteTableRoute": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "destinationCidr": {
+        "Origin": {
           "oneOf": [
             {
               "type": "string"
@@ -315,37 +777,7 @@
             }
           ]
         },
-        "egressOnlyInternetGatewayId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "gatewayId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "instanceId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "NatGatewayId": {
+        "destinationCidr": {
           "oneOf": [
             {
               "type": "string"
@@ -356,26 +788,6 @@
           ]
         },
         "NetworkInterfaceId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Origin": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "State": {
           "oneOf": [
             {
               "type": "string"
@@ -404,395 +816,100 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "instanceId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "State": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "egressOnlyInternetGatewayId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "NatGatewayId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "gatewayId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "title": "AWSEC2NetworkInsightsAnalysisAnalysisRouteTableRouteDefinition"
     },
-    "AnalysisSecurityGroupRule": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Cidr": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+    "ResourceArn": {
+      "oneOf": [
+        {
+          "type": "string"
         },
-        "Direction": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "SecurityGroupId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "PortRange": {
-          "$ref": "#/definitions/PortRange"
-        },
-        "PrefixListId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Protocol": {
-          "$ref": "#/definitions/Protocol"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      },
-      "title": "AWSEC2NetworkInsightsAnalysisAnalysisSecurityGroupRuleDefinition"
+      ],
+      "title": "AWSEC2NetworkInsightsAnalysisResourceArnDefinition"
     },
-    "TransitGatewayRouteTableRoute": {
-      "type": "object",
+    "PortRange": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "DestinationCidr": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "From": {
+          "type": "integer"
         },
-        "State": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RouteOrigin": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "PrefixListId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "AttachmentId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ResourceId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ResourceType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "To": {
+          "type": "integer"
         }
       },
-      "title": "AWSEC2NetworkInsightsAnalysisTransitGatewayRouteTableRouteDefinition"
+      "title": "AWSEC2NetworkInsightsAnalysisPortRangeDefinition"
     },
-    "AdditionalDetail": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "AdditionalDetailType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+    "IpAddress": {
+      "oneOf": [
+        {
+          "type": "string"
         },
-        "Component": {
-          "$ref": "#/definitions/AnalysisComponent"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      },
-      "title": "AWSEC2NetworkInsightsAnalysisAdditionalDetailDefinition"
+      ],
+      "title": "AWSEC2NetworkInsightsAnalysisIpAddressDefinition"
     },
-    "Explanation": {
-      "type": "object",
+    "Tag": {
       "additionalProperties": false,
-      "properties": {
-        "Acl": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "AclRule": {
-          "$ref": "#/definitions/AnalysisAclRule"
-        },
-        "Address": {
-          "$ref": "#/definitions/IpAddress"
-        },
-        "Addresses": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/IpAddress"
-          }
-        },
-        "AttachedTo": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "AvailabilityZones": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "Cidrs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "Component": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "ComponentAccount": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ComponentRegion": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "CustomerGateway": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "Destination": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "DestinationVpc": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "Direction": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ExplanationCode": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "IngressRouteTable": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "InternetGateway": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "LoadBalancerArn": {
-          "$ref": "#/definitions/ResourceArn"
-        },
-        "ClassicLoadBalancerListener": {
-          "$ref": "#/definitions/AnalysisLoadBalancerListener"
-        },
-        "LoadBalancerListenerPort": {
-          "$ref": "#/definitions/Port"
-        },
-        "LoadBalancerTarget": {
-          "$ref": "#/definitions/AnalysisLoadBalancerTarget"
-        },
-        "LoadBalancerTargetGroup": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "LoadBalancerTargetGroups": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AnalysisComponent"
-          }
-        },
-        "LoadBalancerTargetPort": {
-          "$ref": "#/definitions/Port"
-        },
-        "ElasticLoadBalancerListener": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "MissingComponent": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "NatGateway": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "NetworkInterface": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "PacketField": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "VpcPeeringConnection": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "Port": {
-          "$ref": "#/definitions/Port"
-        },
-        "PortRanges": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PortRange"
-          }
-        },
-        "PrefixList": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "Protocols": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Protocol"
-          }
-        },
-        "RouteTableRoute": {
-          "$ref": "#/definitions/AnalysisRouteTableRoute"
-        },
-        "RouteTable": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "SecurityGroup": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "SecurityGroupRule": {
-          "$ref": "#/definitions/AnalysisSecurityGroupRule"
-        },
-        "SecurityGroups": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/AnalysisComponent"
-          }
-        },
-        "SourceVpc": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "State": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Subnet": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "SubnetRouteTable": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "Vpc": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "vpcEndpoint": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "VpnConnection": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "VpnGateway": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "TransitGateway": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "TransitGatewayAttachment": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "TransitGatewayRouteTable": {
-          "$ref": "#/definitions/AnalysisComponent"
-        },
-        "TransitGatewayRouteTableRoute": {
-          "$ref": "#/definitions/TransitGatewayRouteTableRoute"
-        }
-      },
-      "title": "AWSEC2NetworkInsightsAnalysisExplanationDefinition"
-    },
-    "AlternatePathHint": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "ComponentId": {
+        "Value": {
           "oneOf": [
             {
               "type": "string"
@@ -802,7 +919,7 @@
             }
           ]
         },
-        "ComponentArn": {
+        "Key": {
           "oneOf": [
             {
               "type": "string"
@@ -813,18 +930,16 @@
           ]
         }
       },
-      "title": "AWSEC2NetworkInsightsAnalysisAlternatePathHintDefinition"
+      "required": [
+        "Key"
+      ],
+      "title": "AWSEC2NetworkInsightsAnalysisTagDefinition"
     }
   },
+  "required": [
+    "NetworkInsightsPathId"
+  ],
   "properties": {
-    "AdditionalAccounts": {
-      "type": "array",
-      "insertionOrder": true,
-      "uniqueItems": true,
-      "items": {
-        "type": "string"
-      }
-    },
     "NetworkInsightsPathId": {
       "oneOf": [
         {
@@ -836,85 +951,27 @@
       ]
     },
     "FilterInArns": {
+      "uniqueItems": false,
+      "insertionOrder": true,
       "type": "array",
       "items": {
         "$ref": "#/definitions/ResourceArn"
       }
     },
+    "AdditionalAccounts": {
+      "uniqueItems": true,
+      "insertionOrder": true,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "Tags": {
+      "uniqueItems": true,
       "type": "array",
       "items": {
         "$ref": "#/definitions/Tag"
       }
-    }
-  },
-  "additionalProperties": false,
-  "required": [
-    "NetworkInsightsPathId"
-  ],
-  "readOnlyProperties": [
-    "/properties/NetworkInsightsAnalysisId",
-    "/properties/NetworkInsightsAnalysisArn",
-    "/properties/StartDate",
-    "/properties/Status",
-    "/properties/StatusMessage",
-    "/properties/ErrorCode",
-    "/properties/ErrorMessage",
-    "/properties/NetworkPathFound",
-    "/properties/ForwardPathComponents",
-    "/properties/ReturnPathComponents",
-    "/properties/Explanations",
-    "/properties/AlternatePathHints",
-    "/properties/SuggestedAccounts"
-  ],
-  "primaryIdentifier": [
-    "/properties/NetworkInsightsAnalysisId"
-  ],
-  "createOnlyProperties": [
-    "/properties/NetworkInsightsPathId",
-    "/properties/FilterInArns"
-  ],
-  "additionalIdentifiers": [
-    [
-      "/properties/NetworkInsightsAnalysisArn"
-    ]
-  ],
-  "handlers": {
-    "create": {
-      "permissions": [
-        "ec2:StartNetworkInsightsAnalysis",
-        "ec2:GetTransitGatewayRouteTablePropagations",
-        "ec2:SearchTransitGatewayRoutes",
-        "ec2:Describe*",
-        "ec2:GetManagedPrefixListEntries",
-        "elasticloadbalancing:Describe*",
-        "directconnect:Describe*",
-        "tiros:CreateQuery",
-        "tiros:GetQueryAnswer",
-        "tiros:GetQueryExplanation"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "ec2:DeleteNetworkInsightsAnalysis"
-      ]
-    },
-    "read": {
-      "permissions": [
-        "ec2:Describe*"
-      ]
-    },
-    "list": {
-      "permissions": [
-        "ec2:Describe*"
-      ]
-    },
-    "update": {
-      "permissions": [
-        "ec2:CreateTags",
-        "ec2:Describe*",
-        "ec2:DeleteTags"
-      ]
     }
   },
   "title": "AWSEC2NetworkInsightsAnalysisProperties",

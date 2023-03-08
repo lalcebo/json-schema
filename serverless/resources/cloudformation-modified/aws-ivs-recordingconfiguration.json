@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IVS::RecordingConfiguration",
-  "description": "Resource Type definition for AWS::IVS::RecordingConfiguration",
+  "description": "Resource Type definition for AWS::IVS::RecordingConfiguration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Tag": {
@@ -8,23 +8,35 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
         "Value",
         "Key"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIVSRecordingConfigurationTagDefinition"
     },
     "DestinationConfiguration": {
       "description": "Recording Destination Configuration.",
@@ -38,7 +50,7 @@
       "required": [
         "S3"
       ],
-      "markdownDescription": "Recording Destination Configuration.\n\n---\n\nRequired: No  \nUpdate requires: Replacement"
+      "title": "AWSIVSRecordingConfigurationDestinationConfigurationDefinition"
     },
     "S3DestinationConfiguration": {
       "description": "Recording S3 Destination Configuration.",
@@ -46,16 +58,23 @@
       "additionalProperties": false,
       "properties": {
         "BucketName": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 63,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 3  \nMaximum Length: 63  \nPattern: ^[a-z0-9-.]+$  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63,
+              "pattern": "^[a-z0-9-.]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
         "BucketName"
       ],
-      "markdownDescription": "Recording S3 Destination Configuration.\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIVSRecordingConfigurationS3DestinationConfigurationDefinition"
     },
     "ThumbnailConfiguration": {
       "description": "Recording Thumbnail Configuration.",
@@ -63,43 +82,54 @@
       "additionalProperties": false,
       "properties": {
         "RecordingMode": {
-          "description": "Thumbnail Recording Mode, which determines whether thumbnails are recorded at an interval or are disabled.",
-          "type": "string",
-          "enum": [
-            "INTERVAL",
-            "DISABLED"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "INTERVAL",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ],
-          "markdownDescription": "Thumbnail Recording Mode, which determines whether thumbnails are recorded at an interval or are disabled.\n\n---\n\nRequired: Yes  \nType: String  \nAllowed Values: INTERVAL | DISABLED  \nUpdate requires: No interruption"
+          "description": "Thumbnail Recording Mode, which determines whether thumbnails are recorded at an interval or are disabled."
         },
         "TargetIntervalSeconds": {
           "description": "Thumbnail recording Target Interval Seconds defines the interval at which thumbnails are recorded. This field is required if RecordingMode is INTERVAL.",
           "type": "integer",
           "minimum": 5,
-          "maximum": 60,
-          "markdownDescription": "Thumbnail recording Target Interval Seconds defines the interval at which thumbnails are recorded. This field is required if RecordingMode is INTERVAL.\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
+          "maximum": 60
         }
       },
       "required": [
         "RecordingMode"
       ],
-      "markdownDescription": "Recording Thumbnail Configuration.\n\n---\n\nRequired: No  \nUpdate requires: Replacement"
+      "title": "AWSIVSRecordingConfigurationThumbnailConfigurationDefinition"
     }
   },
   "properties": {
     "Name": {
-      "description": "Recording Configuration Name.",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 128,
-      "markdownDescription": "Recording Configuration Name.\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 128  \nPattern: ^[a-zA-Z0-9-_]*$  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9-_]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Recording Configuration Name."
     },
     "RecordingReconnectWindowSeconds": {
       "description": "Recording Reconnect Window Seconds. (0 means disabled)",
       "type": "integer",
       "default": 0,
       "minimum": 0,
-      "maximum": 300,
-      "markdownDescription": "Recording Reconnect Window Seconds. (0 means disabled)\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: Replacement"
+      "maximum": 300
     },
     "DestinationConfiguration": {
       "$ref": "#/definitions/DestinationConfiguration"
@@ -112,8 +142,7 @@
       "maxItems": 50,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "A list of key-value pairs that contain metadata for the asset model.\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     },
     "ThumbnailConfiguration": {
       "$ref": "#/definitions/ThumbnailConfiguration"
@@ -178,25 +207,6 @@
       ]
     }
   },
-  "attributes": {
-    "Arn": {
-      "description": "Recording Configuration ARN is automatically generated on creation and assigned as the unique identifier.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "markdownDescription": "Recording Configuration ARN is automatically generated on creation and assigned as the unique identifier.\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: ^arn:aws[-a-z]*:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+$  \nUpdate requires: No interruption"
-    },
-    "State": {
-      "description": "Recording Configuration State.",
-      "type": "string",
-      "enum": [
-        "CREATING",
-        "CREATE_FAILED",
-        "ACTIVE"
-      ],
-      "markdownDescription": "Recording Configuration State.\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: CREATING | CREATE_FAILED | ACTIVE  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::IVS::RecordingConfiguration",
+  "title": "AWSIVSRecordingConfigurationProperties",
   "type": "object"
 }

@@ -394,8 +394,7 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/ManagedRuleGroupConfig"
-          },
-          "minItems": 1
+          }
         },
         "RuleActionOverrides": {
           "description": "Action overrides for rules in the rule group.",
@@ -1500,6 +1499,9 @@
         },
         "AWSManagedRulesBotControlRuleSet": {
           "$ref": "#/definitions/AWSManagedRulesBotControlRuleSet"
+        },
+        "AWSManagedRulesATPRuleSet": {
+          "$ref": "#/definitions/AWSManagedRulesATPRuleSet"
         }
       },
       "additionalProperties": false,
@@ -1529,6 +1531,248 @@
       ],
       "additionalProperties": false,
       "title": "AWSWAFv2WebACLAWSManagedRulesBotControlRuleSetDefinition"
+    },
+    "AWSManagedRulesATPRuleSet": {
+      "description": "Configures how to use the Account Takeover Prevention managed rule group in the web ACL",
+      "type": "object",
+      "properties": {
+        "LoginPath": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RequestInspection": {
+          "$ref": "#/definitions/RequestInspection"
+        },
+        "ResponseInspection": {
+          "$ref": "#/definitions/ResponseInspection"
+        }
+      },
+      "required": [
+        "LoginPath"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLAWSManagedRulesATPRuleSetDefinition"
+    },
+    "RequestInspection": {
+      "description": "Configures the inspection of login requests",
+      "type": "object",
+      "properties": {
+        "PayloadType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "JSON",
+                "FORM_ENCODED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UsernameField": {
+          "$ref": "#/definitions/FieldIdentifier"
+        },
+        "PasswordField": {
+          "$ref": "#/definitions/FieldIdentifier"
+        }
+      },
+      "required": [
+        "PayloadType",
+        "UsernameField",
+        "PasswordField"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRequestInspectionDefinition"
+    },
+    "ResponseInspection": {
+      "description": "Configures the inspection of login responses",
+      "type": "object",
+      "properties": {
+        "StatusCode": {
+          "$ref": "#/definitions/ResponseInspectionStatusCode"
+        },
+        "Header": {
+          "$ref": "#/definitions/ResponseInspectionHeader"
+        },
+        "BodyContains": {
+          "$ref": "#/definitions/ResponseInspectionBodyContains"
+        },
+        "Json": {
+          "$ref": "#/definitions/ResponseInspectionJson"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLResponseInspectionDefinition"
+    },
+    "ResponseInspectionStatusCode": {
+      "description": "Response status codes that indicate success or failure of a login request",
+      "type": "object",
+      "properties": {
+        "SuccessCodes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minLength": 0,
+            "maxLength": 999
+          },
+          "minItems": 1,
+          "maxItems": 10
+        },
+        "FailureCodes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minLength": 0,
+            "maxLength": 999
+          },
+          "minItems": 1,
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "SuccessCodes",
+        "FailureCodes"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLResponseInspectionStatusCodeDefinition"
+    },
+    "ResponseInspectionHeader": {
+      "description": "Response headers that indicate success or failure of a login request",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SuccessValues": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": ".*\\S.*",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "FailureValues": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": ".*\\S.*",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 1,
+          "maxItems": 3
+        }
+      },
+      "required": [
+        "Name",
+        "SuccessValues",
+        "FailureValues"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLResponseInspectionHeaderDefinition"
+    },
+    "ResponseInspectionBodyContains": {
+      "description": "Response body contents that indicate success or failure of a login request",
+      "type": "object",
+      "properties": {
+        "SuccessStrings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": ".*\\S.*",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "FailureStrings": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": ".*\\S.*",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 1,
+          "maxItems": 5
+        }
+      },
+      "required": [
+        "SuccessStrings",
+        "FailureStrings"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLResponseInspectionBodyContainsDefinition"
+    },
+    "ResponseInspectionJson": {
+      "description": "Response JSON that indicate success or failure of a login request",
+      "type": "object",
+      "properties": {
+        "Identifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SuccessValues": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": ".*\\S.*",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "FailureValues": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": ".*\\S.*",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 1,
+          "maxItems": 5
+        }
+      },
+      "required": [
+        "Identifier",
+        "SuccessValues",
+        "FailureValues"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLResponseInspectionJsonDefinition"
     },
     "TokenDomains": {
       "description": "List of domains to accept in web request tokens, in addition to the domain of the protected resource.",

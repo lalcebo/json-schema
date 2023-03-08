@@ -1,0 +1,135 @@
+{
+  "typeName": "AWS::EC2::LocalGatewayRouteTable",
+  "description": "Describes a route table for a local gateway.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-lgw.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-lgw.git",
+  "definitions": {
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSEC2LocalGatewayRouteTableTagsDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127,
+              "pattern": "^(?!aws:.*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "^(?!aws:.*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSEC2LocalGatewayRouteTableTagDefinition"
+    }
+  },
+  "properties": {
+    "LocalGatewayId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the local gateway."
+    },
+    "Mode": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The mode of the local gateway route table."
+    },
+    "Tags": {
+      "description": "The tags for the local gateway route table.",
+      "$ref": "#/definitions/Tags"
+    }
+  },
+  "required": [
+    "LocalGatewayId"
+  ],
+  "createOnlyProperties": [
+    "/properties/LocalGatewayId",
+    "/properties/Mode"
+  ],
+  "readOnlyProperties": [
+    "/properties/LocalGatewayRouteTableId",
+    "/properties/LocalGatewayRouteTableArn",
+    "/properties/OutpostArn",
+    "/properties/OwnerId",
+    "/properties/State"
+  ],
+  "primaryIdentifier": [
+    "/properties/LocalGatewayRouteTableId"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ec2:CreateLocalGatewayRouteTable",
+        "ec2:DescribeLocalGatewayRouteTables"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "ec2:DescribeLocalGatewayRouteTables"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "ec2:DescribeLocalGatewayRouteTables",
+        "ec2:CreateTags",
+        "ec2:DeleteTags"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "ec2:DeleteLocalGatewayRouteTable",
+        "ec2:DescribeLocalGatewayRouteTables"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "ec2:DescribeLocalGatewayRouteTables"
+      ]
+    }
+  },
+  "replacementStrategy": "delete_then_create",
+  "additionalProperties": false,
+  "title": "AWSEC2LocalGatewayRouteTableProperties",
+  "type": "object"
+}

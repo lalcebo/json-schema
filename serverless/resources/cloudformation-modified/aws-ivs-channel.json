@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IVS::Channel",
-  "description": "Resource Type definition for AWS::IVS::Channel",
+  "description": "Resource Type definition for AWS::IVS::Channel. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Tag": {
@@ -8,59 +8,89 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
         "Value",
         "Key"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIVSChannelTagDefinition"
     }
   },
   "properties": {
     "Name": {
-      "description": "Channel",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 128,
-      "default": "-",
-      "markdownDescription": "Channel\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 128  \nPattern: ^[a-zA-Z0-9-_]*$  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "default": "-"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Channel"
     },
     "Authorized": {
       "description": "Whether the channel is authorized.",
       "type": "boolean",
-      "default": false,
-      "markdownDescription": "Whether the channel is authorized.\n\n---\n\nRequired: No  \nType: Boolean  \nUpdate requires: No interruption"
+      "default": false
     },
     "LatencyMode": {
-      "description": "Channel latency mode.",
-      "type": "string",
-      "enum": [
-        "NORMAL",
-        "LOW"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NORMAL",
+            "LOW"
+          ],
+          "default": "LOW"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "default": "LOW",
-      "markdownDescription": "Channel latency mode.\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: NORMAL | LOW  \nUpdate requires: No interruption"
+      "description": "Channel latency mode."
     },
     "Type": {
-      "description": "Channel type, which determines the allowable resolution and bitrate. If you exceed the allowable resolution or bitrate, the stream probably will disconnect immediately.",
-      "type": "string",
-      "enum": [
-        "STANDARD",
-        "BASIC"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "BASIC"
+          ],
+          "default": "STANDARD"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "default": "STANDARD",
-      "markdownDescription": "Channel type, which determines the allowable resolution and bitrate. If you exceed the allowable resolution or bitrate, the stream probably will disconnect immediately.\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: STANDARD | BASIC  \nUpdate requires: No interruption"
+      "description": "Channel type, which determines the allowable resolution and bitrate. If you exceed the allowable resolution or bitrate, the stream probably will disconnect immediately."
     },
     "Tags": {
       "description": "A list of key-value pairs that contain metadata for the asset model.",
@@ -70,16 +100,22 @@
       "maxItems": 50,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "A list of key-value pairs that contain metadata for the asset model.\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     },
     "RecordingConfigurationArn": {
-      "description": "Recording Configuration ARN. A value other than an empty string indicates that recording is enabled. Default: \"\" (recording is disabled).",
-      "type": "string",
-      "default": "",
-      "minLength": 0,
-      "maxLength": 128,
-      "markdownDescription": "Recording Configuration ARN. A value other than an empty string indicates that recording is enabled. Default: \"\" (recording is disabled).\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 128  \nPattern: ^$|arn:aws:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+$  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "",
+          "pattern": "^$|arn:aws:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+$",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Recording Configuration ARN. A value other than an empty string indicates that recording is enabled. Default: \"\" (recording is disabled)."
     }
   },
   "additionalProperties": false,
@@ -122,25 +158,6 @@
       ]
     }
   },
-  "attributes": {
-    "Arn": {
-      "description": "Channel ARN is automatically generated on creation and assigned as the unique identifier.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "markdownDescription": "Channel ARN is automatically generated on creation and assigned as the unique identifier.\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: ^arn:aws:ivs:[a-z0-9-]+:[0-9]+:channel/[a-zA-Z0-9-]+$  \nUpdate requires: No interruption"
-    },
-    "PlaybackUrl": {
-      "description": "Channel Playback URL.",
-      "type": "string",
-      "markdownDescription": "Channel Playback URL.\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    },
-    "IngestEndpoint": {
-      "description": "Channel ingest endpoint, part of the definition of an ingest server, used when you set up streaming software.",
-      "type": "string",
-      "markdownDescription": "Channel ingest endpoint, part of the definition of an ingest server, used when you set up streaming software.\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::IVS::Channel",
+  "title": "AWSIVSChannelProperties",
   "type": "object"
 }

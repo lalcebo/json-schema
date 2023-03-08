@@ -2,6 +2,47 @@
   "typeName": "AWS::ElastiCache::User",
   "description": "Resource Type definition for AWS::ElastiCache::User. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-elasticache",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-elasticache",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z0-9 _\\.\\/=+:\\-@]*$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with 'aws:'. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9 _\\.\\/=+:\\-@]*$",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "title": "AWSElastiCacheUserTagDefinition"
+    }
+  },
   "properties": {
     "UserId": {
       "oneOf": [
@@ -99,7 +140,24 @@
       "required": [
         "Type"
       ]
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this user.",
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags"
   },
   "additionalProperties": false,
   "required": [
@@ -129,18 +187,23 @@
     "create": {
       "permissions": [
         "elasticache:CreateUser",
-        "elasticache:DescribeUsers"
+        "elasticache:DescribeUsers",
+        "elasticache:ListTagsForResource"
       ]
     },
     "read": {
       "permissions": [
-        "elasticache:DescribeUsers"
+        "elasticache:DescribeUsers",
+        "elasticache:ListTagsForResource"
       ]
     },
     "update": {
       "permissions": [
         "elasticache:ModifyUser",
-        "elasticache:DescribeUsers"
+        "elasticache:DescribeUsers",
+        "elasticache:ListTagsForResource",
+        "elasticache:AddTagsToResource",
+        "elasticache:RemoveTagsFromResource"
       ]
     },
     "delete": {
@@ -151,7 +214,8 @@
     },
     "list": {
       "permissions": [
-        "elasticache:DescribeUsers"
+        "elasticache:DescribeUsers",
+        "elasticache:ListTagsForResource"
       ]
     }
   },
