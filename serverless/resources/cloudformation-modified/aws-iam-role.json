@@ -1,5 +1,6 @@
 {
   "typeName": "AWS::IAM::Role",
+  "$schema": "https://raw.githubusercontent.com/aws-cloudformation/cloudformation-resource-schema/master/src/main/resources/schema/provider.definition.schema.v1.json",
   "description": "Resource Type definition for AWS::IAM::Role. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iam.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iam.git",
   "definitions": {
@@ -18,9 +19,7 @@
         "PolicyName": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -42,9 +41,7 @@
         "Key": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -55,9 +52,7 @@
         "Value": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 256
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -85,8 +80,7 @@
     "Description": {
       "oneOf": [
         {
-          "type": "string",
-          "maxLength": 1000
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -105,9 +99,7 @@
     },
     "MaxSessionDuration": {
       "description": "The maximum session duration (in seconds) that you want to set for the specified role. If you do not specify a value for this setting, the default maximum of one hour is applied. This setting can have a value from 1 hour to 12 hours. ",
-      "type": "integer",
-      "minimum": 3600,
-      "maximum": 43200
+      "type": "integer"
     },
     "Path": {
       "oneOf": [
@@ -143,8 +135,7 @@
     "RoleName": {
       "oneOf": [
         {
-          "type": "string",
-          "maxLength": 64
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -177,7 +168,13 @@
   "primaryIdentifier": [
     "/properties/RoleName"
   ],
-  "taggable": true,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags"
+  },
   "handlers": {
     "create": {
       "permissions": [
@@ -222,7 +219,9 @@
         "iam:DeleteRole",
         "iam:DetachRolePolicy",
         "iam:DeleteRolePolicy",
-        "iam:GetRole"
+        "iam:GetRole",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListRolePolicies"
       ]
     },
     "list": {

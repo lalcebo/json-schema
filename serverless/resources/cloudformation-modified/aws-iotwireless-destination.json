@@ -1,54 +1,91 @@
 {
   "typeName": "AWS::IoTWireless::Destination",
-  "description": "Destination's resource schema demonstrating some basic constructs and validation rules.",
+  "description": "Destination's resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Tag": {
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 127,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 127  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 255  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIoTWirelessDestinationTagDefinition"
     }
   },
   "properties": {
     "Name": {
-      "description": "Unique name of destination",
-      "type": "string",
-      "maxLength": 128,
-      "markdownDescription": "Unique name of destination\n\n---\n\nRequired: Yes  \nType: String  \nMaximum Length: 128  \nPattern: [a-zA-Z0-9:_-]+  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9:_-]+",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique name of destination"
     },
     "Expression": {
-      "description": "Destination expression",
-      "type": "string",
-      "markdownDescription": "Destination expression\n\n---\n\nRequired: Yes  \nType: String  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Destination expression"
     },
     "ExpressionType": {
-      "description": "Must be RuleName",
-      "type": "string",
-      "enum": [
-        "RuleName",
-        "MqttTopic"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "RuleName",
+            "MqttTopic"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "Must be RuleName\n\n---\n\nRequired: Yes  \nType: String  \nAllowed Values: RuleName | MqttTopic  \nUpdate requires: No interruption"
+      "description": "Must be RuleName"
     },
     "Description": {
-      "description": "Destination description",
-      "type": "string",
-      "maxLength": 2048,
-      "markdownDescription": "Destination description\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 2048  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Destination description"
     },
     "Tags": {
       "description": "A list of key-value pairs that contain metadata for the destination.",
@@ -58,15 +95,20 @@
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "A list of key-value pairs that contain metadata for the destination.\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     },
     "RoleArn": {
-      "description": "AWS role ARN that grants access",
-      "type": "string",
-      "minLength": 20,
-      "maxLength": 2048,
-      "markdownDescription": "AWS role ARN that grants access\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 20  \nMaximum Length: 2048  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "AWS role ARN that grants access"
     }
   },
   "additionalProperties": false,
@@ -119,13 +161,6 @@
       ]
     }
   },
-  "attributes": {
-    "Arn": {
-      "description": "Destination arn. Returned after successful create.",
-      "type": "string",
-      "markdownDescription": "Destination arn. Returned after successful create.\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::IoTWireless::Destination",
+  "title": "AWSIoTWirelessDestinationProperties",
   "type": "object"
 }

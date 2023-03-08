@@ -1,79 +1,8 @@
 {
-  "taggable": true,
   "typeName": "AWS::EC2::IPAMPool",
-  "readOnlyProperties": [
-    "/properties/IpamPoolId",
-    "/properties/Arn",
-    "/properties/IpamScopeArn",
-    "/properties/IpamScopeType",
-    "/properties/IpamArn",
-    "/properties/PoolDepth",
-    "/properties/State",
-    "/properties/StateMessage"
-  ],
   "description": "Resource Schema of AWS::EC2::IPAMPool Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ipam.git",
-  "createOnlyProperties": [
-    "/properties/IpamScopeId",
-    "/properties/SourceIpamPoolId",
-    "/properties/Locale",
-    "/properties/AddressFamily",
-    "/properties/PubliclyAdvertisable",
-    "/properties/AwsService"
-  ],
-  "primaryIdentifier": [
-    "/properties/IpamPoolId"
-  ],
-  "required": [
-    "IpamScopeId",
-    "AddressFamily"
-  ],
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ipam.git",
-  "propertyTransform": {
-    "/properties/AddressFamily": "$lowercase(AddressFamily)"
-  },
-  "handlers": {
-    "read": {
-      "permissions": [
-        "ec2:DescribeIpamPools",
-        "ec2:GetIpamPoolCidrs"
-      ]
-    },
-    "create": {
-      "permissions": [
-        "ec2:CreateIpamPool",
-        "ec2:DescribeIpamPools",
-        "ec2:ProvisionIpamPoolCidr",
-        "ec2:GetIpamPoolCidrs",
-        "ec2:CreateTags"
-      ]
-    },
-    "update": {
-      "permissions": [
-        "ec2:ModifyIpamPool",
-        "ec2:DescribeIpamPools",
-        "ec2:GetIpamPoolCidrs",
-        "ec2:ProvisionIpamPoolCidr",
-        "ec2:DeprovisionIpamPoolCidr",
-        "ec2:CreateTags",
-        "ec2:DeleteTags"
-      ]
-    },
-    "list": {
-      "permissions": [
-        "ec2:DescribeIpamPools"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "ec2:DeleteIpamPool",
-        "ec2:DescribeIpamPools",
-        "ec2:GetIpamPoolCidrs",
-        "ec2:DeprovisionIpamPoolCidr",
-        "ec2:DeleteTags"
-      ]
-    }
-  },
-  "additionalProperties": false,
+  "taggable": true,
   "definitions": {
     "Cidr": {
       "oneOf": [
@@ -89,7 +18,6 @@
     },
     "ProvisionedCidr": {
       "description": "An address space to be inserted into this pool. All allocations must be made from this address space.",
-      "additionalProperties": false,
       "type": "object",
       "properties": {
         "Cidr": {
@@ -99,31 +27,18 @@
       "required": [
         "Cidr"
       ],
+      "additionalProperties": false,
       "title": "AWSEC2IPAMPoolProvisionedCidrDefinition"
     },
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
-      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "Value": {
-          "oneOf": [
-            {
-              "minLength": 0,
-              "type": "string",
-              "maxLength": 256
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
-        },
         "Key": {
           "oneOf": [
             {
-              "minLength": 1,
               "type": "string",
+              "minLength": 1,
               "maxLength": 128
             },
             {
@@ -131,16 +46,66 @@
             }
           ],
           "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
       "required": [
         "Key",
         "Value"
       ],
+      "additionalProperties": false,
       "title": "AWSEC2IPAMPoolTagDefinition"
     }
   },
   "properties": {
+    "AddressFamily": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The address family of the address space in this pool. Either IPv4 or IPv6."
+    },
+    "AllocationMinNetmaskLength": {
+      "description": "The minimum allowed netmask length for allocations made from this pool.",
+      "type": "integer"
+    },
+    "AllocationDefaultNetmaskLength": {
+      "description": "The default netmask length for allocations made from this pool. This value is used when the netmask length of an allocation isn't specified.",
+      "type": "integer"
+    },
+    "AllocationMaxNetmaskLength": {
+      "description": "The maximum allowed netmask length for allocations made from this pool.",
+      "type": "integer"
+    },
+    "AllocationResourceTags": {
+      "description": "When specified, an allocation will not be allowed unless a resource has a matching set of tags.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "AutoImport": {
+      "description": "Determines what to do if IPAM discovers resources that haven't been assigned an allocation. If set to true, an allocation will be made automatically.",
+      "type": "boolean"
+    },
     "AwsService": {
       "oneOf": [
         {
@@ -155,17 +120,6 @@
       ],
       "description": "Limits which service in Amazon Web Services that the pool can be used in."
     },
-    "Locale": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The region of this pool. If not set, this will default to \"None\" which will disable non-custom allocations. If the locale has been specified for the source pool, this value must match."
-    },
     "Description": {
       "oneOf": [
         {
@@ -175,21 +129,6 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
-    },
-    "SourceIpamPoolId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The Id of this pool's source. If set, all space provisioned in this pool must be free space provisioned in the parent pool."
-    },
-    "AllocationMinNetmaskLength": {
-      "description": "The minimum allowed netmask length for allocations made from this pool.",
-      "type": "integer"
     },
     "IpamScopeId": {
       "oneOf": [
@@ -202,28 +141,7 @@
       ],
       "description": "The Id of the scope this pool is a part of."
     },
-    "ProvisionedCidrs": {
-      "uniqueItems": true,
-      "description": "A list of cidrs representing the address space available for allocation in this pool.",
-      "insertionOrder": false,
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/ProvisionedCidr"
-      }
-    },
-    "AllocationMaxNetmaskLength": {
-      "description": "The maximum allowed netmask length for allocations made from this pool.",
-      "type": "integer"
-    },
-    "AllocationDefaultNetmaskLength": {
-      "description": "The default netmask length for allocations made from this pool. This value is used when the netmask length of an allocation isn't specified.",
-      "type": "integer"
-    },
-    "AutoImport": {
-      "description": "Determines what to do if IPAM discovers resources that haven't been assigned an allocation. If set to true, an allocation will be made automatically.",
-      "type": "boolean"
-    },
-    "AddressFamily": {
+    "Locale": {
       "oneOf": [
         {
           "type": "string"
@@ -232,29 +150,127 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The address family of the address space in this pool. Either IPv4 or IPv6."
+      "description": "The region of this pool. If not set, this will default to \"None\" which will disable non-custom allocations. If the locale has been specified for the source pool, this value must match."
     },
-    "AllocationResourceTags": {
-      "uniqueItems": true,
-      "description": "When specified, an allocation will not be allowed unless a resource has a matching set of tags.",
-      "insertionOrder": false,
+    "ProvisionedCidrs": {
+      "description": "A list of cidrs representing the address space available for allocation in this pool.",
       "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
       "items": {
-        "$ref": "#/definitions/Tag"
+        "$ref": "#/definitions/ProvisionedCidr"
       }
+    },
+    "PublicIpSource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "byoip",
+            "amazon"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The IP address source for pools in the public scope. Only used for provisioning IP address CIDRs to pools in the public scope. Default is `byoip`."
     },
     "PubliclyAdvertisable": {
       "description": "Determines whether or not address space from this pool is publicly advertised. Must be set if and only if the pool is IPv6.",
       "type": "boolean"
     },
+    "SourceIpamPoolId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Id of this pool's source. If set, all space provisioned in this pool must be free space provisioned in the parent pool."
+    },
     "Tags": {
-      "uniqueItems": true,
       "description": "An array of key-value pairs to apply to this resource.",
-      "insertionOrder": false,
       "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    }
+  },
+  "additionalProperties": false,
+  "propertyTransform": {
+    "/properties/AddressFamily": "$lowercase(AddressFamily)"
+  },
+  "required": [
+    "IpamScopeId",
+    "AddressFamily"
+  ],
+  "primaryIdentifier": [
+    "/properties/IpamPoolId"
+  ],
+  "readOnlyProperties": [
+    "/properties/IpamPoolId",
+    "/properties/Arn",
+    "/properties/IpamScopeArn",
+    "/properties/IpamScopeType",
+    "/properties/IpamArn",
+    "/properties/PoolDepth",
+    "/properties/State",
+    "/properties/StateMessage"
+  ],
+  "createOnlyProperties": [
+    "/properties/IpamScopeId",
+    "/properties/SourceIpamPoolId",
+    "/properties/Locale",
+    "/properties/AddressFamily",
+    "/properties/PubliclyAdvertisable",
+    "/properties/PublicIpSource",
+    "/properties/AwsService"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ec2:CreateIpamPool",
+        "ec2:DescribeIpamPools",
+        "ec2:ProvisionIpamPoolCidr",
+        "ec2:GetIpamPoolCidrs",
+        "ec2:CreateTags"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "ec2:DescribeIpamPools",
+        "ec2:GetIpamPoolCidrs"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "ec2:ModifyIpamPool",
+        "ec2:DescribeIpamPools",
+        "ec2:GetIpamPoolCidrs",
+        "ec2:ProvisionIpamPoolCidr",
+        "ec2:DeprovisionIpamPoolCidr",
+        "ec2:CreateTags",
+        "ec2:DeleteTags"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "ec2:DeleteIpamPool",
+        "ec2:DescribeIpamPools",
+        "ec2:GetIpamPoolCidrs",
+        "ec2:DeprovisionIpamPoolCidr",
+        "ec2:DeleteTags"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "ec2:DescribeIpamPools"
+      ]
     }
   },
   "title": "AWSEC2IPAMPoolProperties",

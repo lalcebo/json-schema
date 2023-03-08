@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoTWireless::MulticastGroup",
-  "description": "Create and manage Multicast groups.",
+  "description": "Create and manage Multicast groups.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "taggable": true,
   "definitions": {
@@ -8,47 +8,69 @@
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 0,
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIoTWirelessMulticastGroupTagDefinition"
     },
     "LoRaWAN": {
       "type": "object",
       "properties": {
         "RfRegion": {
-          "description": "Multicast group LoRaWAN RF region",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 64,
-          "markdownDescription": "Multicast group LoRaWAN RF region\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 64  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Multicast group LoRaWAN RF region"
         },
         "DlClass": {
-          "description": "Multicast group LoRaWAN DL Class",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 64,
-          "markdownDescription": "Multicast group LoRaWAN DL Class\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 64  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Multicast group LoRaWAN DL Class"
         },
         "NumberOfDevicesRequested": {
           "description": "Multicast group number of devices requested. Returned after successful read.",
-          "type": "integer",
-          "markdownDescription": "Multicast group number of devices requested. Returned after successful read.\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
+          "type": "integer"
         },
         "NumberOfDevicesInGroup": {
           "description": "Multicast group number of devices in group. Returned after successful read.",
-          "type": "integer",
-          "markdownDescription": "Multicast group number of devices in group. Returned after successful read.\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
+          "type": "integer"
         }
       },
       "additionalProperties": false,
@@ -56,26 +78,37 @@
         "RfRegion",
         "DlClass"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIoTWirelessMulticastGroupLoRaWANDefinition"
     }
   },
   "properties": {
     "Name": {
-      "description": "Name of Multicast group",
-      "type": "string",
-      "maxLength": 256,
-      "markdownDescription": "Name of Multicast group\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of Multicast group"
     },
     "Description": {
-      "description": "Multicast group description",
-      "type": "string",
-      "maxLength": 2048,
-      "markdownDescription": "Multicast group description\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 2048  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Multicast group description"
     },
     "LoRaWAN": {
       "description": "Multicast group LoRaWAN",
-      "$ref": "#/definitions/LoRaWAN",
-      "markdownDescription": "Multicast group LoRaWAN\n\n---\n\nRequired: Yes  \nType:   \nUpdate requires: No interruption"
+      "$ref": "#/definitions/LoRaWAN"
     },
     "Tags": {
       "description": "A list of key-value pairs that contain metadata for the Multicast group.",
@@ -85,20 +118,31 @@
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "A list of key-value pairs that contain metadata for the Multicast group.\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     },
     "AssociateWirelessDevice": {
-      "description": "Wireless device to associate. Only for update request.",
-      "type": "string",
-      "maxLength": 256,
-      "markdownDescription": "Wireless device to associate. Only for update request.\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Wireless device to associate. Only for update request."
     },
     "DisassociateWirelessDevice": {
-      "description": "Wireless device to disassociate. Only for update request.",
-      "type": "string",
-      "maxLength": 256,
-      "markdownDescription": "Wireless device to disassociate. Only for update request.\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Wireless device to disassociate. Only for update request."
     }
   },
   "additionalProperties": false,
@@ -150,24 +194,6 @@
       ]
     }
   },
-  "attributes": {
-    "Arn": {
-      "description": "Multicast group arn. Returned after successful create.",
-      "type": "string",
-      "markdownDescription": "Multicast group arn. Returned after successful create.\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    },
-    "Id": {
-      "description": "Multicast group id. Returned after successful create.",
-      "type": "string",
-      "maxLength": 256,
-      "markdownDescription": "Multicast group id. Returned after successful create.\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
-    },
-    "Status": {
-      "description": "Multicast group status. Returned after successful read.",
-      "type": "string",
-      "markdownDescription": "Multicast group status. Returned after successful read.\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::IoTWireless::MulticastGroup",
+  "title": "AWSIoTWirelessMulticastGroupProperties",
   "type": "object"
 }

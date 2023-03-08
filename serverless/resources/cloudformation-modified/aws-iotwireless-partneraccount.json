@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoTWireless::PartnerAccount",
-  "description": "Create and manage partner account",
+  "description": "Create and manage partner account. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "SidewalkAccountInfo": {
@@ -8,106 +8,159 @@
       "additionalProperties": false,
       "properties": {
         "AppServerPrivateKey": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 4096,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 4096  \nPattern: [a-fA-F0-9]{64}  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{64}",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
         "AppServerPrivateKey"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIoTWirelessPartnerAccountSidewalkAccountInfoDefinition"
     },
     "SidewalkAccountInfoWithFingerprint": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "AmazonId": {
-          "type": "string",
-          "maxLength": 2048,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 2048  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Fingerprint": {
-          "type": "string",
-          "minLength": 64,
-          "maxLength": 64,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 64  \nMaximum Length: 64  \nPattern: [a-fA-F0-9]{64}  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{64}",
+              "minLength": 64,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Arn": {
-          "type": "string",
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIoTWirelessPartnerAccountSidewalkAccountInfoWithFingerprintDefinition"
     },
     "SidewalkUpdateAccount": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "AppServerPrivateKey": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 4096,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 4096  \nPattern: [a-fA-F0-9]{64}  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{64}",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIoTWirelessPartnerAccountSidewalkUpdateAccountDefinition"
     },
     "Tag": {
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 127,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 127  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 255  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIoTWirelessPartnerAccountTagDefinition"
     }
   },
   "properties": {
     "Sidewalk": {
       "description": "The Sidewalk account credentials.",
-      "$ref": "#/definitions/SidewalkAccountInfo",
-      "markdownDescription": "The Sidewalk account credentials.\n\n---\n\nRequired: No  \nType:   \nUpdate requires: No interruption"
+      "$ref": "#/definitions/SidewalkAccountInfo"
     },
     "PartnerAccountId": {
-      "description": "The partner account ID to disassociate from the AWS account",
-      "type": "string",
-      "maxLength": 256,
-      "markdownDescription": "The partner account ID to disassociate from the AWS account\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The partner account ID to disassociate from the AWS account"
     },
     "PartnerType": {
-      "description": "The partner type",
-      "type": "string",
-      "enum": [
-        "Sidewalk"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Sidewalk"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "The partner type\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: Sidewalk  \nUpdate requires: No interruption"
+      "description": "The partner type"
+    },
+    "SidewalkResponse": {
+      "description": "The Sidewalk account credentials.",
+      "$ref": "#/definitions/SidewalkAccountInfoWithFingerprint"
     },
     "AccountLinked": {
       "description": "Whether the partner account is linked to the AWS account.",
-      "type": "boolean",
-      "markdownDescription": "Whether the partner account is linked to the AWS account.\n\n---\n\nRequired: No  \nType: Boolean  \nUpdate requires: No interruption"
+      "type": "boolean"
     },
     "SidewalkUpdate": {
       "description": "The Sidewalk account credentials.",
-      "$ref": "#/definitions/SidewalkUpdateAccount",
-      "markdownDescription": "The Sidewalk account credentials.\n\n---\n\nRequired: No  \nType:   \nUpdate requires: No interruption"
-    },
-    "Fingerprint": {
-      "description": "The fingerprint of the Sidewalk application server private key.",
-      "type": "string",
-      "markdownDescription": "The fingerprint of the Sidewalk application server private key.\n\n---\n\nRequired: No  \nType: String  \nPattern: [a-fA-F0-9]{64}  \nUpdate requires: No interruption"
+      "$ref": "#/definitions/SidewalkUpdateAccount"
     },
     "Tags": {
       "description": "A list of key-value pairs that contain metadata for the destination.",
@@ -117,14 +170,17 @@
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "A list of key-value pairs that contain metadata for the destination.\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     }
   },
   "additionalProperties": false,
   "readOnlyProperties": [
     "/properties/Arn",
-    "/properties/SidewalkResponse"
+    "/properties/Fingerprint"
+  ],
+  "writeOnlyProperties": [
+    "/properties/SidewalkUpdate",
+    "/properties/Sidewalk"
   ],
   "createOnlyProperties": [
     "/properties/PartnerAccountId"
@@ -166,18 +222,6 @@
       ]
     }
   },
-  "attributes": {
-    "SidewalkResponse": {
-      "description": "The Sidewalk account credentials.",
-      "$ref": "#/definitions/SidewalkAccountInfoWithFingerprint",
-      "markdownDescription": "The Sidewalk account credentials.\n\n---\n\nRequired: No  \nType:   \nUpdate requires: No interruption"
-    },
-    "Arn": {
-      "description": "PartnerAccount arn. Returned after successful create.",
-      "type": "string",
-      "markdownDescription": "PartnerAccount arn. Returned after successful create.\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::IoTWireless::PartnerAccount",
+  "title": "AWSIoTWirelessPartnerAccountProperties",
   "type": "object"
 }

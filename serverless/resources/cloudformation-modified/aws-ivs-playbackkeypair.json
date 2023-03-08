@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IVS::PlaybackKeyPair",
-  "description": "Resource Type definition for AWS::IVS::PlaybackKeyPair",
+  "description": "Resource Type definition for AWS::IVS::PlaybackKeyPair. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Tag": {
@@ -8,37 +8,62 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
         "Value",
         "Key"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSIVSPlaybackKeyPairTagDefinition"
     }
   },
   "properties": {
     "Name": {
-      "description": "An arbitrary string (a nickname) assigned to a playback key pair that helps the customer identify that resource. The value does not need to be unique.",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 128,
-      "markdownDescription": "An arbitrary string (a nickname) assigned to a playback key pair that helps the customer identify that resource. The value does not need to be unique.\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 128  \nPattern: ^[a-zA-Z0-9-_]*$  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An arbitrary string (a nickname) assigned to a playback key pair that helps the customer identify that resource. The value does not need to be unique."
     },
     "PublicKeyMaterial": {
-      "description": "The public portion of a customer-generated key pair.",
-      "type": "string",
-      "markdownDescription": "The public portion of a customer-generated key pair.\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The public portion of a customer-generated key pair."
     },
     "Tags": {
       "description": "A list of key-value pairs that contain metadata for the asset model.",
@@ -48,8 +73,7 @@
       "maxItems": 50,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "A list of key-value pairs that contain metadata for the asset model.\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     }
   },
   "additionalProperties": false,
@@ -96,20 +120,6 @@
       ]
     }
   },
-  "attributes": {
-    "Fingerprint": {
-      "description": "Key-pair identifier.",
-      "type": "string",
-      "markdownDescription": "Key-pair identifier.\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    },
-    "Arn": {
-      "description": "Key-pair identifier.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "markdownDescription": "Key-pair identifier.\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: ^arn:aws:ivs:[a-z0-9-]+:[0-9]+:playback-key/[a-zA-Z0-9-]+$  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::IVS::PlaybackKeyPair",
+  "title": "AWSIVSPlaybackKeyPairProperties",
   "type": "object"
 }
