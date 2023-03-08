@@ -1,35 +1,62 @@
 {
   "typeName": "AWS::CE::AnomalySubscription",
-  "description": "AWS Cost Anomaly Detection leverages advanced Machine Learning technologies to identify anomalous spend and root causes, so you can quickly take action. Create subscription to be notified",
+  "description": "AWS Cost Anomaly Detection leverages advanced Machine Learning technologies to identify anomalous spend and root causes, so you can quickly take action. Create subscription to be notified. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:[-a-zA-Z0-9/:_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "Subscription ARN",
-      "type": "string",
-      "markdownDescription": "Subscription ARN\n\n---\n\nRequired: No  \nType: String  \nPattern: ^arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:[-a-zA-Z0-9/:_]+$  \nUpdate requires: No interruption"
+      "title": "AWSCEAnomalySubscriptionArnDefinition"
     },
     "Subscriber": {
       "type": "object",
       "properties": {
         "Address": {
-          "type": "string",
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nPattern: (^[a-zA-Z0-9.!#$%&'*+=?^_‘{|}~-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$)|(^arn:(aws[a-zA-Z-]*):sns:[a-zA-Z0-9-]+:[0-9]{12}:[a-zA-Z0-9_-]+(\\.fifo)?$)  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(^[a-zA-Z0-9.!#$%&'*+=?^_‘{|}~-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$)|(^arn:(aws[a-zA-Z-]*):sns:[a-zA-Z0-9-]+:[0-9]{12}:[a-zA-Z0-9_-]+(\\.fifo)?$)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Status": {
-          "type": "string",
-          "enum": [
-            "CONFIRMED",
-            "DECLINED"
-          ],
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: CONFIRMED | DECLINED  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CONFIRMED",
+                "DECLINED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Type": {
-          "type": "string",
-          "enum": [
-            "EMAIL",
-            "SNS"
-          ],
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nAllowed Values: EMAIL | SNS  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "EMAIL",
+                "SNS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -37,7 +64,7 @@
         "Type"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCEAnomalySubscriptionSubscriberDefinition"
     },
     "ResourceTag": {
       "description": "A key-value pair to associate with a resource.",
@@ -45,34 +72,54 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "type": "string",
-          "description": "The key name for the tag.",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "The key name for the tag.\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: ^(?!aws:).*$  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:).*$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name for the tag."
         },
         "Value": {
-          "type": "string",
-          "description": "The value for the tag.",
-          "minLength": 0,
-          "maxLength": 256,
-          "markdownDescription": "The value for the tag.\n\n---\n\nRequired: Yes  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
         }
       },
       "required": [
         "Key",
         "Value"
       ],
-      "markdownDescription": "A key-value pair to associate with a resource.\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCEAnomalySubscriptionResourceTagDefinition"
     }
   },
   "properties": {
     "SubscriptionName": {
-      "description": "The name of the subscription.",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 1024,
-      "markdownDescription": "The name of the subscription.\n\n---\n\nRequired: Yes  \nType: String  \nMaximum Length: 1024  \nPattern: [\\S\\s]*  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\S\\s]*",
+          "minLength": 0,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the subscription."
     },
     "MonitorArnList": {
       "description": "A list of cost anomaly monitors.",
@@ -80,8 +127,7 @@
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Arn"
-      },
-      "markdownDescription": "A list of cost anomaly monitors.\n\n---\n\nRequired: Yes  \nType: Array  \nUpdate requires: No interruption"
+      }
     },
     "Subscribers": {
       "description": "A list of subscriber",
@@ -89,24 +135,39 @@
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Subscriber"
-      },
-      "markdownDescription": "A list of subscriber\n\n---\n\nRequired: Yes  \nType: Array  \nUpdate requires: No interruption"
+      }
     },
     "Threshold": {
       "description": "The dollar value that triggers a notification if the threshold is exceeded. ",
       "type": "number",
-      "minimum": 0,
-      "markdownDescription": "The dollar value that triggers a notification if the threshold is exceeded. \n\n---\n\nRequired: Yes  \nType: Number  \nUpdate requires: No interruption"
+      "minimum": 0
+    },
+    "ThresholdExpression": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An Expression object in JSON String format used to specify the anomalies that you want to generate alerts for."
     },
     "Frequency": {
-      "description": "The frequency at which anomaly reports are sent over email. ",
-      "type": "string",
-      "enum": [
-        "DAILY",
-        "IMMEDIATE",
-        "WEEKLY"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DAILY",
+            "IMMEDIATE",
+            "WEEKLY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "The frequency at which anomaly reports are sent over email. \n\n---\n\nRequired: Yes  \nType: String  \nAllowed Values: DAILY | IMMEDIATE | WEEKLY  \nUpdate requires: No interruption"
+      "description": "The frequency at which anomaly reports are sent over email. "
     },
     "ResourceTags": {
       "type": "array",
@@ -116,15 +177,13 @@
       },
       "minItems": 0,
       "maxItems": 200,
-      "insertionOrder": false,
-      "markdownDescription": "Tags to assign to subscription.\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: Replacement"
+      "insertionOrder": false
     }
   },
   "additionalProperties": false,
   "required": [
     "MonitorArnList",
     "Subscribers",
-    "Threshold",
     "Frequency",
     "SubscriptionName"
   ],
@@ -135,6 +194,9 @@
     "/properties/SubscriptionArn",
     "/properties/AccountId",
     "/properties/Subscribers/*/Status"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ResourceTags"
   ],
   "primaryIdentifier": [
     "/properties/SubscriptionArn"
@@ -167,18 +229,6 @@
       ]
     }
   },
-  "attributes": {
-    "SubscriptionArn": {
-      "$ref": "#/definitions/Arn"
-    },
-    "AccountId": {
-      "description": "The accountId",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 1024,
-      "markdownDescription": "The accountId\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 1024  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::CE::AnomalySubscription",
+  "title": "AWSCEAnomalySubscriptionProperties",
   "type": "object"
 }
