@@ -1,60 +1,88 @@
 {
   "typeName": "AWS::Connect::TaskTemplate",
-  "description": "Resource Type definition for AWS::Connect::TaskTemplate.",
+  "description": "Resource Type definition for AWS::Connect::TaskTemplate.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "definitions": {
     "Status": {
-      "description": "The status of the task template",
-      "type": "string",
-      "enum": [
-        "ACTIVE",
-        "INACTIVE"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "The status of the task template\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: ACTIVE | INACTIVE  \nUpdate requires: No interruption"
+      "description": "The status of the task template",
+      "title": "AWSConnectTaskTemplateStatusDefinition"
     },
     "FieldType": {
-      "description": "The type of the task template's field",
-      "type": "string",
-      "enum": [
-        "NAME",
-        "DESCRIPTION",
-        "SCHEDULED_TIME",
-        "QUICK_CONNECT",
-        "URL",
-        "NUMBER",
-        "TEXT",
-        "TEXT_AREA",
-        "DATE_TIME",
-        "BOOLEAN",
-        "SINGLE_SELECT",
-        "EMAIL"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NAME",
+            "DESCRIPTION",
+            "SCHEDULED_TIME",
+            "QUICK_CONNECT",
+            "URL",
+            "NUMBER",
+            "TEXT",
+            "TEXT_AREA",
+            "DATE_TIME",
+            "BOOLEAN",
+            "SINGLE_SELECT",
+            "EMAIL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "The type of the task template's field\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: NAME | DESCRIPTION | SCHEDULED_TIME | QUICK_CONNECT | URL | NUMBER | TEXT | TEXT_AREA | DATE_TIME | BOOLEAN | SINGLE_SELECT | EMAIL  \nUpdate requires: No interruption"
+      "description": "The type of the task template's field",
+      "title": "AWSConnectTaskTemplateFieldTypeDefinition"
     },
     "FieldIdentifier": {
       "description": "the identifier (name) for the task template field",
       "type": "object",
       "properties": {
         "Name": {
-          "description": "The name of the task template field",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 100,
-          "markdownDescription": "The name of the task template field\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 100  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the task template field"
         }
       },
       "additionalProperties": false,
       "required": [
         "Name"
       ],
-      "markdownDescription": "the identifier (name) for the task template field\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateFieldIdentifierDefinition"
     },
     "FieldOption": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9_.,\\s-]*[A-Za-z0-9_.,-])?$",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "Single select field identifier",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 100,
-      "markdownDescription": "Single select field identifier\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 100  \nPattern: ^[A-Za-z0-9](?:[A-Za-z0-9_.,\\s-]*[A-Za-z0-9_.,-])?$  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateFieldOptionDefinition"
     },
     "Field": {
       "description": "A task template field object.",
@@ -64,11 +92,17 @@
           "$ref": "#/definitions/FieldIdentifier"
         },
         "Description": {
-          "description": "The description of the task template's field",
-          "type": "string",
-          "minLength": 0,
-          "maxLength": 255,
-          "markdownDescription": "The description of the task template's field\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 255  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The description of the task template's field"
         },
         "Type": {
           "$ref": "#/definitions/FieldType"
@@ -79,8 +113,7 @@
           "maxItems": 50,
           "items": {
             "$ref": "#/definitions/FieldOption"
-          },
-          "markdownDescription": "list of field options to be used with single select\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+          }
         }
       },
       "additionalProperties": false,
@@ -88,7 +121,7 @@
         "Id",
         "Type"
       ],
-      "markdownDescription": "A task template field object.\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateFieldDefinition"
     },
     "InvisibleFieldInfo": {
       "description": "Invisible field info",
@@ -102,7 +135,7 @@
       "required": [
         "Id"
       ],
-      "markdownDescription": "Invisible field info\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateInvisibleFieldInfoDefinition"
     },
     "InvisibleTaskTemplateFields": {
       "description": "The list of the task template's invisible fields",
@@ -111,7 +144,7 @@
       "items": {
         "$ref": "#/definitions/InvisibleFieldInfo"
       },
-      "markdownDescription": "The list of the task template's invisible fields\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateInvisibleTaskTemplateFieldsDefinition"
     },
     "ReadOnlyFieldInfo": {
       "description": "ReadOnly field info",
@@ -125,7 +158,7 @@
       "required": [
         "Id"
       ],
-      "markdownDescription": "ReadOnly field info\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateReadOnlyFieldInfoDefinition"
     },
     "ReadOnlyTaskTemplateFields": {
       "description": "The list of the task template's read only fields",
@@ -134,7 +167,7 @@
       "items": {
         "$ref": "#/definitions/ReadOnlyFieldInfo"
       },
-      "markdownDescription": "The list of the task template's read only fields\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateReadOnlyTaskTemplateFieldsDefinition"
     },
     "RequiredFieldInfo": {
       "description": "Required field info",
@@ -148,7 +181,7 @@
       "required": [
         "Id"
       ],
-      "markdownDescription": "Required field info\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateRequiredFieldInfoDefinition"
     },
     "RequiredTaskTemplateFields": {
       "description": "The list of the task template's required fields",
@@ -157,14 +190,21 @@
       "items": {
         "$ref": "#/definitions/RequiredFieldInfo"
       },
-      "markdownDescription": "The list of the task template's required fields\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateRequiredTaskTemplateFieldsDefinition"
     },
     "FieldValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "the default value for the task template's field",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 4096,
-      "markdownDescription": "the default value for the task template's field\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 4096  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateFieldValueDefinition"
     },
     "DefaultFieldValue": {
       "description": "the default value for the task template's field",
@@ -182,12 +222,20 @@
         "Id",
         "DefaultValue"
       ],
-      "markdownDescription": "the default value for the task template's field\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateDefaultFieldValueDefinition"
     },
     "ClientToken": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "the client token string in uuid format",
-      "type": "string",
-      "markdownDescription": "the client token string in uuid format\n\n---\n\nRequired: No  \nType: String  \nPattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateClientTokenDefinition"
     },
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
@@ -195,50 +243,89 @@
       "additionalProperties": false,
       "properties": {
         "Key": {
-          "type": "string",
-          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. ",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. \n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: ^(?!aws:)[a-zA-Z+-=._:/]+$  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
         },
         "Value": {
-          "type": "string",
-          "description": "The value for the tag. . You can specify a value that is maximum of 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
-          "maxLength": 256,
-          "markdownDescription": "The value for the tag. . You can specify a value that is maximum of 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.\n\n---\n\nRequired: Yes  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. . You can specify a value that is maximum of 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
       "required": [
         "Key",
         "Value"
       ],
-      "markdownDescription": "A key-value pair to associate with a resource.\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSConnectTaskTemplateTagDefinition"
     }
   },
   "properties": {
     "InstanceArn": {
-      "description": "The identifier (arn) of the instance.",
-      "type": "string",
-      "markdownDescription": "The identifier (arn) of the instance.\n\n---\n\nRequired: Yes  \nType: String  \nPattern: ^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier (arn) of the instance."
     },
     "Name": {
-      "description": "The name of the task template.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 100,
-      "markdownDescription": "The name of the task template.\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 100  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the task template."
     },
     "Description": {
-      "description": "The description of the task template.",
-      "type": "string",
-      "minLength": 0,
-      "maxLength": 255,
-      "markdownDescription": "The description of the task template.\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 255  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the task template."
     },
     "ContactFlowArn": {
-      "description": "The identifier of the contact flow.",
-      "type": "string",
-      "markdownDescription": "The identifier of the contact flow.\n\n---\n\nRequired: No  \nType: String  \nPattern: ^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/contact-flow/[-a-zA-Z0-9]*$  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/contact-flow/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the contact flow."
     },
     "Constraints": {
       "description": "The constraints for the task template",
@@ -254,8 +341,7 @@
         "ReadOnlyFields": {
           "$ref": "#/definitions/ReadOnlyTaskTemplateFields"
         }
-      },
-      "markdownDescription": "The constraints for the task template\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      }
     },
     "Defaults": {
       "description": "",
@@ -263,8 +349,7 @@
       "maxItems": 50,
       "items": {
         "$ref": "#/definitions/DefaultFieldValue"
-      },
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     },
     "Fields": {
       "description": "The list of task template's fields",
@@ -272,8 +357,7 @@
       "maxItems": 50,
       "items": {
         "$ref": "#/definitions/Field"
-      },
-      "markdownDescription": "The list of task template's fields\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     },
     "Status": {
       "$ref": "#/definitions/Status"
@@ -289,8 +373,7 @@
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "One or more tags.\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     }
   },
   "required": [
@@ -329,13 +412,6 @@
   "readOnlyProperties": [
     "/properties/Arn"
   ],
-  "attributes": {
-    "Arn": {
-      "description": "The identifier (arn) of the task template.",
-      "type": "string",
-      "markdownDescription": "The identifier (arn) of the task template.\n\n---\n\nRequired: No  \nType: String  \nPattern: ^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/task-template/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::Connect::TaskTemplate",
+  "title": "AWSConnectTaskTemplateProperties",
   "type": "object"
 }
