@@ -1,32 +1,8 @@
 {
   "typeName": "AWS::ApiGateway::VpcLink",
-  "description": "Resource Type definition for AWS::ApiGateway::VpcLink. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
+  "description": "Schema for AWS ApiGateway VpcLink. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "properties": {
-    "Description": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "TargetArns": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "type": "string"
-      }
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    },
     "Name": {
       "oneOf": [
         {
@@ -35,7 +11,37 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "A name for the VPC link."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the VPC link."
+    },
+    "Tags": {
+      "description": "An array of arbitrary tags (key-value pairs) to associate with the stage.",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "TargetArns": {
+      "description": "The ARN of network load balancer of the VPC targeted by the VPC link. The network load balancer must be owned by the same AWS account of the API owner.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "type": "string"
+      }
     }
   },
   "definitions": {
@@ -72,17 +78,77 @@
     }
   },
   "required": [
-    "TargetArns",
-    "Name"
+    "Name",
+    "TargetArns"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags"
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "apigateway:POST",
+        "apigateway:PUT",
+        "ec2:CreateVpcEndpointServiceConfiguration",
+        "ec2:DeleteVpcEndpointServiceConfigurations",
+        "ec2:DescribeVpcEndpointServiceConfigurations",
+        "ec2:ModifyVpcEndpointServicePermissions"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "apigateway:PATCH",
+        "apigateway:GET",
+        "apigateway:PUT",
+        "ec2:CreateVpcEndpointServiceConfiguration",
+        "ec2:DeleteVpcEndpointServiceConfigurations",
+        "ec2:DescribeVpcEndpointServiceConfigurations",
+        "ec2:ModifyVpcEndpointServicePermissions"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "apigateway:GET",
+        "ec2:CreateVpcEndpointServiceConfiguration",
+        "ec2:DeleteVpcEndpointServiceConfigurations",
+        "ec2:DescribeVpcEndpointServiceConfigurations",
+        "ec2:ModifyVpcEndpointServicePermissions"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "apigateway:GET",
+        "ec2:CreateVpcEndpointServiceConfiguration",
+        "ec2:DeleteVpcEndpointServiceConfigurations",
+        "ec2:DescribeVpcEndpointServiceConfigurations",
+        "ec2:ModifyVpcEndpointServicePermissions"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "apigateway:GET",
+        "apigateway:DELETE",
+        "apigateway:PUT",
+        "ec2:CreateVpcEndpointServiceConfiguration",
+        "ec2:DeleteVpcEndpointServiceConfigurations",
+        "ec2:DescribeVpcEndpointServiceConfigurations",
+        "ec2:ModifyVpcEndpointServicePermissions"
+      ]
+    }
+  },
   "createOnlyProperties": [
     "/properties/TargetArns"
   ],
+  "additionalProperties": false,
   "primaryIdentifier": [
-    "/properties/Id"
+    "/properties/VpcLinkId"
   ],
   "readOnlyProperties": [
-    "/properties/Id"
+    "/properties/VpcLinkId"
   ],
   "title": "AWSApiGatewayVpcLinkProperties",
   "type": "object"
