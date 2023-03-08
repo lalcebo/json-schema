@@ -1,22 +1,34 @@
 {
   "typeName": "AWS::BillingConductor::CustomLineItem",
-  "description": "A custom line item is an one time charge that is applied to a specific billing group's bill.",
+  "description": "A custom line item is an one time charge that is applied to a specific billing group's bill.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
   "definitions": {
     "Tag": {
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
@@ -24,15 +36,22 @@
         "Key",
         "Value"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSBillingConductorCustomLineItemTagDefinition"
     },
     "Type": {
-      "type": "string",
-      "enum": [
-        "FEE",
-        "CREDIT"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "FEE",
+            "CREDIT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: FEE | CREDIT  \nUpdate requires: No interruption"
+      "title": "AWSBillingConductorCustomLineItemTypeDefinition"
     },
     "CustomLineItemPercentageChargeDetails": {
       "type": "object",
@@ -44,21 +63,19 @@
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nPattern: (arn:aws(-cn)?:billingconductor::[0-9]{12}:(customlineitem|billinggroup)/)?[a-zA-Z0-9]{10,12}  \nUpdate requires: No interruption"
-          },
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+            "pattern": "(arn:aws(-cn)?:billingconductor::[0-9]{12}:(customlineitem|billinggroup)/)?[a-zA-Z0-9]{10,12}"
+          }
         },
         "PercentageValue": {
           "type": "number",
           "minimum": 0,
-          "maximum": 10000,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: Number  \nUpdate requires: No interruption"
+          "maximum": 10000
         }
       },
       "required": [
         "PercentageValue"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSBillingConductorCustomLineItemCustomLineItemPercentageChargeDetailsDefinition"
     },
     "CustomLineItemFlatChargeDetails": {
       "type": "object",
@@ -67,14 +84,13 @@
         "ChargeValue": {
           "type": "number",
           "minimum": 0,
-          "maximum": 1000000,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: Number  \nUpdate requires: No interruption"
+          "maximum": 1000000
         }
       },
       "required": [
         "ChargeValue"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSBillingConductorCustomLineItemCustomLineItemFlatChargeDetailsDefinition"
     },
     "CustomLineItemChargeDetails": {
       "type": "object",
@@ -93,15 +109,31 @@
       "required": [
         "Type"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: Replacement"
+      "title": "AWSBillingConductorCustomLineItemCustomLineItemChargeDetailsDefinition"
     },
     "InclusiveStartBillingPeriod": {
-      "type": "string",
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nPattern: \\d{4}-(0?[1-9]|1[012])  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\d{4}-(0?[1-9]|1[012])"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBillingConductorCustomLineItemInclusiveStartBillingPeriodDefinition"
     },
     "ExclusiveEndBillingPeriod": {
-      "type": "string",
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nPattern: \\d{4}-(0?[1-9]|1[012])  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\d{4}-(0?[1-9]|1[012])"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBillingConductorCustomLineItemExclusiveEndBillingPeriodDefinition"
     },
     "BillingPeriodRange": {
       "type": "object",
@@ -114,28 +146,48 @@
           "$ref": "#/definitions/ExclusiveEndBillingPeriod"
         }
       },
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: Replacement"
+      "title": "AWSBillingConductorCustomLineItemBillingPeriodRangeDefinition"
     }
   },
   "properties": {
     "Name": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: [a-zA-Z0-9_\\+=\\.\\-@]+  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "[a-zA-Z0-9_\\+=\\.\\-@]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Description": {
-      "type": "string",
-      "maxLength": 255,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 255  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "CustomLineItemChargeDetails": {
       "$ref": "#/definitions/CustomLineItemChargeDetails"
     },
     "BillingGroupArn": {
-      "description": "Billing Group ARN",
-      "type": "string",
-      "markdownDescription": "Billing Group ARN\n\n---\n\nRequired: Yes  \nType: String  \nPattern: arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/?[0-9]{12}  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/?[0-9]{12}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Billing Group ARN"
     },
     "BillingPeriodRange": {
       "$ref": "#/definitions/BillingPeriodRange"
@@ -146,8 +198,7 @@
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     }
   },
   "additionalProperties": false,
@@ -220,42 +271,6 @@
       ]
     }
   },
-  "attributes": {
-    "Arn": {
-      "description": "ARN",
-      "type": "string",
-      "markdownDescription": "ARN\n\n---\n\nRequired: No  \nType: String  \nPattern: (arn:aws(-cn)?:billingconductor::[0-9]{12}:customlineitem/)?[a-zA-Z0-9]{10}  \nUpdate requires: No interruption"
-    },
-    "CreationTime": {
-      "description": "Creation timestamp in UNIX epoch time format",
-      "type": "integer",
-      "markdownDescription": "Creation timestamp in UNIX epoch time format\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
-    },
-    "LastModifiedTime": {
-      "description": "Latest modified timestamp in UNIX epoch time format",
-      "type": "integer",
-      "markdownDescription": "Latest modified timestamp in UNIX epoch time format\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
-    },
-    "AssociationSize": {
-      "description": "Number of source values associated to this custom line item",
-      "type": "integer",
-      "markdownDescription": "Number of source values associated to this custom line item\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
-    },
-    "ProductCode": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 29,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 29  \nUpdate requires: No interruption"
-    },
-    "CurrencyCode": {
-      "type": "string",
-      "enum": [
-        "USD",
-        "CNY"
-      ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: USD | CNY  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::BillingConductor::CustomLineItem",
+  "title": "AWSBillingConductorCustomLineItemProperties",
   "type": "object"
 }

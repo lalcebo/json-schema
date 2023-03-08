@@ -1,22 +1,34 @@
 {
   "typeName": "AWS::BillingConductor::PricingRule",
-  "description": "A markup/discount that is defined for a specific set of services that can later be associated with a pricing plan.",
+  "description": "A markup/discount that is defined for a specific set of services that can later be associated with a pricing plan.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
   "definitions": {
     "Tag": {
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
@@ -24,7 +36,7 @@
         "Key",
         "Value"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSBillingConductorPricingRuleTagDefinition"
     },
     "FreeTier": {
       "description": "The possible customizable free tier configurations.",
@@ -32,72 +44,109 @@
       "additionalProperties": false,
       "properties": {
         "Activated": {
-          "type": "boolean",
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: Boolean  \nUpdate requires: No interruption"
+          "type": "boolean"
         }
       },
       "required": [
         "Activated"
       ],
-      "markdownDescription": "The possible customizable free tier configurations.\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSBillingConductorPricingRuleFreeTierDefinition"
     }
   },
   "properties": {
     "Name": {
-      "description": "Pricing rule name",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "markdownDescription": "Pricing rule name\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: [a-zA-Z0-9_\\+=\\.\\-@]+  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "[a-zA-Z0-9_\\+=\\.\\-@]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Pricing rule name"
     },
     "Description": {
-      "description": "Pricing rule description",
-      "type": "string",
-      "maxLength": 1024,
-      "markdownDescription": "Pricing rule description\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 1024  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Pricing rule description"
     },
     "Scope": {
-      "description": "A term used to categorize the granularity of a Pricing Rule.",
-      "type": "string",
-      "enum": [
-        "GLOBAL",
-        "SERVICE",
-        "BILLING_ENTITY"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GLOBAL",
+            "SERVICE",
+            "BILLING_ENTITY",
+            "SKU"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "A term used to categorize the granularity of a Pricing Rule.\n\n---\n\nRequired: Yes  \nType: String  \nAllowed Values: GLOBAL | SERVICE | BILLING_ENTITY  \nUpdate requires: Replacement"
+      "description": "A term used to categorize the granularity of a Pricing Rule."
     },
     "Type": {
-      "description": "One of MARKUP, DISCOUNT or TIERING that describes the behaviour of the pricing rule.",
-      "type": "string",
-      "enum": [
-        "MARKUP",
-        "DISCOUNT",
-        "TIERING"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MARKUP",
+            "DISCOUNT",
+            "TIERING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "One of MARKUP, DISCOUNT or TIERING that describes the behaviour of the pricing rule.\n\n---\n\nRequired: Yes  \nType: String  \nAllowed Values: MARKUP | DISCOUNT | TIERING  \nUpdate requires: No interruption"
+      "description": "One of MARKUP, DISCOUNT or TIERING that describes the behaviour of the pricing rule."
     },
     "ModifierPercentage": {
       "description": "Pricing rule modifier percentage",
       "type": "number",
-      "minimum": 0,
-      "markdownDescription": "Pricing rule modifier percentage\n\n---\n\nRequired: No  \nType: Number  \nUpdate requires: No interruption"
+      "minimum": 0
     },
     "Service": {
-      "description": "The service which a pricing rule is applied on",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 128,
-      "markdownDescription": "The service which a pricing rule is applied on\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: [a-zA-Z0-9\\.\\-]+  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "[a-zA-Z0-9\\.\\-]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The service which a pricing rule is applied on"
     },
     "BillingEntity": {
-      "description": "The seller of services provided by AWS, their affiliates, or third-party providers selling services via AWS Marketplaces. Supported billing entities are AWS, AWS Marketplace, and AISPL.",
-      "type": "string",
-      "enum": [
-        "AWS",
-        "AWS Marketplace",
-        "AISPL"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS",
+            "AWS Marketplace",
+            "AISPL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "The seller of services provided by AWS, their affiliates, or third-party providers selling services via AWS Marketplaces. Supported billing entities are AWS, AWS Marketplace, and AISPL.\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: AWS | AWS Marketplace | AISPL  \nUpdate requires: Replacement"
+      "description": "The seller of services provided by AWS, their affiliates, or third-party providers selling services via AWS Marketplaces. Supported billing entities are AWS, AWS Marketplace, and AISPL."
     },
     "Tiering": {
       "description": "The set of tiering configurations for the pricing rule.",
@@ -107,8 +156,35 @@
         "FreeTier": {
           "$ref": "#/definitions/FreeTier"
         }
-      },
-      "markdownDescription": "The set of tiering configurations for the pricing rule.\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      }
+    },
+    "UsageType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^\\S+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The UsageType which a SKU pricing rule is modifying"
+    },
+    "Operation": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^\\S+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Operation which a SKU pricing rule is modifying"
     },
     "Tags": {
       "type": "array",
@@ -116,8 +192,7 @@
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
-      },
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     }
   },
   "additionalProperties": false,
@@ -136,7 +211,9 @@
   "createOnlyProperties": [
     "/properties/Scope",
     "/properties/Service",
-    "/properties/BillingEntity"
+    "/properties/BillingEntity",
+    "/properties/UsageType",
+    "/properties/Operation"
   ],
   "readOnlyProperties": [
     "/properties/Arn",
@@ -180,29 +257,6 @@
       ]
     }
   },
-  "attributes": {
-    "Arn": {
-      "description": "Pricing rule ARN",
-      "type": "string",
-      "markdownDescription": "Pricing rule ARN\n\n---\n\nRequired: No  \nType: String  \nPattern: arn:aws(-cn)?:billingconductor::[0-9]{12}:pricingrule/[a-zA-Z0-9]{10}  \nUpdate requires: No interruption"
-    },
-    "AssociatedPricingPlanCount": {
-      "description": "The number of pricing plans associated with pricing rule",
-      "type": "integer",
-      "minimum": 0,
-      "markdownDescription": "The number of pricing plans associated with pricing rule\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
-    },
-    "CreationTime": {
-      "description": "Creation timestamp in UNIX epoch time format",
-      "type": "integer",
-      "markdownDescription": "Creation timestamp in UNIX epoch time format\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
-    },
-    "LastModifiedTime": {
-      "description": "Latest modified timestamp in UNIX epoch time format",
-      "type": "integer",
-      "markdownDescription": "Latest modified timestamp in UNIX epoch time format\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::BillingConductor::PricingRule",
+  "title": "AWSBillingConductorPricingRuleProperties",
   "type": "object"
 }
