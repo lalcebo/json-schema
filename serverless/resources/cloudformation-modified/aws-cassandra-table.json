@@ -1,15 +1,97 @@
 {
+  "handlers": {
+    "read": {
+      "permissions": [
+        "cassandra:Select"
+      ]
+    },
+    "create": {
+      "permissions": [
+        "cassandra:Create",
+        "cassandra:Select",
+        "cassandra:TagResource",
+        "kms:CreateGrant",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "cassandra:Alter",
+        "cassandra:Select",
+        "cassandra:TagResource",
+        "cassandra:UntagResource",
+        "kms:CreateGrant",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "cassandra:Select"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "cassandra:Drop",
+        "cassandra:Select"
+      ]
+    }
+  },
   "typeName": "AWS::Cassandra::Table",
   "description": "Resource schema for AWS::Cassandra::Table. Source:- No source definition found, add manually please",
+  "createOnlyProperties": [
+    "/properties/KeyspaceName",
+    "/properties/TableName",
+    "/properties/PartitionKeyColumns",
+    "/properties/ClusteringKeyColumns"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/KeyspaceName",
+    "/properties/TableName"
+  ],
   "definitions": {
+    "EncryptionType": {
+      "oneOf": [
+        {
+          "default": "AWS_OWNED_KMS_KEY",
+          "type": "string",
+          "enum": [
+            "AWS_OWNED_KMS_KEY",
+            "CUSTOMER_MANAGED_KMS_KEY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Server-side encryption type",
+      "title": "AWSCassandraTableEncryptionTypeDefinition"
+    },
+    "KmsKeyIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS KMS customer master key (CMK) that should be used for the AWS KMS encryption. To specify a CMK, use its key ID, Amazon Resource Name (ARN), alias name, or alias ARN. ",
+      "title": "AWSCassandraTableKmsKeyIdentifierDefinition"
+    },
     "Column": {
+      "additionalProperties": false,
       "type": "object",
       "properties": {
         "ColumnName": {
           "oneOf": [
             {
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -31,66 +113,45 @@
         "ColumnName",
         "ColumnType"
       ],
-      "additionalProperties": false,
       "title": "AWSCassandraTableColumnDefinition"
     },
     "ClusteringKeyColumn": {
+      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "Column": {
-          "$ref": "#/definitions/Column"
-        },
         "OrderBy": {
           "oneOf": [
             {
+              "default": "ASC",
               "type": "string",
               "enum": [
                 "ASC",
                 "DESC"
-              ],
-              "default": "ASC"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "Column": {
+          "$ref": "#/definitions/Column"
         }
       },
-      "additionalProperties": false,
       "required": [
         "Column"
       ],
       "title": "AWSCassandraTableClusteringKeyColumnDefinition"
     },
-    "ProvisionedThroughput": {
-      "description": "Throughput for the specified table, which consists of values for ReadCapacityUnits and WriteCapacityUnits",
-      "type": "object",
-      "properties": {
-        "ReadCapacityUnits": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "WriteCapacityUnits": {
-          "type": "integer",
-          "minimum": 1
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "ReadCapacityUnits",
-        "WriteCapacityUnits"
-      ],
-      "title": "AWSCassandraTableProvisionedThroughputDefinition"
-    },
     "Mode": {
       "oneOf": [
         {
+          "default": "ON_DEMAND",
           "type": "string",
           "enum": [
             "PROVISIONED",
             "ON_DEMAND"
-          ],
-          "default": "ON_DEMAND"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -100,6 +161,7 @@
       "title": "AWSCassandraTableModeDefinition"
     },
     "BillingMode": {
+      "additionalProperties": false,
       "type": "object",
       "properties": {
         "Mode": {
@@ -112,32 +174,51 @@
       "required": [
         "Mode"
       ],
-      "additionalProperties": false,
       "title": "AWSCassandraTableBillingModeDefinition"
+    },
+    "ProvisionedThroughput": {
+      "description": "Throughput for the specified table, which consists of values for ReadCapacityUnits and WriteCapacityUnits",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "WriteCapacityUnits": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ReadCapacityUnits": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "ReadCapacityUnits",
+        "WriteCapacityUnits"
+      ],
+      "title": "AWSCassandraTableProvisionedThroughputDefinition"
     },
     "Tag": {
       "description": "A key-value pair to apply to the resource",
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "Key": {
+        "Value": {
           "oneOf": [
             {
-              "type": "string",
               "minLength": 1,
-              "maxLength": 128
+              "type": "string",
+              "maxLength": 256
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
         },
-        "Value": {
+        "Key": {
           "oneOf": [
             {
-              "type": "string",
               "minLength": 1,
-              "maxLength": 256
+              "type": "string",
+              "maxLength": 128
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -153,6 +234,7 @@
     },
     "EncryptionSpecification": {
       "description": "Represents the settings used to enable server-side encryption",
+      "additionalProperties": false,
       "type": "object",
       "properties": {
         "EncryptionType": {
@@ -165,57 +247,15 @@
       "required": [
         "EncryptionType"
       ],
-      "additionalProperties": false,
       "title": "AWSCassandraTableEncryptionSpecificationDefinition"
-    },
-    "EncryptionType": {
-      "oneOf": [
-        {
-          "type": "string",
-          "enum": [
-            "AWS_OWNED_KMS_KEY",
-            "CUSTOMER_MANAGED_KMS_KEY"
-          ],
-          "default": "AWS_OWNED_KMS_KEY"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "Server-side encryption type",
-      "title": "AWSCassandraTableEncryptionTypeDefinition"
-    },
-    "KmsKeyIdentifier": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The AWS KMS customer master key (CMK) that should be used for the AWS KMS encryption. To specify a CMK, use its key ID, Amazon Resource Name (ARN), alias name, or alias ARN. ",
-      "title": "AWSCassandraTableKmsKeyIdentifierDefinition"
     }
   },
   "properties": {
-    "KeyspaceName": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "Name for Cassandra keyspace"
-    },
     "TableName": {
       "oneOf": [
         {
-          "type": "string",
-          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -223,116 +263,76 @@
       ],
       "description": "Name for Cassandra table"
     },
-    "RegularColumns": {
-      "description": "Non-key columns of the table",
-      "type": "array",
-      "uniqueItems": true,
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/Column"
-      }
-    },
-    "PartitionKeyColumns": {
-      "description": "Partition key columns of the table",
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "insertionOrder": true,
-      "items": {
-        "$ref": "#/definitions/Column"
-      }
-    },
-    "ClusteringKeyColumns": {
-      "description": "Clustering key columns of the table",
-      "type": "array",
-      "uniqueItems": true,
-      "insertionOrder": true,
-      "items": {
-        "$ref": "#/definitions/ClusteringKeyColumn"
-      }
-    },
-    "BillingMode": {
-      "$ref": "#/definitions/BillingMode"
-    },
     "PointInTimeRecoveryEnabled": {
       "description": "Indicates whether point in time recovery is enabled (true) or disabled (false) on the table",
       "type": "boolean"
     },
-    "Tags": {
-      "description": "An array of key-value pairs to apply to this resource",
-      "type": "array",
+    "ClusteringKeyColumns": {
       "uniqueItems": true,
+      "description": "Clustering key columns of the table",
+      "insertionOrder": true,
+      "type": "array",
       "items": {
-        "$ref": "#/definitions/Tag"
-      },
-      "minItems": 0,
-      "maxItems": 50
+        "$ref": "#/definitions/ClusteringKeyColumn"
+      }
+    },
+    "PartitionKeyColumns": {
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Partition key columns of the table",
+      "insertionOrder": true,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Column"
+      }
+    },
+    "BillingMode": {
+      "$ref": "#/definitions/BillingMode"
     },
     "DefaultTimeToLive": {
       "description": "Default TTL (Time To Live) in seconds, where zero is disabled. If the value is greater than zero, TTL is enabled for the entire table and an expiration timestamp is added to each column.",
       "type": "integer",
       "minimum": 0
     },
+    "KeyspaceName": {
+      "oneOf": [
+        {
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name for Cassandra keyspace"
+    },
     "EncryptionSpecification": {
       "$ref": "#/definitions/EncryptionSpecification"
+    },
+    "RegularColumns": {
+      "uniqueItems": true,
+      "description": "Non-key columns of the table",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Column"
+      }
+    },
+    "Tags": {
+      "minItems": 0,
+      "maxItems": 50,
+      "uniqueItems": true,
+      "description": "An array of key-value pairs to apply to this resource",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
-  "additionalProperties": false,
   "required": [
     "KeyspaceName",
     "PartitionKeyColumns"
   ],
-  "createOnlyProperties": [
-    "/properties/KeyspaceName",
-    "/properties/TableName",
-    "/properties/PartitionKeyColumns",
-    "/properties/ClusteringKeyColumns"
-  ],
-  "primaryIdentifier": [
-    "/properties/KeyspaceName",
-    "/properties/TableName"
-  ],
-  "handlers": {
-    "create": {
-      "permissions": [
-        "cassandra:Create",
-        "cassandra:Select",
-        "cassandra:TagResource",
-        "kms:CreateGrant",
-        "kms:DescribeKey",
-        "kms:Encrypt",
-        "kms:Decrypt"
-      ]
-    },
-    "read": {
-      "permissions": [
-        "cassandra:Select"
-      ]
-    },
-    "update": {
-      "permissions": [
-        "cassandra:Alter",
-        "cassandra:Select",
-        "cassandra:TagResource",
-        "cassandra:UntagResource",
-        "kms:CreateGrant",
-        "kms:DescribeKey",
-        "kms:Encrypt",
-        "kms:Decrypt"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "cassandra:Drop",
-        "cassandra:Select"
-      ]
-    },
-    "list": {
-      "permissions": [
-        "cassandra:Select"
-      ]
-    }
-  },
   "title": "AWSCassandraTableProperties",
   "type": "object"
 }
