@@ -1,22 +1,35 @@
 {
   "typeName": "AWS::CustomerProfiles::Integration",
-  "description": "The resource schema for creating an Amazon Connect Customer Profiles Integration.",
+  "description": "The resource schema for creating an Amazon Connect Customer Profiles Integration.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles.git",
   "definitions": {
     "Tag": {
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 128  \nPattern: ^(?!aws:)[a-zA-Z+-=._:/]+$  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 0,
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
@@ -24,13 +37,21 @@
         "Key",
         "Value"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationTagDefinition"
     },
     "Object": {
-      "type": "string",
-      "maxLength": 512,
-      "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 512  \nPattern: \\S+  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512,
+          "pattern": "\\S+",
+          "additionalProperties": false
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCustomerProfilesIntegrationObjectDefinition"
     },
     "MarketoSourceProperties": {
       "type": "object",
@@ -43,28 +64,42 @@
         "Object"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationMarketoSourcePropertiesDefinition"
     },
     "S3SourceProperties": {
       "type": "object",
       "properties": {
         "BucketName": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 63,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 3  \nMaximum Length: 63  \nPattern: \\S+  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63,
+              "pattern": "\\S+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "BucketPrefix": {
-          "type": "string",
-          "maxLength": 512,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 512  \nPattern: .*  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "pattern": ".*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
         "BucketName"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationS3SourcePropertiesDefinition"
     },
     "SalesforceSourceProperties": {
       "type": "object",
@@ -73,19 +108,17 @@
           "$ref": "#/definitions/Object"
         },
         "EnableDynamicFieldUpdate": {
-          "type": "boolean",
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: Boolean  \nUpdate requires: No interruption"
+          "type": "boolean"
         },
         "IncludeDeletedRecords": {
-          "type": "boolean",
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: Boolean  \nUpdate requires: No interruption"
+          "type": "boolean"
         }
       },
       "required": [
         "Object"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationSalesforceSourcePropertiesDefinition"
     },
     "ServiceNowSourceProperties": {
       "type": "object",
@@ -98,7 +131,7 @@
         "Object"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationServiceNowSourcePropertiesDefinition"
     },
     "ZendeskSourceProperties": {
       "type": "object",
@@ -111,7 +144,7 @@
         "Object"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationZendeskSourcePropertiesDefinition"
     },
     "SourceConnectorProperties": {
       "type": "object",
@@ -133,30 +166,43 @@
         }
       },
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationSourceConnectorPropertiesDefinition"
     },
     "ConnectorType": {
-      "type": "string",
-      "enum": [
-        "Salesforce",
-        "Marketo",
-        "ServiceNow",
-        "Zendesk",
-        "S3"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Salesforce",
+            "Marketo",
+            "ServiceNow",
+            "Zendesk",
+            "S3"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: Salesforce | Marketo | ServiceNow | Zendesk | S3  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationConnectorTypeDefinition"
     },
     "IncrementalPullConfig": {
       "type": "object",
       "properties": {
         "DatetimeTypeFieldName": {
-          "type": "string",
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationIncrementalPullConfigDefinition"
     },
     "SourceFlowConfig": {
       "type": "object",
@@ -165,9 +211,16 @@
           "$ref": "#/definitions/ConnectorType"
         },
         "ConnectorProfileName": {
-          "type": "string",
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nPattern: [\\w/!@#+=.-]+  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "[\\w/!@#+=.-]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "IncrementalPullConfig": {
           "$ref": "#/definitions/IncrementalPullConfig"
@@ -181,7 +234,7 @@
         "SourceConnectorProperties"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationSourceFlowConfigDefinition"
     },
     "ConnectorOperator": {
       "type": "object",
@@ -203,194 +256,258 @@
         }
       },
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationConnectorOperatorDefinition"
     },
     "Operator": {
-      "type": "string",
-      "enum": [
-        "PROJECTION",
-        "LESS_THAN",
-        "GREATER_THAN",
-        "CONTAINS",
-        "BETWEEN",
-        "LESS_THAN_OR_EQUAL_TO",
-        "GREATER_THAN_OR_EQUAL_TO",
-        "EQUAL_TO",
-        "NOT_EQUAL_TO",
-        "ADDITION",
-        "MULTIPLICATION",
-        "DIVISION",
-        "SUBTRACTION",
-        "MASK_ALL",
-        "MASK_FIRST_N",
-        "MASK_LAST_N",
-        "VALIDATE_NON_NULL",
-        "VALIDATE_NON_ZERO",
-        "VALIDATE_NON_NEGATIVE",
-        "VALIDATE_NUMERIC",
-        "NO_OP"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROJECTION",
+            "LESS_THAN",
+            "GREATER_THAN",
+            "CONTAINS",
+            "BETWEEN",
+            "LESS_THAN_OR_EQUAL_TO",
+            "GREATER_THAN_OR_EQUAL_TO",
+            "EQUAL_TO",
+            "NOT_EQUAL_TO",
+            "ADDITION",
+            "MULTIPLICATION",
+            "DIVISION",
+            "SUBTRACTION",
+            "MASK_ALL",
+            "MASK_FIRST_N",
+            "MASK_LAST_N",
+            "VALIDATE_NON_NULL",
+            "VALIDATE_NON_ZERO",
+            "VALIDATE_NON_NEGATIVE",
+            "VALIDATE_NUMERIC",
+            "NO_OP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: PROJECTION | LESS_THAN | GREATER_THAN | CONTAINS | BETWEEN | LESS_THAN_OR_EQUAL_TO | GREATER_THAN_OR_EQUAL_TO | EQUAL_TO | NOT_EQUAL_TO | ADDITION | MULTIPLICATION | DIVISION | SUBTRACTION | MASK_ALL | MASK_FIRST_N | MASK_LAST_N | VALIDATE_NON_NULL | VALIDATE_NON_ZERO | VALIDATE_NON_NEGATIVE | VALIDATE_NUMERIC | NO_OP  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationOperatorDefinition"
     },
     "MarketoConnectorOperator": {
-      "type": "string",
-      "enum": [
-        "PROJECTION",
-        "LESS_THAN",
-        "GREATER_THAN",
-        "BETWEEN",
-        "ADDITION",
-        "MULTIPLICATION",
-        "DIVISION",
-        "SUBTRACTION",
-        "MASK_ALL",
-        "MASK_FIRST_N",
-        "MASK_LAST_N",
-        "VALIDATE_NON_NULL",
-        "VALIDATE_NON_ZERO",
-        "VALIDATE_NON_NEGATIVE",
-        "VALIDATE_NUMERIC",
-        "NO_OP"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROJECTION",
+            "LESS_THAN",
+            "GREATER_THAN",
+            "BETWEEN",
+            "ADDITION",
+            "MULTIPLICATION",
+            "DIVISION",
+            "SUBTRACTION",
+            "MASK_ALL",
+            "MASK_FIRST_N",
+            "MASK_LAST_N",
+            "VALIDATE_NON_NULL",
+            "VALIDATE_NON_ZERO",
+            "VALIDATE_NON_NEGATIVE",
+            "VALIDATE_NUMERIC",
+            "NO_OP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: PROJECTION | LESS_THAN | GREATER_THAN | BETWEEN | ADDITION | MULTIPLICATION | DIVISION | SUBTRACTION | MASK_ALL | MASK_FIRST_N | MASK_LAST_N | VALIDATE_NON_NULL | VALIDATE_NON_ZERO | VALIDATE_NON_NEGATIVE | VALIDATE_NUMERIC | NO_OP  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationMarketoConnectorOperatorDefinition"
     },
     "S3ConnectorOperator": {
-      "type": "string",
-      "enum": [
-        "PROJECTION",
-        "LESS_THAN",
-        "GREATER_THAN",
-        "BETWEEN",
-        "LESS_THAN_OR_EQUAL_TO",
-        "GREATER_THAN_OR_EQUAL_TO",
-        "EQUAL_TO",
-        "NOT_EQUAL_TO",
-        "ADDITION",
-        "MULTIPLICATION",
-        "DIVISION",
-        "SUBTRACTION",
-        "MASK_ALL",
-        "MASK_FIRST_N",
-        "MASK_LAST_N",
-        "VALIDATE_NON_NULL",
-        "VALIDATE_NON_ZERO",
-        "VALIDATE_NON_NEGATIVE",
-        "VALIDATE_NUMERIC",
-        "NO_OP"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROJECTION",
+            "LESS_THAN",
+            "GREATER_THAN",
+            "BETWEEN",
+            "LESS_THAN_OR_EQUAL_TO",
+            "GREATER_THAN_OR_EQUAL_TO",
+            "EQUAL_TO",
+            "NOT_EQUAL_TO",
+            "ADDITION",
+            "MULTIPLICATION",
+            "DIVISION",
+            "SUBTRACTION",
+            "MASK_ALL",
+            "MASK_FIRST_N",
+            "MASK_LAST_N",
+            "VALIDATE_NON_NULL",
+            "VALIDATE_NON_ZERO",
+            "VALIDATE_NON_NEGATIVE",
+            "VALIDATE_NUMERIC",
+            "NO_OP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: PROJECTION | LESS_THAN | GREATER_THAN | BETWEEN | LESS_THAN_OR_EQUAL_TO | GREATER_THAN_OR_EQUAL_TO | EQUAL_TO | NOT_EQUAL_TO | ADDITION | MULTIPLICATION | DIVISION | SUBTRACTION | MASK_ALL | MASK_FIRST_N | MASK_LAST_N | VALIDATE_NON_NULL | VALIDATE_NON_ZERO | VALIDATE_NON_NEGATIVE | VALIDATE_NUMERIC | NO_OP  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationS3ConnectorOperatorDefinition"
     },
     "SalesforceConnectorOperator": {
-      "type": "string",
-      "enum": [
-        "PROJECTION",
-        "LESS_THAN",
-        "GREATER_THAN",
-        "CONTAINS",
-        "BETWEEN",
-        "LESS_THAN_OR_EQUAL_TO",
-        "GREATER_THAN_OR_EQUAL_TO",
-        "EQUAL_TO",
-        "NOT_EQUAL_TO",
-        "ADDITION",
-        "MULTIPLICATION",
-        "DIVISION",
-        "SUBTRACTION",
-        "MASK_ALL",
-        "MASK_FIRST_N",
-        "MASK_LAST_N",
-        "VALIDATE_NON_NULL",
-        "VALIDATE_NON_ZERO",
-        "VALIDATE_NON_NEGATIVE",
-        "VALIDATE_NUMERIC",
-        "NO_OP"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROJECTION",
+            "LESS_THAN",
+            "GREATER_THAN",
+            "CONTAINS",
+            "BETWEEN",
+            "LESS_THAN_OR_EQUAL_TO",
+            "GREATER_THAN_OR_EQUAL_TO",
+            "EQUAL_TO",
+            "NOT_EQUAL_TO",
+            "ADDITION",
+            "MULTIPLICATION",
+            "DIVISION",
+            "SUBTRACTION",
+            "MASK_ALL",
+            "MASK_FIRST_N",
+            "MASK_LAST_N",
+            "VALIDATE_NON_NULL",
+            "VALIDATE_NON_ZERO",
+            "VALIDATE_NON_NEGATIVE",
+            "VALIDATE_NUMERIC",
+            "NO_OP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: PROJECTION | LESS_THAN | GREATER_THAN | CONTAINS | BETWEEN | LESS_THAN_OR_EQUAL_TO | GREATER_THAN_OR_EQUAL_TO | EQUAL_TO | NOT_EQUAL_TO | ADDITION | MULTIPLICATION | DIVISION | SUBTRACTION | MASK_ALL | MASK_FIRST_N | MASK_LAST_N | VALIDATE_NON_NULL | VALIDATE_NON_ZERO | VALIDATE_NON_NEGATIVE | VALIDATE_NUMERIC | NO_OP  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationSalesforceConnectorOperatorDefinition"
     },
     "ServiceNowConnectorOperator": {
-      "type": "string",
-      "enum": [
-        "PROJECTION",
-        "LESS_THAN",
-        "GREATER_THAN",
-        "CONTAINS",
-        "BETWEEN",
-        "LESS_THAN_OR_EQUAL_TO",
-        "GREATER_THAN_OR_EQUAL_TO",
-        "EQUAL_TO",
-        "NOT_EQUAL_TO",
-        "ADDITION",
-        "MULTIPLICATION",
-        "DIVISION",
-        "SUBTRACTION",
-        "MASK_ALL",
-        "MASK_FIRST_N",
-        "MASK_LAST_N",
-        "VALIDATE_NON_NULL",
-        "VALIDATE_NON_ZERO",
-        "VALIDATE_NON_NEGATIVE",
-        "VALIDATE_NUMERIC",
-        "NO_OP"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROJECTION",
+            "LESS_THAN",
+            "GREATER_THAN",
+            "CONTAINS",
+            "BETWEEN",
+            "LESS_THAN_OR_EQUAL_TO",
+            "GREATER_THAN_OR_EQUAL_TO",
+            "EQUAL_TO",
+            "NOT_EQUAL_TO",
+            "ADDITION",
+            "MULTIPLICATION",
+            "DIVISION",
+            "SUBTRACTION",
+            "MASK_ALL",
+            "MASK_FIRST_N",
+            "MASK_LAST_N",
+            "VALIDATE_NON_NULL",
+            "VALIDATE_NON_ZERO",
+            "VALIDATE_NON_NEGATIVE",
+            "VALIDATE_NUMERIC",
+            "NO_OP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: PROJECTION | LESS_THAN | GREATER_THAN | CONTAINS | BETWEEN | LESS_THAN_OR_EQUAL_TO | GREATER_THAN_OR_EQUAL_TO | EQUAL_TO | NOT_EQUAL_TO | ADDITION | MULTIPLICATION | DIVISION | SUBTRACTION | MASK_ALL | MASK_FIRST_N | MASK_LAST_N | VALIDATE_NON_NULL | VALIDATE_NON_ZERO | VALIDATE_NON_NEGATIVE | VALIDATE_NUMERIC | NO_OP  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationServiceNowConnectorOperatorDefinition"
     },
     "ZendeskConnectorOperator": {
-      "type": "string",
-      "enum": [
-        "PROJECTION",
-        "GREATER_THAN",
-        "ADDITION",
-        "MULTIPLICATION",
-        "DIVISION",
-        "SUBTRACTION",
-        "MASK_ALL",
-        "MASK_FIRST_N",
-        "MASK_LAST_N",
-        "VALIDATE_NON_NULL",
-        "VALIDATE_NON_ZERO",
-        "VALIDATE_NON_NEGATIVE",
-        "VALIDATE_NUMERIC",
-        "NO_OP"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROJECTION",
+            "GREATER_THAN",
+            "ADDITION",
+            "MULTIPLICATION",
+            "DIVISION",
+            "SUBTRACTION",
+            "MASK_ALL",
+            "MASK_FIRST_N",
+            "MASK_LAST_N",
+            "VALIDATE_NON_NULL",
+            "VALIDATE_NON_ZERO",
+            "VALIDATE_NON_NEGATIVE",
+            "VALIDATE_NUMERIC",
+            "NO_OP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: PROJECTION | GREATER_THAN | ADDITION | MULTIPLICATION | DIVISION | SUBTRACTION | MASK_ALL | MASK_FIRST_N | MASK_LAST_N | VALIDATE_NON_NULL | VALIDATE_NON_ZERO | VALIDATE_NON_NEGATIVE | VALIDATE_NUMERIC | NO_OP  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationZendeskConnectorOperatorDefinition"
     },
     "OperatorPropertiesKeys": {
-      "type": "string",
-      "enum": [
-        "VALUE",
-        "VALUES",
-        "DATA_TYPE",
-        "UPPER_BOUND",
-        "LOWER_BOUND",
-        "SOURCE_DATA_TYPE",
-        "DESTINATION_DATA_TYPE",
-        "VALIDATION_ACTION",
-        "MASK_VALUE",
-        "MASK_LENGTH",
-        "TRUNCATE_LENGTH",
-        "MATH_OPERATION_FIELDS_ORDER",
-        "CONCAT_FORMAT",
-        "SUBFIELD_CATEGORY_MAP"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "VALUE",
+            "VALUES",
+            "DATA_TYPE",
+            "UPPER_BOUND",
+            "LOWER_BOUND",
+            "SOURCE_DATA_TYPE",
+            "DESTINATION_DATA_TYPE",
+            "VALIDATION_ACTION",
+            "MASK_VALUE",
+            "MASK_LENGTH",
+            "TRUNCATE_LENGTH",
+            "MATH_OPERATION_FIELDS_ORDER",
+            "CONCAT_FORMAT",
+            "SUBFIELD_CATEGORY_MAP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: VALUE | VALUES | DATA_TYPE | UPPER_BOUND | LOWER_BOUND | SOURCE_DATA_TYPE | DESTINATION_DATA_TYPE | VALIDATION_ACTION | MASK_VALUE | MASK_LENGTH | TRUNCATE_LENGTH | MATH_OPERATION_FIELDS_ORDER | CONCAT_FORMAT | SUBFIELD_CATEGORY_MAP  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationOperatorPropertiesKeysDefinition"
     },
     "DestinationField": {
-      "type": "string",
-      "maxLength": 256,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nPattern: .*  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": ".*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCustomerProfilesIntegrationDestinationFieldDefinition"
     },
     "TaskType": {
-      "type": "string",
-      "enum": [
-        "Arithmetic",
-        "Filter",
-        "Map",
-        "Mask",
-        "Merge",
-        "Truncate",
-        "Validate"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Arithmetic",
+            "Filter",
+            "Map",
+            "Mask",
+            "Merge",
+            "Truncate",
+            "Validate"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: Arithmetic | Filter | Map | Mask | Merge | Truncate | Validate  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationTaskTypeDefinition"
     },
     "TaskPropertiesMap": {
       "type": "object",
@@ -399,9 +516,16 @@
           "$ref": "#/definitions/OperatorPropertiesKeys"
         },
         "Property": {
-          "type": "string",
-          "maxLength": 2048,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMaximum Length: 2048  \nPattern: .+  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": ".+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -409,7 +533,7 @@
         "Property"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationTaskPropertiesMapDefinition"
     },
     "Task": {
       "type": "object",
@@ -422,9 +546,8 @@
           "items": {
             "type": "string",
             "maxLength": 2048,
-            "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 2048  \nPattern: .*  \nUpdate requires: No interruption"
-          },
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: Array  \nUpdate requires: No interruption"
+            "pattern": ".*"
+          }
         },
         "DestinationField": {
           "$ref": "#/definitions/DestinationField"
@@ -436,8 +559,7 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/TaskPropertiesMap"
-          },
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+          }
         }
       },
       "required": [
@@ -445,36 +567,56 @@
         "TaskType"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationTaskDefinition"
     },
     "TriggerType": {
-      "type": "string",
-      "enum": [
-        "Scheduled",
-        "Event",
-        "OnDemand"
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Scheduled",
+            "Event",
+            "OnDemand"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: Scheduled | Event | OnDemand  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationTriggerTypeDefinition"
     },
     "Date": {
       "type": "number",
-      "markdownDescription": "\n\n---\n\nRequired: No  \nType: Number  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationDateDefinition"
     },
     "ScheduledTriggerProperties": {
       "type": "object",
       "properties": {
         "ScheduleExpression": {
-          "type": "string",
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMaximum Length: 256  \nPattern: .*  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": ".*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "DataPullMode": {
-          "type": "string",
-          "enum": [
-            "Incremental",
-            "Complete"
-          ],
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nAllowed Values: Incremental | Complete  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Incremental",
+                "Complete"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "ScheduleStartTime": {
           "$ref": "#/definitions/Date"
@@ -483,15 +625,21 @@
           "$ref": "#/definitions/Date"
         },
         "Timezone": {
-          "type": "string",
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 256  \nPattern: .*  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": ".*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "ScheduleOffset": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 36000,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: Integer  \nUpdate requires: No interruption"
+          "maximum": 36000
         },
         "FirstExecutionFrom": {
           "$ref": "#/definitions/Date"
@@ -501,7 +649,7 @@
         "ScheduleExpression"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationScheduledTriggerPropertiesDefinition"
     },
     "TriggerProperties": {
       "type": "object",
@@ -511,7 +659,7 @@
         }
       },
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationTriggerPropertiesDefinition"
     },
     "TriggerConfig": {
       "type": "object",
@@ -527,33 +675,53 @@
         "TriggerType"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationTriggerConfigDefinition"
     },
     "FlowDefinition": {
       "type": "object",
       "properties": {
         "FlowName": {
-          "type": "string",
-          "maxLength": 256,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMaximum Length: 256  \nPattern: [a-zA-Z0-9][\\w!@#.-]+  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-zA-Z0-9][\\w!@#.-]+",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Description": {
-          "type": "string",
-          "maxLength": 2048,
-          "markdownDescription": "\n\n---\n\nRequired: No  \nType: String  \nMaximum Length: 2048  \nPattern: [\\w!@#\\-.?,\\s]*  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\w!@#\\-.?,\\s]*",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "KmsArn": {
-          "type": "string",
-          "minLength": 20,
-          "maxLength": 2048,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 20  \nMaximum Length: 2048  \nPattern: arn:aws:kms:.*:[0-9]+:.*  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:aws:kms:.*:[0-9]+:.*",
+              "minLength": 20,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Tasks": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Task"
-          },
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: Array  \nUpdate requires: No interruption"
+          }
         },
         "TriggerConfig": {
           "$ref": "#/definitions/TriggerConfig"
@@ -570,22 +738,35 @@
         "SourceFlowConfig"
       ],
       "additionalProperties": false,
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationFlowDefinition"
     },
     "ObjectTypeMapping": {
       "type": "object",
       "properties": {
         "Key": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 255  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "markdownDescription": "\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 255  \nPattern: ^[a-zA-Z_][a-zA-Z_0-9-]*$  \nUpdate requires: No interruption"
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z_][a-zA-Z_0-9-]*$",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
@@ -593,33 +774,53 @@
         "Key",
         "Value"
       ],
-      "markdownDescription": "\n\n---\n\nRequired: No  \nUpdate requires: No interruption"
+      "title": "AWSCustomerProfilesIntegrationObjectTypeMappingDefinition"
     }
   },
   "properties": {
     "DomainName": {
-      "description": "The unique name of the domain.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 64,
-      "markdownDescription": "The unique name of the domain.\n\n---\n\nRequired: Yes  \nType: String  \nMinimum Length: 1  \nMaximum Length: 64  \nPattern: ^[a-zA-Z0-9_-]+$  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The unique name of the domain."
     },
     "Uri": {
-      "description": "The URI of the S3 bucket or any other type of data source.",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 255,
-      "markdownDescription": "The URI of the S3 bucket or any other type of data source.\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 255  \nUpdate requires: Replacement"
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The URI of the S3 bucket or any other type of data source."
     },
     "FlowDefinition": {
       "$ref": "#/definitions/FlowDefinition"
     },
     "ObjectTypeName": {
-      "description": "The name of the ObjectType defined for the 3rd party data in Profile Service",
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 255,
-      "markdownDescription": "The name of the ObjectType defined for the 3rd party data in Profile Service\n\n---\n\nRequired: No  \nType: String  \nMinimum Length: 1  \nMaximum Length: 255  \nPattern: ^[a-zA-Z_][a-zA-Z_0-9-]*$  \nUpdate requires: No interruption"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z_0-9-]*$",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the ObjectType defined for the 3rd party data in Profile Service"
     },
     "Tags": {
       "description": "The tags (keys and values) associated with the integration",
@@ -628,16 +829,14 @@
         "$ref": "#/definitions/Tag"
       },
       "minItems": 0,
-      "maxItems": 50,
-      "markdownDescription": "The tags (keys and values) associated with the integration\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      "maxItems": 50
     },
     "ObjectTypeNames": {
       "description": "The mapping between 3rd party event types and ObjectType names",
       "type": "array",
       "items": {
         "$ref": "#/definitions/ObjectTypeMapping"
-      },
-      "markdownDescription": "The mapping between 3rd party event types and ObjectType names\n\n---\n\nRequired: No  \nType: Array  \nUpdate requires: No interruption"
+      }
     }
   },
   "required": [
@@ -692,18 +891,6 @@
   "writeOnlyProperties": [
     "/properties/FlowDefinition"
   ],
-  "attributes": {
-    "CreatedAt": {
-      "description": "The time of this integration got created",
-      "type": "string",
-      "markdownDescription": "The time of this integration got created\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    },
-    "LastUpdatedAt": {
-      "description": "The time of this integration got last updated at",
-      "type": "string",
-      "markdownDescription": "The time of this integration got last updated at\n\n---\n\nRequired: No  \nType: String  \nUpdate requires: No interruption"
-    }
-  },
-  "title": "AWS::CustomerProfiles::Integration",
+  "title": "AWSCustomerProfilesIntegrationProperties",
   "type": "object"
 }
