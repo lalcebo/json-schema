@@ -86,6 +86,9 @@
         }
       ]
     },
+    "SourceConnection": {
+      "$ref": "#/definitions/SourceConnection"
+    },
     "Tags": {
       "type": "array",
       "uniqueItems": false,
@@ -102,6 +105,69 @@
     }
   },
   "definitions": {
+    "CodeStarParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ArtifactPath": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ConnectionArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Repository": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Branch": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ArtifactPath",
+        "Repository",
+        "Branch",
+        "ConnectionArn"
+      ],
+      "title": "AWSServiceCatalogCloudFormationProductCodeStarParametersDefinition"
+    },
+    "ConnectionParameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CodeStar": {
+          "$ref": "#/definitions/CodeStarParameters"
+        }
+      },
+      "title": "AWSServiceCatalogCloudFormationProductConnectionParametersDefinition"
+    },
     "ProvisioningArtifactProperties": {
       "type": "object",
       "additionalProperties": false,
@@ -168,12 +234,35 @@
         "Key"
       ],
       "title": "AWSServiceCatalogCloudFormationProductTagDefinition"
+    },
+    "SourceConnection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ConnectionParameters": {
+          "$ref": "#/definitions/ConnectionParameters"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "ConnectionParameters"
+      ],
+      "title": "AWSServiceCatalogCloudFormationProductSourceConnectionDefinition"
     }
   },
   "required": [
     "Owner",
-    "Name",
-    "ProvisioningArtifactParameters"
+    "Name"
   ],
   "primaryIdentifier": [
     "/properties/Id"
