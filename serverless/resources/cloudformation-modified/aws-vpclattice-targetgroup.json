@@ -1,0 +1,359 @@
+{
+  "typeName": "AWS::VpcLattice::TargetGroup",
+  "description": "A group of related Targets that a Service may serve a request to. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "definitions": {
+    "HealthCheckConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "Protocol": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HTTP",
+                "HTTPS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Port": {
+          "type": "integer",
+          "maximum": 65535,
+          "minimum": 1
+        },
+        "Path": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HealthCheckIntervalSeconds": {
+          "type": "integer",
+          "maximum": 300,
+          "minimum": 5
+        },
+        "HealthCheckTimeoutSeconds": {
+          "type": "integer",
+          "maximum": 120,
+          "minimum": 1
+        },
+        "HealthyThresholdCount": {
+          "type": "integer",
+          "maximum": 10,
+          "minimum": 2
+        },
+        "UnhealthyThresholdCount": {
+          "type": "integer",
+          "maximum": 10,
+          "minimum": 2
+        },
+        "Matcher": {
+          "$ref": "#/definitions/Matcher"
+        }
+      },
+      "title": "AWSVpcLatticeTargetGroupHealthCheckConfigDefinition"
+    },
+    "Matcher": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HttpCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 2000,
+              "pattern": "^[0-9-,]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "HttpCode"
+      ],
+      "title": "AWSVpcLatticeTargetGroupMatcherDefinition"
+    },
+    "TargetGroupConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Port": {
+          "type": "integer",
+          "maximum": 65535,
+          "minimum": 1
+        },
+        "Protocol": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HTTP",
+                "HTTPS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ProtocolVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HTTP1",
+                "HTTP2",
+                "GRPC"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "VpcIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 5,
+              "pattern": "^vpc-(([0-9a-z]{8})|([0-9a-z]{17}))$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HealthCheck": {
+          "$ref": "#/definitions/HealthCheckConfig"
+        }
+      },
+      "required": [
+        "Port",
+        "Protocol",
+        "VpcIdentifier"
+      ],
+      "title": "AWSVpcLatticeTargetGroupTargetGroupConfigDefinition"
+    },
+    "Target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Port": {
+          "type": "integer",
+          "maximum": 65535,
+          "minimum": 1
+        }
+      },
+      "required": [
+        "Id"
+      ],
+      "title": "AWSVpcLatticeTargetGroupTargetDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSVpcLatticeTargetGroupTagDefinition"
+    }
+  },
+  "properties": {
+    "Config": {
+      "$ref": "#/definitions/TargetGroupConfig"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 63,
+          "minLength": 3,
+          "pattern": "^(?!tg-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IP",
+            "LAMBDA",
+            "INSTANCE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Targets": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 100,
+      "default": [],
+      "items": {
+        "$ref": "#/definitions/Target"
+      }
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "Type"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CreatedAt",
+    "/properties/Id",
+    "/properties/LastUpdatedAt",
+    "/properties/Status"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Type",
+    "/properties/Config/Port",
+    "/properties/Config/Protocol",
+    "/properties/Config/ProtocolVersion",
+    "/properties/Config/VpcIdentifier"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Id"
+    ]
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "vpc-lattice:CreateTargetGroup",
+        "vpc-lattice:GetTargetGroup",
+        "vpc-lattice:RegisterTargets",
+        "vpc-lattice:ListTargets",
+        "vpc-lattice:ListTagsForResource",
+        "vpc-lattice:TagResource",
+        "vpc-lattice:UntagResource",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeInstances",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeAvailabilityZoneMappings",
+        "lambda:Invoke",
+        "lambda:AddPermission"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "vpc-lattice:GetTargetGroup",
+        "vpc-lattice:ListTargets",
+        "vpc-lattice:ListTagsForResource"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "vpc-lattice:UpdateTargetGroup",
+        "vpc-lattice:GetTargetGroup",
+        "vpc-lattice:ListTargets",
+        "vpc-lattice:RegisterTargets",
+        "vpc-lattice:DeregisterTargets",
+        "ec2:DescribeInstances",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeAvailabilityZoneMappings",
+        "lambda:Invoke",
+        "lambda:RemovePermission",
+        "lambda:AddPermission",
+        "vpc-lattice:TagResource",
+        "vpc-lattice:UntagResource",
+        "vpc-lattice:ListTagsForResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "vpc-lattice:DeleteTargetGroup",
+        "vpc-lattice:GetTargetGroup",
+        "vpc-lattice:DeregisterTargets",
+        "lambda:RemovePermission"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "vpc-lattice:ListTargetGroups"
+      ]
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags"
+  },
+  "title": "AWSVpcLatticeTargetGroupProperties",
+  "type": "object"
+}

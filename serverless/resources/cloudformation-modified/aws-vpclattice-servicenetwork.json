@@ -1,0 +1,142 @@
+{
+  "typeName": "AWS::VpcLattice::ServiceNetwork",
+  "description": "A logical container containing Services that clients can request access to.. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSVpcLatticeServiceNetworkTagDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 63,
+          "minLength": 3,
+          "pattern": "^(?!servicenetwork-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "AuthType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "NONE",
+          "enum": [
+            "NONE",
+            "AWS_IAM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CreatedAt",
+    "/properties/Id",
+    "/properties/LastUpdatedAt"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Id"
+    ]
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "vpc-lattice:GetServiceNetwork",
+        "vpc-lattice:ListTagsForResource",
+        "vpc-lattice:CreateServiceNetwork",
+        "vpc-lattice:TagResource"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "vpc-lattice:GetServiceNetwork",
+        "vpc-lattice:ListTagsForResource"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "vpc-lattice:GetServiceNetwork",
+        "vpc-lattice:UpdateServiceNetwork",
+        "vpc-lattice:TagResource",
+        "vpc-lattice:UntagResource"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "vpc-lattice:DeleteServiceNetwork"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "vpc-lattice:ListServiceNetworks"
+      ]
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags"
+  },
+  "title": "AWSVpcLatticeServiceNetworkProperties",
+  "type": "object"
+}
