@@ -1,0 +1,365 @@
+{
+  "typeName": "AWS::Comprehend::Flywheel",
+  "description": "The AWS::Comprehend::Flywheel resource creates an Amazon Comprehend Flywheel that enables customer to train their model.. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "ActiveModelArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[^:]+)?:comprehend:[a-zA-Z0-9-]*:[0-9]{12}:(document-classifier|entity-recognizer)/[a-zA-Z0-9](-*[a-zA-Z0-9])*(/version/[a-zA-Z0-9](-*[a-zA-Z0-9])*)?",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DataAccessRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DataLakeS3Uri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DataSecurityConfig": {
+      "$ref": "#/definitions/DataSecurityConfig"
+    },
+    "FlywheelName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ModelType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DOCUMENT_CLASSIFIER",
+            "ENTITY_RECOGNIZER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "insertionOrder": false,
+      "uniqueItems": true
+    },
+    "TaskConfig": {
+      "$ref": "#/definitions/TaskConfig"
+    }
+  },
+  "required": [
+    "FlywheelName",
+    "DataAccessRoleArn",
+    "DataLakeS3Uri"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/FlywheelName",
+    "/properties/ModelType",
+    "/properties/DataLakeS3Uri",
+    "/properties/TaskConfig"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags"
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSComprehendFlywheelTagDefinition"
+    },
+    "TaskConfig": {
+      "type": "object",
+      "properties": {
+        "LanguageCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "en",
+                "es",
+                "fr",
+                "it",
+                "de",
+                "pt"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DocumentClassificationConfig": {
+          "$ref": "#/definitions/DocumentClassificationConfig"
+        },
+        "EntityRecognitionConfig": {
+          "$ref": "#/definitions/EntityRecognitionConfig"
+        }
+      },
+      "required": [
+        "LanguageCode"
+      ],
+      "additionalProperties": false,
+      "title": "AWSComprehendFlywheelTaskConfigDefinition"
+    },
+    "DataSecurityConfig": {
+      "type": "object",
+      "properties": {
+        "ModelKmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        },
+        "VolumeKmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        },
+        "DataLakeKmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        },
+        "VpcConfig": {
+          "$ref": "#/definitions/VpcConfig"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "AWSComprehendFlywheelDataSecurityConfigDefinition"
+    },
+    "VpcConfig": {
+      "type": "object",
+      "properties": {
+        "SecurityGroupIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "[-0-9a-zA-Z]+",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "Subnets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "[-0-9a-zA-Z]+",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 16
+        }
+      },
+      "required": [
+        "SecurityGroupIds",
+        "Subnets"
+      ],
+      "additionalProperties": false,
+      "title": "AWSComprehendFlywheelVpcConfigDefinition"
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSComprehendFlywheelKmsKeyIdDefinition"
+    },
+    "EntityTypesListItem": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?![^\\n\\r\\t,]*\\\\n|\\\\r|\\\\t)[^\\n\\r\\t,]+$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Type"
+      ],
+      "title": "AWSComprehendFlywheelEntityTypesListItemDefinition"
+    },
+    "EntityRecognitionConfig": {
+      "type": "object",
+      "properties": {
+        "EntityTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EntityTypesListItem"
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 25
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSComprehendFlywheelEntityRecognitionConfigDefinition"
+    },
+    "DocumentClassificationConfig": {
+      "type": "object",
+      "properties": {
+        "Mode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MULTI_CLASS",
+                "MULTI_LABEL"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Labels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "maxItems": 1000
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Mode"
+      ],
+      "title": "AWSComprehendFlywheelDocumentClassificationConfigDefinition"
+    }
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iam:PassRole",
+        "comprehend:CreateFlywheel",
+        "comprehend:DescribeFlywheel",
+        "comprehend:ListTagsForResource"
+      ],
+      "timeoutInMinutes": 240
+    },
+    "read": {
+      "permissions": [
+        "comprehend:DescribeFlywheel",
+        "comprehend:ListTagsForResource"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "iam:PassRole",
+        "comprehend:UpdateFlywheel",
+        "comprehend:ListTagsForResource",
+        "comprehend:TagResource",
+        "comprehend:UntagResource"
+      ],
+      "timeoutInMinutes": 10
+    },
+    "delete": {
+      "permissions": [
+        "comprehend:DeleteFlywheel",
+        "comprehend:DescribeFlywheel"
+      ],
+      "timeoutInMinutes": 120
+    },
+    "list": {
+      "permissions": [
+        "comprehend:ListFlywheels"
+      ]
+    }
+  },
+  "title": "AWSComprehendFlywheelProperties",
+  "type": "object"
+}
