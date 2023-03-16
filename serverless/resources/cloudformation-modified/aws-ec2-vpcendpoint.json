@@ -4,21 +4,30 @@
   "additionalProperties": false,
   "properties": {
     "PolicyDocument": {
-      "type": "object"
+      "type": [
+        "string",
+        "object"
+      ],
+      "description": "A policy to attach to the endpoint that controls access to the service."
     },
     "PrivateDnsEnabled": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Indicate whether to associate a private hosted zone with the specified VPC."
     },
     "RouteTableIds": {
       "type": "array",
+      "description": "One or more route table IDs.",
       "uniqueItems": true,
+      "insertionOrder": false,
       "items": {
         "type": "string"
       }
     },
     "SecurityGroupIds": {
       "type": "array",
+      "description": "The ID of one or more security groups to associate with the endpoint network interface.",
       "uniqueItems": true,
+      "insertionOrder": false,
       "items": {
         "type": "string"
       }
@@ -31,11 +40,14 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The service name."
     },
     "SubnetIds": {
       "type": "array",
+      "description": "The ID of one or more subnets in which to create an endpoint network interface.",
       "uniqueItems": true,
+      "insertionOrder": false,
       "items": {
         "type": "string"
       }
@@ -43,7 +55,12 @@
     "VpcEndpointType": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "Interface",
+            "Gateway",
+            "GatewayLoadBalancer"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -58,7 +75,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The ID of the VPC in which the endpoint will be used."
     }
   },
   "required": [
@@ -79,6 +97,44 @@
   "primaryIdentifier": [
     "/properties/Id"
   ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ec2:CreateVpcEndpoint",
+        "ec2:DescribeVpcEndpoints"
+      ],
+      "timeoutInMinutes": 210
+    },
+    "read": {
+      "permissions": [
+        "ec2:DescribeVpcEndpoints"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "ec2:ModifyVpcEndpoint",
+        "ec2:DescribeVpcEndpoints"
+      ],
+      "timeoutInMinutes": 210
+    },
+    "delete": {
+      "permissions": [
+        "ec2:DeleteVpcEndpoints"
+      ],
+      "timeoutInMinutes": 210
+    },
+    "list": {
+      "permissions": [
+        "ec2:DescribeVpcEndpoints"
+      ]
+    }
+  },
   "title": "AWSEC2VPCEndpointProperties",
   "type": "object"
 }
