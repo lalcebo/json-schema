@@ -174,9 +174,100 @@
       "type": "boolean",
       "title": "AWSAthenaWorkGroupRemoveEncryptionConfigurationDefinition"
     },
+    "AdditionalConfiguration": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Additional Configuration that are passed to Athena Spark Calculations running in this workgroup",
+      "title": "AWSAthenaWorkGroupAdditionalConfigurationDefinition"
+    },
+    "ExecutionRole": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Execution Role ARN required to run Athena Spark Calculations",
+      "title": "AWSAthenaWorkGroupExecutionRoleDefinition"
+    },
     "RemoveOutputLocation": {
       "type": "boolean",
       "title": "AWSAthenaWorkGroupRemoveOutputLocationDefinition"
+    },
+    "ExpectedBucketOwner": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS account ID of the owner of S3 bucket where query results are stored",
+      "title": "AWSAthenaWorkGroupExpectedBucketOwnerDefinition"
+    },
+    "RemoveExpectedBucketOwner": {
+      "type": "boolean",
+      "title": "AWSAthenaWorkGroupRemoveExpectedBucketOwnerDefinition"
+    },
+    "S3AclOption": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BUCKET_OWNER_FULL_CONTROL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon S3 canned ACL that Athena should specify when storing query results. Currently the only supported canned ACL is BUCKET_OWNER_FULL_CONTROL",
+      "title": "AWSAthenaWorkGroupS3AclOptionDefinition"
+    },
+    "AclConfiguration": {
+      "description": "Indicates that an Amazon S3 canned ACL should be set to control ownership of stored query results",
+      "type": "object",
+      "properties": {
+        "S3AclOption": {
+          "$ref": "#/definitions/S3AclOption"
+        }
+      },
+      "required": [
+        "S3AclOption"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupAclConfigurationDefinition"
+    },
+    "RemoveAclConfiguration": {
+      "type": "boolean",
+      "title": "AWSAthenaWorkGroupRemoveAclConfigurationDefinition"
+    },
+    "CustomerContentEncryptionConfiguration": {
+      "description": "Indicates the KMS key for encrypting notebook content.",
+      "type": "object",
+      "properties": {
+        "KmsKey": {
+          "$ref": "#/definitions/KmsKey"
+        }
+      },
+      "required": [
+        "KmsKey"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupCustomerContentEncryptionConfigurationDefinition"
+    },
+    "RemoveCustomerContentEncryptionConfiguration": {
+      "type": "boolean",
+      "title": "AWSAthenaWorkGroupRemoveCustomerContentEncryptionConfigurationDefinition"
     },
     "ResultConfiguration": {
       "description": "The location in Amazon S3 where query results are stored and the encryption option, if any, used for query results. These are known as \"client-side settings\". If workgroup settings override client-side settings, then the query uses the workgroup settings.\n",
@@ -187,6 +278,12 @@
         },
         "OutputLocation": {
           "$ref": "#/definitions/OutputLocation"
+        },
+        "ExpectedBucketOwner": {
+          "$ref": "#/definitions/ExpectedBucketOwner"
+        },
+        "AclConfiguration": {
+          "$ref": "#/definitions/AclConfiguration"
         }
       },
       "additionalProperties": false,
@@ -202,11 +299,23 @@
         "OutputLocation": {
           "$ref": "#/definitions/OutputLocation"
         },
+        "ExpectedBucketOwner": {
+          "$ref": "#/definitions/ExpectedBucketOwner"
+        },
+        "AclConfiguration": {
+          "$ref": "#/definitions/AclConfiguration"
+        },
         "RemoveEncryptionConfiguration": {
           "$ref": "#/definitions/RemoveEncryptionConfiguration"
         },
         "RemoveOutputLocation": {
           "$ref": "#/definitions/RemoveOutputLocation"
+        },
+        "RemoveExpectedBucketOwner": {
+          "$ref": "#/definitions/RemoveExpectedBucketOwner"
+        },
+        "RemoveAclConfiguration": {
+          "$ref": "#/definitions/RemoveAclConfiguration"
         }
       },
       "additionalProperties": false,
@@ -232,6 +341,15 @@
         },
         "EngineVersion": {
           "$ref": "#/definitions/EngineVersion"
+        },
+        "AdditionalConfiguration": {
+          "$ref": "#/definitions/AdditionalConfiguration"
+        },
+        "ExecutionRole": {
+          "$ref": "#/definitions/ExecutionRole"
+        },
+        "CustomerContentEncryptionConfiguration": {
+          "$ref": "#/definitions/CustomerContentEncryptionConfiguration"
         }
       },
       "additionalProperties": false,
@@ -261,6 +379,18 @@
         },
         "EngineVersion": {
           "$ref": "#/definitions/EngineVersion"
+        },
+        "AdditionalConfiguration": {
+          "$ref": "#/definitions/AdditionalConfiguration"
+        },
+        "ExecutionRole": {
+          "$ref": "#/definitions/ExecutionRole"
+        },
+        "CustomerContentEncryptionConfiguration": {
+          "$ref": "#/definitions/CustomerContentEncryptionConfiguration"
+        },
+        "RemoveCustomerContentEncryptionConfiguration": {
+          "$ref": "#/definitions/RemoveCustomerContentEncryptionConfiguration"
         }
       },
       "additionalProperties": false,
@@ -372,7 +502,9 @@
     "/properties/WorkGroupConfigurationUpdates"
   ],
   "writeOnlyProperties": [
-    "/properties/WorkGroupConfigurationUpdates"
+    "/properties/WorkGroupConfigurationUpdates",
+    "/properties/RecursiveDeleteOption",
+    "/properties/WorkGroupConfiguration/AdditionalConfiguration"
   ],
   "primaryIdentifier": [
     "/properties/Name"
