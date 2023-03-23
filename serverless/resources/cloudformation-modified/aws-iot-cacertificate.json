@@ -58,7 +58,6 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
               "minLength": 1,
               "maxLength": 127
             },
@@ -72,7 +71,6 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
               "minLength": 1,
               "maxLength": 255
             },
@@ -169,7 +167,6 @@
     "Tags": {
       "description": "An array of key-value pairs to apply to this resource.",
       "type": "array",
-      "uniqueItems": true,
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
@@ -177,10 +174,11 @@
     }
   },
   "tagging": {
-    "taggable": false,
-    "tagOnCreate": false,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": true
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags"
   },
   "additionalProperties": false,
   "required": [
@@ -197,7 +195,8 @@
     "/properties/CACertificatePem"
   ],
   "writeOnlyProperties": [
-    "/properties/VerificationCertificatePem"
+    "/properties/VerificationCertificatePem",
+    "/properties/RemoveAutoRegistration"
   ],
   "primaryIdentifier": [
     "/properties/Id"
@@ -207,25 +206,33 @@
       "permissions": [
         "iam:GetRole",
         "iam:PassRole",
-        "iot:RegisterCACertificate"
+        "iot:RegisterCACertificate",
+        "iot:DescribeCACertificate",
+        "iot:ListTagsForResource"
       ]
     },
     "read": {
       "permissions": [
-        "iot:DescribeCACertificate"
+        "iot:DescribeCACertificate",
+        "iot:ListTagsForResource"
       ]
     },
     "update": {
       "permissions": [
         "iam:GetRole",
         "iam:PassRole",
-        "iot:UpdateCACertificate"
+        "iot:UpdateCACertificate",
+        "iot:DescribeCACertificate",
+        "iot:TagResource",
+        "iot:UntagResource",
+        "iot:ListTagsForResource"
       ]
     },
     "delete": {
       "permissions": [
         "iot:UpdateCACertificate",
-        "iot:DeleteCACertificate"
+        "iot:DeleteCACertificate",
+        "iot:DescribeCACertificate"
       ]
     },
     "list": {
