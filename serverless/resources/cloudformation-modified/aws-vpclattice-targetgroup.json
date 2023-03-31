@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::VpcLattice::TargetGroup",
-  "description": "A group of related Targets that a Service may serve a request to. Source:- No source definition found, add manually please",
+  "description": "A target group is a collection of targets, or compute resources, that run your application or service. A target group can only be used by a single service.. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "definitions": {
     "HealthCheckConfig": {
@@ -24,6 +24,20 @@
             }
           ]
         },
+        "ProtocolVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HTTP1",
+                "HTTP2"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "Port": {
           "type": "integer",
           "maximum": 65535,
@@ -32,7 +46,10 @@
         "Path": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 0,
+              "pattern": "(^/[a-zA-Z0-9@:%_+.~#?&/=-]*$|(^$))"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -115,10 +132,26 @@
           "oneOf": [
             {
               "type": "string",
+              "default": "HTTP1",
               "enum": [
                 "HTTP1",
                 "HTTP2",
                 "GRPC"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IpAddressType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "IPV4",
+              "enum": [
+                "IPV4",
+                "IPV6"
               ]
             },
             {
@@ -219,7 +252,7 @@
       "oneOf": [
         {
           "type": "string",
-          "maxLength": 63,
+          "maxLength": 128,
           "minLength": 3,
           "pattern": "^(?!tg-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"
         },
@@ -235,7 +268,8 @@
           "enum": [
             "IP",
             "LAMBDA",
-            "INSTANCE"
+            "INSTANCE",
+            "ALB"
           ]
         },
         {
@@ -278,6 +312,7 @@
     "/properties/Name",
     "/properties/Type",
     "/properties/Config/Port",
+    "/properties/Config/IpAddressType",
     "/properties/Config/Protocol",
     "/properties/Config/ProtocolVersion",
     "/properties/Config/VpcIdentifier"
@@ -305,7 +340,8 @@
         "ec2:DescribeSubnets",
         "ec2:DescribeAvailabilityZoneMappings",
         "lambda:Invoke",
-        "lambda:AddPermission"
+        "lambda:AddPermission",
+        "elasticloadbalancing:DescribeLoadBalancers"
       ]
     },
     "read": {
@@ -325,6 +361,7 @@
         "ec2:DescribeInstances",
         "ec2:DescribeSubnets",
         "ec2:DescribeAvailabilityZoneMappings",
+        "elasticloadbalancing:DescribeLoadBalancers",
         "lambda:Invoke",
         "lambda:RemovePermission",
         "lambda:AddPermission",

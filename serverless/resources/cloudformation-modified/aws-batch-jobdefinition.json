@@ -82,6 +82,16 @@
       ],
       "title": "AWSBatchJobDefinitionNodeRangePropertyDefinition"
     },
+    "Metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Labels": {
+          "type": "object"
+        }
+      },
+      "title": "AWSBatchJobDefinitionMetadataDefinition"
+    },
     "EksContainerEnvironmentVariable": {
       "type": "object",
       "additionalProperties": false,
@@ -158,6 +168,33 @@
       ],
       "title": "AWSBatchJobDefinitionEfsVolumeConfigurationDefinition"
     },
+    "EksEmptyDir": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Medium": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SizeLimit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSBatchJobDefinitionEksEmptyDirDefinition"
+    },
     "LogConfiguration": {
       "type": "object",
       "additionalProperties": false,
@@ -204,33 +241,6 @@
         }
       },
       "title": "AWSBatchJobDefinitionVolumesHostDefinition"
-    },
-    "EmptyDir": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Medium": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "SizeLimit": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "title": "AWSBatchJobDefinitionEmptyDirDefinition"
     },
     "Volumes": {
       "type": "object",
@@ -284,12 +294,32 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "Volumes": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/EksVolume"
+          }
+        },
+        "DnsPolicy": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "Containers": {
           "type": "array",
           "uniqueItems": false,
           "items": {
             "$ref": "#/definitions/EksContainer"
           }
+        },
+        "Metadata": {
+          "$ref": "#/definitions/Metadata"
         },
         "ServiceAccountName": {
           "oneOf": [
@@ -301,25 +331,8 @@
             }
           ]
         },
-        "Volumes": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "$ref": "#/definitions/EksVolume"
-          }
-        },
         "HostNetwork": {
           "type": "boolean"
-        },
-        "DnsPolicy": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
         }
       },
       "title": "AWSBatchJobDefinitionPodPropertiesDefinition"
@@ -481,6 +494,9 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "EphemeralStorage": {
+          "$ref": "#/definitions/EphemeralStorage"
         }
       },
       "required": [
@@ -515,6 +531,19 @@
       },
       "title": "AWSBatchJobDefinitionAuthorizationConfigDefinition"
     },
+    "EksContainerResourceRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Requests": {
+          "type": "object"
+        },
+        "Limits": {
+          "type": "object"
+        }
+      },
+      "title": "AWSBatchJobDefinitionEksContainerResourceRequirementsDefinition"
+    },
     "NetworkConfiguration": {
       "type": "object",
       "additionalProperties": false,
@@ -532,11 +561,33 @@
       },
       "title": "AWSBatchJobDefinitionNetworkConfigurationDefinition"
     },
-    "HostPath": {
+    "EksContainerSecurityContext": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Path": {
+        "RunAsUser": {
+          "type": "integer"
+        },
+        "RunAsGroup": {
+          "type": "integer"
+        },
+        "RunAsNonRoot": {
+          "type": "boolean"
+        },
+        "Privileged": {
+          "type": "boolean"
+        },
+        "ReadOnlyRootFilesystem": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSBatchJobDefinitionEksContainerSecurityContextDefinition"
+    },
+    "EksSecret": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SecretName": {
           "oneOf": [
             {
               "type": "string"
@@ -545,9 +596,15 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "Optional": {
+          "type": "boolean"
         }
       },
-      "title": "AWSBatchJobDefinitionHostPathDefinition"
+      "required": [
+        "SecretName"
+      ],
+      "title": "AWSBatchJobDefinitionEksSecretDefinition"
     },
     "EvaluateOnExit": {
       "type": "object",
@@ -726,13 +783,13 @@
       "additionalProperties": false,
       "properties": {
         "Secret": {
-          "$ref": "#/definitions/Secret"
+          "$ref": "#/definitions/EksSecret"
         },
         "EmptyDir": {
-          "$ref": "#/definitions/EmptyDir"
+          "$ref": "#/definitions/EksEmptyDir"
         },
         "HostPath": {
-          "$ref": "#/definitions/HostPath"
+          "$ref": "#/definitions/EksHostPath"
         },
         "Name": {
           "oneOf": [
@@ -851,27 +908,22 @@
       },
       "title": "AWSBatchJobDefinitionMountPointsDefinition"
     },
-    "SecurityContext": {
+    "EksHostPath": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "RunAsUser": {
-          "type": "integer"
-        },
-        "RunAsGroup": {
-          "type": "integer"
-        },
-        "RunAsNonRoot": {
-          "type": "boolean"
-        },
-        "Privileged": {
-          "type": "boolean"
-        },
-        "ReadOnlyRootFilesystem": {
-          "type": "boolean"
+        "Path": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "title": "AWSBatchJobDefinitionSecurityContextDefinition"
+      "title": "AWSBatchJobDefinitionEksHostPathDefinition"
     },
     "Environment": {
       "type": "object",
@@ -927,18 +979,18 @@
       },
       "title": "AWSBatchJobDefinitionResourceRequirementDefinition"
     },
-    "Resources": {
+    "EphemeralStorage": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Requests": {
-          "type": "object"
-        },
-        "Limits": {
-          "type": "object"
+        "SizeInGiB": {
+          "type": "integer"
         }
       },
-      "title": "AWSBatchJobDefinitionResourcesDefinition"
+      "required": [
+        "SizeInGiB"
+      ],
+      "title": "AWSBatchJobDefinitionEphemeralStorageDefinition"
     },
     "RetryStrategy": {
       "type": "object",
@@ -993,10 +1045,10 @@
           }
         },
         "SecurityContext": {
-          "$ref": "#/definitions/SecurityContext"
+          "$ref": "#/definitions/EksContainerSecurityContext"
         },
         "Resources": {
-          "$ref": "#/definitions/Resources"
+          "$ref": "#/definitions/EksContainerResourceRequirements"
         },
         "Image": {
           "oneOf": [
