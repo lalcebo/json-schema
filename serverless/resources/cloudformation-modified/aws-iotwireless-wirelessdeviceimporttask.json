@@ -1,0 +1,216 @@
+{
+  "typeName": "AWS::IoTWireless::WirelessDeviceImportTask",
+  "description": "Wireless Device Import Tasks. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "DeviceCreationFileList": {
+      "description": "sidewalk create device's file path",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 1024
+      },
+      "title": "AWSIoTWirelessWirelessDeviceImportTaskDeviceCreationFileListDefinition"
+    },
+    "Role": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "sidewalk role",
+      "title": "AWSIoTWirelessWirelessDeviceImportTaskRoleDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSIoTWirelessWirelessDeviceImportTaskTagDefinition"
+    }
+  },
+  "properties": {
+    "DestinationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9-_]+",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Destination Name for import task"
+    },
+    "Sidewalk": {
+      "description": "sidewalk contain file for created device and role",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SidewalkManufacturingSn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DeviceCreationFile": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DeviceCreationFileList": {
+          "$ref": "#/definitions/DeviceCreationFileList"
+        },
+        "Role": {
+          "$ref": "#/definitions/Role"
+        }
+      },
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "required": [
+                "DeviceCreationFile"
+              ]
+            },
+            {
+              "required": [
+                "Role"
+              ]
+            }
+          ]
+        },
+        {
+          "required": [
+            "SidewalkManufacturingSn"
+          ]
+        }
+      ]
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags"
+  },
+  "required": [
+    "DestinationName",
+    "Sidewalk"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Arn",
+    "/properties/CreationDate",
+    "/properties/Status",
+    "/properties/StatusReason",
+    "/properties/InitializedImportedDevicesCount",
+    "/properties/PendingImportedDevicesCount",
+    "/properties/OnboardedImportedDevicesCount",
+    "/properties/FailedImportedDevicesCount",
+    "/properties/Sidewalk/DeviceCreationFileList"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Sidewalk/DeviceCreationFile",
+    "/properties/Sidewalk/SidewalkManufacturingSn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "iotwireless:StartWirelessDeviceImportTask",
+        "iotwireless:StartSingleWirelessDeviceImportTask",
+        "iotwireless:TagResource",
+        "iotwireless:ListTagsForResource",
+        "iam:PassRole"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "iotwireless:GetWirelessDeviceImportTask",
+        "iotwireless:ListTagsForResource"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "iotwireless:UpdateWirelessDeviceImportTask",
+        "iotwireless:UntagResource",
+        "iotwireless:ListTagsForResource",
+        "iam:PassRole"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "iotwireless:DeleteWirelessDeviceImportTask"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "iotwireless:ListWirelessDeviceImportTasks",
+        "iotwireless:ListTagsForResource"
+      ]
+    }
+  },
+  "title": "AWSIoTWirelessWirelessDeviceImportTaskProperties",
+  "type": "object"
+}
