@@ -26,6 +26,55 @@
     ],
     "description": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
   },
+  "AwsLayerPackage": {
+    "title": "AwsLayerPackage",
+    "anyOf": [
+      {
+        "type": "object",
+        "title": "AwsLayerPackageArtifact",
+        "properties": {
+          "artifact": {
+            "description": "https://www.serverless.com/framework/docs/providers/aws/guide/packaging#artifact",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "title": "AwsLayerPackagePattern",
+        "properties": {
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "title": "AwsLayerPackageExcludeInclude",
+        "description": "@deprecated Please move to patterns as quickly as possible",
+        "properties": {
+          "exclude": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "include": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  },
   "AwsLayer": {
     "type": "object",
     "properties": {
@@ -33,20 +82,23 @@
         "description": "**Uncommenting this will give all AWS users access to this layer unconditionally.**",
         "type": "array",
         "items": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(\\d{12}|\\*|arn:(aws[a-zA-Z-]*):iam::\\d{12}:root)$"
         }
       },
       "compatibleArchitectures": {
         "type": "array",
         "items": {
           "$ref": "common.json#/AwsSupportedArchitecture"
-        }
+        },
+        "maxItems": 2
       },
       "compatibleRuntimes": {
         "type": "array",
         "items": {
           "$ref": "layers.json#/LayerAwsCompatibleRuntime"
-        }
+        },
+        "maxItems": 15
       },
       "description": {
         "type": "string"
@@ -59,7 +111,7 @@
         "type": "string"
       },
       "package": {
-        "$ref": "common.json#/AwsPackage"
+        "$ref": "#/AwsLayerPackage"
       },
       "path": {
         "type": "string"
@@ -70,8 +122,13 @@
         "default": false
       }
     },
-    "required": [
-      "path"
+    "oneOf": [
+      {
+        "required": ["path"]
+      },
+      {
+        "required": ["package"]
+      }
     ],
     "additionalProperties": false
   },
