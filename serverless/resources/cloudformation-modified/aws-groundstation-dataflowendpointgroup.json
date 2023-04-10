@@ -23,6 +23,140 @@
       "additionalProperties": false,
       "title": "AWSGroundStationDataflowEndpointGroupSocketAddressDefinition"
     },
+    "AgentStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SUCCESS",
+            "FAILED",
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of AgentEndpoint.",
+      "title": "AWSGroundStationDataflowEndpointGroupAgentStatusDefinition"
+    },
+    "AuditResults": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "HEALTHY",
+            "UNHEALTHY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The results of the audit.",
+      "title": "AWSGroundStationDataflowEndpointGroupAuditResultsDefinition"
+    },
+    "IntegerRange": {
+      "description": "An integer range that has a minimum and maximum value.",
+      "type": "object",
+      "properties": {
+        "Minimum": {
+          "description": "A minimum value.",
+          "type": "integer"
+        },
+        "Maximum": {
+          "description": "A maximum value.",
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGroundStationDataflowEndpointGroupIntegerRangeDefinition"
+    },
+    "RangedSocketAddress": {
+      "description": "A socket address with a port range.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IPv4 socket address."
+        },
+        "PortRange": {
+          "description": "Port range of a socket address.",
+          "$ref": "#/definitions/IntegerRange"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGroundStationDataflowEndpointGroupRangedSocketAddressDefinition"
+    },
+    "ConnectionDetails": {
+      "description": "Egress address of AgentEndpoint with an optional mtu.",
+      "type": "object",
+      "properties": {
+        "SocketAddress": {
+          "$ref": "#/definitions/SocketAddress"
+        },
+        "Mtu": {
+          "description": "Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.",
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGroundStationDataflowEndpointGroupConnectionDetailsDefinition"
+    },
+    "RangedConnectionDetails": {
+      "description": "Ingress address of AgentEndpoint with a port range and an optional mtu.",
+      "type": "object",
+      "properties": {
+        "SocketAddress": {
+          "$ref": "#/definitions/RangedSocketAddress"
+        },
+        "Mtu": {
+          "description": "Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.",
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGroundStationDataflowEndpointGroupRangedConnectionDetailsDefinition"
+    },
+    "AwsGroundStationAgentEndpoint": {
+      "description": "Information about AwsGroundStationAgentEndpoint.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9_:-]{1,256}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EgressAddress": {
+          "$ref": "#/definitions/ConnectionDetails"
+        },
+        "IngressAddress": {
+          "$ref": "#/definitions/RangedConnectionDetails"
+        },
+        "AgentStatus": {
+          "$ref": "#/definitions/AgentStatus"
+        },
+        "AuditResults": {
+          "$ref": "#/definitions/AuditResults"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGroundStationDataflowEndpointGroupAwsGroundStationAgentEndpointDefinition"
+    },
     "DataflowEndpoint": {
       "type": "object",
       "properties": {
@@ -84,8 +218,24 @@
         },
         "Endpoint": {
           "$ref": "#/definitions/DataflowEndpoint"
+        },
+        "AwsGroundStationAgentEndpoint": {
+          "$ref": "#/definitions/AwsGroundStationAgentEndpoint"
         }
       },
+      "oneOf": [
+        {
+          "required": [
+            "Endpoint",
+            "SecurityDetails"
+          ]
+        },
+        {
+          "required": [
+            "AwsGroundStationAgentEndpoint"
+          ]
+        }
+      ],
       "additionalProperties": false,
       "title": "AWSGroundStationDataflowEndpointGroupEndpointDetailsDefinition"
     },
@@ -132,10 +282,12 @@
       }
     },
     "ContactPrePassDurationSeconds": {
-      "type": "integer"
+      "type": "integer",
+      "description": "Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a PREPASS state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the PREPASS state."
     },
     "ContactPostPassDurationSeconds": {
-      "type": "integer"
+      "type": "integer",
+      "description": "Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a POSTPASS state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the POSTPASS state."
     },
     "Tags": {
       "type": "array",
@@ -160,7 +312,10 @@
         "groundstation:CreateDataflowEndpointGroup",
         "groundstation:GetDataflowEndpointGroup",
         "groundstation:TagResource",
-        "iam:PassRole"
+        "iam:PassRole",
+        "ec2:describeAddresses",
+        "ec2:describeNetworkInterfaces",
+        "iam:createServiceLinkedRole"
       ]
     },
     "read": {

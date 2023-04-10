@@ -62,6 +62,45 @@
         "Value"
       ],
       "title": "AWSGroundStationMissionProfileTagDefinition"
+    },
+    "StreamsKmsKey": {
+      "type": "object",
+      "properties": {
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KmsAliasArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "KmsKeyArn"
+          ]
+        },
+        {
+          "required": [
+            "KmsAliasArn"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSGroundStationMissionProfileStreamsKmsKeyDefinition"
     }
   },
   "properties": {
@@ -88,6 +127,21 @@
     "MinimumViableContactDurationSeconds": {
       "description": "Visibilities with shorter duration than the specified minimum viable contact duration will be ignored when searching for available contacts.",
       "type": "integer"
+    },
+    "StreamsKmsKey": {
+      "description": "The ARN of a KMS Key used for encrypting data during transmission from the source to destination locations.",
+      "$ref": "#/definitions/StreamsKmsKey"
+    },
+    "StreamsKmsRole": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the KMS Key or Alias Key role used to define permissions on KMS Key usage."
     },
     "DataflowEdges": {
       "description": "",
@@ -134,13 +188,17 @@
       "permissions": [
         "groundstation:CreateMissionProfile",
         "groundstation:GetMissionProfile",
-        "groundstation:TagResource"
+        "groundstation:TagResource",
+        "kms:DescribeKey",
+        "kms:CreateGrant"
       ]
     },
     "read": {
       "permissions": [
         "groundstation:GetMissionProfile",
-        "groundstation:ListTagsForResource"
+        "groundstation:ListTagsForResource",
+        "kms:DescribeKey",
+        "kms:CreateGrant"
       ]
     },
     "update": {
@@ -149,7 +207,9 @@
         "groundstation:GetMissionProfile",
         "groundstation:ListTagsForResource",
         "groundstation:TagResource",
-        "groundstation:UntagResource"
+        "groundstation:UntagResource",
+        "kms:DescribeKey",
+        "kms:CreateGrant"
       ]
     },
     "delete": {
