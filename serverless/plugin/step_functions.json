@@ -1209,7 +1209,7 @@
   },
   "AwsStateMachineMapItemBatcherMaxItemsPerBatch": {
     "description": "The maximum number of items in a batch",
-    "type": "number",
+    "type": "integer",
     "minimum": 1
   },
   "AwsStateMachineMapItemBatcherMaxItemsPerBatchPath": {
@@ -1218,7 +1218,7 @@
   },
   "AwsStateMachineMapItemBatcherMaxBytesPerBatch": {
     "description": "The maximum number of bytes in a batch",
-    "type": "number",
+    "type": "integer",
     "minimum": 1
   },
   "AwsStateMachineMapItemBatcherMaxBytesPerBatchPath": {
@@ -1355,7 +1355,81 @@
     ]
   },
   "AwsStateMachineMapItemReader": {
-
+    "type": "object",
+    "properties": {
+      "Resource": {
+        "type": "string",
+        "enum": [
+          "arn:aws:states:::s3:getObject",
+          "arn:aws:states:::s3:listObjectsV2"
+        ]
+      },
+      "ReaderConfig": {
+        "type": "object",
+        "properties": {
+          "InputType": {
+            "type": "string",
+            "enum": [
+              "MANIFEST",
+              "JSON",
+              "CSV"
+            ]
+          },
+          "MaxItems": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000000
+          },
+          "CSVHeaderLocation": {
+            "type": "string",
+            "enum": [
+              "FIRST_ROW",
+              "GIVEN"
+            ]
+          },
+          "CSVHeaders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Parameters": {
+        "oneOf": [
+          {
+            "title": "AwsStateMachineMapItemReaderS3ParamsFromState",
+            "type": "object",
+            "properties": {
+              "Bucket.$": {
+                "type": "string"
+              },
+              "Prefix.$": {
+                "type": "string"
+              },
+              "Key.$": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "title": "AwsStateMachineMapItemReaderS3Params",
+            "type": "object",
+            "properties": {
+              "Bucket": {
+                "type": "string"
+              },
+              "Prefix": {
+                "type": "string"
+              },
+              "Key": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    }
   },
   "AwsStateMachineStatesMapItemProcessor": {
     "type": "object",
@@ -1450,7 +1524,7 @@
         "$ref": "#/AwsStateMachineMapItemBatcher"
       },
       "ItemReader": {
-        "type": "object"
+        "$ref": "#/AwsStateMachineMapItemReader"
       },
       "ItemProcessor": {
         "allOf": [
@@ -1587,7 +1661,7 @@
         "$ref": "#/AwsStateMachineMapItemBatcher"
       },
       "ItemReader": {
-        "type": "object"
+        "$ref": "#/AwsStateMachineMapItemReader"
       },
       "Iterator": {
         "description": "@deprecated, Please use ItemProcessor instead",
