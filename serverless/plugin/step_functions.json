@@ -1203,6 +1203,157 @@
     ],
     "required": ["Type"]
   },
+  "AwsStateMachineMapItemBatcherBatchInput": {
+    "type": "string",
+    "description": "The ItemBatcher Configuration MAY have a **BatchInput** field, whose value MUST be a Payload Template. This will allow you to select the input of the batch"
+  },
+  "AwsStateMachineMapItemBatcherMaxItemsPerBatch": {
+    "description": "The maximum number of items in a batch",
+    "type": "number",
+    "minimum": 1
+  },
+  "AwsStateMachineMapItemBatcherMaxItemsPerBatchPath": {
+    "description": "The maximum number of items in a batch parsed from the state",
+    "type": "string"
+  },
+  "AwsStateMachineMapItemBatcherMaxBytesPerBatch": {
+    "description": "The maximum number of bytes in a batch",
+    "type": "number",
+    "minimum": 1
+  },
+  "AwsStateMachineMapItemBatcherMaxBytesPerBatchPath": {
+    "description": "The maximum number of bytes in a batch parsed from the state",
+    "type": "string"
+  },
+  "AwsStateMachineMapItemBatcher": {
+    "description": "Configuration to batch selected items into sub-arrays before passing them to each invocation :- https://states-language.net/#map-input-output-batching-items",
+    "allOf": [
+      {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatch"
+              },
+              "MaxInputBytesPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatch"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": ["MaxItemsPerBatch"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatch"
+              },
+              "MaxInputBytesPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatch"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": ["MaxInputBytesPerBatch"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatch"
+              },
+              "MaxInputBytesPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatchPath"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": ["MaxItemsPerBatch"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatch"
+              },
+              "MaxInputBytesPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatchPath"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": ["MaxInputBytesPerBatchPath"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatchPath"
+              },
+              "MaxInputBytesPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatch"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": ["MaxItemsPerBatchPath"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatchPath"
+              },
+              "MaxInputBytesPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatch"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": ["MaxInputBytesPerBatch"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatchPath"
+              },
+              "MaxInputBytesPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatchPath"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": ["MaxItemsPerBatchPath"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatchPath"
+              },
+              "MaxInputBytesPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatchPath"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": ["MaxInputBytesPerBatchPath"]
+          }
+        ]
+      }
+    ]
+  },
   "AwsStateMachineStatesMapItemProcessor": {
     "type": "object",
     "properties": {
@@ -1290,25 +1441,7 @@
         }
       },
       "ItemBatcher": {
-        "type": "object",
-        "properties": {
-          "MaxItemsPerBatch": {
-            "type": "number",
-            "minimum": 0
-          },
-          "MaxInputBytesPerBatchPath": {
-            "type": "number",
-            "minimum": 0
-          }
-        },
-        "oneOf": [
-          {
-            "required": ["MaxItemsPerBatch"]
-          },
-          {
-            "required": ["MaxInputBytesPerBatchPath"]
-          }
-        ]
+        "$ref": "#/AwsStateMachineMapItemBatcher"
       },
       "ItemReader": {
         "type": "object"
@@ -1442,25 +1575,7 @@
         }
       },
       "ItemBatcher": {
-        "type": "object",
-        "properties": {
-          "MaxItemsPerBatch": {
-            "type": "number",
-            "minimum": 0
-          },
-          "MaxInputBytesPerBatchPath": {
-            "type": "number",
-            "minimum": 0
-          }
-        },
-        "oneOf": [
-          {
-            "required": ["MaxItemsPerBatch"]
-          },
-          {
-            "required": ["MaxInputBytesPerBatchPath"]
-          }
-        ]
+        "$ref": "#/AwsStateMachineMapItemBatcher"
       },
       "ItemReader": {
         "type": "object"
