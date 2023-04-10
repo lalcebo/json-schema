@@ -1314,22 +1314,35 @@
         "type": "object"
       },
       "ItemProcessor": {
-        "$ref": "#/AwsStateMachineDefinition",
-        "properties": {
-          "ProcessorConfig": {
-            "type": ["object"],
+        "allOf": [
+          {
+            "$ref": "#/AwsStateMachineDefinition"
+          },
+          {
+            "type": "object",
             "properties": {
-              "Mode": {
-                "type": "string",
-                "enum": ["DISTRIBUTED", "INLINE"]
-              },
-              "ExecutionType": {
-                "type": "string",
-                "enum": ["STANDARD", "EXPRESS"]
+              "ProcessorConfig": {
+                "type": ["object"],
+                "properties": {
+                  "Mode": {
+                    "type": "string",
+                    "enum": ["DISTRIBUTED", "INLINE"],
+                    "default": "INLINE"
+                  },
+                  "ExecutionType": {
+                    "type": "string",
+                    "enum": ["STANDARD", "EXPRESS"],
+                    "default": "STANDARD"
+                  }
+                },
+                "required": [
+                  "Mode",
+                  "ExecutionType"
+                ]
               }
             }
           }
-        }
+        ]
       }
     },
     "oneOf": [
