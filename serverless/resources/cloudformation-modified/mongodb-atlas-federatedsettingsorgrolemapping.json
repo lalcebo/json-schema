@@ -1,0 +1,159 @@
+{
+  "typeName": "MongoDB::Atlas::FederatedSettingsOrgRoleMapping",
+  "description": "Returns, adds, edits, and removes federation-related features such as role mappings and connected organization configurations.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "RoleAssignment": {
+      "type": "object",
+      "properties": {
+        "ProjectId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "List that contains comma-separated key value pairs to map zones to geographic regions. These pairs map an ISO 3166-1a2 location code, with an ISO 3166-2 subdivision code when possible, to a unique 24-hexadecimal string that identifies the custom zone.\n\nThis parameter returns an empty object if no custom zones exist."
+        },
+        "OrgId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "List that contains comma-separated key value pairs to map zones to geographic regions. These pairs map an ISO 3166-1a2 location code, with an ISO 3166-2 subdivision code when possible, to a unique 24-hexadecimal string that identifies the custom zone.\n\nThis parameter returns an empty object if no custom zones exist."
+        },
+        "Role": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasFederatedSettingsOrgRoleMappingRoleAssignmentDefinition"
+    }
+  },
+  "properties": {
+    "Profile": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml)."
+    },
+    "ExternalGroupName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique human-readable label that identifies the identity provider group to whichthis role mapping applies."
+    },
+    "FederationSettingsId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 24,
+          "minLength": 24,
+          "pattern": "^([a-f0-9]{24})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique 24-hexadecimal digit string that identifies your federation."
+    },
+    "OrgId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 24,
+          "minLength": 24,
+          "pattern": "^([a-f0-9]{24})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique 24-hexadecimal digit string that identifies the organization that contains your projects."
+    },
+    "RoleAssignments": {
+      "type": "array",
+      "insertionOrder": false,
+      "description": "Atlas roles and the unique identifiers of the groups and organizations associated with each role.",
+      "items": {
+        "$ref": "#/definitions/RoleAssignment",
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "createOnlyProperties": [
+    "/properties/OrgId",
+    "/properties/FederationSettingsId",
+    "/properties/Profile"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id"
+  ],
+  "required": [
+    "FederationSettingsId",
+    "OrgId",
+    "ExternalGroupName"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id",
+    "/properties/FederationSettingsId",
+    "/properties/OrgId",
+    "/properties/Profile"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    }
+  },
+  "title": "MongoDBAtlasFederatedSettingsOrgRoleMappingProperties",
+  "type": "object"
+}

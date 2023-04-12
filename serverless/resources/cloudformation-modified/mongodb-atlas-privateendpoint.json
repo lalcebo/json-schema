@@ -1,0 +1,188 @@
+{
+  "typeName": "MongoDB::Atlas::PrivateEndpoint",
+  "description": "The Private Endpoint creation flow consists of the creation of three related resources in the next order: 1. Atlas Private Endpoint Service 2. Aws VPC private Endpoint 3. Atlas Private Endpoint. Source:- No source definition found, add manually please",
+  "definitions": {
+    "PrivateEndpoint": {
+      "type": "object",
+      "properties": {
+        "VpcId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "String Representing the AWS VPC ID (like: vpc-xxxxxxxxxxxxxxxx) (Used For Creating the AWS VPC Endpoint)"
+        },
+        "SubnetIds": {
+          "type": "array",
+          "description": "List of string representing the AWS VPC Subnet ID (like: subnet-xxxxxxxxxxxxxxxxx) (Used For Creating the AWS VPC Endpoint)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "InterfaceEndpointId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Unique identifiers of the interface endpoints in your VPC that you added to the AWS PrivateLink connection."
+        },
+        "AWSPrivateEndpointStatus": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Status of the AWS PrivateEndpoint connection."
+        },
+        "AtlasPrivateEndpointStatus": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Status of the Atlas PrivateEndpoint connection."
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasPrivateEndpointPrivateEndpointDefinition"
+    }
+  },
+  "properties": {
+    "Profile": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup (../../../examples/profile-secret.yaml)"
+    },
+    "EndpointServiceName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of the AWS PrivateLink endpoint service. Atlas returns null while it is creating the endpoint service."
+    },
+    "ErrorMessage": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Error message pertaining to the AWS PrivateLink connection. Returns null if there are no errors."
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-f0-9]{24})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Status of the Atlas PrivateEndpoint service connection"
+    },
+    "GroupId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-f0-9]{24})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique 24-hexadecimal digit string that identifies your project."
+    },
+    "Region": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Aws Region"
+    },
+    "PrivateEndpoints": {
+      "type": "array",
+      "description": "List of private endpoint associated to the service",
+      "items": {
+        "$ref": "#/definitions/PrivateEndpoint"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "GroupId",
+    "Region"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/InterfaceEndpoints"
+  ],
+  "createOnlyProperties": [
+    "/properties/GroupId",
+    "/properties/Region",
+    "/properties/Profile"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id",
+    "/properties/GroupId",
+    "/properties/Region",
+    "/properties/Profile"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ec2:CreateVpcEndpoint",
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "ec2:DeleteVpcEndpoints",
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    }
+  },
+  "title": "MongoDBAtlasPrivateEndpointProperties",
+  "type": "object"
+}

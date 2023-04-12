@@ -1,0 +1,193 @@
+{
+  "typeName": "MongoDB::Atlas::Project",
+  "description": "Retrieves or creates projects in any given Atlas organization.. Source:- No source definition found, add manually please",
+  "definitions": {
+    "projectSettings": {
+      "type": "object",
+      "properties": {
+        "IsCollectDatabaseSpecificsStatisticsEnabled": {
+          "type": "boolean"
+        },
+        "IsDataExplorerEnabled": {
+          "type": "boolean"
+        },
+        "IsPerformanceAdvisorEnabled": {
+          "type": "boolean"
+        },
+        "IsRealtimePerformancePanelEnabled": {
+          "type": "boolean"
+        },
+        "IsSchemaAdvisorEnabled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasProjectprojectSettingsDefinition"
+    },
+    "projectTeam": {
+      "type": "object",
+      "properties": {
+        "TeamId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleNames": {
+          "items": {
+            "$ref": "#/definitions/Roles"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasProjectprojectTeamDefinition"
+    },
+    "projectApiKey": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleNames": {
+          "items": {
+            "$ref": "#/definitions/Roles"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasProjectprojectApiKeyDefinition"
+    },
+    "Roles": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "MongoDBAtlasProjectRolesDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": ""
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of the project to create."
+    },
+    "OrgId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": ""
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique identifier of the organization within which to create the project."
+    },
+    "WithDefaultAlertsSettings": {
+      "description": "Flag that indicates whether to create the project with default alert settings.",
+      "type": "boolean",
+      "default": "false"
+    },
+    "ProjectSettings": {
+      "$ref": "#/definitions/projectSettings"
+    },
+    "Profile": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Profile used to provide credentials information, (a secret with the cfn/atlas/profile/{Profile}, is required), if not provided default is used"
+    },
+    "ProjectTeams": {
+      "items": {
+        "$ref": "#/definitions/projectTeam"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "ProjectApiKeys": {
+      "items": {
+        "$ref": "#/definitions/projectApiKey"
+      },
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "OrgId"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Profile"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ProjectApiKeys"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Created",
+    "/properties/ProjectOwnerId",
+    "/properties/ClusterCount"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id",
+    "/properties/Profile"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "secretsmanager:GetSecretValue"
+      ]
+    }
+  },
+  "title": "MongoDBAtlasProjectProperties",
+  "type": "object"
+}
