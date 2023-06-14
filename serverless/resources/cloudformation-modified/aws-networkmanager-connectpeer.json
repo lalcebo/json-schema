@@ -51,6 +51,7 @@
     "Tags": {
       "description": "An array of key-value pairs to apply to this resource.",
       "type": "array",
+      "uniqueItems": true,
       "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
@@ -69,7 +70,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The IP address of a core network."
         },
         "PeerAddress": {
           "oneOf": [
@@ -79,9 +81,11 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The IP address of the Connect peer."
         },
         "InsideCidrBlocks": {
+          "description": "The inside IP addresses used for a Connect peer configuration.",
           "type": "array",
           "insertionOrder": false,
           "items": {
@@ -130,9 +134,11 @@
       "type": "object",
       "properties": {
         "CoreNetworkAsn": {
+          "description": "The ASN of the Coret Network.",
           "type": "number"
         },
         "PeerAsn": {
+          "description": "The ASN of the Connect peer.",
           "type": "number"
         },
         "CoreNetworkAddress": {
@@ -143,7 +149,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The address of a core network."
         },
         "PeerAddress": {
           "oneOf": [
@@ -153,7 +160,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The address of a core network Connect peer."
         }
       },
       "additionalProperties": false,
@@ -198,7 +206,8 @@
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": false
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags"
   },
   "required": [
     "ConnectAttachmentId",
@@ -214,10 +223,8 @@
     "/properties/ConnectAttachmentId"
   ],
   "writeOnlyProperties": [
-    "/properties/PeerAddress",
     "/properties/CoreNetworkAddress",
-    "/properties/BgpOptions",
-    "/properties/InsideCidrBlocks"
+    "/properties/BgpOptions"
   ],
   "readOnlyProperties": [
     "/properties/ConnectPeerId",
@@ -229,6 +236,13 @@
   ],
   "primaryIdentifier": [
     "/properties/ConnectPeerId"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/ConnectAttachmentId",
+      "/properties/CoreNetworkAddress",
+      "/properties/InsideCidrBlocks"
+    ]
   ],
   "handlers": {
     "create": {

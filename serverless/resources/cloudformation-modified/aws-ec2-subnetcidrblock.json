@@ -1,17 +1,21 @@
 {
   "typeName": "AWS::EC2::SubnetCidrBlock",
-  "description": "Resource Type definition for AWS::EC2::SubnetCidrBlock. Source:- No source definition found, add manually please",
+  "$schema": "https://schema.cloudformation.us-east-1.amazonaws.com/provider.definition.schema.v1.json",
+  "description": "The AWS::EC2::SubnetCidrBlock resource creates association between subnet and IPv6 CIDR. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2/subnetcidrblock",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2/subnetcidrblock",
   "additionalProperties": false,
   "properties": {
     "Ipv6CidrBlock": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "maxLength": 42
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length"
     },
     "SubnetId": {
       "oneOf": [
@@ -21,7 +25,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The ID of the subnet"
     }
   },
   "required": [
@@ -38,6 +43,39 @@
   "primaryIdentifier": [
     "/properties/Id"
   ],
+  "propertyTransform": {
+    "/properties/Ipv6CidrBlock": "$join([$match($replace(Ipv6CidrBlock, /(^|:)(0{1,4})([0-9a-fA-F]{1,4})/, \"$1$3\"), /^([0-9a-fA-F]{1,4}:){4}/).match, \":/64\"])"
+  },
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ec2:AssociateSubnetCidrBlock",
+        "ec2:DescribeSubnets"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "ec2:DisassociateSubnetCidrBlock",
+        "ec2:DescribeSubnets"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "ec2:DescribeSubnets"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "ec2:DescribeSubnets"
+      ]
+    }
+  },
   "title": "AWSEC2SubnetCidrBlockProperties",
   "type": "object"
 }

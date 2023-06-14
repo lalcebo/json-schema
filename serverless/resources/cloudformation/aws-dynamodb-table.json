@@ -17,18 +17,12 @@
       }
     },
     "BillingMode" : {
-      "type" : "string",
-      "enum": [
-        "PROVISIONED",
-        "PAY_PER_REQUEST"
-      ],
-      "default": "PROVISIONED"
+      "type" : "string"
     },
     "DeletionProtectionEnabled" : {
       "type" : "boolean"
     },
     "GlobalSecondaryIndexes" : {
-      "description": "Global Secondary indices don't play very nice with our usual Cloudformation expectations and there are some catches. Please go and read them here:- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html#cfn-dynamodb-table-globalsecondaryindexes",
       "type" : "array",
       "uniqueItems" : false,
       "items" : {
@@ -36,11 +30,15 @@
       }
     },
     "KeySchema" : {
-      "type" : "array",
-      "uniqueItems" : true,
-      "items" : {
-        "$ref" : "#/definitions/KeySchema"
-      }
+      "oneOf" : [ {
+        "type" : "array",
+        "uniqueItems" : true,
+        "items" : {
+          "$ref" : "#/definitions/KeySchema"
+        }
+      }, {
+        "type" : "object"
+      } ]
     },
     "LocalSecondaryIndexes" : {
       "type" : "array",
@@ -53,11 +51,7 @@
       "$ref" : "#/definitions/PointInTimeRecoverySpecification"
     },
     "TableClass" : {
-      "type" : "string",
-      "enum": [
-        "STANDARD",
-        "STANDARD_INFREQUENT_ACCESS"
-      ]
+      "type" : "string"
     },
     "ProvisionedThroughput" : {
       "$ref" : "#/definitions/ProvisionedThroughput"
@@ -69,10 +63,7 @@
       "$ref" : "#/definitions/StreamSpecification"
     },
     "TableName" : {
-      "type" : "string",
-      "minLength": 3,
-      "maxLength": 255,
-      "pattern": "[a-zA-Z0-9_.-]+"
+      "type" : "string"
     },
     "Tags" : {
       "type" : "array",
@@ -95,7 +86,7 @@
     }
   },
   "propertyTransform" : {
-    "/properties/SSESpecification/KMSMasterKeyId" : "$join([\"arn:(aws)[-]{0,1}[a-z]{0,2}[-]{0,1}[a-z]{0,3}:kms:[a-z]{2}[-]{1}[a-z]{3,10}[-]{0,1}[a-z]{0,4}[-]{1}[1-4]{1}:[0-9]{12}[:]{1}key\\/\", SSESpecification.KMSMasterKeyId])"
+    "/properties/SSESpecification/KMSMasterKeyId" : "$join([\"arn:(aws)[-]{0,1}[a-z]{0,3}[-]{0,1}[a-z]{0,3}:kms:[a-z]{2}[-]{1}[a-z]{3,10}[-]{0,1}[a-z]{0,4}[-]{1}[1-4]{1}:[0-9]{12}[:]{1}key\\/\", SSESpecification.KMSMasterKeyId])"
   },
   "definitions" : {
     "StreamSpecification" : {
@@ -103,13 +94,7 @@
       "additionalProperties" : false,
       "properties" : {
         "StreamViewType" : {
-          "type" : "string",
-          "enum": [
-            "KEYS_ONLY",
-            "NEW_AND_OLD_IMAGES",
-            "NEW_IMAGE",
-            "OLD_IMAGE"
-          ]
+          "type" : "string"
         }
       },
       "required" : [ "StreamViewType" ]
@@ -142,16 +127,10 @@
       "additionalProperties" : false,
       "properties" : {
         "AttributeName" : {
-          "type" : "string",
-          "minLength": 1,
-          "maxLength": 255
+          "type" : "string"
         },
         "KeyType" : {
-          "type" : "string",
-          "enum": [
-            "HASH",
-            "RANGE"
-          ]
+          "type" : "string"
         }
       },
       "required" : [ "KeyType", "AttributeName" ]
@@ -170,9 +149,7 @@
       "additionalProperties" : false,
       "properties" : {
         "StreamArn" : {
-          "type" : "string",
-          "minLength": 37,
-          "maxLength": 1024
+          "type" : "string"
         }
       },
       "required" : [ "StreamArn" ]
@@ -182,33 +159,27 @@
       "additionalProperties" : false,
       "properties" : {
         "AttributeName" : {
-          "type" : "string",
-          "minLength": 1,
-          "maxLength": 255
+          "type" : "string"
         },
         "Enabled" : {
           "type" : "boolean"
         }
       },
-      "required" : [ "Enabled", "AttributeName" ]
+      "required" : [ "Enabled" ]
     },
     "LocalSecondaryIndex" : {
       "type" : "object",
       "additionalProperties" : false,
       "properties" : {
         "IndexName" : {
-          "type" : "string",
-          "minLength": 3,
-          "maxLength": 255,
-          "pattern": "[a-zA-Z0-9_.-]+"
+          "type" : "string"
         },
         "KeySchema" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/KeySchema"
-          },
-          "maxItems": 2
+          }
         },
         "Projection" : {
           "$ref" : "#/definitions/Projection"
@@ -221,18 +192,14 @@
       "additionalProperties" : false,
       "properties" : {
         "IndexName" : {
-          "type" : "string",
-          "minLength": 3,
-          "maxLength": 255,
-          "pattern": "[a-zA-Z0-9_.-]+"
+          "type" : "string"
         },
         "KeySchema" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/KeySchema"
-          },
-          "maxItems": 2
+          }
         },
         "Projection" : {
           "$ref" : "#/definitions/Projection"
@@ -257,10 +224,7 @@
           "type" : "boolean"
         },
         "SSEType" : {
-          "type" : "string",
-          "enum": [
-            "KMS"
-          ]
+          "type" : "string"
         }
       },
       "required" : [ "SSEEnabled" ]
@@ -270,18 +234,10 @@
       "additionalProperties" : false,
       "properties" : {
         "AttributeName" : {
-          "type" : "string",
-          "minLength": 1,
-          "maxLength": 255
+          "type" : "string"
         },
         "AttributeType" : {
-          "description": "The data type for the attribute, where: \nS - the attribute is of type String.\n N - the attribute is of type Number.\n B - the attribute is of type Binary",
-          "type" : "string",
-          "enum": [
-            "S",
-            "N",
-            "B"
-          ]
+          "type" : "string"
         }
       },
       "required" : [ "AttributeName", "AttributeType" ]
@@ -321,16 +277,10 @@
           "uniqueItems" : false,
           "items" : {
             "type" : "string"
-          },
-          "maxItems": 20
+          }
         },
         "ProjectionType" : {
-          "type" : "string",
-          "enum": [
-            "ALL",
-            "INCLUDE",
-            "KEYS_ONLY"
-          ]
+          "type" : "string"
         }
       }
     },
@@ -352,23 +302,13 @@
           "$ref" : "#/definitions/S3BucketSource"
         },
         "InputFormat" : {
-          "type" : "string",
-          "enum": [
-            "CSV",
-            "DYNAMODB_JSON",
-            "ION"
-          ]
+          "type" : "string"
         },
         "InputFormatOptions" : {
           "$ref" : "#/definitions/InputFormatOptions"
         },
         "InputCompressionType" : {
-          "type" : "string",
-          "enum": [
-            "GZIP",
-            "NONE",
-            "ZSTD"
-          ]
+          "type" : "string"
         }
       },
       "required" : [ "S3BucketSource", "InputFormat" ]
@@ -378,17 +318,13 @@
       "additionalProperties" : false,
       "properties" : {
         "S3BucketOwner" : {
-          "type" : "string",
-          "pattern": "[0-9]{12}"
+          "type" : "string"
         },
         "S3Bucket" : {
-          "type" : "string",
-          "maxLength": 255,
-          "pattern": "^[a-z0-9A-Z]+[\\.\\-\\w]*[a-z0-9A-Z]+$"
+          "type" : "string"
         },
         "S3KeyPrefix" : {
-          "type" : "string",
-          "maxLength": 1024
+          "type" : "string"
         }
       },
       "required" : [ "S3Bucket" ]
@@ -410,15 +346,11 @@
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "type" : "string",
-            "maxLength": 255
+            "type" : "string"
           }
         },
         "Delimiter" : {
-          "type" : "string",
-          "minLength": 1,
-          "maxLength": 1,
-          "pattern": "[,;:|\t ]"
+          "type" : "string"
         }
       }
     }
@@ -441,7 +373,7 @@
       "timeoutInMinutes" : 720
     },
     "read" : {
-      "permissions" : [ "dynamodb:DescribeTable", "dynamodb:DescribeContinuousBackups", "dynamodb:DescribeContributorInsights" ]
+      "permissions" : [ "dynamodb:DescribeTable", "dynamodb:DescribeContinuousBackups", "dynamodb:DescribeContributorInsights", "dynamodb:DescribeKinesisStreamingDestination", "dynamodb:ListTagsOfResource" ]
     },
     "update" : {
       "permissions" : [ "dynamodb:UpdateTable", "dynamodb:DescribeTable", "dynamodb:DescribeTimeToLive", "dynamodb:UpdateTimeToLive", "dynamodb:UpdateContinuousBackups", "dynamodb:UpdateContributorInsights", "dynamodb:DescribeContinuousBackups", "dynamodb:DescribeKinesisStreamingDestination", "dynamodb:ListTagsOfResource", "dynamodb:TagResource", "dynamodb:UntagResource", "dynamodb:DescribeContributorInsights", "dynamodb:EnableKinesisStreamingDestination", "dynamodb:DisableKinesisStreamingDestination", "kinesis:DescribeStream", "kinesis:PutRecords", "iam:CreateServiceLinkedRole", "kms:CreateGrant", "kms:Describe*", "kms:Get*", "kms:List*", "kms:RevokeGrant" ],

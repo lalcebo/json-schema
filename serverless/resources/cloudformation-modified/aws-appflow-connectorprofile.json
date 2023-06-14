@@ -540,6 +540,14 @@
         "ClientCredentialsArn": {
           "description": "The client credentials to fetch access token and refresh token.",
           "$ref": "#/definitions/ClientCredentialsArn"
+        },
+        "OAuth2GrantType": {
+          "description": "The grant types to fetch an access token",
+          "$ref": "#/definitions/OAuth2GrantType"
+        },
+        "JwtToken": {
+          "description": "The credentials used to access your Salesforce records",
+          "$ref": "#/definitions/JwtToken"
         }
       },
       "title": "AWSAppFlowConnectorProfileSalesforceConnectorProfileCredentialsDefinition"
@@ -1018,7 +1026,8 @@
           "type": "string",
           "enum": [
             "CLIENT_CREDENTIALS",
-            "AUTHORIZATION_CODE"
+            "AUTHORIZATION_CODE",
+            "JWT_BEARER"
           ]
         },
         {
@@ -1165,7 +1174,7 @@
         {
           "type": "string",
           "pattern": "\\S+",
-          "maxLength": 512
+          "maxLength": 4096
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1342,12 +1351,25 @@
       ],
       "title": "AWSAppFlowConnectorProfileAccountNameDefinition"
     },
+    "JwtToken": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_.+/=]*$",
+          "maxLength": 8000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppFlowConnectorProfileJwtTokenDefinition"
+    },
     "RefreshToken": {
       "oneOf": [
         {
           "type": "string",
           "pattern": "\\S+",
-          "maxLength": 2048
+          "maxLength": 4096
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1580,15 +1602,16 @@
   ],
   "createOnlyProperties": [
     "/properties/ConnectorProfileName",
-    "/properties/KMSArn",
-    "/properties/ConnectorType"
+    "/properties/ConnectorType",
+    "/properties/ConnectorLabel"
   ],
   "readOnlyProperties": [
     "/properties/ConnectorProfileArn",
     "/properties/CredentialsArn"
   ],
   "writeOnlyProperties": [
-    "/properties/ConnectorProfileConfig"
+    "/properties/ConnectorProfileConfig",
+    "/properties/KMSArn"
   ],
   "primaryIdentifier": [
     "/properties/ConnectorProfileName"

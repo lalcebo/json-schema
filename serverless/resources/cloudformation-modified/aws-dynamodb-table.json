@@ -13,12 +13,7 @@
     "BillingMode": {
       "oneOf": [
         {
-          "type": "string",
-          "enum": [
-            "PROVISIONED",
-            "PAY_PER_REQUEST"
-          ],
-          "default": "PROVISIONED"
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -29,7 +24,6 @@
       "type": "boolean"
     },
     "GlobalSecondaryIndexes": {
-      "description": "Global Secondary indices don't play very nice with our usual Cloudformation expectations and there are some catches. Please go and read them here:- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html#cfn-dynamodb-table-globalsecondaryindexes",
       "type": "array",
       "uniqueItems": false,
       "items": {
@@ -37,11 +31,18 @@
       }
     },
     "KeySchema": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/KeySchema"
-      }
+      "oneOf": [
+        {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/KeySchema"
+          }
+        },
+        {
+          "type": "object"
+        }
+      ]
     },
     "LocalSecondaryIndexes": {
       "type": "array",
@@ -56,11 +57,7 @@
     "TableClass": {
       "oneOf": [
         {
-          "type": "string",
-          "enum": [
-            "STANDARD",
-            "STANDARD_INFREQUENT_ACCESS"
-          ]
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -79,10 +76,7 @@
     "TableName": {
       "oneOf": [
         {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 255,
-          "pattern": "[a-zA-Z0-9_.-]+"
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -110,7 +104,7 @@
     }
   },
   "propertyTransform": {
-    "/properties/SSESpecification/KMSMasterKeyId": "$join([\"arn:(aws)[-]{0,1}[a-z]{0,2}[-]{0,1}[a-z]{0,3}:kms:[a-z]{2}[-]{1}[a-z]{3,10}[-]{0,1}[a-z]{0,4}[-]{1}[1-4]{1}:[0-9]{12}[:]{1}key\\/\", SSESpecification.KMSMasterKeyId])"
+    "/properties/SSESpecification/KMSMasterKeyId": "$join([\"arn:(aws)[-]{0,1}[a-z]{0,3}[-]{0,1}[a-z]{0,3}:kms:[a-z]{2}[-]{1}[a-z]{3,10}[-]{0,1}[a-z]{0,4}[-]{1}[1-4]{1}:[0-9]{12}[:]{1}key\\/\", SSESpecification.KMSMasterKeyId])"
   },
   "definitions": {
     "StreamSpecification": {
@@ -120,13 +114,7 @@
         "StreamViewType": {
           "oneOf": [
             {
-              "type": "string",
-              "enum": [
-                "KEYS_ONLY",
-                "NEW_AND_OLD_IMAGES",
-                "NEW_IMAGE",
-                "OLD_IMAGE"
-              ]
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -190,9 +178,7 @@
         "AttributeName": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 255
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -202,11 +188,7 @@
         "KeyType": {
           "oneOf": [
             {
-              "type": "string",
-              "enum": [
-                "HASH",
-                "RANGE"
-              ]
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -237,9 +219,7 @@
         "StreamArn": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 37,
-              "maxLength": 1024
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -259,9 +239,7 @@
         "AttributeName": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 255
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -273,8 +251,7 @@
         }
       },
       "required": [
-        "Enabled",
-        "AttributeName"
+        "Enabled"
       ],
       "title": "AWSDynamoDBTableTimeToLiveSpecificationDefinition"
     },
@@ -285,10 +262,7 @@
         "IndexName": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 3,
-              "maxLength": 255,
-              "pattern": "[a-zA-Z0-9_.-]+"
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -300,8 +274,7 @@
           "uniqueItems": true,
           "items": {
             "$ref": "#/definitions/KeySchema"
-          },
-          "maxItems": 2
+          }
         },
         "Projection": {
           "$ref": "#/definitions/Projection"
@@ -321,10 +294,7 @@
         "IndexName": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 3,
-              "maxLength": 255,
-              "pattern": "[a-zA-Z0-9_.-]+"
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -336,8 +306,7 @@
           "uniqueItems": true,
           "items": {
             "$ref": "#/definitions/KeySchema"
-          },
-          "maxItems": 2
+          }
         },
         "Projection": {
           "$ref": "#/definitions/Projection"
@@ -376,10 +345,7 @@
         "SSEType": {
           "oneOf": [
             {
-              "type": "string",
-              "enum": [
-                "KMS"
-              ]
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -399,9 +365,7 @@
         "AttributeName": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 255
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -411,18 +375,12 @@
         "AttributeType": {
           "oneOf": [
             {
-              "type": "string",
-              "enum": [
-                "S",
-                "N",
-                "B"
-              ]
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "The data type for the attribute, where: \nS - the attribute is of type String.\n N - the attribute is of type Number.\n B - the attribute is of type Binary"
+          ]
         }
       },
       "required": [
@@ -488,18 +446,12 @@
           "uniqueItems": false,
           "items": {
             "type": "string"
-          },
-          "maxItems": 20
+          }
         },
         "ProjectionType": {
           "oneOf": [
             {
-              "type": "string",
-              "enum": [
-                "ALL",
-                "INCLUDE",
-                "KEYS_ONLY"
-              ]
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -532,12 +484,7 @@
         "InputFormat": {
           "oneOf": [
             {
-              "type": "string",
-              "enum": [
-                "CSV",
-                "DYNAMODB_JSON",
-                "ION"
-              ]
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -550,12 +497,7 @@
         "InputCompressionType": {
           "oneOf": [
             {
-              "type": "string",
-              "enum": [
-                "GZIP",
-                "NONE",
-                "ZSTD"
-              ]
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -576,8 +518,7 @@
         "S3BucketOwner": {
           "oneOf": [
             {
-              "type": "string",
-              "pattern": "[0-9]{12}"
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -587,9 +528,7 @@
         "S3Bucket": {
           "oneOf": [
             {
-              "type": "string",
-              "maxLength": 255,
-              "pattern": "^[a-z0-9A-Z]+[\\.\\-\\w]*[a-z0-9A-Z]+$"
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -599,8 +538,7 @@
         "S3KeyPrefix": {
           "oneOf": [
             {
-              "type": "string",
-              "maxLength": 1024
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -631,17 +569,13 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string",
-            "maxLength": 255
+            "type": "string"
           }
         },
         "Delimiter": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 1,
-              "pattern": "[,;:|\t ]"
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -721,7 +655,9 @@
       "permissions": [
         "dynamodb:DescribeTable",
         "dynamodb:DescribeContinuousBackups",
-        "dynamodb:DescribeContributorInsights"
+        "dynamodb:DescribeContributorInsights",
+        "dynamodb:DescribeKinesisStreamingDestination",
+        "dynamodb:ListTagsOfResource"
       ]
     },
     "update": {

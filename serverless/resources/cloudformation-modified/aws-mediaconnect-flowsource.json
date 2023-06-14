@@ -51,7 +51,8 @@
               "type": "string",
               "enum": [
                 "speke",
-                "static-key"
+                "static-key",
+                "srt-password"
               ],
               "default": "static-key"
             },
@@ -119,7 +120,6 @@
       },
       "additionalProperties": false,
       "required": [
-        "Algorithm",
         "RoleArn"
       ],
       "title": "AWSMediaConnectFlowSourceEncryptionDefinition"
@@ -176,6 +176,11 @@
       "description": "The maximum latency in milliseconds. This parameter applies only to RIST-based and Zixi-based streams.",
       "default": 2000
     },
+    "MinLatency": {
+      "type": "integer",
+      "description": "The minimum latency in milliseconds.",
+      "default": 2000
+    },
     "Name": {
       "oneOf": [
         {
@@ -195,7 +200,9 @@
             "zixi-push",
             "rtp-fec",
             "rtp",
-            "rist"
+            "rist",
+            "srt-listener",
+            "srt-caller"
           ]
         },
         {
@@ -203,6 +210,21 @@
         }
       ],
       "description": "The protocol that is used by the source."
+    },
+    "SenderIpAddress": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The IP address that the flow communicates with to initiate connection with the sender for fujitsu-qos protocol."
+    },
+    "SenderControlPort": {
+      "type": "integer",
+      "description": "The port that the flow uses to send outbound requests to initiate connection with the sender for fujitsu-qos protocol."
     },
     "StreamId": {
       "oneOf": [
@@ -214,6 +236,21 @@
         }
       ],
       "description": "The stream ID that you want to use for this transport. This parameter applies only to Zixi-based streams."
+    },
+    "SourceListenerAddress": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Source IP or domain name for SRT-caller protocol."
+    },
+    "SourceListenerPort": {
+      "type": "integer",
+      "description": "Source port for SRT-caller protocol."
     },
     "VpcInterfaceName": {
       "oneOf": [

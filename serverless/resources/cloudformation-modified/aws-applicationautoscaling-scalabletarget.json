@@ -1,69 +1,13 @@
 {
   "typeName": "AWS::ApplicationAutoScaling::ScalableTarget",
-  "description": "Resource Type definition for AWS::ApplicationAutoScaling::ScalableTarget. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::ApplicationAutoScaling::ScalableTarget. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "additionalProperties": false,
-  "properties": {
-    "ScheduledActions": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/ScheduledAction"
-      }
-    },
-    "ResourceId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ServiceNamespace": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ScalableDimension": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "SuspendedState": {
-      "$ref": "#/definitions/SuspendedState"
-    },
-    "MinCapacity": {
-      "type": "integer"
-    },
-    "RoleARN": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "MaxCapacity": {
-      "type": "integer"
-    }
-  },
   "definitions": {
     "SuspendedState": {
       "type": "object",
       "additionalProperties": false,
+      "description": "specifies whether the scaling activities for a scalable target are in a suspended state",
       "properties": {
         "ScheduledScalingSuspended": {
           "type": "boolean"
@@ -80,6 +24,7 @@
     "ScheduledAction": {
       "type": "object",
       "additionalProperties": false,
+      "description": "specifies a scheduled action for a scalable target",
       "properties": {
         "Timezone": {
           "oneOf": [
@@ -144,6 +89,7 @@
     "ScalableTargetAction": {
       "type": "object",
       "additionalProperties": false,
+      "description": "specifies the minimum and maximum capacity",
       "properties": {
         "MinCapacity": {
           "type": "integer"
@@ -155,12 +101,78 @@
       "title": "AWSApplicationAutoScalingScalableTargetScalableTargetActionDefinition"
     }
   },
+  "properties": {
+    "MaxCapacity": {
+      "description": "The maximum value that you plan to scale in to. When a scaling policy is in effect, Application Auto Scaling can scale in (contract) as needed to the minimum capacity limit in response to changing demand",
+      "type": "integer"
+    },
+    "MinCapacity": {
+      "description": "The minimum value that you plan to scale in to. When a scaling policy is in effect, Application Auto Scaling can scale in (contract) as needed to the minimum capacity limit in response to changing demand",
+      "type": "integer"
+    },
+    "ResourceId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the resource associated with the scalable target"
+    },
+    "RoleARN": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specify the Amazon Resource Name (ARN) of an Identity and Access Management (IAM) role that allows Application Auto Scaling to modify the scalable target on your behalf. "
+    },
+    "ScalableDimension": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The scalable dimension associated with the scalable target. This string consists of the service namespace, resource type, and scaling property"
+    },
+    "ScheduledActions": {
+      "description": "The scheduled actions for the scalable target. Duplicates aren't allowed.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/ScheduledAction"
+      }
+    },
+    "ServiceNamespace": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The namespace of the AWS service that provides the resource, or a custom-resource"
+    },
+    "SuspendedState": {
+      "description": "An embedded object that contains attributes and attribute values that are used to suspend and resume automatic scaling. Setting the value of an attribute to true suspends the specified scaling activities. Setting it to false (default) resumes the specified scaling activities.",
+      "$ref": "#/definitions/SuspendedState"
+    }
+  },
   "required": [
     "ResourceId",
     "ServiceNamespace",
     "ScalableDimension",
     "MinCapacity",
-    "RoleARN",
     "MaxCapacity"
   ],
   "createOnlyProperties": [
@@ -169,11 +181,57 @@
     "/properties/ServiceNamespace"
   ],
   "primaryIdentifier": [
-    "/properties/Id"
+    "/properties/ResourceId",
+    "/properties/ScalableDimension",
+    "/properties/ServiceNamespace"
   ],
   "readOnlyProperties": [
     "/properties/Id"
   ],
+  "writeOnlyProperties": [
+    "/properties/RoleARN"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "application-autoscaling:DescribeScalableTargets",
+        "application-autoscaling:RegisterScalableTarget",
+        "application-autoscaling:DescribeScheduledActions",
+        "application-autoscaling:PutScheduledAction"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "application-autoscaling:DescribeScalableTargets",
+        "application-autoscaling:DescribeScheduledActions"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "application-autoscaling:DescribeScalableTargets"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "application-autoscaling:RegisterScalableTarget",
+        "application-autoscaling:DescribeScalableTargets",
+        "application-autoscaling:DescribeScheduledActions",
+        "application-autoscaling:DeleteScheduledAction",
+        "application-autoscaling:PutScheduledAction"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "application-autoscaling:DeregisterScalableTarget"
+      ]
+    }
+  },
   "title": "AWSApplicationAutoScalingScalableTargetProperties",
   "type": "object"
 }

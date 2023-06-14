@@ -109,6 +109,15 @@
         },
         "StatefulEngineOptions": {
           "$ref": "#/definitions/StatefulEngineOptions"
+        },
+        "PolicyVariables": {
+          "type": "object",
+          "properties": {
+            "RuleVariables": {
+              "$ref": "#/definitions/RuleVariables"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "required": [
@@ -117,6 +126,16 @@
       ],
       "additionalProperties": false,
       "title": "AWSNetworkFirewallFirewallPolicyFirewallPolicyDefinition"
+    },
+    "RuleVariables": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z0-9_]{1,32}$": {
+          "$ref": "#/definitions/IPSet"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSNetworkFirewallFirewallPolicyRuleVariablesDefinition"
     },
     "CustomAction": {
       "type": "object",
@@ -238,6 +257,34 @@
       "maximum": 65535,
       "title": "AWSNetworkFirewallFirewallPolicyPriorityDefinition"
     },
+    "VariableDefinition": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^.*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSNetworkFirewallFirewallPolicyVariableDefinition"
+    },
+    "IPSet": {
+      "type": "object",
+      "properties": {
+        "Definition": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/VariableDefinition"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSNetworkFirewallFirewallPolicyIPSetDefinition"
+    },
     "StatefulRuleGroupOverride": {
       "type": "object",
       "properties": {
@@ -296,7 +343,8 @@
           "type": "string",
           "enum": [
             "DROP",
-            "CONTINUE"
+            "CONTINUE",
+            "REJECT"
           ]
         },
         {

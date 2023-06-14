@@ -59,6 +59,20 @@
     }
   },
   "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$",
+          "minLength": 3,
+          "maxLength": 50
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name you want to assign to this Access Point. If you don't specify a name, AWS CloudFormation generates a unique ID and uses that ID for the access point name."
+    },
     "Bucket": {
       "oneOf": [
         {
@@ -96,26 +110,6 @@
     "Policy": {
       "description": "The Access Point Policy you want to apply to this access point.",
       "type": "object"
-    },
-    "PolicyStatus": {
-      "type": "object",
-      "properties": {
-        "IsPublic": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": [
-                "true",
-                "false"
-              ]
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "Specifies whether the policy is public or not."
-        }
-      }
     }
   },
   "required": [
@@ -125,11 +119,9 @@
     "/properties/Name",
     "/properties/Bucket",
     "/properties/BucketAccountId",
-    "/properties/VpcConfiguration",
-    "/properties/PublicAccessBlockConfiguration"
+    "/properties/VpcConfiguration"
   ],
   "readOnlyProperties": [
-    "/properties/Name",
     "/properties/Alias",
     "/properties/NetworkOrigin",
     "/properties/Arn"
@@ -148,8 +140,7 @@
     "read": {
       "permissions": [
         "s3:GetAccessPoint",
-        "s3:GetAccessPointPolicy",
-        "s3:GetAccessPointPolicyStatus"
+        "s3:GetAccessPointPolicy"
       ]
     },
     "update": {

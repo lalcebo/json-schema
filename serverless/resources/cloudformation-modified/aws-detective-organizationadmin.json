@@ -1,0 +1,74 @@
+{
+  "typeName": "AWS::Detective::OrganizationAdmin",
+  "description": "Resource schema for AWS::Detective::OrganizationAdmin. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-detective.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-detective.git",
+  "properties": {
+    "AccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[0-9]{12}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The account ID of the account that should be registered as your Organization's delegated administrator for Detective"
+    }
+  },
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/GraphArn"
+  ],
+  "required": [
+    "AccountId"
+  ],
+  "primaryIdentifier": [
+    "/properties/AccountId"
+  ],
+  "createOnlyProperties": [
+    "/properties/AccountId"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "detective:EnableOrganizationAdminAccount",
+        "detective:ListOrganizationAdminAccount",
+        "iam:CreateServiceLinkedRole",
+        "organizations:RegisterDelegatedAdministrator",
+        "organizations:DescribeOrganization",
+        "organizations:EnableAWSServiceAccess",
+        "organizations:ListAccounts"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "detective:ListOrganizationAdminAccount",
+        "organizations:DescribeOrganization"
+      ]
+    },
+    "update": {
+      "permissions": []
+    },
+    "delete": {
+      "permissions": [
+        "detective:DisableOrganizationAdminAccount",
+        "organizations:DescribeOrganization"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "detective:ListOrganizationAdminAccount",
+        "organizations:DescribeOrganization"
+      ]
+    }
+  },
+  "title": "AWSDetectiveOrganizationAdminProperties",
+  "type": "object"
+}

@@ -1,81 +1,21 @@
 {
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
-  "handlers": {
-    "read": {
-      "permissions": [
-        "ec2:DescribeNetworkInsightsPaths"
-      ]
-    },
-    "create": {
-      "permissions": [
-        "ec2:CreateNetworkInsightsPath"
-      ]
-    },
-    "update": {
-      "permissions": [
-        "ec2:DescribeNetworkInsightsPaths",
-        "ec2:CreateTags",
-        "ec2:DeleteTags"
-      ]
-    },
-    "list": {
-      "permissions": [
-        "ec2:DescribeNetworkInsightsPaths"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "ec2:DeleteNetworkInsightsPath"
-      ]
-    }
-  },
   "typeName": "AWS::EC2::NetworkInsightsPath",
-  "readOnlyProperties": [
-    "/properties/NetworkInsightsPathId",
-    "/properties/NetworkInsightsPathArn",
-    "/properties/CreatedDate",
-    "/properties/SourceArn",
-    "/properties/DestinationArn"
-  ],
   "description": "Resource schema for AWS::EC2::NetworkInsightsPath. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
-  "additionalIdentifiers": [
-    [
-      "/properties/NetworkInsightsPathArn"
-    ]
-  ],
-  "createOnlyProperties": [
-    "/properties/SourceIp",
-    "/properties/DestinationIp",
-    "/properties/Source",
-    "/properties/Destination",
-    "/properties/Protocol",
-    "/properties/DestinationPort"
-  ],
-  "additionalProperties": false,
-  "primaryIdentifier": [
-    "/properties/NetworkInsightsPathId"
-  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-ni.git",
   "definitions": {
-    "Port": {
-      "type": "integer",
-      "title": "AWSEC2NetworkInsightsPathPortDefinition"
-    },
-    "IpAddress": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSEC2NetworkInsightsPathIpAddressDefinition"
+    "Tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSEC2NetworkInsightsPathTagsDefinition"
     },
     "Tag": {
-      "additionalProperties": false,
       "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "Value": {
+        "Key": {
           "oneOf": [
             {
               "type": "string"
@@ -85,7 +25,7 @@
             }
           ]
         },
-        "Key": {
+        "Value": {
           "oneOf": [
             {
               "type": "string"
@@ -100,6 +40,17 @@
         "Key"
       ],
       "title": "AWSEC2NetworkInsightsPathTagDefinition"
+    },
+    "IpAddress": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEC2NetworkInsightsPathIpAddressDefinition"
     },
     "Protocol": {
       "oneOf": [
@@ -116,32 +67,55 @@
       ],
       "title": "AWSEC2NetworkInsightsPathProtocolDefinition"
     },
-    "Tags": {
-      "uniqueItems": true,
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Tag"
+    "Port": {
+      "type": "integer",
+      "title": "AWSEC2NetworkInsightsPathPortDefinition"
+    },
+    "FilterPortRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FromPort": {
+          "type": "integer"
+        },
+        "ToPort": {
+          "type": "integer"
+        }
       },
-      "title": "AWSEC2NetworkInsightsPathTagsDefinition"
+      "title": "AWSEC2NetworkInsightsPathFilterPortRangeDefinition"
+    },
+    "PathFilter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SourceAddress": {
+          "$ref": "#/definitions/IpAddress"
+        },
+        "SourcePortRange": {
+          "$ref": "#/definitions/FilterPortRange"
+        },
+        "DestinationAddress": {
+          "$ref": "#/definitions/IpAddress"
+        },
+        "DestinationPortRange": {
+          "$ref": "#/definitions/FilterPortRange"
+        }
+      },
+      "title": "AWSEC2NetworkInsightsPathPathFilterDefinition"
     }
   },
-  "required": [
-    "Protocol",
-    "Source"
-  ],
   "properties": {
-    "Destination": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
+    "SourceIp": {
+      "$ref": "#/definitions/IpAddress"
     },
-    "DestinationPort": {
-      "$ref": "#/definitions/Port"
+    "FilterAtSource": {
+      "$ref": "#/definitions/PathFilter"
+    },
+    "FilterAtDestination": {
+      "$ref": "#/definitions/PathFilter"
+    },
+    "DestinationIp": {
+      "$ref": "#/definitions/IpAddress"
     },
     "Source": {
       "oneOf": [
@@ -153,21 +127,87 @@
         }
       ]
     },
-    "DestinationIp": {
-      "$ref": "#/definitions/IpAddress"
-    },
-    "SourceIp": {
-      "$ref": "#/definitions/IpAddress"
+    "Destination": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Protocol": {
       "$ref": "#/definitions/Protocol"
     },
+    "DestinationPort": {
+      "$ref": "#/definitions/Port"
+    },
     "Tags": {
-      "insertionOrder": false,
       "type": "array",
+      "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Protocol",
+    "Source"
+  ],
+  "readOnlyProperties": [
+    "/properties/NetworkInsightsPathId",
+    "/properties/NetworkInsightsPathArn",
+    "/properties/CreatedDate",
+    "/properties/SourceArn",
+    "/properties/DestinationArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/NetworkInsightsPathId"
+  ],
+  "createOnlyProperties": [
+    "/properties/SourceIp",
+    "/properties/DestinationIp",
+    "/properties/Source",
+    "/properties/Destination",
+    "/properties/Protocol",
+    "/properties/DestinationPort",
+    "/properties/FilterAtSource",
+    "/properties/FilterAtDestination"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/NetworkInsightsPathArn"
+    ]
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "ec2:CreateNetworkInsightsPath"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "ec2:DeleteNetworkInsightsPath"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "ec2:DescribeNetworkInsightsPaths"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "ec2:DescribeNetworkInsightsPaths"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "ec2:DescribeNetworkInsightsPaths",
+        "ec2:CreateTags",
+        "ec2:DeleteTags"
+      ]
     }
   },
   "title": "AWSEC2NetworkInsightsPathProperties",

@@ -11,8 +11,8 @@
             {
               "type": "string",
               "minLength": 3,
-              "maxLength": 255,
-              "pattern": "[a-zA-Z0-9_\\-]{3,255}$"
+              "maxLength": 63,
+              "pattern": "[a-zA-Z0-9_\\-]{3,63}$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -25,8 +25,7 @@
             {
               "type": "string",
               "minLength": 3,
-              "maxLength": 255,
-              "pattern": "([\\-a-zA-Z0-9_-]+\\/)*[a-zA-Z0-9_-]+\\.(json|yaml)$"
+              "maxLength": 255
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -71,18 +70,57 @@
     },
     "SchemaS3Location": {
       "$ref": "#/definitions/S3Location"
+    },
+    "MaximumDuration": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 6
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The maximum running time of the simulation."
+    },
+    "SnapshotS3Location": {
+      "$ref": "#/definitions/S3Location"
     }
   },
+  "required": [
+    "Name",
+    "RoleArn"
+  ],
+  "oneOf": [
+    {
+      "required": [
+        "SchemaS3Location"
+      ]
+    },
+    {
+      "required": [
+        "SnapshotS3Location"
+      ]
+    }
+  ],
   "additionalProperties": false,
   "readOnlyProperties": [
     "/properties/DescribePayload"
   ],
   "createOnlyProperties": [
-    "/properties/Name"
+    "/properties/Name",
+    "/properties/RoleArn",
+    "/properties/SchemaS3Location",
+    "/properties/SnapshotS3Location",
+    "/properties/MaximumDuration"
   ],
   "primaryIdentifier": [
     "/properties/Name"
   ],
+  "propertyTransform": {
+    "properties/MaximumDuration": "$uppercase(MaximumDuration)"
+  },
   "tagging": {
     "taggable": false,
     "tagOnCreate": false,
