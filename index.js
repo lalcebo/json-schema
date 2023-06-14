@@ -188,6 +188,8 @@ function getThirdPartySchemas() {
           sourceUrl = "No source definition found, add manually please"
         }
         schema.description = `${description}. Source:- ${sourceUrl}`
+        // delete handlers
+        delete schema.handlers
 
         // modify properties so they would allow for Cloudformation functions
         schema = applyIntrinsicFunctions(schema)
