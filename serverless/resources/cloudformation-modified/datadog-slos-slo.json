@@ -1,0 +1,292 @@
+{
+  "typeName": "Datadog::SLOs::SLO",
+  "description": "Datadog SLO 1.1.0. Source:- No source definition found, add manually please",
+  "typeConfiguration": {
+    "properties": {
+      "DatadogCredentials": {
+        "$ref": "#/definitions/DatadogCredentials"
+      }
+    },
+    "additionalProperties": false
+  },
+  "definitions": {
+    "Creator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the creator of the slo"
+        },
+        "Handle": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Handle of the creator of the slo"
+        },
+        "Email": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Email of the creator of the slo"
+        }
+      },
+      "title": "DatadogSLOsSLOCreatorDefinition"
+    },
+    "Threshold": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Target": {
+          "description": "The target value for the service level indicator within the corresponding timeframe.",
+          "type": "number"
+        },
+        "TargetDisplay": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string representation of the target that indicates its precision.(e.g. 98.00)"
+        },
+        "Timeframe": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "7d",
+                "30d",
+                "90d"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The SLO time window options. Allowed enum values: 7d,30d,90d"
+        },
+        "Warning": {
+          "description": "The warning value for the service level objective.",
+          "type": "number"
+        },
+        "WarningDisplay": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string representation of the warning target.(e.g. 98.00)"
+        }
+      },
+      "title": "DatadogSLOsSLOThresholdDefinition"
+    },
+    "Query": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Numerator": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A Datadog metric query for total (valid) events."
+        },
+        "Denominator": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A Datadog metric query for good events."
+        }
+      },
+      "title": "DatadogSLOsSLOQueryDefinition"
+    },
+    "DatadogCredentials": {
+      "description": "Credentials for the Datadog API",
+      "properties": {
+        "ApiKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Datadog API key"
+        },
+        "ApplicationKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Datadog application key"
+        },
+        "ApiURL": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Datadog API URL (defaults to https://api.datadoghq.com) Use https://api.datadoghq.eu for EU accounts."
+        }
+      },
+      "required": [
+        "ApiKey",
+        "ApplicationKey"
+      ],
+      "type": "object",
+      "additionalProperties": false,
+      "title": "DatadogSLOsSLODatadogCredentialsDefinition"
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Description of the slo"
+    },
+    "Groups": {
+      "description": "A list of (up to 20) monitor groups that narrow the scope of a monitor service level objective.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "MonitorIds": {
+      "description": "A list of monitor ids that defines the scope of a monitor service level objective. Required if type is monitor.",
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of the slo"
+    },
+    "Query": {
+      "$ref": "#/definitions/Query"
+    },
+    "Tags": {
+      "description": "Tags associated with the slo",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Thresholds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Threshold"
+      }
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "monitor",
+            "metric"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of the slo"
+    }
+  },
+  "required": [
+    "Name",
+    "Thresholds",
+    "Type"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "readOnlyProperties": [
+    "/properties/Modified",
+    "/properties/Id",
+    "/properties/Deleted",
+    "/properties/State",
+    "/properties/OverallState",
+    "/properties/Creator",
+    "/properties/Created"
+  ],
+  "additionalProperties": false,
+  "handlers": {
+    "create": {
+      "permissions": [
+        ""
+      ]
+    },
+    "read": {
+      "permissions": [
+        ""
+      ]
+    },
+    "update": {
+      "permissions": [
+        ""
+      ]
+    },
+    "delete": {
+      "permissions": [
+        ""
+      ]
+    }
+  },
+  "title": "DatadogSLOsSLOProperties",
+  "type": "object"
+}
