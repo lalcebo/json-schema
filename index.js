@@ -44,7 +44,61 @@ function applyCFStringFunctions(obj) {
   return obj
 }
 
+/**
+ * 
+ * @param {string} dirName directory path full
+ * @param {string} fileName name of the file
+ * @param {string} schemaFileName name of the file
+ */
+function readAndMoveResourceFile(dirName, fileName, schemaFileName) {
+  try {
+      const schema = fs.readFileSync(
+          path.join(dirName, fileName, schemaFileName)
+      ).toString()
+      fs.writeFileSync(
+          path.join(
+              __dirname,
+              "serverless/resources/cloudformation",
+              schemaFileName
+          ),
+          schema
+      )
+  } catch(err) {
+      console.error(err)
+      console.log("DW")
+  }
+}
+
+/**
+ * There are certain 3rd party resources that also support cloudformation
+ * This function will pull the schemas and populate into the cloudformation Directory
+ * Currently Supported Items:-
+ * 1. MongoDB
+ * 2. DataDog
+ */
+function getThirdPartySchemas() {
+  const mongoDir = path.join(
+    __dirname, 
+    "serverless/resources/third-party-resources", 
+    "mongodbatlas-cloudformation-resources", "cfn-resources"
+  )
+  fs.readdirSync(mongoDir).forEach(r => {
+    const schemaFileName = `mongodb-atlas-${r.replaceAll('-', '')}.json`
+    readAndMoveResourceFile(mongoDir, r, schemaFileName)
+  })
+  const datadogDir = path.join(
+    __dirname, 
+    "serverless/resources/third-party-resources", 
+    "datadog-cloudformation-resources"
+  )
+  fs.readdirSync(datadogDir).forEach(r => {
+    const schemaFileName = `${r.replaceAll('-handler', '')}.json`
+    readAndMoveResourceFile(datadogDir, r, schemaFileName)
+  })
+}
+
 (async () => {
+    await getThirdPartySchemas()
     const sharedAttributes = {
         "DeletionPolicy": {
           "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html",
