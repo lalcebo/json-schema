@@ -3,6 +3,7 @@
   "description" : "Resource Type definition for Metric Stream",
   "additionalProperties" : false,
   "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
+  "taggable" : true,
   "properties" : {
     "Arn" : {
       "description" : "Amazon Resource Name of the metric stream.",
@@ -110,6 +111,16 @@
           "type" : "string",
           "minLength" : 1,
           "maxLength" : 255
+        },
+        "MetricNames" : {
+          "description" : "Only metrics with MetricNames matching these values will be streamed. Must be set together with Namespace.",
+          "type" : "array",
+          "maxItems" : 999,
+          "items" : {
+            "type" : "string",
+            "minLength" : 1,
+            "maxLength" : 255
+          }
         }
       },
       "required" : [ "Namespace" ]
@@ -172,13 +183,13 @@
           "maxLength" : 128
         },
         "Value" : {
-          "description" : "An optional string, which you can use to describe or define the tag.",
+          "description" : "String which you can use to describe or define the tag.",
           "type" : "string",
           "minLength" : 1,
           "maxLength" : 256
         }
       },
-      "required" : [ "Key" ]
+      "required" : [ "Key", "Value" ]
     }
   },
   "handlers" : {
@@ -186,7 +197,7 @@
       "permissions" : [ "cloudwatch:PutMetricStream", "iam:PassRole" ]
     },
     "update" : {
-      "permissions" : [ "cloudwatch:PutMetricStream", "iam:PassRole" ]
+      "permissions" : [ "cloudwatch:PutMetricStream", "cloudwatch:TagResource", "cloudwatch:UntagResource", "iam:PassRole" ]
     },
     "delete" : {
       "permissions" : [ "cloudwatch:DeleteMetricStream" ]

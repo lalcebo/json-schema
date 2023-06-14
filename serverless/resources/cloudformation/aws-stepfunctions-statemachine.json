@@ -91,7 +91,7 @@
       "additionalProperties" : false,
       "patternProperties" : {
         ".*" : {
-          "oneOf" : [ {
+          "anyOf" : [ {
             "type" : "string"
           }, {
             "type" : "integer"
@@ -137,6 +137,11 @@
       "type" : "string",
       "enum" : [ "STANDARD", "EXPRESS" ]
     },
+    "StateMachineRevisionId" : {
+      "type" : "string",
+      "minLength" : 1,
+      "maxLength" : 256
+    },
     "LoggingConfiguration" : {
       "$ref" : "#/definitions/LoggingConfiguration"
     },
@@ -170,13 +175,14 @@
     "tagProperty" : "/properties/Tags"
   },
   "additionalProperties" : false,
-  "readOnlyProperties" : [ "/properties/Arn", "/properties/Name" ],
+  "readOnlyProperties" : [ "/properties/Arn", "/properties/Name", "/properties/StateMachineRevisionId" ],
   "createOnlyProperties" : [ "/properties/StateMachineName", "/properties/StateMachineType" ],
   "writeOnlyProperties" : [ "/properties/Definition", "/properties/DefinitionS3Location", "/properties/DefinitionSubstitutions" ],
   "primaryIdentifier" : [ "/properties/Arn" ],
+  "additionalIdentifiers" : [ [ "/properties/StateMachineName" ] ],
   "handlers" : {
     "create" : {
-      "permissions" : [ "states:CreateStateMachine", "iam:PassRole", "s3:GetObject" ]
+      "permissions" : [ "states:CreateStateMachine", "states:DescribeStateMachine", "states:TagResource", "iam:PassRole", "s3:GetObject" ]
     },
     "read" : {
       "permissions" : [ "states:DescribeStateMachine", "states:ListTagsForResource" ]

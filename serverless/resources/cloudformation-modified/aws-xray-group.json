@@ -50,28 +50,52 @@
       },
       "title": "AWSXRayGroupInsightsConfigurationDefinition"
     },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSXRayGroupTagDefinition"
+    },
     "Tags": {
       "type": "array",
       "insertionOrder": false,
+      "description": "An array of key-value pairs to apply to this resource.",
       "items": {
-        "type": "object",
-        "required": [
-          "Key",
-          "Value"
-        ],
-        "properties": {
-          "Key": {
-            "type": "string"
-          },
-          "Value": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
+        "$ref": "#/definitions/Tag"
       },
       "title": "AWSXRayGroupTagsDefinition"
     }
   },
+  "required": [
+    "GroupName"
+  ],
   "handlers": {
     "create": {
       "permissions": [
@@ -81,17 +105,27 @@
     },
     "read": {
       "permissions": [
-        "xray:GetGroup"
+        "xray:GetGroup",
+        "xray:ListTagsForResource"
       ]
     },
     "update": {
       "permissions": [
-        "xray:UpdateGroup"
+        "xray:UpdateGroup",
+        "xray:TagResource",
+        "xray:UntagResource",
+        "xray:ListTagsForResource"
       ]
     },
     "delete": {
       "permissions": [
         "xray:DeleteGroup"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "xray:GetGroups",
+        "xray:ListTagsForResource"
       ]
     }
   },

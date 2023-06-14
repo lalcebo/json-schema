@@ -3,6 +3,7 @@
   "description": "Resource Type definition for Metric Stream. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
   "additionalProperties": false,
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
+  "taggable": true,
   "properties": {
     "ExcludeFilters": {
       "description": "Define which metrics will be not streamed. Metrics matched by multiple instances of MetricStreamFilter are joined with an OR operation by default. If both IncludeFilters and ExcludeFilters are omitted, all metrics in the account will be streamed. IncludeFilters and ExcludeFilters are mutually exclusive. Default to null.",
@@ -115,6 +116,16 @@
             }
           ],
           "description": "Only metrics with Namespace matching this value will be streamed."
+        },
+        "MetricNames": {
+          "description": "Only metrics with MetricNames matching these values will be streamed. Must be set together with Namespace.",
+          "type": "array",
+          "maxItems": 999,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          }
         }
       },
       "required": [
@@ -219,11 +230,12 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "An optional string, which you can use to describe or define the tag."
+          "description": "String which you can use to describe or define the tag."
         }
       },
       "required": [
-        "Key"
+        "Key",
+        "Value"
       ],
       "title": "AWSCloudWatchMetricStreamTagDefinition"
     }
@@ -238,6 +250,8 @@
     "update": {
       "permissions": [
         "cloudwatch:PutMetricStream",
+        "cloudwatch:TagResource",
+        "cloudwatch:UntagResource",
         "iam:PassRole"
       ]
     },

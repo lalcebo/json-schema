@@ -51,6 +51,7 @@
         "ColumnName",
         "Expression"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetCalculatedColumnDefinition"
     },
     "CastColumnTypeOperation": {
@@ -91,6 +92,7 @@
         "ColumnName",
         "NewColumnType"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetCastColumnTypeOperationDefinition"
     },
     "ColumnDataType": {
@@ -128,6 +130,7 @@
           "description": "<p>The text of a description for a column.</p>"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetColumnDescriptionDefinition"
     },
     "ColumnGroup": {
@@ -138,6 +141,7 @@
           "$ref": "#/definitions/GeoSpatialColumnGroup"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetColumnGroupDefinition"
     },
     "ColumnLevelPermissionRule": {
@@ -159,6 +163,7 @@
           "minItems": 1
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetColumnLevelPermissionRuleDefinition"
     },
     "ColumnTag": {
@@ -172,6 +177,7 @@
           "$ref": "#/definitions/ColumnDescription"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetColumnTagDefinition"
     },
     "CreateColumnsOperation": {
@@ -191,6 +197,7 @@
       "required": [
         "Columns"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetCreateColumnsOperationDefinition"
     },
     "CustomSql": {
@@ -250,6 +257,7 @@
         "Name",
         "SqlQuery"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetCustomSqlDefinition"
     },
     "DataSetImportMode": {
@@ -266,6 +274,263 @@
         }
       ],
       "title": "AWSQuickSightDataSetDataSetImportModeDefinition"
+    },
+    "DatasetParameter": {
+      "type": "object",
+      "description": "<p>A parameter created in the dataset that could be of any one data type such as string, integer, decimal or datetime.</p>",
+      "properties": {
+        "StringDatasetParameter": {
+          "$ref": "#/definitions/StringDatasetParameter"
+        },
+        "DecimalDatasetParameter": {
+          "$ref": "#/definitions/DecimalDatasetParameter"
+        },
+        "IntegerDatasetParameter": {
+          "$ref": "#/definitions/IntegerDatasetParameter"
+        },
+        "DateTimeDatasetParameter": {
+          "$ref": "#/definitions/DateTimeDatasetParameter"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetDatasetParameterDefinition"
+    },
+    "DatasetParameterId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "<p>Identifier of the parameter created in the dataset.</p>",
+      "title": "AWSQuickSightDataSetDatasetParameterIdDefinition"
+    },
+    "DatasetParameterName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "<p>Name of the parameter created in the dataset.</p>",
+      "title": "AWSQuickSightDataSetDatasetParameterNameDefinition"
+    },
+    "DatasetParameterValueType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MULTI_VALUED",
+            "SINGLE_VALUED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "<p>Every parameter value could be either a single value or multi value which helps to validate before evaluation.</p>",
+      "title": "AWSQuickSightDataSetDatasetParameterValueTypeDefinition"
+    },
+    "DateTimeDatasetParameter": {
+      "type": "object",
+      "description": "<p>A parameter created in the dataset of date time data type.</p>",
+      "properties": {
+        "Id": {
+          "$ref": "#/definitions/DatasetParameterId"
+        },
+        "Name": {
+          "$ref": "#/definitions/DatasetParameterName"
+        },
+        "ValueType": {
+          "$ref": "#/definitions/DatasetParameterValueType"
+        },
+        "TimeGranularity": {
+          "$ref": "#/definitions/TimeGranularity"
+        },
+        "DefaultValues": {
+          "$ref": "#/definitions/DateTimeDatasetParameterDefaultValues"
+        }
+      },
+      "required": [
+        "Id",
+        "Name",
+        "ValueType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetDateTimeDatasetParameterDefinition"
+    },
+    "DateTimeDatasetParameterDefaultValues": {
+      "type": "object",
+      "description": "<p>List of default values defined for a given string date time parameter type. Currently only static values are supported.</p>",
+      "properties": {
+        "StaticValues": {
+          "$ref": "#/definitions/DateTimeDatasetParameterValueList",
+          "description": "<p>List of static default values defined for a given string date time parameter type.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetDateTimeDatasetParameterDefaultValuesDefinition"
+    },
+    "DateTimeDatasetParameterValueList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "<p>Default value defined for the dataset parameter of date time type.</p>"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "AWSQuickSightDataSetDateTimeDatasetParameterValueListDefinition"
+    },
+    "DecimalDatasetParameter": {
+      "type": "object",
+      "description": "<p>A parameter created in the dataset of decimal data type.</p>",
+      "properties": {
+        "Id": {
+          "$ref": "#/definitions/DatasetParameterId"
+        },
+        "Name": {
+          "$ref": "#/definitions/DatasetParameterName"
+        },
+        "ValueType": {
+          "$ref": "#/definitions/DatasetParameterValueType"
+        },
+        "DefaultValues": {
+          "$ref": "#/definitions/DecimalDatasetParameterDefaultValues"
+        }
+      },
+      "required": [
+        "Id",
+        "Name",
+        "ValueType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetDecimalDatasetParameterDefinition"
+    },
+    "DecimalDatasetParameterDefaultValues": {
+      "type": "object",
+      "description": "<p>List of default values defined for a given decimal dataset parameter type. Currently only static values are supported.</p>",
+      "properties": {
+        "StaticValues": {
+          "$ref": "#/definitions/DecimalDatasetParameterValueList",
+          "description": "<p>List of static default values defined for a given decimal dataset parameter type.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetDecimalDatasetParameterDefaultValuesDefinition"
+    },
+    "DecimalDatasetParameterValueList": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "description": "<p>Default value defined for the dataset parameter of decimal type.</p>"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "AWSQuickSightDataSetDecimalDatasetParameterValueListDefinition"
+    },
+    "IntegerDatasetParameter": {
+      "type": "object",
+      "description": "<p>A parameter created in the dataset of integer data type.</p>",
+      "properties": {
+        "Id": {
+          "$ref": "#/definitions/DatasetParameterId"
+        },
+        "Name": {
+          "$ref": "#/definitions/DatasetParameterName"
+        },
+        "ValueType": {
+          "$ref": "#/definitions/DatasetParameterValueType"
+        },
+        "DefaultValues": {
+          "$ref": "#/definitions/IntegerDatasetParameterDefaultValues"
+        }
+      },
+      "required": [
+        "Id",
+        "Name",
+        "ValueType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetIntegerDatasetParameterDefinition"
+    },
+    "IntegerDatasetParameterDefaultValues": {
+      "type": "object",
+      "description": "<p>List of default values defined for a given integer dataset parameter type. Currently only static values are supported.</p>",
+      "properties": {
+        "StaticValues": {
+          "$ref": "#/definitions/IntegerDatasetParameterValueList",
+          "description": "<p>List of static default values defined for a given integer dataset parameter type.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetIntegerDatasetParameterDefaultValuesDefinition"
+    },
+    "IntegerDatasetParameterValueList": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "description": "<p>Default value defined for the dataset parameter of integer type.</p>"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "AWSQuickSightDataSetIntegerDatasetParameterValueListDefinition"
+    },
+    "StringDatasetParameter": {
+      "type": "object",
+      "description": "<p>A parameter created in the dataset of string data type.</p>",
+      "properties": {
+        "Id": {
+          "$ref": "#/definitions/DatasetParameterId"
+        },
+        "Name": {
+          "$ref": "#/definitions/DatasetParameterName"
+        },
+        "ValueType": {
+          "$ref": "#/definitions/DatasetParameterValueType"
+        },
+        "DefaultValues": {
+          "$ref": "#/definitions/StringDatasetParameterDefaultValues"
+        }
+      },
+      "required": [
+        "Id",
+        "Name",
+        "ValueType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetStringDatasetParameterDefinition"
+    },
+    "StringDatasetParameterDefaultValues": {
+      "type": "object",
+      "description": "<p>List of default values defined for a given string dataset parameter type. Currently only static values are supported.</p>",
+      "properties": {
+        "StaticValues": {
+          "$ref": "#/definitions/StringDatasetParameterValueList",
+          "description": "<p>List of static default values defined for a given string dataset parameter type.</p>"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetStringDatasetParameterDefaultValuesDefinition"
+    },
+    "StringDatasetParameterValueList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "<p>Default value defined for the dataset parameter of string type.</p>"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "AWSQuickSightDataSetStringDatasetParameterValueListDefinition"
     },
     "FieldFolder": {
       "type": "object",
@@ -291,6 +556,7 @@
           "minItems": 0
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetFieldFolderDefinition"
     },
     "FieldFolderMap": {
@@ -300,6 +566,7 @@
           "$ref": "#/definitions/FieldFolder"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetFieldFolderMapDefinition"
     },
     "FileFormat": {
@@ -342,6 +609,7 @@
       "required": [
         "ConditionExpression"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetFilterOperationDefinition"
     },
     "GeoSpatialColumnGroup": {
@@ -380,6 +648,7 @@
         "Columns",
         "Name"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetGeoSpatialColumnGroupDefinition"
     },
     "GeoSpatialCountryCode": {
@@ -442,6 +711,7 @@
         "Name",
         "Type"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetInputColumnDefinition"
     },
     "InputColumnDataType": {
@@ -463,6 +733,70 @@
         }
       ],
       "title": "AWSQuickSightDataSetInputColumnDataTypeDefinition"
+    },
+    "RefreshConfiguration": {
+      "type": "object",
+      "description": "<p> Refresh Configuration.</p>",
+      "properties": {
+        "IncrementalRefresh": {
+          "$ref": "#/definitions/IncrementalRefresh"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetRefreshConfigurationDefinition"
+    },
+    "IncrementalRefresh": {
+      "type": "object",
+      "description": "<p>Incremental Refresh</p>",
+      "properties": {
+        "LookbackWindow": {
+          "$ref": "#/definitions/LookbackWindow"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetIncrementalRefreshDefinition"
+    },
+    "LookbackWindow": {
+      "type": "object",
+      "properties": {
+        "ColumnName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>Column Name</p>"
+        },
+        "Size": {
+          "type": "number",
+          "description": "<p>Size</p>",
+          "minimum": 1
+        },
+        "SizeUnit": {
+          "$ref": "#/definitions/SizeUnit"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetLookbackWindowDefinition"
+    },
+    "SizeUnit": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "HOUR",
+            "DAY",
+            "WEEK"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSQuickSightDataSetSizeUnitDefinition"
     },
     "JoinInstruction": {
       "type": "object",
@@ -525,6 +859,7 @@
         "RightOperand",
         "Type"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetJoinInstructionDefinition"
     },
     "JoinKeyProperties": {
@@ -534,6 +869,7 @@
           "type": "boolean"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetJoinKeyPropertiesDefinition"
     },
     "JoinType": {
@@ -587,6 +923,7 @@
         "Alias",
         "Source"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetLogicalTableDefinition"
     },
     "LogicalTableMap": {
@@ -598,6 +935,7 @@
           "$ref": "#/definitions/LogicalTable"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetLogicalTableMapDefinition"
     },
     "LogicalTableSource": {
@@ -633,7 +971,27 @@
           "description": "<p>The Amazon Resource Name (ARN) for the dataset.</p>"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetLogicalTableSourceDefinition"
+    },
+    "NewDefaultValues": {
+      "type": "object",
+      "properties": {
+        "StringStaticValues": {
+          "$ref": "#/definitions/StringDatasetParameterValueList"
+        },
+        "DecimalStaticValues": {
+          "$ref": "#/definitions/DecimalDatasetParameterValueList"
+        },
+        "DateTimeStaticValues": {
+          "$ref": "#/definitions/DateTimeDatasetParameterValueList"
+        },
+        "IntegerStaticValues": {
+          "$ref": "#/definitions/IntegerDatasetParameterValueList"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetNewDefaultValuesDefinition"
     },
     "OutputColumn": {
       "type": "object",
@@ -669,7 +1027,31 @@
           "description": "<p>A display name for the dataset.</p>"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetOutputColumnDefinition"
+    },
+    "OverrideDatasetParameterOperation": {
+      "type": "object",
+      "description": "<p>A transform operation that overrides the dataset parameter values defined in another dataset.</p>",
+      "properties": {
+        "ParameterName": {
+          "$ref": "#/definitions/DatasetParameterName",
+          "description": "<p>The name of the parameter to be overridden with different values.</p>"
+        },
+        "NewParameterName": {
+          "$ref": "#/definitions/DatasetParameterName",
+          "description": "<p>The new name for the parameter.</p>"
+        },
+        "NewDefaultValues": {
+          "$ref": "#/definitions/NewDefaultValues",
+          "description": "<p>The new default values for the parameter.</p>"
+        }
+      },
+      "required": [
+        "ParameterName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetOverrideDatasetParameterOperationDefinition"
     },
     "PhysicalTable": {
       "type": "object",
@@ -685,17 +1067,19 @@
           "$ref": "#/definitions/S3Source"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetPhysicalTableDefinition"
     },
     "PhysicalTableMap": {
       "type": "object",
       "maxProperties": 32,
-      "minProperties": 1,
+      "minProperties": 0,
       "patternProperties": {
         "[0-9a-zA-Z-]*": {
           "$ref": "#/definitions/PhysicalTable"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetPhysicalTableMapDefinition"
     },
     "ProjectOperation": {
@@ -715,6 +1099,7 @@
       "required": [
         "ProjectedColumns"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetProjectOperationDefinition"
     },
     "RelationalTable": {
@@ -786,6 +1171,7 @@
         "InputColumns",
         "Name"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetRelationalTableDefinition"
     },
     "RenameColumnOperation": {
@@ -823,6 +1209,7 @@
         "ColumnName",
         "NewColumnName"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetRenameColumnOperationDefinition"
     },
     "ResourcePermission": {
@@ -856,6 +1243,7 @@
         "Actions",
         "Principal"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetResourcePermissionDefinition"
     },
     "RowLevelPermissionDataSet": {
@@ -892,12 +1280,16 @@
         },
         "FormatVersion": {
           "$ref": "#/definitions/RowLevelPermissionFormatVersion"
+        },
+        "Status": {
+          "$ref": "#/definitions/Status"
         }
       },
       "required": [
         "Arn",
         "PermissionPolicy"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetRowLevelPermissionDataSetDefinition"
     },
     "RowLevelPermissionPolicy": {
@@ -929,6 +1321,125 @@
         }
       ],
       "title": "AWSQuickSightDataSetRowLevelPermissionFormatVersionDefinition"
+    },
+    "RowLevelPermissionTagConfiguration": {
+      "type": "object",
+      "description": "<p>The configuration of tags on a dataset to set row-level security.</p>",
+      "properties": {
+        "Status": {
+          "$ref": "#/definitions/Status"
+        },
+        "TagRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RowLevelPermissionTagRule"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "description": "<p>A set of rules associated with row-level security, such as the tag names and columns that they are assigned to.</p>"
+        },
+        "TagRuleConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RowLevelPermissionTagRuleConfiguration"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "description": "<p>A list of tag configuration rules to apply to a dataset. All tag configurations have the OR condition. Tags within each tile will be joined (AND). At least one rule in this structure must have all tag values assigned to it to apply Row-level security (RLS) to the dataset.</p>"
+        }
+      },
+      "required": [
+        "TagRules"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetRowLevelPermissionTagConfigurationDefinition"
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSQuickSightDataSetStatusDefinition"
+    },
+    "RowLevelPermissionTagRule": {
+      "type": "object",
+      "description": "<p>Permission for the resource.</p>",
+      "properties": {
+        "ColumnName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The column name that a tag key is assigned to.</p>"
+        },
+        "TagKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The unique key for a tag.</p>"
+        },
+        "MatchAllValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>A string that you want to use to filter by all the values in a column in the dataset and don’t want to list the values one by one. For example, you can use an asterisk as your match all value.</p>"
+        },
+        "TagMultiValueDelimiter": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 10
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>A string that you want to use to delimit the values when you pass the values at run time. For example, you can delimit the values with a comma.</p>"
+        }
+      },
+      "required": [
+        "ColumnName",
+        "TagKey"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetRowLevelPermissionTagRuleDefinition"
+    },
+    "RowLevelPermissionTagRuleConfiguration": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 128,
+        "minLength": 1
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "title": "AWSQuickSightDataSetRowLevelPermissionTagRuleConfigurationDefinition"
     },
     "S3Source": {
       "type": "object",
@@ -962,6 +1473,7 @@
         "DataSourceArn",
         "InputColumns"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetS3SourceDefinition"
     },
     "Tag": {
@@ -999,6 +1511,7 @@
         "Key",
         "Value"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetTagDefinition"
     },
     "TagColumnOperation": {
@@ -1032,6 +1545,7 @@
         "ColumnName",
         "Tags"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetTagColumnOperationDefinition"
     },
     "TextQualifier": {
@@ -1048,6 +1562,28 @@
         }
       ],
       "title": "AWSQuickSightDataSetTextQualifierDefinition"
+    },
+    "TimeGranularity": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "YEAR",
+            "QUARTER",
+            "MONTH",
+            "WEEK",
+            "DAY",
+            "HOUR",
+            "MINUTE",
+            "SECOND",
+            "MILLISECOND"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSQuickSightDataSetTimeGranularityDefinition"
     },
     "TransformOperation": {
       "type": "object",
@@ -1070,8 +1606,12 @@
         },
         "ProjectOperation": {
           "$ref": "#/definitions/ProjectOperation"
+        },
+        "OverrideDatasetParameterOperation": {
+          "$ref": "#/definitions/OverrideDatasetParameterOperation"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetTransformOperationDefinition"
     },
     "UploadSettings": {
@@ -1107,6 +1647,7 @@
           "description": "<p>The delimiter between values in the file.</p>"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetUploadSettingsDefinition"
     },
     "IngestionWaitPolicy": {
@@ -1126,6 +1667,7 @@
           "default": 36
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetIngestionWaitPolicyDefinition"
     },
     "DataSetUsageConfiguration": {
@@ -1139,7 +1681,19 @@
           "type": "boolean"
         }
       },
+      "additionalProperties": false,
       "title": "AWSQuickSightDataSetDataSetUsageConfigurationDefinition"
+    },
+    "DataSetRefreshProperties": {
+      "type": "object",
+      "description": "<p>The dataset refresh properties for the dataset.</p>",
+      "properties": {
+        "RefreshConfiguration": {
+          "$ref": "#/definitions/RefreshConfiguration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightDataSetDataSetRefreshPropertiesDefinition"
     }
   },
   "properties": {
@@ -1182,6 +1736,15 @@
         }
       ]
     },
+    "DatasetParameters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DatasetParameter"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "description": "<p>The parameters declared in the dataset.</p>"
+    },
     "FieldFolders": {
       "$ref": "#/definitions/FieldFolderMap"
     },
@@ -1219,6 +1782,9 @@
     "RowLevelPermissionDataSet": {
       "$ref": "#/definitions/RowLevelPermissionDataSet"
     },
+    "RowLevelPermissionTagConfiguration": {
+      "$ref": "#/definitions/RowLevelPermissionTagConfiguration"
+    },
     "Tags": {
       "type": "array",
       "items": {
@@ -1233,6 +1799,9 @@
     },
     "DataSetUsageConfiguration": {
       "$ref": "#/definitions/DataSetUsageConfiguration"
+    },
+    "DataSetRefreshProperties": {
+      "$ref": "#/definitions/DataSetRefreshProperties"
     }
   },
   "readOnlyProperties": [
@@ -1288,7 +1857,10 @@
         "quicksight:CancelIngestion",
         "quicksight:TagResource",
         "quicksight:UntagResource",
-        "quicksight:ListTagsForResource"
+        "quicksight:ListTagsForResource",
+        "quicksight:PutDataSetRefreshProperties",
+        "quicksight:DescribeDataSetRefreshProperties",
+        "quicksight:DeleteDataSetRefreshProperties"
       ]
     },
     "delete": {
@@ -1296,7 +1868,9 @@
         "quicksight:DescribeDataSet",
         "quicksight:DeleteDataSet",
         "quicksight:ListTagsForResource",
-        "quicksight:DescribeIngestion"
+        "quicksight:DescribeIngestion",
+        "quicksight:DeleteDataSetRefreshProperties",
+        "quicksight:DescribeDataSetRefreshProperties"
       ]
     },
     "list": {

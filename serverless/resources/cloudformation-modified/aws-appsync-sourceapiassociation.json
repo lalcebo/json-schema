@@ -1,0 +1,142 @@
+{
+  "typeName": "AWS::AppSync::SourceApiAssociation",
+  "description": "Resource Type definition for AWS::AppSync::SourceApiAssociation. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appsync",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appsync",
+  "definitions": {
+    "SourceApiAssociationConfig": {
+      "properties": {
+        "MergeType": {
+          "description": "Configuration of the merged behavior for the association. For example when it could be auto or has to be manual.",
+          "type": "string",
+          "enum": [
+            "AUTO_MERGE",
+            "MANUAL_MERGE"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAppSyncSourceApiAssociationSourceApiAssociationConfigDefinition"
+    }
+  },
+  "properties": {
+    "SourceApiIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Identifier of the Source GraphQLApi to associate. It could be either GraphQLApi ApiId or ARN"
+    },
+    "MergedApiIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Identifier of the Merged GraphQLApi to associate. It could be either GraphQLApi ApiId or ARN"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Description of the SourceApiAssociation."
+    },
+    "SourceApiAssociationConfig": {
+      "description": "Customized configuration for SourceApiAssociation.",
+      "$ref": "#/definitions/SourceApiAssociationConfig"
+    }
+  },
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/AssociationId",
+    "/properties/AssociationArn",
+    "/properties/SourceApiId",
+    "/properties/SourceApiArn",
+    "/properties/MergedApiId",
+    "/properties/MergedApiArn",
+    "/properties/SourceApiAssociationStatus",
+    "/properties/SourceApiAssociationStatusDetail",
+    "/properties/LastSuccessfulMergeDate"
+  ],
+  "writeOnlyProperties": [
+    "/properties/SourceApiIdentifier",
+    "/properties/MergedApiIdentifier"
+  ],
+  "createOnlyProperties": [
+    "/properties/SourceApiIdentifier",
+    "/properties/MergedApiIdentifier"
+  ],
+  "primaryIdentifier": [
+    "/properties/AssociationArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/SourceApiIdentifier",
+      "/properties/MergedApiIdentifier"
+    ]
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "handlers": {
+    "create": {
+      "permissions": [
+        "appsync:AssociateSourceGraphqlApi",
+        "appsync:AssociateMergedGraphqlApi"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "appsync:GetSourceApiAssociation"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "appsync:GetSourceApiAssociation",
+        "appsync:UpdateSourceApiAssociation"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "appsync:GetSourceApiAssociation",
+        "appsync:DisassociateSourceGraphqlApi",
+        "appsync:DisassociateMergedGraphqlApi"
+      ]
+    },
+    "list": {
+      "handlerSchema": {
+        "properties": {
+          "SourceApiIdentifier": {
+            "$ref": "resource-schema.json#/properties/SourceApiIdentifier"
+          },
+          "MergedApiIdentifier": {
+            "$ref": "resource-schema.json#/properties/MergedApiIdentifier"
+          }
+        },
+        "required": [
+          "SourceApiIdentifier",
+          "MergedApiIdentifier"
+        ]
+      },
+      "permissions": [
+        "appsync:ListSourceApiAssociations"
+      ]
+    }
+  },
+  "title": "AWSAppSyncSourceApiAssociationProperties",
+  "type": "object"
+}

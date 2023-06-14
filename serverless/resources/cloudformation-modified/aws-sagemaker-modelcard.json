@@ -169,6 +169,9 @@
         "ModelOverview": {
           "$ref": "#/definitions/ModelOverview"
         },
+        "ModelPackageDetails": {
+          "$ref": "#/definitions/ModelPackageDetails"
+        },
         "IntendedUses": {
           "$ref": "#/definitions/IntendedUses"
         },
@@ -310,6 +313,150 @@
         }
       },
       "title": "AWSSageMakerModelCardModelOverviewDefinition"
+    },
+    "ModelPackageDetails": {
+      "description": "Metadata information related to model package version",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ModelPackageDescription": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A brief summary of the model package"
+        },
+        "ModelPackageArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the model package"
+        },
+        "CreatedBy": {
+          "description": "Information about the user who created model package.",
+          "$ref": "#/definitions/ModelPackageCreator"
+        },
+        "ModelPackageStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Pending",
+                "InProgress",
+                "Completed",
+                "Failed",
+                "Deleting"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Current status of model package"
+        },
+        "ModelApprovalStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Approved",
+                "Rejected",
+                "PendingManualApproval"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Current approval status of model package"
+        },
+        "ApprovalDescription": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A description provided for the model approval"
+        },
+        "ModelPackageGroupName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "If the model is a versioned model, the name of the model group that the versioned model belongs to."
+        },
+        "ModelPackageName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the model package"
+        },
+        "ModelPackageVersion": {
+          "description": "Version of the model package",
+          "type": "number",
+          "minimum": 1
+        },
+        "Domain": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The machine learning domain of the model package you specified. Common machine learning domains include computer vision and natural language processing."
+        },
+        "Task": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The machine learning task you specified that your model package accomplishes. Common machine learning tasks include object detection and image classification."
+        },
+        "SourceAlgorithms": {
+          "description": "A list of algorithms that were used to create a model package.",
+          "$ref": "#/definitions/SourceAlgorithms"
+        },
+        "InferenceSpecification": {
+          "description": "Details about inference jobs that can be run with models based on this model package.",
+          "$ref": "#/definitions/InferenceSpecification"
+        }
+      },
+      "title": "AWSSageMakerModelCardModelPackageDetailsDefinition"
     },
     "IntendedUses": {
       "description": "Intended usage of model.",
@@ -676,6 +823,134 @@
       },
       "title": "AWSSageMakerModelCardAdditionalInformationDefinition"
     },
+    "ModelPackageCreator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "UserProfileName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the user's profile in Studio"
+        }
+      },
+      "title": "AWSSageMakerModelCardModelPackageCreatorDefinition"
+    },
+    "SourceAlgorithms": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/SourceAlgorithm"
+      },
+      "title": "AWSSageMakerModelCardSourceAlgorithmsDefinition"
+    },
+    "SourceAlgorithm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "AlgorithmName"
+      ],
+      "properties": {
+        "AlgorithmName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 170
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of an algorithm that was used to create the model package. The algorithm must be either an algorithm resource in your SageMaker account or an algorithm in AWS Marketplace that you are subscribed to."
+        },
+        "ModelDataUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 path where the model artifacts, which result from model training, are stored."
+        }
+      },
+      "title": "AWSSageMakerModelCardSourceAlgorithmDefinition"
+    },
+    "InferenceSpecification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Containers"
+      ],
+      "properties": {
+        "Containers": {
+          "description": "Contains inference related information which were used to create model package.",
+          "type": "array",
+          "insertionOrder": true,
+          "minItems": 1,
+          "maxItems": 15,
+          "items": {
+            "$ref": "#/definitions/Container"
+          }
+        }
+      },
+      "title": "AWSSageMakerModelCardInferenceSpecificationDefinition"
+    },
+    "Container": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Image"
+      ],
+      "properties": {
+        "ModelDataUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 path where the model artifacts, which result from model training, are stored."
+        },
+        "Image": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Inference environment path. The Amazon EC2 Container Registry (Amazon ECR) path where inference code is stored."
+        },
+        "NearestModelName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of a pre-trained machine learning benchmarked by Amazon SageMaker Inference Recommender model that matches your model."
+        }
+      },
+      "title": "AWSSageMakerModelCardContainerDefinition"
+    },
     "RiskRating": {
       "oneOf": [
         {
@@ -886,8 +1161,7 @@
                 "minItems": 2,
                 "maxItems": 2
               },
-              "minItems": 1,
-              "maxItems": 20
+              "minItems": 1
             }
           ]
         },
@@ -952,8 +1226,7 @@
               "items": {
                 "type": "number"
               },
-              "minItems": 1,
-              "maxItems": 20
+              "minItems": 1
             }
           ]
         },

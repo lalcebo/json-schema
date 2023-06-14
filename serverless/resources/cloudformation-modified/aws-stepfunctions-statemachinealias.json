@@ -1,0 +1,219 @@
+{
+  "typeName": "AWS::StepFunctions::StateMachineAlias",
+  "description": "Resource schema for StateMachineAlias. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-stepfunctions.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-stepfunctions.git",
+  "definitions": {
+    "RoutingConfigurationVersion": {
+      "type": "object",
+      "properties": {
+        "StateMachineVersionArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) that identifies one or two state machine versions defined in the routing configuration."
+        },
+        "Weight": {
+          "type": "integer",
+          "description": "The percentage of traffic you want to route to the state machine version. The sum of the weights in the routing configuration must be equal to 100.",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "StateMachineVersionArn",
+        "Weight"
+      ],
+      "additionalProperties": false,
+      "title": "AWSStepFunctionsStateMachineAliasRoutingConfigurationVersionDefinition"
+    },
+    "RoutingConfiguration": {
+      "type": "array",
+      "description": "The routing configuration of the alias. One or two versions can be mapped to an alias to split StartExecution requests of the same state machine.",
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/RoutingConfigurationVersion"
+      },
+      "title": "AWSStepFunctionsStateMachineAliasRoutingConfigurationDefinition"
+    },
+    "DeploymentPreference": {
+      "type": "object",
+      "description": "The settings to enable gradual state machine deployments.",
+      "properties": {
+        "StateMachineVersionArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LINEAR",
+                "ALL_AT_ONCE",
+                "CANARY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of deployment to perform."
+        },
+        "Percentage": {
+          "type": "integer",
+          "description": "The percentage of traffic to shift to the new version in each increment.",
+          "minimum": 1,
+          "maximum": 99
+        },
+        "Interval": {
+          "type": "integer",
+          "description": "The time in minutes between each traffic shifting increment.",
+          "minimum": 1,
+          "maximum": 2100
+        },
+        "Alarms": {
+          "type": "array",
+          "description": "A list of CloudWatch alarm names that will be monitored during the deployment. The deployment will fail and rollback if any alarms go into ALARM state.",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      },
+      "required": [
+        "StateMachineVersionArn",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSStepFunctionsStateMachineAliasDeploymentPreferenceDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The alias name."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An optional description of the alias."
+    },
+    "RoutingConfiguration": {
+      "$ref": "#/definitions/RoutingConfiguration"
+    },
+    "DeploymentPreference": {
+      "$ref": "#/definitions/DeploymentPreference"
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": false
+  },
+  "oneOf": [
+    {
+      "required": [
+        "RoutingConfiguration"
+      ]
+    },
+    {
+      "required": [
+        "DeploymentPreference"
+      ]
+    }
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "writeOnlyProperties": [
+    "/properties/DeploymentPreference"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "handlers": {
+    "create": {
+      "permissions": [
+        "states:CreateStateMachineAlias",
+        "states:DescribeStateMachineAlias"
+      ]
+    },
+    "read": {
+      "permissions": [
+        "states:DescribeStateMachineAlias"
+      ]
+    },
+    "update": {
+      "permissions": [
+        "cloudwatch:DescribeAlarms",
+        "states:UpdateStateMachineAlias",
+        "states:DescribeStateMachineAlias"
+      ]
+    },
+    "delete": {
+      "permissions": [
+        "states:DescribeStateMachineAlias",
+        "states:DeleteStateMachineAlias"
+      ]
+    },
+    "list": {
+      "permissions": [
+        "states:ListStateMachineAliases"
+      ],
+      "handlerSchema": {
+        "properties": {
+          "RoutingConfiguration": {
+            "$ref": "resource-schema.json#/properties/RoutingConfiguration"
+          }
+        },
+        "required": [
+          "RoutingConfiguration"
+        ]
+      }
+    }
+  },
+  "title": "AWSStepFunctionsStateMachineAliasProperties",
+  "type": "object"
+}
