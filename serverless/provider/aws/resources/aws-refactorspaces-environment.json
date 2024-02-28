@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::RefactorSpaces::Environment Resource Type",
+  "definitions": {
+    "NetworkFabricType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "TRANSIT_GATEWAY",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tag": {
+      "description": "A label for tagging Environment resource",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:).+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A string containing the value for the tag"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-_\\s\\.\\!\\*\\#\\@\\']+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "EnvironmentIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 14,
+          "minLength": 14,
+          "pattern": "^env-([0-9A-Za-z]{10}$)"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 63,
+          "minLength": 3,
+          "pattern": "^(?!env-)[a-zA-Z0-9]+[a-zA-Z0-9-_ ]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "NetworkFabricType": {
+      "$ref": "#/definitions/NetworkFabricType"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:(aws[a-zA-Z-]*)?:refactor-spaces:[a-zA-Z0-9\\-]+:\\w{12}:[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "TransitGatewayId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 21,
+          "minLength": 21,
+          "pattern": "^tgw-[-a-f0-9]{17}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "description": "Metadata that you can assign to help organize the frameworks that you create. Each tag is a key-value pair."
+    }
+  },
+  "required": [
+    "Name",
+    "NetworkFabricType"
+  ],
+  "additionalProperties": false,
+  "taggable": true
+}

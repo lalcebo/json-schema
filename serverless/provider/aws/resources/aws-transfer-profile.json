@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::Transfer::Profile",
+  "definitions": {
+    "Tag": {
+      "description": "Creates a key-value pair for a specific resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name assigned to the tag that you create."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Contains one or more values that you assigned to the key name you create."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "CertificateId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^cert-([0-9a-f]{17})$",
+          "minLength": 22,
+          "maxLength": 22
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A unique identifier for the certificate."
+    }
+  },
+  "properties": {
+    "As2Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "AS2 identifier agreed with a trading partner."
+    },
+    "ProfileType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LOCAL",
+            "PARTNER"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Enum specifying whether the profile is local or associated with a trading partner."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 50,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "CertificateIds": {
+      "description": "List of the certificate IDs associated with this profile to be used for encryption and signing of AS2 messages.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/CertificateId"
+      }
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:.*",
+          "minLength": 20,
+          "maxLength": 1600
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Specifies the unique Amazon Resource Name (ARN) for the profile."
+    },
+    "ProfileId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^p-([0-9a-f]{17})$",
+          "minLength": 19,
+          "maxLength": 19
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A unique identifier for the profile"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "As2Id",
+    "ProfileType"
+  ]
+}

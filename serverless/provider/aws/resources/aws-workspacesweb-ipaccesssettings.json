@@ -1,0 +1,189 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::WorkSpacesWeb::IpAccessSettings Resource Type",
+  "definitions": {
+    "EncryptionContextMap": {
+      "type": "object",
+      "patternProperties": {
+        "^[\\s\\S]*$": {
+          "type": "string",
+          "maxLength": 131072,
+          "minLength": 0,
+          "pattern": "^[\\s\\S]*$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "IpRule": {
+      "type": "object",
+      "properties": {
+        "IpRange": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}(?:/([0-9]|[12][0-9]|3[0-2])|)$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A single IP address or an IP address range in CIDR notation"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^.+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "IpRange"
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "AdditionalEncryptionContext": {
+      "$ref": "#/definitions/EncryptionContextMap"
+    },
+    "AssociatedPortalArns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 2048,
+        "minLength": 20,
+        "pattern": "^arn:[\\w+=\\/,.@-]+:[a-zA-Z0-9\\-]+:[a-zA-Z0-9\\-]*:[a-zA-Z0-9]{1,12}:[a-zA-Z]+(\\/[a-fA-F0-9\\-]{36})+$"
+      },
+      "insertionOrder": false
+    },
+    "CreationDate": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CustomerManagedKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:[\\w+=\\/,.@-]+:kms:[a-zA-Z0-9\\-]*:[a-zA-Z0-9]{1,12}:key\\/[a-zA-Z0-9-]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^.+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^.+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "IpAccessSettingsArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:[\\w+=\\/,.@-]+:[a-zA-Z0-9\\-]+:[a-zA-Z0-9\\-]*:[a-zA-Z0-9]{1,12}:[a-zA-Z]+(\\/[a-fA-F0-9\\-]{36})+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "IpRules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/IpRule"
+      },
+      "maxItems": 100,
+      "minItems": 1,
+      "insertionOrder": false
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0,
+      "insertionOrder": false
+    }
+  },
+  "required": [
+    "IpRules"
+  ],
+  "additionalProperties": false
+}

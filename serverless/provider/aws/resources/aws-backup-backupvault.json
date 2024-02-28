@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::Backup::BackupVault",
+  "definitions": {
+    "NotificationObjectType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BackupVaultEvents": {
+          "type": "array",
+          "insertionOrder": false,
+          "uniqueItems": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "SNSTopicArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "SNSTopicArn",
+        "BackupVaultEvents"
+      ]
+    },
+    "LockConfigurationType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MinRetentionDays": {
+          "type": "integer"
+        },
+        "MaxRetentionDays": {
+          "type": "integer"
+        },
+        "ChangeableForDays": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "MinRetentionDays"
+      ]
+    },
+    "BackupVaultNamePattern": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9\\-\\_]{2,50}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "AccessPolicy": {
+      "type": [
+        "object",
+        "string"
+      ]
+    },
+    "BackupVaultName": {
+      "$ref": "#/definitions/BackupVaultNamePattern"
+    },
+    "BackupVaultTags": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^.{1,128}$": {
+          "type": "string"
+        }
+      }
+    },
+    "EncryptionKeyArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Notifications": {
+      "$ref": "#/definitions/NotificationObjectType"
+    },
+    "LockConfiguration": {
+      "$ref": "#/definitions/LockConfigurationType"
+    },
+    "BackupVaultArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "BackupVaultName"
+  ]
+}

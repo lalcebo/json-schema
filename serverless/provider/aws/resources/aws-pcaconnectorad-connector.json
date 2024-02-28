@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::PCAConnectorAD::Connector Resource Type",
+  "definitions": {
+    "Tags": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "VpcInformation": {
+      "type": "object",
+      "properties": {
+        "SecurityGroupIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 11,
+            "pattern": "^(?:sg-[0-9a-f]{8}|sg-[0-9a-f]{17})$"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "SecurityGroupIds"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "CertificateAuthorityArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 5,
+          "pattern": "^arn:[\\w-]+:acm-pca:[\\w-]+:[0-9]+:certificate-authority(\\/[\\w-]+)$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ConnectorArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 5,
+          "pattern": "^arn:[\\w-]+:pca-connector-ad:[\\w-]+:[0-9]+:connector(\\/[\\w-]+)$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DirectoryId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^d-[0-9a-f]{10}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    },
+    "VpcInformation": {
+      "$ref": "#/definitions/VpcInformation"
+    }
+  },
+  "required": [
+    "CertificateAuthorityArn",
+    "DirectoryId",
+    "VpcInformation"
+  ],
+  "additionalProperties": false
+}

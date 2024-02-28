@@ -1,1378 +1,149 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "title": "ServerlessFrameworkConfiguration",
+  "title": "Serverless Framework Configuration",
   "description": "Schema for serverless framework configuration files",
-  "fileMatch": ["serverless.yml", "serverless.yaml"],
+  "fileMatch": [
+    "serverless.yml",
+    "serverless.yaml"
+  ],
   "definitions": {
-    "Transform": {
+    "ServerlessProvider": {
       "type": "object",
-      "oneOf": [
-        {
-          "$comment": "You can use the AWS::Include transform anywhere within the AWS CloudFormation template except in the template parameters section or the template version field. For example, you can use AWS::Include in the mappings section.",
-          "properties": {
-            "Name": {
-              "type": "string",
-              "enum": [
-                "AWS::Include"
-              ]
-            },
-            "Parameters": {
-              "type": "object",
-              "properties": {
-                "Location": {
-                  "$comment": "The location is an Amazon S3 URI, with a specific file name in an S3 bucket. For example, s3://MyBucketName/MyFile.yaml.",
-                  "type": "string",
-                  "format": "uri"
-                }
-              },
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
-        },
-        {
-          "$comment": "Use a transform to simplify template authoring for serverless applications. ",
-          "type": "string",
+      "description": "Configuration for Serverless Provider",
+      "properties": {
+        "name": {
+          "description": "Provider name",
+          "default": "aws",
           "enum": [
-            "AWS::CodeDeployBlueGreen",
-            "AWS::CodeStar",
-            "AWS::SecretsManager-2020-07-23",
-            "AWS::Serverless-2016-10-31"
+            "aws"
           ]
         }
-      ]
-    },
-    "AwsAlexaSmartHome": {
-      "properties": {
-        "appId": {
-          "type": "string"
-        },
-        "enabled": {
-          "type": "boolean"
-        }
       },
-      "type": "object"
-    },
-    "AwsApiGateway": {
-      "properties": {
-        "apiKeySourceType": {
-          "type": "string",
-          "enum": ["HEADER", "AUTHORIZER"]
-        },
-        "binaryMediaTypes": {
-          "description": "Optional binary media types the API might return",
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "description": {
-          "type": "string"
-        },
-        "minimumCompressionSize": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 10485760
-        },
-        "restApiId": {
-          "type": "string"
-        },
-        "restApiResources": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "type": "object"
-        },
-        "restApiRootResourceId": {
-          "type": "string"
-        },
-        "websocketApiId": {
-          "type": "string"
-        },
-        "disableDefaultEndpoint": {
-          "description": "Disable the default 'execute-api' HTTP endpoint (default: false)",
-          "type": "boolean"
-        },
-        "apiKeys": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "value": {
-                    "type": "string"
-                  },
-                  "description": {
-                    "type": "string"
-                  },
-                  "customerId": {
-                    "type": "string"
-                  },
-                  "enabled": {
-                    "description": "Can be used to disable the API key without removing it (default: true)",
-                    "type": "boolean"
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "metrics": {
-          "type": "boolean"
-        },
-        "shouldStartNameWithService": {
-          "description": "Use `${service}-${stage}` naming for API Gateway. Will be `true` by default in v3.",
-          "type": "boolean"
-        },
-        "usagePlan": {
-          "type": "object",
-          "properties": {
-            "quota": {
-              "type": "object",
-              "properties": {
-                "limit": {
-                  "type": "number"
-                },
-                "offset": {
-                  "type": "number"
-                },
-                "period": {
-                  "type": "string"
-                }
-              }
-            },
-            "throttle": {
-              "type": "object",
-              "properties": {
-                "burstLimit": {
-                  "type": "number"
-                },
-                "rateLimit": {
-                  "type": "number"
-                }
-              }
-            }
-          }
-        }
-      },
-      "type": "object"
-    },
-    "AwsFunction": {
-      "properties": {
-        "awsKmsKeyArn": {
-          "type": "string"
-        },
-        "condition": {
-          "type": "string"
-        },
-        "dependsOn": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "description": {
-          "type": "string"
-        },
-        "destinations": {
-          "$ref": "#/definitions/AwsDestinations"
-        },
-        "environment": {
-          "$ref": "#/definitions/AwsEnvironment"
-        },
-        "events": {
-          "items": {
-            "$ref": "#/definitions/AwsEvent"
-          },
-          "type": "array"
-        },
-        "handler": {
-          "type": "string"
-        },
-        "layers": {
-          "description": "Collection of Lambda layers to make it available for this lambda. Can use Cloudformation here as well. Usage on:- https://www.serverless.com/framework/docs/providers/aws/guide/layers#using-your-layers",
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "components/cf.functions.json#/FnRef"
-              },
-              {
-                "$ref": "components/cf.functions.json#/FnGetAtt"
-              },
-              {
-                "$ref": "components/cf.functions.json#/FnJoin"
-              },
-              {
-                "$ref": "components/cf.functions.json#/FnTransform"
-              },
-              {
-                "$ref": "components/cf.functions.json#/FnFindInMap"
-              }
-            ]
-          },
-          "type": "array"
-        },
-        "memorySize": {
-          "type": ["string", "number"]
-        },
-        "name": {
-          "type": "string"
-        },
-        "onError": {
-          "type": "string"
-        },
-        "package": {
-          "$ref": "components/common.json#/AwsPackage"
-        },
-        "provisionedConcurrency": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 0
-            },
-            {
-              "$ref": "components/cf.functions.json#/Aws_CF_FunctionString"
-            },
-            {
-              "$ref": "components/cf.functions.json#/FnIf"
-            }
-          ]
-        },
-        "reservedConcurrency": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 0
-            },
-            {
-              "$ref": "components/cf.functions.json#/Aws_CF_FunctionString"
-            },
-            {
-              "$ref": "components/cf.functions.json#/FnIf"
-            }
-          ]
-        },
-        "role": {
-          "type": "string"
-        },
-        "runtime": {
-          "$ref": "components/lambda.json#/AwsRuntime"
-        },
-        "tags": {
-          "$ref": "#/definitions/AwsTags"
-        },
-        "timeout": {
-          "type": ["string", "number"]
-        },
-        "tracing": {
-          "type": "string"
-        },
-        "vpc": {
-          "$ref": "#/definitions/AwsVpc"
-        },
-        "image": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "object",
-              "properties": {
-                "uri": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "workingDirectory": {
-                  "type": "string"
-                },
-                "command": {
-                  "description": "Sometimes it appears that command from the dockerfile is not read and we have to overwrite it manually to make it work. One of my clients faced this recently",
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "entryPoint": {
-                  "description": "Sometimes it appears that { from the dockerfile is not read and we have to overwrite it manually to make it work",
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          ]
-        },
-        "snapStart": {
-          "type": "boolean",
-          "description": "https://www.serverless.com/framework/docs/providers/aws/guide/functions#snapstart"
-        },
-        "logDataProtectionPolicy": {
-          "$ref": "components/cloudwatch.json#/LogDataProtectionPolicy"
-        },
-        "runtimeManagement": {
-          "$ref": "components/lambda.json#/AwsLambdaRuntimeManagement"
-        }
-      },
-      "type": "object"
-    },
-    "AwsCloudFront": {
-      "properties": {
-        "eventType": {
-          "type": "string"
-        },
-        "includeBody": {
-          "type": "boolean"
-        },
-        "origin": {
-          "$ref": "#/definitions/AwsOrigin"
-        },
-        "pathPattern": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsCloudwatchLog": {
-      "properties": {
-        "filter": {
-          "type": "string"
-        },
-        "logGroup": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsCognitoUserPool": {
-      "properties": {
-        "existing": {
-          "type": "boolean"
-        },
-        "pool": {
-          "type": "string"
-        },
-        "trigger": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "ServerlessCustom": {
-      "properties": {
-        "pythonRequirements": {
-          "$ref": "plugin/python_requirements.json#/PythonRequirements"
-        },
-        "wsgi": {
-          "$ref": "plugin/python_wsgi.json#/PythonWsgi"
-        },
-        "prune": {
-          "$ref": "plugin/prune.json#/Prune"
-        },
-        "esbuild": {
-          "$ref": "plugin/esbuild.json#/Esbuild"
-        },
-        "splitStacks": {
-          "$ref": "plugin/split_stacks.json#/SplitStacks"
-        },
-        "webpack": {
-          "$ref": "plugin/webpack.json#/WebpackConfiguration"
-        },
-        "ssmPublish": {
-          "$ref": "plugin/ssm_publish.json#/SsmPublishConfiguration"
-        }
-      },
-      "additionalProperties": true,
-      "type": "object"
-    },
-    "AwsDeploymentBucket": {
-      "description": "Configure the S3 bucket used by Serverless Framework to deploy code packages to Lambda",
-      "properties": {
-        "blockPublicAccess": {
-          "description": "Prevents public access via ACLs or bucket policies (default: false). Note: the deployment bucket is not public by default. These are additional ACLs.",
-          "type": "boolean"
-        },
-        "maxPreviousDeploymentArtifacts": {
-          "description": "On deployment, serverless prunes artifacts older than this limit (default: 5)",
-          "type": ["string", "number"]
-        },
-        "name": {
-          "description": "Name of an existing bucket to use (default: created by serverless)",
-          "type": "string"
-        },
-        "serverSideEncryption": {
-          "type": "string"
-        },
-        "sseCustomerAlgorithim": {
-          "type": "string"
-        },
-        "sseCustomerKey": {
-          "type": "string"
-        },
-        "sseCustomerKeyMD5": {
-          "type": "string"
-        },
-        "sseKMSKeyId": {
-          "type": "string"
-        },
-        "tags": {
-          "$ref": "#/definitions/AwsTags"
-        },
-        "skipPolicySetup": {
-          "description": "Skip the creation of a default bucket policy when the deployment bucket is created (default: false)",
-          "type": "boolean"
-        },
-        "versioning": {
-          "description": "Enable bucket versioning (default: false)",
-          "type": "boolean"
-        }
-      },
-      "type": "object"
-    },
-    "AwsDestinations": {
-      "properties": {
-        "onFailure": {
-          "type": "string"
-        },
-        "onSuccess": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsDetail": {
-      "additionalProperties": {
-        "items": {
-          "type": "string"
-        },
-        "type": "array"
-      },
-      "type": "object"
-    },
-    "AwsEnvironment": {
-      "additionalProperties": {},
-      "type": "object"
-    },
-    "AwsEvent": {
-      "properties": {
-        "activemq": {
-          "$ref": "components/events.json#/AwsActiveMq"
-        },
-        "alb": {
-          "$ref": "components/events.json#/AwsAlbEvent"
-        },
-        "alexaSkill": {
-          "$ref": "components/events.json#/AwsAlexaSkill"
-        },
-        "alexaSmartHome": {
-          "$ref": "#/definitions/AwsAlexaSmartHome"
-        },
-        "cloudFront": {
-          "$ref": "#/definitions/AwsCloudFront"
-        },
-        "cloudwatchEvent": {
-          "$ref": "components/events.json#/AwsCloudwatchEvent"
-        },
-        "cloudwatchLog": {
-          "$ref": "#/definitions/AwsCloudwatchLog"
-        },
-        "cognitoUserPool": {
-          "$ref": "#/definitions/AwsCognitoUserPool"
-        },
-        "eventBridge": {
-          "$ref": "#/definitions/AwsEventBridge"
-        },
-        "http": {
-          "$ref": "#/definitions/AwsHttp"
-        },
-        "httpApi": {
-          "$ref": "#/definitions/AwsHttpApiEvent"
-        },
-        "iot": {
-          "$ref": "#/definitions/AwsIot"
-        },
-        "s3": {
-          "$ref": "#/definitions/AwsS3"
-        },
-        "schedule": {
-          "anyOf": [
-            {
-              "$ref": "components/events.json#/AwsScheduleEvent"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "sns": {
-          "$ref": "components/events.json#/AwsSns"
-        },
-        "sqs": {
-          "anyOf": [
-            {
-              "$ref": "components/events.json#/AwsSqs"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "stream": {
-          "$ref": "#/definitions/AwsStream"
-        },
-        "websocket": {
-          "$ref": "#/definitions/AwsWebsocket"
-        }
-      },
-      "type": "object"
-    },
-    "AwsEventBridge": {
-      "title": "AwsEventBridge",
-      "description": "Aws Lambda function Eventbridge event source",
-      "properties": {
-        "eventBus": {
-          "type": "string",
-          "minLength": 1
-        },
-        "schedule": {
-          "type": "string",
-          "pattern": "^(?:cron|rate)\\(.+\\)$"
-        },
-        "name": {
-          "type": "string",
-          "pattern": "[a-zA-Z0-9-_.]+",
-          "minLength": 1,
-          "maxLength": 64
-        },
-        "enabled": {
-          "type": "boolean",
-          "default": true
-        },
-        "pattern": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/AwsPatternExisting"
-            },
-            {
-              "$ref": "#/definitions/AwsPatternInput"
-            }
-          ]
-        },
-        "input": {
-          "type": "object"
-        },
-        "inputPath": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256
-        },
-        "inputTransformer": {
-          "$ref": "components/common.json#/AwsInputTransformer"
-        },
-        "retryPolicy": {
-          "type": "object",
-          "properties": {
-            "maximumEventAge": {
-              "type": "number",
-              "minimum": 60,
-              "maximum": 86400
-            },
-            "maximumRetryAttempts": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 185
-            }
-          }
-        }
-      },
-      "type": "object",
-      "anyOf": [
-        { "required": ["pattern"] },
-        { "required": ["schedule"] }
-      ]
-    },
-    "AwsFunctions": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/AwsFunction"
-          }
-        },
-        {
-          "type": "string",
-          "minLength": 1
-        },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ServerlessFilePath"
-          }
-        }
-      ]
-    },
-    "AwsHttp": {
-      "oneOf": [
-        {
-          "properties": {
-            "async": {
-              "type": "boolean"
-            },
-            "authorizer": {
-              "$ref": "#/definitions/AwsHttpAuthorizer"
-            },
-            "cors": {
-              "$ref": "components/api.gateway.v1.json#/AwsHttpCors"
-            },
-            "method": {
-              "type": "string"
-            },
-            "path": {
-              "type": "string"
-            },
-            "private": {
-              "type": "boolean"
-            },
-            "request": {
-              "$ref": "#/definitions/AwsHttpRequestValidation"
-            }
-          },
-          "type": "object"
-        },
-        {
-          "type": "string",
-          "enum": [
-            "ANY /",
-            "GET /",
-            "POST /",
-            "PUT /",
-            "PATCH /",
-            "OPTIONS /",
-            "HEAD /",
-            "DELETE /",
-            "ANY /{proxy+}",
-            "GET /{proxy+}",
-            "POST /{proxy+}",
-            "PUT /{proxy+}",
-            "PATCH /{proxy+}",
-            "OPTIONS /{proxy+}",
-            "HEAD /{proxy+}",
-            "DELETE /{proxy+}"
-          ]
-        }
-      ]
-    },
-    "AwsHttpApiEvent": {
-      "oneOf": [
-        {
-          "properties": {
-            "authorizer": {
-              "anyOf": [
-                {
-                  "$ref": "#/definitions/AwsNamedHttpApiEventAuthorizer"
-                },
-                {
-                  "$ref": "#/definitions/AwsIdRefHttpApiEventAuthorizer"
-                }
-              ]
-            },
-            "method": {
-              "type": "string"
-            },
-            "path": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        {
-          "type": "string",
-          "minLength": 1
-        }
-      ]
-    },
-    "AwsHttpApiLogs": {
-      "properties": {
-        "format": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsHttpAuthorizer": {
       "anyOf": [
         {
-          "title": "AwsHttpIamAuthorizerShort",
-          "description": "AWS_IAM based authorizer, https://www.serverless.com/framework/docs/providers/aws/events/apigateway#http-endpoints-with-aws_iam-authorizers",
-          "type": "string",
-          "enum": ["aws_iam"]
-        },
-        {
-          "title": "AwsHttpIamAuthorizer",
-          "description": "AWS_IAM based authorizer, https://www.serverless.com/framework/docs/providers/aws/events/apigateway#http-endpoints-with-aws_iam-authorizers",
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": ["aws_iam"]
-            }
-          },
-          "required": [
-            "type"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "title": "AwsHttpCognitoAuthorizer",
-          "properties": {
-            "arn": {
-              "type": "string",
-              "description": "The arn of the cognito user pool"
-            },
-            "scopes": {
-              "type": "array",
-              "items": {
-                "type": "string"
+          "if": {
+            "properties": {
+              "name": {
+                "const": "aws"
               }
-            },
-            "claims": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "type": {
-              "type": "string",
-              "enum": [
-                "COGNITO_USER_POOLS"
-              ]
-            },
-            "identitySource": {
-              "type": "string",
-              "default": "method.request.header.Authorization",
-              "description": "The identity source for which authorization is requested. The value is a comma-separated string of one or more mapping expressions of the specified request parameters. For example, if an Auth header, a Name query string parameter are defined as identity sources, this value is method.request.header.Auth, method.request.querystring.Name"
-            },
-            "identityValidationExpression": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "resultTtlInSeconds": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 3600
             }
           },
-          "required": [
-            "type",
-            "arn"
-          ],
-          "additionalProperties": false
-        },
-        {
-          "title": "AwsHttpLambdaAuthorizer",
-          "type": "object",
-          "properties": {
-            "arn": {
-              "type": "string"
-            },
-            "identitySource": {
-              "type": "string",
-              "default": "method.request.header.Authorization",
-              "description": "The identity source for which authorization is requested. The value is a comma-separated string of one or more mapping expressions of the specified request parameters. For example, if an Auth header, a Name query string parameter are defined as identity sources, this value is `method.request.header.Auth, method.request.querystring.Name`"
-            },
-            "identityValidationExpression": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "resultTtlInSeconds": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 3600
-            },
-            "type": {
-              "type": "string",
-              "enum": ["request", "token", "REQUEST", "TOKEN"],
-              "default": "token"
-            }
-          },
-          "oneOf": [
-            {
-              "required": [
-                "arn"
-              ]
-            },
-            {
-              "required": [
-                "name"
-              ]
-            }
-          ],
-          "additionalProperties": false
-        },
-        {
-          "title": "AwsHttpExistingAuthorizer",
-          "description": "Use an existing Api Gateway Authorizer created outside or in the same stack",
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": ["CUSTOM"]
-            },
-            "authorizerId": {
-              "type": "string",
-              "description": "The Id of the existing authorizer"
-            }
-          },
-          "required": [
-            "type",
-            "authorizerId"
-          ],
-          "additionalProperties": false
+          "then": {
+            "$ref": "provider/aws/provider.json"
+          }
         }
+      ],
+      "required": [
+        "name"
       ]
     },
-    "AwsHttpRequestParametersValidation": {
-      "properties": {
-        "headers": {
-          "additionalProperties": {
-            "type": "boolean"
-          },
-          "type": "object"
-        },
-        "paths": {
-          "additionalProperties": {
-            "type": "boolean"
-          },
-          "type": "object"
-        },
-        "querystrings": {
-          "additionalProperties": {
-            "type": "boolean"
-          },
-          "type": "object"
-        }
-      },
-      "type": "object"
-    },
-    "AwsHttpRequestValidation": {
-      "properties": {
-        "parameters": {
-          "$ref": "#/definitions/AwsHttpRequestParametersValidation"
-        },
-        "schema": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "type": "object"
-        }
-      },
-      "type": "object"
-    },
-    "AwsIdRefHttpApiEventAuthorizer": {
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "scopes": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
-    },
-    "AwsIot": {
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "enabled": {
-          "type": "boolean"
-        },
-        "name": {
-          "type": "string"
-        },
-        "sql": {
-          "type": "string"
-        },
-        "sqlVersion": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsLogs": {
-      "properties": {
-        "frameworkLambda": {
-          "type": "boolean"
-        },
-        "httpApi": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/AwsHttpApiLogs"
-            },
-            {
-              "type": "boolean"
-            }
-          ]
-        },
-        "restApi": {
-          "$ref": "#/definitions/AwsRestApiLogs"
-        },
-        "websocket": {
-          "$ref": "#/definitions/AwsWebsocketLogs"
-        }
-      },
-      "type": "object"
-    },
-    "AwsNamedHttpApiEventAuthorizer": {
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "scopes": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
-    },
-    "AwsOrigin": {
-      "properties": {
-        "CustomOriginConfig": {
-          "properties": {
-            "OriginProtocolPolicy": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "DomainName": {
-          "type": "string"
-        },
-        "OriginPath": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsPatternExisting": {
-      "properties": {
-        "source": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
-    },
-    "AwsPatternInput": {
-      "properties": {
-        "detail": {
-          "$ref": "#/definitions/AwsDetail"
-        },
-        "detail-type": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "source": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
-    },
-    "AwsProvider": {
-      "title": "AwsProvider",
-      "description": "Configuration for Serverless AWS ",
-      "type": "object",
-      "properties": {
-        "alb": {
-          "$ref": "components/alb.json#/AwsAlb"
-        },
-        "ecr": {
-          "type": "object",
-          "properties": {
-            "scanOnPush": {
-              "description": "Enabling this will make AWS scan image for CVE(Common Vulnerabilities and Exposures)",
-              "type": "boolean"
-            },
-            "images": {
-              "type": "object",
-              "additionalProperties": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "uri": {
-                        "description": "URI of an existing Docker image in ECR",
-                        "type": "string"
-                      }
-                    }
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "path": {
-                        "description": "Path to the Docker context that will be used when building that image locally (default: '.')",
-                        "type": "string"
-                      },
-                      "file": {
-                        "type": "string",
-                        "description": "Dockerfile that will be used when building the image locally (default: 'Dockerfile')"
-                      },
-                      "buildArgs": {
-                        "type": "object"
-                      },
-                      "cacheFrom": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "apiGateway": {
-          "$ref": "#/definitions/AwsApiGateway"
-        },
-        "apiKeys": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "apiName": {
-          "description": "Change this to use a custom name for the API Gateway API",
-          "type": "string"
-        },
-        "cfnRole": {
-          "type": "string"
-        },
-        "deploymentBucket": {
-          "$ref": "#/definitions/AwsDeploymentBucket"
-        },
-        "deploymentPrefix": {
-          "type": "string"
-        },
-        "endpointType": {
-          "enum": ["EDGE", "PRIVATE", "REGIONAL"],
-          "type": "string"
-        },
-        "environment": {
-          "$ref": "#/definitions/AwsEnvironment"
-        },
-        "httpApi": {
-          "$ref": "components/api.gateway.v2.json#/AwsHttpApi"
-        },
-        "iam": {
-          "$ref": "components/iam.json#/AwsIamConfiguration"
-        },
-        "iamManagedPolicies": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "iamRoleStatements": {
-          "items": {
-            "$ref": "components/iam.json#/AwsIamRoleStatement"
-          },
-          "type": "array"
-        },
-        "logRetentionInDays": {
-          "type": ["string", "number"]
-        },
-        "logs": {
-          "$ref": "#/definitions/AwsLogs"
-        },
-        "memorySize": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "description": "Note: API Gateway has a maximum timeout of 30 seconds",
-              "type": "number",
-              "minimum": 128,
-              "maximum": 10240
-            }
-          ],
-          "type": ["string", "number"]
-        },
-        "name": {
-          "enum": ["aws"],
-          "type": "string"
-        },
-        "notificationArns": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "profile": {
-          "type": "string"
-        },
-        "region": {
-          "$ref": "components/common.json#/AwsRegion"
-        },
-        "reservedConcurrency": {
-          "type": ["string", "number"]
-        },
-        "resourcePolicy": {
-          "items": {
-            "$ref": "#/definitions/AwsResourcePolicy"
-          },
-          "type": "array"
-        },
-        "role": {
-          "type": "string"
-        },
-        "rolePermissionsBoundary": {
-          "type": "string"
-        },
-        "rollbackConfiguration": {
-          "$ref": "#/definitions/AwsRollbackConfiguration"
-        },
-        "runtime": {
-          "$ref": "components/lambda.json#/AwsRuntime"
-        },
-        "stackName": {
-          "type": "string"
-        },
-        "stackParameters": {
-          "items": {
-            "$ref": "#/definitions/AwsStackParameters"
-          },
-          "type": "array"
-        },
-        "stackPolicy": {
-          "items": {
-            "$ref": "#/definitions/AwsResourcePolicy"
-          },
-          "type": "array"
-        },
-        "stackTags": {
-          "$ref": "#/definitions/AwsTags"
-        },
-        "stage": {
-          "type": "string"
-        },
-        "tags": {
-          "$ref": "#/definitions/AwsTags"
-        },
-        "timeout": {
-          "type": ["string", "number"]
-        },
-        "tracing": {
-          "$ref": "#/definitions/AwsTracing"
-        },
-        "usagePlan": {
-          "$ref": "#/definitions/AwsUsagePlan"
-        },
-        "versionFunctions": {
-          "description": "Use function versioning (enabled by default)",
-          "type": "boolean"
-        },
-        "architecture": {
-          "$ref": "components/common.json#/AwsSupportedArchitecture"
-        },
-        "vpc": {
-          "$ref": "#/definitions/AwsVpc"
-        },
-        "websocketsApiName": {
-          "type": "string"
-        },
-        "websocketsApiRouteSelectionExpression": {
-          "type": "string"
-        },
-        "websocketsDescription": {
-          "type": "string"
-        },
-        "deploymentMethod": {
-          "description": "Method used for CloudFormation deployments: 'changesets' or 'direct' (default: changesets). See https://www.serverless.com/framework/docs/providers/aws/guide/deploying#deployment-method",
-          "type": "string",
-          "enum": ["direct", "changesets"]
-        },
-        "disableRollback": {
-          "type": "boolean",
-          "description": "Disable automatic rollback by CloudFormation on failure. To be used for non-production environments."
-        },
-        "logDataProtectionPolicy": {
-          "$ref": "components/cloudwatch.json#/LogDataProtectionPolicy"
-        },
-        "runtimeManagement": {
-          "$ref": "components/lambda.json#/AwsLambdaRuntimeManagement"
-        }
-      },
-      "required": ["name"]
-    },
-    "AwsQuota": {
-      "properties": {
-        "limit": {
-          "type": ["string", "number"]
-        },
-        "offset": {
-          "type": ["string", "number"]
-        },
-        "period": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsResourcePolicy": {
-      "properties": {
-        "Action": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "additionalProperties": {},
-              "type": "object"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "Condition": {
-          "additionalProperties": {},
-          "type": "object"
-        },
-        "Effect": {
-          "enum": ["Allow", "Deny"],
-          "type": "string"
-        },
-        "Principal": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "additionalProperties": {},
-              "type": "object"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        },
-        "Resource": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "additionalProperties": {},
-              "type": "object"
-            },
-            {
-              "type": "string"
-            }
-          ]
-        }
-      },
-      "type": "object"
-    },
-    "ServerlessFrameworkResources": {
+    "ServerlessResources": {
       "oneOf": [
         {
-          "title": "ServerlessFrameworkResourceConfiguration",
+          "type": "object",
           "description": "Serverless Framework Additional Resources Configuration",
-          "properties": {
-            "Outputs": {
-              "$ref": "components/outputs.json#/AwsOutputs"
-            },
-            "Resources": {
-              "$ref": "resources/resources.schema.json#/properties/Resources"
-            },
-            "Mappings": {
-              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html",
-              "type": "object",
-              "patternProperties": {
-                "^[a-zA-Z0-9._-]{1,255}$": {
-                  "$ref": "components/mappings.json#/properties/Mappings"
+          "anyOf": [
+            {
+              "if": {
+                "provider": {
+                  "name": {
+                    "const": "aws"
+                  }
                 }
               },
-              "additionalProperties": false
-            },
-            "Conditions": {
-              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html",
-              "$ref": "components/conditions.json#/properties/Conditions"
-            },
-            "Parameters": {
-              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
-              "$ref": "components/parameters.json#/properties/Parameters"
-            },
-            "Hooks": {
-              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/blue-green.html",
-              "type": "object"
-            },
-            "Rules": {
-              "description": "https://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html",
-              "type": "object"
-            },
-            "AWSTemplateFormatVersion": {
-              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html",
-              "type": "string",
-              "enum": [
-                "2010-09-09"
-              ]
-            },
-            "Description": {
-              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-description-structure.html",
-              "type": "string",
-              "maxLength": 1024
-            },
-            "Metadata": {
-              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/metadata-section-structure.html",
-              "type": "object"
-            },
-            "Transform": {
-              "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html",
-              "$ref": "#/definitions/Transform"
+              "then": {
+                "properties": {
+                  "Outputs": {
+                    "$ref": "provider/aws/component/outputs.json#/AwsOutputs"
+                  },
+                  "Resources": {
+                    "$ref": "provider/aws/resources.json#/AwsResources"
+                  },
+                  "Mappings": {
+                    "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html",
+                    "type": "object",
+                    "patternProperties": {
+                      "^[a-zA-Z0-9._-]{1,255}$": {
+                        "$ref": "provider/aws/component/mappings.json#/properties/Mappings"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "Conditions": {
+                    "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html",
+                    "$ref": "provider/aws/component/conditions.json#/properties/Conditions"
+                  },
+                  "Parameters": {
+                    "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
+                    "$ref": "provider/aws/component/parameters.json#/properties/Parameters"
+                  },
+                  "Hooks": {
+                    "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/blue-green.html",
+                    "type": "object"
+                  },
+                  "Rules": {
+                    "description": "https://docs.aws.amazon.com/servicecatalog/latest/adminguide/reference-template_constraint_rules.html",
+                    "type": "object"
+                  },
+                  "AWSTemplateFormatVersion": {
+                    "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html",
+                    "default": "2010-09-09",
+                    "enum": [
+                      "2010-09-09"
+                    ]
+                  },
+                  "Description": {
+                    "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-description-structure.html",
+                    "type": "string",
+                    "maxLength": 1024
+                  },
+                  "Metadata": {
+                    "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/metadata-section-structure.html",
+                    "type": "object"
+                  },
+                  "Transform": {
+                    "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html",
+                    "type": "object",
+                    "oneOf": [
+                      {
+                        "$comment": "You can use the AWS::Include transform anywhere within the AWS CloudFormation template except in the template parameters section or the template version field. For example, you can use AWS::Include in the mappings section.",
+                        "properties": {
+                          "Name": {
+                            "type": "string",
+                            "enum": [
+                              "AWS::Include"
+                            ]
+                          },
+                          "Parameters": {
+                            "type": "object",
+                            "properties": {
+                              "Location": {
+                                "$comment": "The location is an Amazon S3 URI, with a specific file name in an S3 bucket. For example, s3://MyBucketName/MyFile.yaml.",
+                                "type": "string",
+                                "format": "uri"
+                              }
+                            },
+                            "additionalProperties": false
+                          }
+                        },
+                        "additionalProperties": false
+                      },
+                      {
+                        "$comment": "Use a transform to simplify template authoring for serverless applications.",
+                        "type": "string",
+                        "enum": [
+                          "AWS::CodeDeployBlueGreen",
+                          "AWS::CodeStar",
+                          "AWS::SecretsManager-2020-07-23",
+                          "AWS::Serverless-2016-10-31"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
             }
-          },
-          "type": "object"
+          ]
         },
         {
           "$ref": "#/definitions/ServerlessFilePath"
@@ -1383,293 +154,51 @@
       "type": "string",
       "minLength": 1,
       "pattern": "\\$\\{file\\(.+\\.(yml|yaml)\\)(:[A-Za-z]+)?(\\s*,\\s*(\"[^,]*\"|'[^,]*'|[A-Za-z:._-]+)\\s*)?\\}"
-    },
-    "AwsRestApiLogs": {
-      "title": "AwsRestApiLogs",
-      "properties": {
-        "accessLogging": {
-          "type": "boolean"
-        },
-        "executionLogging": {
-          "type": "boolean"
-        },
-        "format": {
-          "type": "string"
-        },
-        "fullExecutionData": {
-          "type": "boolean"
-        },
-        "level": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        },
-        "roleManagedExternally": {
-          "type": "boolean"
-        }
-      },
-      "type": "object"
-    },
-    "AwsRollbackConfiguration": {
-      "properties": {
-        "MonitoringTimeInMinutes": {
-          "type": ["string", "number"]
-        },
-        "RollbackTriggers": {
-          "items": {
-            "$ref": "#/definitions/AwsRollbackTrigger"
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
-    },
-    "AwsRollbackTrigger": {
-      "properties": {
-        "Arn": {
-          "type": "string"
-        },
-        "Type": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsS3": {
-      "oneOf": [
-        {
-          "properties": {
-            "bucket": {
-              "type": "string"
-            },
-            "event": {
-              "type": "string"
-            },
-            "existing": {
-              "type": "boolean"
-            },
-            "rules": {
-              "items": {
-                "$ref": "#/definitions/AwsS3Rule"
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        {
-          "type": "string",
-          "description": "This will create a new bucket and trigger the lambda when an object is added or modified inside the bucket. More details :- https://www.serverless.com/framework/docs/providers/aws/events/s3#simple-event-definition",
-          "minLength": 3,
-          "maxLength": 63,
-          "pattern": "(?!(^((2(5[0-5]|[0-4][0-9])|[01]?[0-9]{1,2})\\.){3}(2(5[0-5]|[0-4][0-9])|[01]?[0-9]{1,2})$|^xn--|-s3alias$))^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$"
-        }
-      ]
-    },
-    "AwsS3Rule": {
-      "properties": {
-        "prefix": {
-          "type": "string"
-        },
-        "suffix": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "ServerlessServiceConfiguration": {
-      "description": "**@deprecated and doesn't work in serverless framework v3**",
-      "title": "ServerlessServiceConfiguration",
-      "properties": {
-        "awsKmsKeyArn": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsStackParameters": {
-      "properties": {
-        "ParameterKey": {
-          "type": "string"
-        },
-        "ParameterValue": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsStream": {
-      "properties": {
-        "arn": {
-          "$ref": "components/cf.functions.json#/Aws_CF_Function"
-        },
-        "batchSize": {
-          "type": ["string", "number"]
-        },
-        "enabled": {
-          "type": "boolean"
-        },
-        "startingPosition": {
-          "type": ["string", "number"]
-        }
-      },
-      "type": "object"
-    },
-    "AwsTags": {
-      "additionalProperties": {
-        "type": "string"
-      },
-      "type": "object"
-    },
-    "AwsThrottle": {
-      "properties": {
-        "burstLimit": {
-          "type": ["string", "number"]
-        },
-        "rateLimit": {
-          "type": ["string", "number"]
-        }
-      },
-      "type": "object"
-    },
-    "AwsTracing": {
-      "properties": {
-        "apiGateway": {
-          "type": "boolean"
-        },
-        "lambda": {
-          "type": "boolean"
-        }
-      },
-      "type": "object"
-    },
-    "AwsUsagePlan": {
-      "properties": {
-        "quota": {
-          "$ref": "#/definitions/AwsQuota"
-        },
-        "throttle": {
-          "$ref": "#/definitions/AwsThrottle"
-        }
-      },
-      "type": "object"
-    },
-    "AwsVpc": {
-      "properties": {
-        "securityGroupIds": {
-          "items": {
-            "anyOf": [
-              {
-                "$ref": "components/cf.functions.json#/Aws_CF_Function"
-              },
-              {
-                "type":"string"
-              }
-            ]
-          },
-          "type": "array"
-        },
-        "subnetIds": {
-          "items": {
-            "anyOf": [
-              {
-                "$ref": "components/cf.functions.json#/Aws_CF_Function"
-              },
-              {
-                "type":"string"
-              }
-            ]
-          },
-          "type": "array"
-        }
-      },
-      "type": "object",
-      "required": ["securityGroupIds", "subnetIds"]
-    },
-    "AwsWebsocket": {
-      "properties": {
-        "authorizer": {
-          "$ref": "#/definitions/AwsWebsocketAuthorizer"
-        },
-        "route": {
-          "type": "string"
-        },
-        "routeResponseSelectionExpression": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsWebsocketAuthorizer": {
-      "properties": {
-        "arn": {
-          "type": "string"
-        },
-        "identitySource": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "AwsWebsocketLogs": {
-      "properties": {
-        "level": {
-          "type": "string",
-          "enum": ["INFO", "ERROR"]
-        },
-        "format": {
-          "type": "string",
-          "description": "Log format to use for access logs. Ref:- https://docs.aws.amazon.com/apigateway/latest/developerguide/websocket-api-logging.html"
-        },
-        "accessLogging": {
-          "type": "boolean",
-          "description": "Enables HTTP access logs (default: true)"
-        },
-        "executionLogging": {
-          "type": "boolean",
-          "description": "Enable execution logging (default: true)"
-        },
-        "fullExecutionData": {
-          "type": "boolean",
-          "description": "Log full requests/responses for execution logging (default: true)"
-        }
-      },
-      "type": "object"
     }
   },
   "properties": {
-    "app": {
-      "type": "string"
-    },
-    "custom": {
-      "$ref": "#/definitions/ServerlessCustom"
+    "service": {
+      "description": "Serverless service name",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
     },
     "frameworkVersion": {
+      "description": "Framework version constraint (semver constraint): '3', '^2.33'",
       "type": "string"
     },
-    "functions": {
-      "$ref": "#/definitions/AwsFunctions"
+    "configValidationMode": {
+      "description": "Configuration validation: 'error' (fatal error), 'warn' (logged to the output) or 'off' (default: warn)",
+      "default": "warn",
+      "enum": [
+        "error",
+        "warn",
+        "off"
+      ]
     },
-    "layers": {
-      "$ref": "components/layers.json#/AwsLayers"
+    "useDotenv": {
+      "description": "Load environment variables from .env files (default: false)",
+      "default": false,
+      "type": "boolean"
     },
-    "org": {
+    "deprecationNotificationMode": {
+      "description": "'warn' reports deprecations on the go, 'error' will result with an exception being thrown on first approached deprecation",
       "type": "string"
     },
-    "package": {
-      "$ref": "components/common.json#/AwsPackage"
+    "disabledDeprecations": {
+      "description": "",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "provider": {
+      "$ref": "#/definitions/ServerlessProvider"
     },
     "plugins": {
+      "description": "Custom JavaScript codes that extends the Serverless Framework with new features",
       "oneOf": [
         {
           "items": {
@@ -1678,7 +207,6 @@
           "type": "array"
         },
         {
-          "title": "LocalPlugin",
           "type": "object",
           "properties": {
             "localPath": {
@@ -1694,40 +222,29 @@
           }
         }
       ]
-    },
-    "provider": {
-      "$ref": "#/definitions/AwsProvider"
-    },
-    "resources": {
-      "oneOf": [
-        {
-          "$ref": "#/definitions/ServerlessFrameworkResources"
-        },
-        {
-          "items": {
-            "$ref": "#/definitions/ServerlessFrameworkResources"
-          },
-          "type": "array"
-        }
-      ]
-    },
-    "service": {
-      "oneOf": [
-        {
-          "$ref": "#/definitions/ServerlessServiceConfiguration"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
-    "tenant": {
-      "type": "string"
-    },
-    "stepFunctions": {
-      "$ref": "plugin/step_functions.json#/AwsStepFunctions"
     }
   },
+  "anyOf": [
+    {
+      "if": {
+        "provider": {
+          "name": {
+            "const": "aws"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "resources": {
+            "$ref": "#/definitions/ServerlessResources"
+          }
+        }
+      }
+    }
+  ],
   "type": "object",
-  "required": ["provider", "service"]
+  "required": [
+    "service",
+    "provider"
+  ]
 }

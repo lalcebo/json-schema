@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for SSO InstanceAccessControlAttributeConfiguration",
+  "definitions": {
+    "AccessControlAttributeValueSource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256,
+          "pattern": "[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@\\[\\]\\{\\}\\$\\\\\"]*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AccessControlAttributeValueSourceList": {
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/AccessControlAttributeValueSource"
+      },
+      "maxItems": 1
+    },
+    "AccessControlAttributeValue": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/AccessControlAttributeValueSourceList"
+        }
+      },
+      "required": [
+        "Source"
+      ],
+      "additionalProperties": false
+    },
+    "AccessControlAttribute": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]+",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "$ref": "#/definitions/AccessControlAttributeValue"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "AccessControlAttributeList": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AccessControlAttribute"
+      },
+      "maxItems": 50
+    }
+  },
+  "properties": {
+    "InstanceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+          "minLength": 10,
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the AWS SSO instance under which the operation will be executed."
+    },
+    "InstanceAccessControlAttributeConfiguration": {
+      "description": "The InstanceAccessControlAttributeConfiguration property has been deprecated but is still supported for backwards compatibility purposes. We recomend that you use  AccessControlAttributes property instead.",
+      "type": "object",
+      "properties": {
+        "AccessControlAttributes": {
+          "$ref": "#/definitions/AccessControlAttributeList"
+        }
+      },
+      "required": [
+        "AccessControlAttributes"
+      ],
+      "additionalProperties": false
+    },
+    "AccessControlAttributes": {
+      "$ref": "#/definitions/AccessControlAttributeList"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "InstanceArn"
+  ]
+}

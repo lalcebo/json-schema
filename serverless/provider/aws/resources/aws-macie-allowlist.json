@@ -1,0 +1,203 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Macie AllowList resource schema",
+  "definitions": {
+    "Regex": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "S3WordsList": {
+      "type": "object",
+      "properties": {
+        "BucketName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ObjectKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "BucketName",
+        "ObjectKey"
+      ],
+      "additionalProperties": false
+    },
+    "Criteria": {
+      "description": "The regex or s3 object to use for the AllowList.",
+      "type": "object",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "Regex": {
+              "type": "string",
+              "description": "The S3 object key for the AllowList."
+            }
+          },
+          "required": [
+            "Regex"
+          ]
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "S3WordsList": {
+              "$ref": "#/definitions/S3WordsList",
+              "description": "The S3 location for the AllowList."
+            }
+          },
+          "required": [
+            "S3WordsList"
+          ]
+        }
+      ]
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OK",
+            "S3_OBJECT_NOT_FOUND",
+            "S3_USER_ACCESS_DENIED",
+            "S3_OBJECT_ACCESS_DENIED",
+            "S3_THROTTLED",
+            "S3_OBJECT_OVERSIZE",
+            "S3_OBJECT_EMPTY",
+            "UNKNOWN_ERROR"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status for the AllowList"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The tag's key."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The tag's value."
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Name of AllowList."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Description of AllowList."
+    },
+    "Criteria": {
+      "description": "AllowList criteria.",
+      "$ref": "#/definitions/Criteria"
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "AllowList ID."
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "AllowList ARN."
+    },
+    "Status": {
+      "description": "AllowList status.",
+      "$ref": "#/definitions/Status"
+    },
+    "Tags": {
+      "description": "A collection of tags associated with a resource",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "Criteria"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Arn"
+    ]
+  ]
+}

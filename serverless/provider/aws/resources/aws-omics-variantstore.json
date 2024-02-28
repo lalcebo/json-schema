@@ -1,0 +1,198 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::Omics::VariantStore Resource Type",
+  "definitions": {
+    "EncryptionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "KMS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ReferenceItem": {
+      "type": "object",
+      "properties": {
+        "ReferenceArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 127,
+              "minLength": 1,
+              "pattern": "^arn:.+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ReferenceArn"
+      ],
+      "additionalProperties": false
+    },
+    "SseConfig": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/EncryptionType"
+        },
+        "KeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "arn:([^:\n]*):([^:\n]*):([^:\n]*):([0-9]{12}):([^:\n]*)"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "StoreStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "UPDATING",
+            "DELETING",
+            "ACTIVE",
+            "FAILED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "TagMap": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "CreationTime": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 0
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-z]){1}([a-z0-9_]){2,254}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Reference": {
+      "$ref": "#/definitions/ReferenceItem"
+    },
+    "SseConfig": {
+      "$ref": "#/definitions/SseConfig"
+    },
+    "Status": {
+      "$ref": "#/definitions/StoreStatus"
+    },
+    "StatusMessage": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000,
+          "minLength": 0
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StoreArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:([^:\n]*):([^:\n]*):([^:\n]*):([0-9]{12}):([^:\n]*)$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StoreSizeBytes": {
+      "type": "number"
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    },
+    "UpdateTime": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "Name",
+    "Reference"
+  ],
+  "additionalProperties": false
+}

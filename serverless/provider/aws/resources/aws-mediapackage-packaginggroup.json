@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::MediaPackage::PackagingGroup",
+  "properties": {
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\A[0-9a-zA-Z-_]+\\Z",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the PackagingGroup."
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the PackagingGroup."
+    },
+    "DomainName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The fully qualified domain name for Assets in the PackagingGroup."
+    },
+    "Authorization": {
+      "description": "CDN Authorization",
+      "$ref": "#/definitions/Authorization"
+    },
+    "Tags": {
+      "description": "A collection of tags associated with a resource",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "EgressAccessLogs": {
+      "description": "The configuration parameters for egress access logging.",
+      "$ref": "#/definitions/LogConfiguration"
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    },
+    "Authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CdnIdentifierSecret": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) for the secret in AWS Secrets Manager that is used for CDN authorization."
+        },
+        "SecretsRoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) for the IAM role that allows MediaPackage to communicate with AWS Secrets Manager."
+        }
+      },
+      "required": [
+        "CdnIdentifierSecret",
+        "SecretsRoleArn"
+      ]
+    },
+    "LogConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LogGroupName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "\\A\\/aws\\/MediaPackage\\/[0-9a-zA-Z-_\\/\\.#]+\\Z",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Sets a custom AWS CloudWatch log group name for egress logs. If a log group name isn't specified, the default name is used: /aws/MediaPackage/VodEgressAccessLogs."
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Id"
+  ]
+}

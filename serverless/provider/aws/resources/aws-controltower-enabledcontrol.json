@@ -1,0 +1,155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Enables a control on a specified target.",
+  "properties": {
+    "ControlIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[0-9a-zA-Z_\\-:\\/]+$",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Arn of the control."
+    },
+    "TargetIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[0-9a-zA-Z_\\-:\\/]+$",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Arn for Organizational unit to which the control needs to be applied"
+    },
+    "Parameters": {
+      "description": "Parameters to configure the enabled control behavior.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EnabledControlParameter"
+      },
+      "minItems": 1,
+      "insertionOrder": false
+    },
+    "Tags": {
+      "description": "A set of tags to assign to the enabled control.",
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 1,
+      "insertionOrder": false
+    }
+  },
+  "definitions": {
+    "EnabledControlParameter": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "object"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "minItems": 1,
+              "insertionOrder": false
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "object"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "TargetIdentifier",
+    "ControlIdentifier"
+  ],
+  "additionalProperties": false
+}

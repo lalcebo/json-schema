@@ -1,0 +1,298 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for StateMachine",
+  "required": [
+    "RoleArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/StateMachineName"
+    ]
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "LoggingConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "IncludeExecutionData": {
+          "type": "boolean"
+        },
+        "Destinations": {
+          "minItems": 1,
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LogDestination"
+          }
+        },
+        "Level": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ALL",
+                "ERROR",
+                "FATAL",
+                "OFF"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "DefinitionSubstitutions": {
+      "patternProperties": {
+        ".*": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "minProperties": 1
+    },
+    "Definition": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "LogDestination": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "CloudWatchLogsLogGroup": {
+          "$ref": "#/definitions/CloudWatchLogsLogGroup"
+        }
+      }
+    },
+    "TagsEntry": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "CloudWatchLogsLogGroup": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "LogGroupArn": {
+          "oneOf": [
+            {
+              "relationshipRef": {
+                "typeName": "AWS::Logs::LogGroup",
+                "propertyPath": "/properties/Arn"
+              },
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "S3Location": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Bucket",
+        "Key"
+      ]
+    },
+    "TracingConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "properties": {
+    "DefinitionSubstitutions": {
+      "$ref": "#/definitions/DefinitionSubstitutions"
+    },
+    "Definition": {
+      "$ref": "#/definitions/Definition"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 80
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StateMachineType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "EXPRESS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "TracingConfiguration": {
+      "$ref": "#/definitions/TracingConfiguration"
+    },
+    "DefinitionString": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 1048576
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LoggingConfiguration": {
+      "$ref": "#/definitions/LoggingConfiguration"
+    },
+    "StateMachineRevisionId": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DefinitionS3Location": {
+      "$ref": "#/definitions/S3Location"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StateMachineName": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 80
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TagsEntry"
+      }
+    }
+  }
+}

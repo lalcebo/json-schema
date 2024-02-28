@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The ``AWS::SecurityHub::Standard`` resource specifies the enablement of a security standard. The standard is identified by the ``StandardsArn`` property. To view a list of ASH standards and their Amazon Resource Names (ARNs), use the [DescribeStandards](https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_DescribeStandards.html) API operation.\n You must create a separate ``AWS::SecurityHub::Standard`` resource for each standard that you want to enable.\n For more information about ASH standards, see [standards reference](https://docs.aws.amazon.com/securityhub/latest/userguide/standards-reference.html) in the *User Guide*.",
+  "definitions": {
+    "StandardsControl": {
+      "description": "Provides details about an individual security control. For a list of ASH controls, see [controls reference](https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-controls-reference.html) in the *User Guide*.",
+      "type": "object",
+      "properties": {
+        "StandardsControlArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:aws\\S*:securityhub:\\S*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the control."
+        },
+        "Reason": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A user-defined reason for changing a control's enablement status in a specified standard. If you are disabling a control, then this property is required."
+        }
+      },
+      "required": [
+        "StandardsControlArn"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "StandardsSubscriptionArn": {
+      "oneOf": [
+        {
+          "description": "",
+          "type": "string",
+          "pattern": "arn:aws\\S*:securityhub:\\S*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StandardsArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws\\S*:securityhub:\\S"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the standard that you want to enable. To view a list of available ASH standards and their ARNs, use the [DescribeStandards](https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_DescribeStandards.html) API operation."
+    },
+    "DisabledStandardsControls": {
+      "description": "Specifies which controls are to be disabled in a standard. \n *Maximum*: ``100``",
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/StandardsControl"
+      },
+      "insertionOrder": true,
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "StandardsArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/StandardsArn"
+    ]
+  ]
+}

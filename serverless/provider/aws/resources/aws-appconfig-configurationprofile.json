@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.",
+  "additionalProperties": false,
+  "definitions": {
+    "Validators": {
+      "description": "A list of methods for validating the configuration.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "AWS AppConfig supports validators of type JSON_SCHEMA and LAMBDA."
+        },
+        "Content": {
+          "oneOf": [
+            {
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 32768
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Either the JSON Schema content or the Amazon Resource Name (ARN) of an Lambda function."
+        }
+      }
+    },
+    "Tags": {
+      "description": "Metadata to assign to the configuration profile. Tags help organize and categorize your AWS AppConfig resources. Each tag consists of a key and an optional value, both of which you define.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The tag value can be up to 256 characters."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "pattern": "^(?!aws:.)[a-zA-Z0-9 +=._:/-]*$",
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key-value string map. The tag key can be up to 128 characters and must not start with aws:."
+        }
+      }
+    }
+  },
+  "properties": {
+    "ConfigurationProfileId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The configuration profile ID"
+    },
+    "LocationUri": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A URI to locate the configuration. You can specify the AWS AppConfig hosted configuration store, Systems Manager (SSM) document, an SSM Parameter Store parameter, or an Amazon S3 object."
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "pattern": "^[a-zA-Z\\.]+",
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of configurations contained in the profile. When calling this API, enter one of the following values for Type: AWS.AppConfig.FeatureFlags, AWS.Freeform"
+    },
+    "KmsKeyIdentifier": {
+      "oneOf": [
+        {
+          "pattern": "^[\\da-f]{8}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{4}-[\\da-f]{12}|alias/[a-zA-Z0-9/_-]{1,250}|arn:aws[a-zA-Z-]*:kms:[a-z]{2}(-gov|-iso(b?))?-[a-z]+-\\d{1}:\\d{12}:(key/[0-9a-f-]{36}|alias/[a-zA-Z0-9/_-]{1,250})$",
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The AWS Key Management Service key identifier (key ID, key alias, or key ARN) provided when the resource was created or updated."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "minLength": 0,
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description of the configuration profile."
+    },
+    "KmsKeyArn": {
+      "oneOf": [
+        {
+          "minLength": 20,
+          "pattern": "arn:(aws[a-zA-Z-]*)?:[a-z]+:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:[a-zA-Z0-9-_/:.]+",
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name of the AWS Key Management Service key to encrypt new configuration data versions in the AWS AppConfig hosted configuration store. This attribute is only used for hosted configuration types. To encrypt data managed in other configuration stores, see the documentation for how to specify an AWS KMS key for that particular service."
+    },
+    "Validators": {
+      "maxItems": 2,
+      "uniqueItems": false,
+      "description": "A list of methods for validating the configuration.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Validators"
+      }
+    },
+    "RetrievalRoleArn": {
+      "oneOf": [
+        {
+          "minLength": 20,
+          "pattern": "^((arn):(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):(iam)::\\d{12}:role[/].*)$",
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of an IAM role with permission to access the configuration at the specified LocationUri."
+    },
+    "ApplicationId": {
+      "oneOf": [
+        {
+          "pattern": "[a-z0-9]{4,7}",
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The application ID."
+    },
+    "Tags": {
+      "uniqueItems": false,
+      "description": "Metadata to assign to the configuration profile. Tags help organize and categorize your AWS AppConfig resources. Each tag consists of a key and an optional value, both of which you define.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tags"
+      }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A name for the configuration profile."
+    }
+  },
+  "required": [
+    "LocationUri",
+    "ApplicationId",
+    "Name"
+  ]
+}

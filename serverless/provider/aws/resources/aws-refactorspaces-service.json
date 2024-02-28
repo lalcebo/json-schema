@@ -1,0 +1,234 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::RefactorSpaces::Service Resource Type",
+  "definitions": {
+    "LambdaEndpointInput": {
+      "type": "object",
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Arn"
+      ],
+      "additionalProperties": false
+    },
+    "ServiceEndpointType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LAMBDA",
+            "URL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "UrlEndpointInput": {
+      "type": "object",
+      "properties": {
+        "HealthUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^https?://[-a-zA-Z0-9+\\x38@#/%?=~_|!:,.;]*[-a-zA-Z0-9+\\x38@#/%=~_|]$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Url": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^https?://[-a-zA-Z0-9+\\x38@#/%?=~_|!:,.;]*[-a-zA-Z0-9+\\x38@#/%=~_|]$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Url"
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "description": "A label for tagging Environment resource",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:).+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A string containing the value for the tag"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "^arn:(aws[a-zA-Z-]*)?:refactor-spaces:[a-zA-Z0-9\\-]+:\\w{12}:[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ApplicationIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 14,
+          "minLength": 14,
+          "pattern": "^app-([0-9A-Za-z]{10}$)"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-_\\s\\.\\!\\*\\#\\@\\']+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "EndpointType": {
+      "$ref": "#/definitions/ServiceEndpointType"
+    },
+    "EnvironmentIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 14,
+          "minLength": 14,
+          "pattern": "^env-([0-9A-Za-z]{10}$)"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LambdaEndpoint": {
+      "$ref": "#/definitions/LambdaEndpointInput"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 63,
+          "minLength": 3,
+          "pattern": "^(?!svc-)[a-zA-Z0-9]+[a-zA-Z0-9-_ ]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ServiceIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 14,
+          "minLength": 14,
+          "pattern": "^svc-([0-9A-Za-z]{10}$)"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "UrlEndpoint": {
+      "$ref": "#/definitions/UrlEndpointInput"
+    },
+    "VpcId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 21,
+          "minLength": 12,
+          "pattern": "^vpc-[-a-f0-9]{8}([-a-f0-9]{9})?$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "description": "Metadata that you can assign to help organize the frameworks that you create. Each tag is a key-value pair."
+    }
+  },
+  "required": [
+    "EnvironmentIdentifier",
+    "ApplicationIdentifier",
+    "EndpointType",
+    "Name"
+  ],
+  "additionalProperties": false,
+  "taggable": true
+}

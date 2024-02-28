@@ -1,0 +1,311 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::Comprehend::Flywheel resource creates an Amazon Comprehend Flywheel that enables customer to train their model.",
+  "additionalProperties": false,
+  "properties": {
+    "ActiveModelArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[^:]+)?:comprehend:[a-zA-Z0-9-]*:[0-9]{12}:(document-classifier|entity-recognizer)/[a-zA-Z0-9](-*[a-zA-Z0-9])*(/version/[a-zA-Z0-9](-*[a-zA-Z0-9])*)?",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DataAccessRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DataLakeS3Uri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DataSecurityConfig": {
+      "$ref": "#/definitions/DataSecurityConfig"
+    },
+    "FlywheelName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ModelType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DOCUMENT_CLASSIFIER",
+            "ENTITY_RECOGNIZER"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "insertionOrder": false,
+      "uniqueItems": true
+    },
+    "TaskConfig": {
+      "$ref": "#/definitions/TaskConfig"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[^:]+)?:comprehend:[a-zA-Z0-9-]*:[0-9]{12}:flywheel/[a-zA-Z0-9](-*[a-zA-Z0-9])*",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "FlywheelName",
+    "DataAccessRoleArn",
+    "DataLakeS3Uri"
+  ],
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "TaskConfig": {
+      "type": "object",
+      "properties": {
+        "LanguageCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "en",
+                "es",
+                "fr",
+                "it",
+                "de",
+                "pt"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DocumentClassificationConfig": {
+          "$ref": "#/definitions/DocumentClassificationConfig"
+        },
+        "EntityRecognitionConfig": {
+          "$ref": "#/definitions/EntityRecognitionConfig"
+        }
+      },
+      "required": [
+        "LanguageCode"
+      ],
+      "additionalProperties": false
+    },
+    "DataSecurityConfig": {
+      "type": "object",
+      "properties": {
+        "ModelKmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        },
+        "VolumeKmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        },
+        "DataLakeKmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        },
+        "VpcConfig": {
+          "$ref": "#/definitions/VpcConfig"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "VpcConfig": {
+      "type": "object",
+      "properties": {
+        "SecurityGroupIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "[-0-9a-zA-Z]+",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "Subnets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "[-0-9a-zA-Z]+",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 16
+        }
+      },
+      "required": [
+        "SecurityGroupIds",
+        "Subnets"
+      ],
+      "additionalProperties": false
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "EntityTypesListItem": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?![^\\n\\r\\t,]*\\\\n|\\\\r|\\\\t)[^\\n\\r\\t,]+$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Type"
+      ]
+    },
+    "EntityRecognitionConfig": {
+      "type": "object",
+      "properties": {
+        "EntityTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EntityTypesListItem"
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 25
+        }
+      },
+      "additionalProperties": false
+    },
+    "DocumentClassificationConfig": {
+      "type": "object",
+      "properties": {
+        "Mode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MULTI_CLASS",
+                "MULTI_LABEL"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Labels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "maxItems": 1000
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Mode"
+      ]
+    }
+  }
+}

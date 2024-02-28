@@ -1,0 +1,590 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::DataBrew::Dataset.",
+  "taggable": true,
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Dataset name"
+    },
+    "Format": {
+      "oneOf": [
+        {
+          "enum": [
+            "CSV",
+            "JSON",
+            "PARQUET",
+            "EXCEL",
+            "ORC"
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Dataset format"
+    },
+    "FormatOptions": {
+      "description": "Format options for dataset",
+      "$ref": "#/definitions/FormatOptions"
+    },
+    "Input": {
+      "description": "Input",
+      "$ref": "#/definitions/Input"
+    },
+    "PathOptions": {
+      "description": "PathOptions",
+      "$ref": "#/definitions/PathOptions"
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "JsonOptions": {
+      "description": "Json options",
+      "type": "object",
+      "properties": {
+        "MultiLine": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ExcelOptions": {
+      "type": "object",
+      "properties": {
+        "SheetNames": {
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "SheetIndexes": {
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "HeaderRow": {
+          "type": "boolean"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "SheetNames"
+          ]
+        },
+        {
+          "required": [
+            "SheetIndexes"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "CsvOptions": {
+      "description": "Csv options",
+      "type": "object",
+      "properties": {
+        "Delimiter": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "HeaderRow": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FormatOptions": {
+      "description": "Format options for dataset",
+      "type": "object",
+      "properties": {
+        "Json": {
+          "$ref": "#/definitions/JsonOptions"
+        },
+        "Excel": {
+          "$ref": "#/definitions/ExcelOptions"
+        },
+        "Csv": {
+          "$ref": "#/definitions/CsvOptions"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Input": {
+      "description": "Input",
+      "type": "object",
+      "properties": {
+        "S3InputDefinition": {
+          "$ref": "#/definitions/S3Location"
+        },
+        "DataCatalogInputDefinition": {
+          "$ref": "#/definitions/DataCatalogInputDefinition"
+        },
+        "DatabaseInputDefinition": {
+          "$ref": "#/definitions/DatabaseInputDefinition"
+        },
+        "Metadata": {
+          "$ref": "#/definitions/Metadata"
+        }
+      },
+      "additionalProperties": false
+    },
+    "S3Location": {
+      "description": "Input location",
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Bucket"
+      ]
+    },
+    "DataCatalogInputDefinition": {
+      "type": "object",
+      "properties": {
+        "CatalogId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Catalog id"
+        },
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Database name"
+        },
+        "TableName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Table name"
+        },
+        "TempDirectory": {
+          "$ref": "#/definitions/S3Location"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DatabaseInputDefinition": {
+      "type": "object",
+      "properties": {
+        "GlueConnectionName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Glue connection name"
+        },
+        "DatabaseTableName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Database table name"
+        },
+        "TempDirectory": {
+          "$ref": "#/definitions/S3Location"
+        },
+        "QueryString": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Custom SQL to run against the provided AWS Glue connection. This SQL will be used as the input for DataBrew projects and jobs."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "GlueConnectionName"
+      ]
+    },
+    "Metadata": {
+      "type": "object",
+      "properties": {
+        "SourceArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Arn of the source of the dataset. For e.g.: AppFlow Flow ARN."
+        }
+      },
+      "additionalProperties": false
+    },
+    "PathOptions": {
+      "description": "Path options for dataset",
+      "type": "object",
+      "properties": {
+        "FilesLimit": {
+          "$ref": "#/definitions/FilesLimit"
+        },
+        "LastModifiedDateCondition": {
+          "$ref": "#/definitions/FilterExpression"
+        },
+        "Parameters": {
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "$ref": "#/definitions/PathParameter"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "FilesLimit": {
+      "type": "object",
+      "properties": {
+        "MaxFiles": {
+          "description": "Maximum number of files",
+          "type": "integer"
+        },
+        "OrderedBy": {
+          "oneOf": [
+            {
+              "enum": [
+                "LAST_MODIFIED_DATE"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Ordered by"
+        },
+        "Order": {
+          "oneOf": [
+            {
+              "enum": [
+                "ASCENDING",
+                "DESCENDING"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Order"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "MaxFiles"
+      ]
+    },
+    "PathParameter": {
+      "description": "A key-value pair to associate dataset parameter name with its definition.",
+      "type": "object",
+      "properties": {
+        "PathParameterName": {
+          "$ref": "#/definitions/PathParameterName"
+        },
+        "DatasetParameter": {
+          "$ref": "#/definitions/DatasetParameter"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "PathParameterName",
+        "DatasetParameter"
+      ]
+    },
+    "PathParameterName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Parameter name"
+    },
+    "DatasetParameter": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "$ref": "#/definitions/PathParameterName"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "enum": [
+                "String",
+                "Number",
+                "Datetime"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Parameter type"
+        },
+        "DatetimeOptions": {
+          "$ref": "#/definitions/DatetimeOptions"
+        },
+        "CreateColumn": {
+          "description": "Add the value of this parameter as a column in a dataset.",
+          "type": "boolean"
+        },
+        "Filter": {
+          "$ref": "#/definitions/FilterExpression"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "Type"
+      ]
+    },
+    "DatetimeOptions": {
+      "type": "object",
+      "properties": {
+        "Format": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Date/time format of a date parameter"
+        },
+        "TimezoneOffset": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 6,
+              "pattern": "^(Z|[-+](\\d|\\d{2}|\\d{2}:?\\d{2}))$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Timezone offset"
+        },
+        "LocaleCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100,
+              "pattern": "^[A-Za-z0-9_\\.#@\\-]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Locale code for a date parameter"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Format"
+      ]
+    },
+    "FilterExpression": {
+      "type": "object",
+      "properties": {
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 1024,
+              "pattern": "^[><0-9A-Za-z_.,:)(!= ]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Filtering expression for a parameter"
+        },
+        "ValuesMap": {
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "$ref": "#/definitions/FilterValue"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Expression",
+        "ValuesMap"
+      ]
+    },
+    "FilterValue": {
+      "description": "A key-value pair to associate expression variable names with their values",
+      "type": "object",
+      "properties": {
+        "ValueReference": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 128,
+              "pattern": "^:[A-Za-z0-9_]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Variable name"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "ValueReference",
+        "Value"
+      ]
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "Input"
+  ]
+}

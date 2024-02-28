@@ -1,0 +1,524 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Create and manage wireless gateways, including LoRa gateways.",
+  "definitions": {
+    "OtaaV10x": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AppKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "AppEui": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{16}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AppKey",
+        "AppEui"
+      ]
+    },
+    "OtaaV11": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AppKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "NwkKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "JoinEui": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{16}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AppKey",
+        "NwkKey",
+        "JoinEui"
+      ]
+    },
+    "SessionKeysAbpV11": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FNwkSIntKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SNwkSIntKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "NwkSEncKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "AppSKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FNwkSIntKey",
+        "SNwkSIntKey",
+        "NwkSEncKey",
+        "AppSKey"
+      ]
+    },
+    "AbpV11": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DevAddr": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{8}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SessionKeys": {
+          "$ref": "#/definitions/SessionKeysAbpV11"
+        }
+      },
+      "required": [
+        "DevAddr",
+        "SessionKeys"
+      ]
+    },
+    "SessionKeysAbpV10x": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "NwkSKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "AppSKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{32}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "NwkSKey",
+        "AppSKey"
+      ]
+    },
+    "AbpV10x": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DevAddr": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-fA-F0-9]{8}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SessionKeys": {
+          "$ref": "#/definitions/SessionKeysAbpV10x"
+        }
+      },
+      "required": [
+        "DevAddr",
+        "SessionKeys"
+      ]
+    },
+    "FPorts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Applications": {
+          "description": "A list of optional LoRaWAN application information, which can be used for geolocation.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/Application"
+          }
+        }
+      }
+    },
+    "LoRaWANDevice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DevEui": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-f0-9]{16}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DeviceProfileId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ServiceProfileId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "OtaaV11": {
+          "$ref": "#/definitions/OtaaV11"
+        },
+        "OtaaV10x": {
+          "$ref": "#/definitions/OtaaV10x"
+        },
+        "AbpV11": {
+          "$ref": "#/definitions/AbpV11"
+        },
+        "AbpV10x": {
+          "$ref": "#/definitions/AbpV10x"
+        },
+        "FPorts": {
+          "$ref": "#/definitions/FPorts"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "OtaaV11"
+          ]
+        },
+        {
+          "required": [
+            "OtaaV10x"
+          ]
+        },
+        {
+          "required": [
+            "AbpV11"
+          ]
+        },
+        {
+          "required": [
+            "AbpV10x"
+          ]
+        }
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Application": {
+      "description": "LoRaWAN application configuration, which can be used to perform geolocation.",
+      "type": "object",
+      "properties": {
+        "DestinationName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-zA-Z0-9-_]+",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN."
+        },
+        "FPort": {
+          "description": "The Fport value.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 223
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SemtechGeolocation"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Application type, which can be specified to obtain real-time position information of your LoRaWAN device."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Sidewalk",
+            "LoRaWAN"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Wireless device type, currently only Sidewalk and LoRa"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Wireless device name"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Wireless device description"
+    },
+    "DestinationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Wireless device destination name"
+    },
+    "LoRaWAN": {
+      "description": "The combination of Package, Station and Model which represents the version of the LoRaWAN Wireless Device.",
+      "$ref": "#/definitions/LoRaWANDevice"
+    },
+    "Tags": {
+      "description": "A list of key-value pairs that contain metadata for the device. Currently not supported, will not create if tags are passed.",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 200,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Wireless device arn. Returned after successful create."
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Wireless device Id. Returned after successful create."
+    },
+    "ThingArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Thing arn. Passed into update to associate Thing with Wireless device."
+    },
+    "ThingName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Thing Arn. If there is a Thing created, this can be returned with a Get call."
+    },
+    "LastUplinkReceivedAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The date and time when the most recent uplink was received."
+    },
+    "Positioning": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "FPort values for the GNSS, stream, and ClockSync functions of the positioning information."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Type",
+    "DestinationName"
+  ],
+  "taggable": true
+}

@@ -1,0 +1,318 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::ElastiCache::ServerlessCache resource creates an Amazon ElastiCache Serverless Cache.",
+  "definitions": {
+    "CacheUsageLimits": {
+      "description": "The cache capacity limit of the Serverless Cache.",
+      "type": "object",
+      "properties": {
+        "DataStorage": {
+          "$ref": "#/definitions/DataStorage"
+        },
+        "ECPUPerSecond": {
+          "$ref": "#/definitions/ECPUPerSecond"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DataStorage": {
+      "description": "The cached data capacity of the Serverless Cache.",
+      "type": "object",
+      "properties": {
+        "Maximum": {
+          "description": "The maximum cached data capacity of the Serverless Cache.",
+          "type": "integer"
+        },
+        "Unit": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "GB"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The unix of cached data capacity of the Serverless Cache."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Maximum",
+        "Unit"
+      ]
+    },
+    "ECPUPerSecond": {
+      "description": "The ECPU per second of the Serverless Cache.",
+      "type": "object",
+      "properties": {
+        "Maximum": {
+          "description": "The maximum ECPU per second of the Serverless Cache.",
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Maximum"
+      ]
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with Serverless Cache.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z0-9 _\\.\\/=+:\\-@]*$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with 'aws:'. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9 _\\.\\/=+:\\-@]*$",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key"
+      ]
+    },
+    "Endpoint": {
+      "description": "The address and the port.",
+      "type": "object",
+      "properties": {
+        "Address": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Endpoint address."
+        },
+        "Port": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Endpoint port."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "ServerlessCacheName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the Serverless Cache. This value must be unique."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The description of the Serverless Cache."
+    },
+    "Engine": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The engine name of the Serverless Cache."
+    },
+    "MajorEngineVersion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The major engine version of the Serverless Cache."
+    },
+    "FullEngineVersion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The full engine version of the Serverless Cache."
+    },
+    "CacheUsageLimits": {
+      "$ref": "#/definitions/CacheUsageLimits"
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the KMS key used to encrypt the cluster."
+    },
+    "SecurityGroupIds": {
+      "description": "One or more Amazon VPC security groups associated with this Serverless Cache.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "SnapshotArnsToRestore": {
+      "description": "The ARN's of snapshot to restore Serverless Cache.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this Serverless Cache.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "UserGroupId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the user group."
+    },
+    "SubnetIds": {
+      "description": "The subnet id's of the Serverless Cache.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "SnapshotRetentionLimit": {
+      "description": "The snapshot retention limit of the Serverless Cache.",
+      "type": "integer"
+    },
+    "DailySnapshotTime": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The daily time range (in UTC) during which the service takes automatic snapshot of the Serverless Cache."
+    },
+    "CreateTime": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The creation time of the Serverless Cache."
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the Serverless Cache."
+    },
+    "Endpoint": {
+      "$ref": "#/definitions/Endpoint"
+    },
+    "ReaderEndpoint": {
+      "$ref": "#/definitions/Endpoint"
+    },
+    "ARN": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the Serverless Cache."
+    },
+    "FinalSnapshotName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The final snapshot name which is taken before Serverless Cache is deleted."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ServerlessCacheName",
+    "Engine"
+  ]
+}

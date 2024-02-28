@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type Definition for Resiliency Policy.",
+  "definitions": {
+    "FailurePolicy": {
+      "description": "Failure Policy.",
+      "type": "object",
+      "properties": {
+        "RtoInSecs": {
+          "description": "RTO in seconds.",
+          "type": "integer"
+        },
+        "RpoInSecs": {
+          "description": "RPO in seconds.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "RtoInSecs",
+        "RpoInSecs"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyMap": {
+      "type": "object",
+      "patternProperties": {
+        ".*{1,8}": {
+          "$ref": "#/definitions/FailurePolicy"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TagValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "TagMap": {
+      "type": "object",
+      "patternProperties": {
+        ".{1,128}": {
+          "$ref": "#/definitions/TagValue"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "PolicyName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Name of Resiliency Policy."
+    },
+    "PolicyDescription": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 500
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Description of Resiliency Policy."
+    },
+    "DataLocationConstraint": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AnyLocation",
+            "SameContinent",
+            "SameCountry"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Data Location Constraint of the Policy."
+    },
+    "Tier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MissionCritical",
+            "Critical",
+            "Important",
+            "CoreServices",
+            "NonCritical"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Resiliency Policy Tier."
+    },
+    "Policy": {
+      "$ref": "#/definitions/PolicyMap"
+    },
+    "PolicyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Amazon Resource Name (ARN) of the Resiliency Policy."
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "PolicyName",
+    "Tier",
+    "Policy"
+  ]
+}

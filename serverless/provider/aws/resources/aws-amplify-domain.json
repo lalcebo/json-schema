@@ -1,0 +1,241 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::Amplify::Domain resource allows you to connect a custom domain to your app.",
+  "additionalProperties": false,
+  "properties": {
+    "AppId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20,
+          "pattern": "d[a-z0-9]+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000,
+          "pattern": "(?s).*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AutoSubDomainCreationPatterns": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2048,
+        "pattern": "(?s).+"
+      }
+    },
+    "AutoSubDomainIAMRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^$|^arn:.+:iam::\\d{12}:role.+",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CertificateRecord": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Certificate": {
+      "$ref": "#/definitions/Certificate"
+    },
+    "CertificateSettings": {
+      "$ref": "#/definitions/CertificateSettings"
+    },
+    "DomainName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(((?!-)[A-Za-z0-9-]{0,62}[A-Za-z0-9])\\.)+((?!-)[A-Za-z0-9-]{1,62}[A-Za-z0-9])(\\.)?$",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DomainStatus": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "UpdateStatus": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "EnableAutoSubDomain": {
+      "type": "boolean"
+    },
+    "StatusReason": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "SubDomainSettings": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/SubDomainSetting"
+      },
+      "maxItems": 255
+    }
+  },
+  "definitions": {
+    "CertificateSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CertificateType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AMPLIFY_MANAGED",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "CustomCertificateArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "\"^arn:aws:acm:[a-z0-9-]+:\\d{12}:certificate\\/.+$\""
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "Certificate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CertificateType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AMPLIFY_MANAGED",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "CertificateArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "\"^arn:aws:acm:[a-z0-9-]+:\\d{12}:certificate\\/.+$\""
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "CertificateVerificationDNSRecord": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "SubDomainSetting": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "pattern": "(?s).*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "BranchName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "(?s).+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Prefix",
+        "BranchName"
+      ]
+    }
+  },
+  "required": [
+    "AppId",
+    "DomainName",
+    "SubDomainSettings"
+  ]
+}

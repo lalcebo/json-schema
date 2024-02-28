@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Represents a streaming session machine image that can be used to launch a streaming session",
+  "definitions": {
+    "StreamingImageEncryptionConfiguration": {
+      "type": "object",
+      "description": "<p>TODO</p>",
+      "properties": {
+        "KeyType": {
+          "$ref": "#/definitions/StreamingImageEncryptionConfigurationKeyType"
+        },
+        "KeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 4,
+              "pattern": "^arn:.*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "<p>The ARN for a KMS key that is used to encrypt studio data.</p>"
+        }
+      },
+      "required": [
+        "KeyType"
+      ],
+      "additionalProperties": false
+    },
+    "StreamingImageEncryptionConfigurationKeyType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CUSTOMER_MANAGED_KEY"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "<p/>"
+    },
+    "Tags": {
+      "type": "object",
+      "description": "",
+      "patternProperties": {
+        ".+": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "<p>A human-readable description of the streaming image.</p>"
+    },
+    "Ec2ImageId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^ami-[0-9A-z]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "<p>The ID of an EC2 machine image with which to create this streaming image.</p>"
+    },
+    "EncryptionConfiguration": {
+      "$ref": "#/definitions/StreamingImageEncryptionConfiguration"
+    },
+    "EulaIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "<p>The list of EULAs that must be accepted before a Streaming Session can be started using this streaming image.</p>"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 0
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "<p>A friendly name for a streaming image resource.</p>"
+    },
+    "Owner": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "<p>The owner of the streaming image, either the studioId that contains the streaming image, or 'amazon' for images that are provided by Amazon Nimble Studio.</p>"
+    },
+    "Platform": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "<p>The platform of the streaming image, either WINDOWS or LINUX.</p>"
+    },
+    "StreamingImageId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StudioId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "<p>The studioId. </p>"
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    }
+  },
+  "required": [
+    "StudioId",
+    "Ec2ImageId",
+    "Name"
+  ],
+  "additionalProperties": false
+}

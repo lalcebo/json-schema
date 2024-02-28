@@ -1,0 +1,382 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "A target group is a collection of targets, or compute resources, that run your application or service. A target group can only be used by a single service.",
+  "additionalProperties": false,
+  "definitions": {
+    "HealthCheckConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "Protocol": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HTTP",
+                "HTTPS"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ProtocolVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HTTP1",
+                "HTTP2",
+                "GRPC"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Port": {
+          "type": "integer",
+          "maximum": 65535,
+          "minimum": 1
+        },
+        "Path": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 0,
+              "pattern": "(^/[a-zA-Z0-9@:%_+.~#?&/=-]*$|(^$))"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "HealthCheckIntervalSeconds": {
+          "type": "integer",
+          "maximum": 300,
+          "minimum": 5
+        },
+        "HealthCheckTimeoutSeconds": {
+          "type": "integer",
+          "maximum": 120,
+          "minimum": 1
+        },
+        "HealthyThresholdCount": {
+          "type": "integer",
+          "maximum": 10,
+          "minimum": 2
+        },
+        "UnhealthyThresholdCount": {
+          "type": "integer",
+          "maximum": 10,
+          "minimum": 2
+        },
+        "Matcher": {
+          "$ref": "#/definitions/Matcher"
+        }
+      }
+    },
+    "Matcher": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HttpCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 2000,
+              "pattern": "^[0-9-,]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "HttpCode"
+      ]
+    },
+    "TargetGroupConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Port": {
+          "type": "integer",
+          "maximum": 65535,
+          "minimum": 1
+        },
+        "Protocol": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "HTTP",
+                "HTTPS"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ProtocolVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "HTTP1",
+              "enum": [
+                "HTTP1",
+                "HTTP2",
+                "GRPC"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "IpAddressType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "IPV4",
+              "enum": [
+                "IPV4",
+                "IPV6"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "LambdaEventStructureVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "V1",
+                "V2"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "VpcIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 5,
+              "pattern": "^vpc-(([0-9a-z]{8})|([0-9a-z]{17}))$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "HealthCheck": {
+          "$ref": "#/definitions/HealthCheckConfig"
+        }
+      },
+      "required": []
+    },
+    "Target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Port": {
+          "type": "integer",
+          "maximum": 65535,
+          "minimum": 1
+        }
+      },
+      "required": [
+        "Id"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:targetgroup/tg-[0-9a-z]{17}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Config": {
+      "$ref": "#/definitions/TargetGroupConfig"
+    },
+    "CreatedAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 20,
+          "minLength": 20,
+          "pattern": "^tg-[0-9a-z]{17}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LastUpdatedAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^(?!tg-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATE_IN_PROGRESS",
+            "ACTIVE",
+            "DELETE_IN_PROGRESS",
+            "CREATE_FAILED",
+            "DELETE_FAILED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IP",
+            "LAMBDA",
+            "INSTANCE",
+            "ALB"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Targets": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 100,
+      "default": [],
+      "items": {
+        "$ref": "#/definitions/Target"
+      }
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "Type"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Id"
+    ],
+    [
+      "/properties/Name"
+    ]
+  ]
+}

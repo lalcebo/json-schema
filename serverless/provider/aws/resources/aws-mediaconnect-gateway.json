@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::MediaConnect::Gateway",
+  "definitions": {
+    "GatewayNetwork": {
+      "description": "The network settings for a gateway.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the network. This name is used to reference the network and must be unique among networks in this gateway."
+        },
+        "CidrBlock": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A unique IP address range to use for this network. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "CidrBlock"
+      ]
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the gateway. This name can not be modified after the gateway is created."
+    },
+    "GatewayArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the gateway."
+    },
+    "GatewayState": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "ACTIVE",
+            "UPDATING",
+            "ERROR",
+            "DELETING",
+            "DELETED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The current status of the gateway."
+    },
+    "EgressCidrBlocks": {
+      "description": "The range of IP addresses that contribute content or initiate output requests for flows communicating with this gateway. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "insertionOrder": true
+    },
+    "Networks": {
+      "type": "array",
+      "description": "The list of networks in the gateway.",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/definitions/GatewayNetwork"
+      },
+      "insertionOrder": true
+    }
+  },
+  "required": [
+    "Name",
+    "EgressCidrBlocks",
+    "Networks"
+  ],
+  "additionalProperties": false
+}

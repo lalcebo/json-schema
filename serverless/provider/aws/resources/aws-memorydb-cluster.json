@@ -1,0 +1,340 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::MemoryDB::Cluster resource creates an Amazon MemoryDB Cluster.",
+  "taggable": true,
+  "definitions": {
+    "Endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Address": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The DNS address of the primary read-write node."
+        },
+        "Port": {
+          "description": "The port number that the engine is listening on. ",
+          "type": "integer"
+        }
+      }
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "pattern": "^(?!aws:)(?!memorydb:)[a-zA-Z0-9 _\\.\\/=+:\\-@]{1,128}$",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key for the tag. May not be null."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)(?!memorydb:)[a-zA-Z0-9 _\\.\\/=+:\\-@]{1,256}$",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The tag's value. May be null."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "DataTieringStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "true",
+            "false"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "ClusterName": {
+      "oneOf": [
+        {
+          "pattern": "[a-z][a-z0-9\\-]*",
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the cluster. This value must be unique as it also serves as the cluster identifier."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "An optional description of the cluster."
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the cluster. For example, Available, Updating, Creating."
+    },
+    "NodeType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The compute and memory capacity of the nodes in the cluster."
+    },
+    "NumShards": {
+      "description": "The number of shards the cluster will contain.",
+      "type": "integer"
+    },
+    "NumReplicasPerShard": {
+      "description": "The number of replicas to apply to each shard. The limit is 5.",
+      "type": "integer"
+    },
+    "SubnetGroupName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the subnet group to be used for the cluster."
+    },
+    "SecurityGroupIds": {
+      "description": "One or more Amazon VPC security groups associated with this cluster.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "MaintenanceWindow": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Specifies the weekly time range during which maintenance on the cluster is performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H Clock UTC). The minimum maintenance window is a 60 minute period."
+    },
+    "ParameterGroupName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the parameter group associated with the cluster."
+    },
+    "ParameterGroupStatus": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the parameter group used by the cluster."
+    },
+    "Port": {
+      "description": "The port number on which each member of the cluster accepts connections.",
+      "type": "integer"
+    },
+    "SnapshotRetentionLimit": {
+      "description": "The number of days for which MemoryDB retains automatic snapshots before deleting them. For example, if you set SnapshotRetentionLimit to 5, a snapshot that was taken today is retained for 5 days before being deleted.",
+      "type": "integer"
+    },
+    "SnapshotWindow": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The daily time range (in UTC) during which MemoryDB begins taking a daily snapshot of your cluster."
+    },
+    "ACLName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z][a-zA-Z0-9\\-]*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the Access Control List to associate with the cluster."
+    },
+    "SnsTopicArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the Amazon Simple Notification Service (SNS) topic to which notifications are sent."
+    },
+    "SnsTopicStatus": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the Amazon SNS notification topic. Notifications are sent only if the status is enabled."
+    },
+    "TLSEnabled": {
+      "description": "A flag that enables in-transit encryption when set to true.\n\nYou cannot modify the value of TransitEncryptionEnabled after the cluster is created. To enable in-transit encryption on a cluster you must set TransitEncryptionEnabled to true when you create a cluster.",
+      "type": "boolean"
+    },
+    "DataTiering": {
+      "type": "object",
+      "description": "Enables data tiering. Data tiering is only supported for clusters using the r6gd node type. This parameter must be set when using r6gd nodes.",
+      "$ref": "#/definitions/DataTieringStatus"
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the KMS key used to encrypt the cluster."
+    },
+    "SnapshotArns": {
+      "description": "A list of Amazon Resource Names (ARN) that uniquely identify the RDB snapshot files stored in Amazon S3. The snapshot files are used to populate the new cluster. The Amazon S3 object name in the ARN cannot contain any commas.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "type": "string"
+      }
+    },
+    "SnapshotName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of a snapshot from which to restore data into the new cluster. The snapshot status changes to restoring while the new cluster is being created."
+    },
+    "FinalSnapshotName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The user-supplied name of a final cluster snapshot. This is the unique name that identifies the snapshot. MemoryDB creates the snapshot, and then deletes the cluster immediately afterward."
+    },
+    "ARN": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the cluster."
+    },
+    "EngineVersion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Redis engine version used by the cluster."
+    },
+    "ClusterEndpoint": {
+      "description": "The cluster endpoint.",
+      "$ref": "#/definitions/Endpoint"
+    },
+    "AutoMinorVersionUpgrade": {
+      "description": "A flag that enables automatic minor version upgrade when set to true.\n\nYou cannot modify the value of AutoMinorVersionUpgrade after the cluster is created. To enable AutoMinorVersionUpgrade on a cluster you must set AutoMinorVersionUpgrade to true when you create a cluster.",
+      "type": "boolean"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this cluster.",
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ClusterName",
+    "NodeType",
+    "ACLName"
+  ]
+}

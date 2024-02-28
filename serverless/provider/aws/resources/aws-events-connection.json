@@ -1,0 +1,304 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::Events::Connection.",
+  "definitions": {
+    "AuthParameters": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 2,
+      "properties": {
+        "ApiKeyAuthParameters": {
+          "$ref": "#/definitions/ApiKeyAuthParameters"
+        },
+        "BasicAuthParameters": {
+          "$ref": "#/definitions/BasicAuthParameters"
+        },
+        "OAuthParameters": {
+          "$ref": "#/definitions/OAuthParameters"
+        },
+        "InvocationHttpParameters": {
+          "$ref": "#/definitions/ConnectionHttpParameters"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "BasicAuthParameters"
+          ]
+        },
+        {
+          "required": [
+            "OAuthParameters"
+          ]
+        },
+        {
+          "required": [
+            "ApiKeyAuthParameters"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "BasicAuthParameters": {
+      "type": "object",
+      "properties": {
+        "Username": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Password": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Username",
+        "Password"
+      ],
+      "additionalProperties": false
+    },
+    "OAuthParameters": {
+      "type": "object",
+      "properties": {
+        "ClientParameters": {
+          "$ref": "#/definitions/ClientParameters"
+        },
+        "AuthorizationEndpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "HttpMethod": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "GET",
+                "POST",
+                "PUT"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "OAuthHttpParameters": {
+          "$ref": "#/definitions/ConnectionHttpParameters"
+        }
+      },
+      "required": [
+        "ClientParameters",
+        "AuthorizationEndpoint",
+        "HttpMethod"
+      ],
+      "additionalProperties": false
+    },
+    "ApiKeyAuthParameters": {
+      "type": "object",
+      "properties": {
+        "ApiKeyName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ApiKeyValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ApiKeyName",
+        "ApiKeyValue"
+      ],
+      "additionalProperties": false
+    },
+    "ClientParameters": {
+      "type": "object",
+      "properties": {
+        "ClientID": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ClientSecret": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ClientID",
+        "ClientSecret"
+      ],
+      "additionalProperties": false
+    },
+    "ConnectionHttpParameters": {
+      "type": "object",
+      "properties": {
+        "HeaderParameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Parameter"
+          }
+        },
+        "QueryStringParameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Parameter"
+          }
+        },
+        "BodyParameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Parameter"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Parameter": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "IsValueSecret": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Name of the connection."
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The arn of the connection resource."
+    },
+    "SecretArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The arn of the secrets manager secret created in the customer account."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Description of the connection."
+    },
+    "AuthorizationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "API_KEY",
+            "BASIC",
+            "OAUTH_CLIENT_CREDENTIALS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AuthParameters": {
+      "$ref": "#/definitions/AuthParameters"
+    }
+  },
+  "additionalProperties": false
+}

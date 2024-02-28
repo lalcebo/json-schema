@@ -1,0 +1,199 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Registers a CA Certificate in IoT.",
+  "definitions": {
+    "RegistrationConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TemplateBody": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\s\\S]*",
+              "minLength": 0,
+              "maxLength": 10240
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+",
+              "minLength": 20,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "TemplateName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9A-Za-z_-]+$",
+              "minLength": 1,
+              "maxLength": 36
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "properties": {
+    "CACertificatePem": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\s\\S]*",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "VerificationCertificatePem": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\s\\S]*",
+          "minLength": 1,
+          "maxLength": 65536
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The private key verification certificate."
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CertificateMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DEFAULT",
+            "SNI_ONLY"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AutoRegistrationStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLE",
+            "DISABLE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "RemoveAutoRegistration": {
+      "type": "boolean"
+    },
+    "RegistrationConfig": {
+      "$ref": "#/definitions/RegistrationConfig"
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "CACertificatePem",
+    "Status"
+  ]
+}

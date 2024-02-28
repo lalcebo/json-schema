@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Associate a set of ECS Capacity Providers with a specified ECS Cluster",
+  "definitions": {
+    "CapacityProviders": {
+      "description": "List of capacity providers to associate with the cluster",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CapacityProvider"
+      },
+      "uniqueItems": true
+    },
+    "CapacityProvider": {
+      "oneOf": [
+        {
+          "type": "string",
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FARGATE",
+                "FARGATE_SPOT"
+              ]
+            },
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "If using ec2 auto-scaling, the name of the associated capacity provider. Otherwise FARGATE, FARGATE_SPOT."
+    },
+    "Cluster": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the cluster"
+    },
+    "DefaultCapacityProviderStrategy": {
+      "description": "List of capacity providers to associate with the cluster",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CapacityProviderStrategy"
+      }
+    },
+    "CapacityProviderStrategy": {
+      "type": "object",
+      "properties": {
+        "Base": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "Weight": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "CapacityProvider": {
+          "$ref": "#/definitions/CapacityProvider"
+        }
+      },
+      "required": [
+        "CapacityProvider"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "CapacityProviders": {
+      "$ref": "#/definitions/CapacityProviders"
+    },
+    "Cluster": {
+      "$ref": "#/definitions/Cluster"
+    },
+    "DefaultCapacityProviderStrategy": {
+      "$ref": "#/definitions/DefaultCapacityProviderStrategy"
+    }
+  },
+  "required": [
+    "CapacityProviders",
+    "Cluster",
+    "DefaultCapacityProviderStrategy"
+  ]
+}

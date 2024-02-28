@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::DataSync::LocationNFS",
+  "definitions": {
+    "MountOptions": {
+      "additionalProperties": false,
+      "description": "The NFS mount options that DataSync can use to mount your NFS share.",
+      "type": "object",
+      "properties": {
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AUTOMATIC",
+                "NFS3",
+                "NFS4_0",
+                "NFS4_1"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The specific NFS version that you want DataSync to use to mount your NFS share."
+        }
+      }
+    },
+    "OnPremConfig": {
+      "additionalProperties": false,
+      "description": "Contains a list of Amazon Resource Names (ARNs) of agents that are used to connect an NFS server.",
+      "type": "object",
+      "properties": {
+        "AgentArns": {
+          "description": "ARN(s) of the agent(s) to use for an NFS location.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:agent/agent-[0-9a-z]{17}$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 4,
+          "insertionOrder": false
+        }
+      },
+      "required": [
+        "AgentArns"
+      ]
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key for an AWS resource tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for an AWS resource tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "MountOptions": {
+      "$ref": "#/definitions/MountOptions",
+      "default": {
+        "Version": "AUTOMATIC"
+      }
+    },
+    "OnPremConfig": {
+      "$ref": "#/definitions/OnPremConfig"
+    },
+    "ServerHostname": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the NFS server. This value is the IP address or DNS name of the NFS server."
+    },
+    "Subdirectory": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 4096,
+          "pattern": "^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The subdirectory in the NFS file system that is used to read data from the NFS source location or write data to the NFS destination."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "LocationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the NFS location."
+    },
+    "LocationUri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(efs|nfs|s3|smb|fsxw)://[a-zA-Z0-9./\\-]+$",
+          "maxLength": 4356
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The URL of the NFS location that was described."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "OnPremConfig"
+  ]
+}

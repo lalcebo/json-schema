@@ -1,0 +1,625 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::MSK::Cluster",
+  "additionalProperties": false,
+  "properties": {
+    "BrokerNodeGroupInfo": {
+      "$ref": "#/definitions/BrokerNodeGroupInfo"
+    },
+    "EnhancedMonitoring": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 23,
+          "enum": [
+            "DEFAULT",
+            "PER_BROKER",
+            "PER_TOPIC_PER_BROKER",
+            "PER_TOPIC_PER_PARTITION"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "KafkaVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "NumberOfBrokerNodes": {
+      "type": "integer"
+    },
+    "EncryptionInfo": {
+      "$ref": "#/definitions/EncryptionInfo"
+    },
+    "OpenMonitoring": {
+      "$ref": "#/definitions/OpenMonitoring"
+    },
+    "ClusterName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CurrentVersion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The current version of the MSK cluster"
+    },
+    "ClientAuthentication": {
+      "$ref": "#/definitions/ClientAuthentication"
+    },
+    "LoggingInfo": {
+      "$ref": "#/definitions/LoggingInfo"
+    },
+    "Tags": {
+      "type": "object",
+      "description": "A key-value pair to associate with a resource.",
+      "patternProperties": {
+        "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ConfigurationInfo": {
+      "$ref": "#/definitions/ConfigurationInfo"
+    },
+    "StorageMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 6,
+          "enum": [
+            "LOCAL",
+            "TIERED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "definitions": {
+    "S3": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "BrokerLogs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3": {
+          "$ref": "#/definitions/S3"
+        },
+        "CloudWatchLogs": {
+          "$ref": "#/definitions/CloudWatchLogs"
+        },
+        "Firehose": {
+          "$ref": "#/definitions/Firehose"
+        }
+      }
+    },
+    "NodeExporter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EnabledInBroker": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "EnabledInBroker"
+      ]
+    },
+    "EncryptionInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EncryptionAtRest": {
+          "$ref": "#/definitions/EncryptionAtRest"
+        },
+        "EncryptionInTransit": {
+          "$ref": "#/definitions/EncryptionInTransit"
+        }
+      }
+    },
+    "Firehose": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "DeliveryStream": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "OpenMonitoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Prometheus": {
+          "$ref": "#/definitions/Prometheus"
+        }
+      },
+      "required": [
+        "Prometheus"
+      ]
+    },
+    "Prometheus": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "JmxExporter": {
+          "$ref": "#/definitions/JmxExporter"
+        },
+        "NodeExporter": {
+          "$ref": "#/definitions/NodeExporter"
+        }
+      }
+    },
+    "CloudWatchLogs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LogGroup": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "EBSStorageInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "VolumeSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16384
+        },
+        "ProvisionedThroughput": {
+          "$ref": "#/definitions/ProvisionedThroughput"
+        }
+      }
+    },
+    "ProvisionedThroughput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "VolumeThroughput": {
+          "type": "integer"
+        }
+      }
+    },
+    "PublicAccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 7,
+              "maxLength": 23
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "VpcConnectivity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ClientAuthentication": {
+          "$ref": "#/definitions/VpcConnectivityClientAuthentication"
+        }
+      }
+    },
+    "ConfigurationInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Revision": {
+          "type": "integer"
+        },
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Revision",
+        "Arn"
+      ]
+    },
+    "BrokerNodeGroupInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StorageInfo": {
+          "$ref": "#/definitions/StorageInfo"
+        },
+        "ConnectivityInfo": {
+          "$ref": "#/definitions/ConnectivityInfo"
+        },
+        "SecurityGroups": {
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "BrokerAZDistribution": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 9
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ClientSubnets": {
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "InstanceType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 32
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ClientSubnets",
+        "InstanceType"
+      ]
+    },
+    "EncryptionAtRest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DataVolumeKMSKeyId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DataVolumeKMSKeyId"
+      ]
+    },
+    "JmxExporter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EnabledInBroker": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "EnabledInBroker"
+      ]
+    },
+    "StorageInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EBSStorageInfo": {
+          "$ref": "#/definitions/EBSStorageInfo"
+        }
+      }
+    },
+    "ConnectivityInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PublicAccess": {
+          "$ref": "#/definitions/PublicAccess"
+        },
+        "VpcConnectivity": {
+          "$ref": "#/definitions/VpcConnectivity"
+        }
+      }
+    },
+    "VpcConnectivityTls": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "VpcConnectivitySasl": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Scram": {
+          "$ref": "#/definitions/VpcConnectivityScram"
+        },
+        "Iam": {
+          "$ref": "#/definitions/VpcConnectivityIam"
+        }
+      }
+    },
+    "VpcConnectivityScram": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "VpcConnectivityIam": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "Tls": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CertificateAuthorityArnList": {
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "Enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Sasl": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Scram": {
+          "$ref": "#/definitions/Scram"
+        },
+        "Iam": {
+          "$ref": "#/definitions/Iam"
+        }
+      }
+    },
+    "Scram": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "Iam": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "Unauthenticated": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
+    },
+    "ClientAuthentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Tls": {
+          "$ref": "#/definitions/Tls"
+        },
+        "Sasl": {
+          "$ref": "#/definitions/Sasl"
+        },
+        "Unauthenticated": {
+          "$ref": "#/definitions/Unauthenticated"
+        }
+      }
+    },
+    "VpcConnectivityClientAuthentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Tls": {
+          "$ref": "#/definitions/VpcConnectivityTls"
+        },
+        "Sasl": {
+          "$ref": "#/definitions/VpcConnectivitySasl"
+        }
+      }
+    },
+    "LoggingInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BrokerLogs": {
+          "$ref": "#/definitions/BrokerLogs"
+        }
+      },
+      "required": [
+        "BrokerLogs"
+      ]
+    },
+    "EncryptionInTransit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InCluster": {
+          "type": "boolean"
+        },
+        "ClientBroker": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "TLS",
+                "TLS_PLAINTEXT",
+                "PLAINTEXT"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "BrokerNodeGroupInfo",
+    "KafkaVersion",
+    "NumberOfBrokerNodes",
+    "ClusterName"
+  ]
+}
