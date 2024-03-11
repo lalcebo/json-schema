@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::Cassandra::Keyspace",
+  "properties": {
+    "KeyspaceName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Name for Cassandra keyspace"
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 50
+    },
+    "ReplicationSpecification": {
+      "$ref": "#/definitions/ReplicationSpecification"
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    },
+    "ReplicationSpecification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ReplicationStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SINGLE_REGION",
+                "MULTI_REGION"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "RegionList": {
+          "$ref": "#/definitions/RegionList"
+        }
+      },
+      "default": {
+        "properties": {
+          "ReplicationStrategy": {
+            "type": "string",
+            "const": "SINGLE_REGION"
+          }
+        }
+      },
+      "dependencies": {
+        "RegionList": [
+          "ReplicationStrategy"
+        ]
+      }
+    },
+    "RegionList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ap-northeast-1",
+          "ap-northeast-2",
+          "ap-south-1",
+          "ap-southeast-1",
+          "ap-southeast-2",
+          "ca-central-1",
+          "eu-central-1",
+          "eu-north-1",
+          "eu-west-1",
+          "eu-west-2",
+          "eu-west-3",
+          "sa-east-1",
+          "us-east-1",
+          "us-east-2",
+          "us-west-1",
+          "us-west-2"
+        ]
+      },
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "minItems": 2,
+      "maxItems": 6
+    }
+  },
+  "additionalProperties": false,
+  "required": []
+}

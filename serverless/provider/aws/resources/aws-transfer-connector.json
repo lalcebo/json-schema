@@ -1,0 +1,318 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::Transfer::Connector",
+  "definitions": {
+    "Tag": {
+      "description": "Creates a key-value pair for a specific resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name assigned to the tag that you create."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Contains one or more values that you assigned to the key name you create."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "SftpConnectorTrustedHostKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The public host key for the external server to which you are connecting."
+    }
+  },
+  "properties": {
+    "AccessRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:.*role/.*",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Specifies the access role for the connector."
+    },
+    "As2Config": {
+      "description": "Configuration for an AS2 connector.",
+      "type": "object",
+      "properties": {
+        "LocalProfileId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^p-([0-9a-f]{17})$",
+              "minLength": 19,
+              "maxLength": 19
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A unique identifier for the local profile."
+        },
+        "PartnerProfileId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^p-([0-9a-f]{17})$",
+              "minLength": 19,
+              "maxLength": 19
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A unique identifier for the partner profile."
+        },
+        "MessageSubject": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\p{Print}\\p{Blank}]+",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The message subject for this AS2 connector configuration."
+        },
+        "Compression": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ZLIB",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Compression setting for this AS2 connector configuration."
+        },
+        "EncryptionAlgorithm": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AES128_CBC",
+                "AES192_CBC",
+                "AES256_CBC",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Encryption algorithm for this AS2 connector configuration."
+        },
+        "SigningAlgorithm": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SHA256",
+                "SHA384",
+                "SHA512",
+                "SHA1",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Signing algorithm for this AS2 connector configuration."
+        },
+        "MdnSigningAlgorithm": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SHA256",
+                "SHA384",
+                "SHA512",
+                "SHA1",
+                "NONE",
+                "DEFAULT"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "MDN Signing algorithm for this AS2 connector configuration."
+        },
+        "MdnResponse": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SYNC",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "MDN Response setting for this AS2 connector configuration."
+        },
+        "BasicAuthSecretId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "ARN or name of the secret in AWS Secrets Manager which contains the credentials for Basic authentication. If empty, Basic authentication is disabled for the AS2 connector"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SftpConfig": {
+      "description": "Configuration for an SFTP connector.",
+      "type": "object",
+      "properties": {
+        "UserSecretId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "ARN or name of the secret in AWS Secrets Manager which contains the SFTP user's private keys or passwords."
+        },
+        "TrustedHostKeys": {
+          "description": "List of public host keys, for the external server to which you are connecting.",
+          "type": "array",
+          "maxItems": 10,
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/SftpConnectorTrustedHostKey"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:.*",
+          "minLength": 20,
+          "maxLength": 1600
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Specifies the unique Amazon Resource Name (ARN) for the connector."
+    },
+    "ConnectorId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^c-([0-9a-f]{17})$",
+          "minLength": 19,
+          "maxLength": 19
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A unique identifier for the connector."
+    },
+    "LoggingRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:.*role/.*",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Specifies the logging role for the connector."
+    },
+    "Tags": {
+      "description": "Key-value pairs that can be used to group and search for connectors. Tags are metadata attached to connectors for any purpose.",
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Url": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "URL for Connector"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "AccessRole",
+    "Url"
+  ]
+}

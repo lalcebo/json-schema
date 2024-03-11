@@ -1,0 +1,495 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::FIS::ExperimentTemplate",
+  "definitions": {
+    "ExperimentTemplateId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ExperimentTemplateDescription": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description for the experiment template."
+    },
+    "StopConditionSource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StopConditionValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ExperimentTemplateStopCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/StopConditionSource"
+        },
+        "Value": {
+          "$ref": "#/definitions/StopConditionValue"
+        }
+      },
+      "required": [
+        "Source"
+      ]
+    },
+    "ExperimentTemplateStopConditionList": {
+      "type": "array",
+      "description": "One or more stop conditions.",
+      "items": {
+        "$ref": "#/definitions/ExperimentTemplateStopCondition"
+      }
+    },
+    "ResourceType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The AWS resource type. The resource type must be supported for the specified action."
+    },
+    "ResourceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ResourceArnList": {
+      "type": "array",
+      "description": "The Amazon Resource Names (ARNs) of the target resources.",
+      "items": {
+        "$ref": "#/definitions/ResourceArn"
+      }
+    },
+    "ExperimentTemplateTargetSelectionMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Scopes the identified resources to a specific number of the resources at random, or a percentage of the resources."
+    },
+    "ExperimentTemplateTargetFilterPath": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The attribute path for the filter."
+    },
+    "ExperimentTemplateTargetFilterValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ExperimentTemplateTargetFilterValues": {
+      "type": "array",
+      "description": "The attribute values for the filter.",
+      "items": {
+        "$ref": "#/definitions/ExperimentTemplateTargetFilterValue"
+      }
+    },
+    "ExperimentTemplateTargetFilter": {
+      "type": "object",
+      "description": "Describes a filter used for the target resource input in an experiment template.",
+      "additionalProperties": false,
+      "properties": {
+        "Path": {
+          "$ref": "#/definitions/ExperimentTemplateTargetFilterPath"
+        },
+        "Values": {
+          "$ref": "#/definitions/ExperimentTemplateTargetFilterValues"
+        }
+      },
+      "required": [
+        "Path",
+        "Values"
+      ]
+    },
+    "ExperimentTemplateTargetFilterList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ExperimentTemplateTargetFilter"
+      }
+    },
+    "ExperimentTemplateTarget": {
+      "type": "object",
+      "description": "Specifies a target for an experiment.",
+      "additionalProperties": false,
+      "properties": {
+        "ResourceType": {
+          "$ref": "#/definitions/ResourceType"
+        },
+        "ResourceArns": {
+          "$ref": "#/definitions/ResourceArnList"
+        },
+        "ResourceTags": {
+          "type": "object",
+          "patternProperties": {
+            ".{1,128}": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          "additionalProperties": false
+        },
+        "Parameters": {
+          "type": "object",
+          "patternProperties": {
+            ".{1,64}": {
+              "type": "string",
+              "maxLength": 1024
+            }
+          },
+          "additionalProperties": false
+        },
+        "Filters": {
+          "$ref": "#/definitions/ExperimentTemplateTargetFilterList"
+        },
+        "SelectionMode": {
+          "$ref": "#/definitions/ExperimentTemplateTargetSelectionMode"
+        }
+      },
+      "required": [
+        "ResourceType",
+        "SelectionMode"
+      ]
+    },
+    "ExperimentTemplateTargetMap": {
+      "type": "object",
+      "description": "The targets for the experiment.",
+      "patternProperties": {
+        ".{1,64}": {
+          "$ref": "#/definitions/ExperimentTemplateTarget"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ActionId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the action."
+    },
+    "ExperimentTemplateActionItemDescription": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description for the action."
+    },
+    "ExperimentTemplateActionItemParameter": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ExperimentTemplateActionItemTarget": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ExperimentTemplateActionItemStartAfter": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ExperimentTemplateActionItemStartAfterList": {
+      "type": "array",
+      "description": "The names of the actions that must be completed before the current action starts.",
+      "items": {
+        "$ref": "#/definitions/ExperimentTemplateActionItemStartAfter"
+      }
+    },
+    "ExperimentTemplateAction": {
+      "type": "object",
+      "description": "Specifies an action for the experiment template.",
+      "additionalProperties": false,
+      "properties": {
+        "ActionId": {
+          "$ref": "#/definitions/ActionId"
+        },
+        "Description": {
+          "$ref": "#/definitions/ExperimentTemplateActionItemDescription"
+        },
+        "Parameters": {
+          "type": "object",
+          "description": "The parameters for the action, if applicable.",
+          "patternProperties": {
+            ".{1,64}": {
+              "$ref": "#/definitions/ExperimentTemplateActionItemParameter"
+            }
+          },
+          "additionalProperties": false
+        },
+        "Targets": {
+          "type": "object",
+          "description": "One or more targets for the action.",
+          "patternProperties": {
+            ".{1,64}": {
+              "$ref": "#/definitions/ExperimentTemplateActionItemTarget"
+            }
+          },
+          "additionalProperties": false
+        },
+        "StartAfter": {
+          "$ref": "#/definitions/ExperimentTemplateActionItemStartAfterList"
+        }
+      },
+      "required": [
+        "ActionId"
+      ]
+    },
+    "ExperimentTemplateActionMap": {
+      "type": "object",
+      "description": "The actions for the experiment.",
+      "patternProperties": {
+        "[\\S]{1,64}": {
+          "$ref": "#/definitions/ExperimentTemplateAction"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ExperimentTemplateLogConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CloudWatchLogsConfiguration": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "LogGroupArn": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 20,
+                  "maxLength": 2048
+                },
+                {
+                  "$ref": "../component/functions.json#/AwsFunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "LogGroupArn"
+          ]
+        },
+        "S3Configuration": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "BucketName": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 63
+                },
+                {
+                  "$ref": "../component/functions.json#/AwsFunctionString"
+                }
+              ]
+            },
+            "Prefix": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                {
+                  "$ref": "../component/functions.json#/AwsFunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "BucketName"
+          ]
+        },
+        "LogSchemaVersion": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "LogSchemaVersion"
+      ]
+    },
+    "ExperimentTemplateExperimentOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AccountTargeting": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "multi-account",
+                "single-account"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The account targeting setting for the experiment template."
+        },
+        "EmptyTargetResolutionMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "fail",
+                "skip"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The target resolution failure mode for the experiment template."
+        }
+      }
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of an IAM role that grants the AWS FIS service permission to perform service actions on your behalf."
+    }
+  },
+  "properties": {
+    "Id": {
+      "$ref": "#/definitions/ExperimentTemplateId"
+    },
+    "Description": {
+      "$ref": "#/definitions/ExperimentTemplateDescription"
+    },
+    "Targets": {
+      "$ref": "#/definitions/ExperimentTemplateTargetMap"
+    },
+    "Actions": {
+      "$ref": "#/definitions/ExperimentTemplateActionMap"
+    },
+    "StopConditions": {
+      "$ref": "#/definitions/ExperimentTemplateStopConditionList"
+    },
+    "LogConfiguration": {
+      "$ref": "#/definitions/ExperimentTemplateLogConfiguration"
+    },
+    "RoleArn": {
+      "$ref": "#/definitions/RoleArn"
+    },
+    "Tags": {
+      "type": "object",
+      "patternProperties": {
+        ".{1,128}": {
+          "type": "string",
+          "maxLength": 256
+        }
+      },
+      "additionalProperties": false
+    },
+    "ExperimentOptions": {
+      "$ref": "#/definitions/ExperimentTemplateExperimentOptions"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Description",
+    "StopConditions",
+    "Targets",
+    "RoleArn",
+    "Tags"
+  ]
+}

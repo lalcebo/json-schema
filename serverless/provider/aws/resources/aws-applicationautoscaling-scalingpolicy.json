@@ -1,0 +1,483 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::ApplicationAutoScaling::ScalingPolicy",
+  "definitions": {
+    "StepScalingPolicyConfiguration": {
+      "description": "A step scaling policy.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AdjustmentType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Specifies how the ScalingAdjustment value in a StepAdjustment is interpreted."
+        },
+        "Cooldown": {
+          "description": "The amount of time, in seconds, to wait for a previous scaling activity to take effect.",
+          "type": "integer"
+        },
+        "MetricAggregationType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The aggregation type for the CloudWatch metrics. Valid values are Minimum, Maximum, and Average. If the aggregation type is null, the value is treated as Average"
+        },
+        "MinAdjustmentMagnitude": {
+          "description": "The minimum value to scale by when the adjustment type is PercentChangeInCapacity.",
+          "type": "integer"
+        },
+        "StepAdjustments": {
+          "description": "A set of adjustments that enable you to scale based on the size of the alarm breach.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/StepAdjustment"
+          }
+        }
+      }
+    },
+    "TargetTrackingScalingPolicyConfiguration": {
+      "description": "A target tracking scaling policy.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CustomizedMetricSpecification": {
+          "description": "A customized metric. You can specify either a predefined metric or a customized metric.",
+          "$ref": "#/definitions/CustomizedMetricSpecification"
+        },
+        "DisableScaleIn": {
+          "description": "Indicates whether scale in by the target tracking scaling policy is disabled. If the value is true, scale in is disabled and the target tracking scaling policy won't remove capacity from the scalable target. Otherwise, scale in is enabled and the target tracking scaling policy can remove capacity from the scalable target. The default value is false.",
+          "type": "boolean"
+        },
+        "PredefinedMetricSpecification": {
+          "description": "A predefined metric. You can specify either a predefined metric or a customized metric.",
+          "$ref": "#/definitions/PredefinedMetricSpecification"
+        },
+        "ScaleInCooldown": {
+          "description": "The amount of time, in seconds, after a scale-in activity completes before another scale-in activity can start.",
+          "type": "integer"
+        },
+        "ScaleOutCooldown": {
+          "description": "The amount of time, in seconds, to wait for a previous scale-out activity to take effect.",
+          "type": "integer"
+        },
+        "TargetValue": {
+          "description": "The target value for the metric. Although this property accepts numbers of type Double, it won't accept values that are either too small or too large. Values must be in the range of -2^360 to 2^360. The value must be a valid number based on the choice of metric. For example, if the metric is CPU utilization, then the target value is a percent value that represents how much of the CPU can be used before scaling out.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "TargetValue"
+      ]
+    },
+    "PredefinedMetricSpecification": {
+      "description": "Represents a predefined metric for a target tracking scaling policy to use with Application Auto Scaling.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PredefinedMetricType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The metric type. The ALBRequestCountPerTarget metric type applies only to Spot Fleets and ECS services."
+        },
+        "ResourceLabel": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Identifies the resource associated with the metric type. You can't specify a resource label unless the metric type is ALBRequestCountPerTarget and there is a target group attached to the Spot Fleet or ECS service."
+        }
+      },
+      "required": [
+        "PredefinedMetricType"
+      ]
+    },
+    "CustomizedMetricSpecification": {
+      "description": "Represents a CloudWatch metric of your choosing for a target tracking scaling policy to use with Application Auto Scaling.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Dimensions": {
+          "description": "The dimensions of the metric.",
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/MetricDimension"
+          }
+        },
+        "MetricName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the metric. To get the exact metric name, namespace, and dimensions, inspect the Metric object that is returned by a call to ListMetrics."
+        },
+        "Namespace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The namespace of the metric."
+        },
+        "Statistic": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The statistic of the metric."
+        },
+        "Unit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The unit of the metric. For a complete list of the units that CloudWatch supports, see the MetricDatum data type in the Amazon CloudWatch API Reference."
+        },
+        "Metrics": {
+          "description": "The metrics to include in the target tracking scaling policy, as a metric data query. This can include both raw metric and metric math expressions.",
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/TargetTrackingMetricDataQuery"
+          }
+        }
+      }
+    },
+    "TargetTrackingMetricDataQuery": {
+      "description": "The metric data to return. Also defines whether this call is returning data for one metric only, or whether it is performing a math expression on the values of returned metric statistics to create a new time series. A time series is a series of data points, each of which is associated with a timestamp.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The math expression to perform on the returned data, if this object is performing a math expression."
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A short name that identifies the object's results in the response."
+        },
+        "Label": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A human-readable label for this metric or expression. This is especially useful if this is a math expression, so that you know what the value represents."
+        },
+        "ReturnData": {
+          "description": "Indicates whether to return the timestamps and raw data values of this metric.",
+          "type": "boolean"
+        },
+        "MetricStat": {
+          "description": "Information about the metric data to return.",
+          "$ref": "#/definitions/TargetTrackingMetricStat"
+        }
+      }
+    },
+    "TargetTrackingMetricStat": {
+      "description": "This structure defines the CloudWatch metric to return, along with the statistic, period, and unit.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Metric": {
+          "description": "The CloudWatch metric to return, including the metric name, namespace, and dimensions. ",
+          "$ref": "#/definitions/TargetTrackingMetric"
+        },
+        "Stat": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The statistic to return. It can include any CloudWatch statistic or extended statistic."
+        },
+        "Unit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The unit to use for the returned data points."
+        }
+      }
+    },
+    "TargetTrackingMetric": {
+      "description": "Represents a specific metric.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Dimensions": {
+          "description": "The dimensions for the metric.",
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/TargetTrackingMetricDimension"
+          }
+        },
+        "MetricName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the metric."
+        },
+        "Namespace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The namespace of the metric."
+        }
+      }
+    },
+    "TargetTrackingMetricDimension": {
+      "description": "Describes the dimension of a metric.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the dimension."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value of the dimension."
+        }
+      }
+    },
+    "StepAdjustment": {
+      "description": "Represents a step adjustment for a StepScalingPolicyConfiguration. Describes an adjustment based on the difference between the value of the aggregated CloudWatch metric and the breach threshold that you've defined for the alarm.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MetricIntervalLowerBound": {
+          "description": "The lower bound for the difference between the alarm threshold and the CloudWatch metric. If the metric value is above the breach threshold, the lower bound is inclusive (the metric must be greater than or equal to the threshold plus the lower bound). Otherwise, it is exclusive (the metric must be greater than the threshold plus the lower bound). A null value indicates negative infinity.",
+          "type": "number"
+        },
+        "MetricIntervalUpperBound": {
+          "description": "The upper bound for the difference between the alarm threshold and the CloudWatch metric. If the metric value is above the breach threshold, the upper bound is exclusive (the metric must be less than the threshold plus the upper bound). Otherwise, it is inclusive (the metric must be less than or equal to the threshold plus the upper bound). A null value indicates positive infinity.",
+          "type": "number"
+        },
+        "ScalingAdjustment": {
+          "description": "The amount by which to scale, based on the specified adjustment type. A positive value adds to the current capacity while a negative number removes from the current capacity. For exact capacity, you must specify a positive value.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "ScalingAdjustment"
+      ]
+    },
+    "MetricDimension": {
+      "description": "Describes the dimension names and values associated with a metric.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the dimension."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value of the dimension."
+        }
+      },
+      "required": [
+        "Value",
+        "Name"
+      ]
+    }
+  },
+  "properties": {
+    "PolicyName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the scaling policy.\n\nUpdates to the name of a target tracking scaling policy are not supported, unless you also update the metric used for scaling. To change only a target tracking scaling policy's name, first delete the policy by removing the existing AWS::ApplicationAutoScaling::ScalingPolicy resource from the template and updating the stack. Then, recreate the resource with the same settings and a different name."
+    },
+    "PolicyType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The scaling policy type.\n\nThe following policy types are supported:\n\nTargetTrackingScaling Not supported for Amazon EMR\n\nStepScaling Not supported for DynamoDB, Amazon Comprehend, Lambda, Amazon Keyspaces, Amazon MSK, Amazon ElastiCache, or Neptune."
+    },
+    "ResourceId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The identifier of the resource associated with the scaling policy. This string consists of the resource type and unique identifier."
+    },
+    "ScalableDimension": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The scalable dimension. This string consists of the service namespace, resource type, and scaling property."
+    },
+    "ScalingTargetId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The CloudFormation-generated ID of an Application Auto Scaling scalable target. For more information about the ID, see the Return Value section of the AWS::ApplicationAutoScaling::ScalableTarget resource."
+    },
+    "ServiceNamespace": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The namespace of the AWS service that provides the resource, or a custom-resource."
+    },
+    "StepScalingPolicyConfiguration": {
+      "description": "A step scaling policy.",
+      "$ref": "#/definitions/StepScalingPolicyConfiguration"
+    },
+    "TargetTrackingScalingPolicyConfiguration": {
+      "description": "A target tracking scaling policy.",
+      "$ref": "#/definitions/TargetTrackingScalingPolicyConfiguration"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "ARN is a read only property for the resource."
+    }
+  },
+  "required": [
+    "PolicyName",
+    "PolicyType"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,194 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::DataSync::LocationEFS.",
+  "definitions": {
+    "Ec2Config": {
+      "additionalProperties": false,
+      "description": "The subnet and security group that DataSync uses to access target EFS file system.",
+      "type": "object",
+      "properties": {
+        "SecurityGroupArns": {
+          "description": "The Amazon Resource Names (ARNs) of the security groups that are configured for the Amazon EC2 resource.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/.*$",
+            "maxLength": 128
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "insertionOrder": false
+        },
+        "SubnetArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:subnet/.*$",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of the subnet that DataSync uses to access the target EFS file system."
+        }
+      },
+      "required": [
+        "SecurityGroupArns",
+        "SubnetArn"
+      ]
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key for an AWS resource tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for an AWS resource tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "Ec2Config": {
+      "$ref": "#/definitions/Ec2Config"
+    },
+    "EfsFilesystemArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):elasticfilesystem:[a-z\\-0-9]*:[0-9]{12}:file-system/fs-.*$",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for the Amazon EFS file system."
+    },
+    "AccessPointArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):elasticfilesystem:[a-z\\-0-9]+:[0-9]{12}:access-point/fsap-[0-9a-f]{8,40}$",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for the Amazon EFS Access point that DataSync uses when accessing the EFS file system."
+    },
+    "FileSystemAccessRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*$",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the AWS IAM role that the DataSync will assume when mounting the EFS file system."
+    },
+    "InTransitEncryption": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "TLS1_2"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Protocol that is used for encrypting the traffic exchanged between the DataSync Agent and the EFS file system."
+    },
+    "Subdirectory": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 4096,
+          "pattern": "^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A subdirectory in the location's path. This subdirectory in the EFS file system is used to read data from the EFS source location or write data to the EFS destination."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "LocationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the Amazon EFS file system location that is created."
+    },
+    "LocationUri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(efs|nfs|s3|smb|fsxw)://[a-zA-Z0-9.\\-/]+$",
+          "maxLength": 4356
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The URL of the EFS location that was described."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Ec2Config"
+  ]
+}

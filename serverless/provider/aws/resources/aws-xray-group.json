@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "This schema provides construct and validation rules for AWS-XRay Group resource parameters.",
+  "properties": {
+    "FilterExpression": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The filter expression defining criteria by which to group traces."
+    },
+    "GroupName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The case-sensitive name of the new group. Names must be unique."
+    },
+    "GroupARN": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the group that was generated on creation."
+    },
+    "InsightsConfiguration": {
+      "$ref": "#/definitions/InsightsConfiguration"
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    }
+  },
+  "definitions": {
+    "InsightsConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InsightsEnabled": {
+          "description": "Set the InsightsEnabled value to true to enable insights or false to disable insights.",
+          "type": "boolean"
+        },
+        "NotificationsEnabled": {
+          "description": "Set the NotificationsEnabled value to true to enable insights notifications. Notifications can only be enabled on a group with InsightsEnabled set to true.",
+          "type": "boolean"
+        }
+      }
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "GroupName"
+  ],
+  "additionalProperties": false
+}

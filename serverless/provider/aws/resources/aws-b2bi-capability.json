@@ -1,0 +1,305 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::B2BI::Capability Resource Type",
+  "definitions": {
+    "CapabilityConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Edi",
+          "properties": {
+            "Edi": {
+              "$ref": "#/definitions/EdiConfiguration"
+            }
+          },
+          "required": [
+            "Edi"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "CapabilityType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "edi"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "EdiConfiguration": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/EdiType"
+        },
+        "InputLocation": {
+          "$ref": "#/definitions/S3Location"
+        },
+        "OutputLocation": {
+          "$ref": "#/definitions/S3Location"
+        },
+        "TransformerId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "InputLocation",
+        "OutputLocation",
+        "TransformerId",
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "EdiType": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "X12Details",
+          "properties": {
+            "X12Details": {
+              "$ref": "#/definitions/X12Details"
+            }
+          },
+          "required": [
+            "X12Details"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "S3Location": {
+      "type": "object",
+      "properties": {
+        "BucketName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "minLength": 3
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 0
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "X12Details": {
+      "type": "object",
+      "properties": {
+        "TransactionSet": {
+          "$ref": "#/definitions/X12TransactionSet"
+        },
+        "Version": {
+          "$ref": "#/definitions/X12Version"
+        }
+      },
+      "additionalProperties": false
+    },
+    "X12TransactionSet": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "X12_110",
+            "X12_180",
+            "X12_204",
+            "X12_210",
+            "X12_214",
+            "X12_215",
+            "X12_310",
+            "X12_315",
+            "X12_322",
+            "X12_404",
+            "X12_410",
+            "X12_820",
+            "X12_824",
+            "X12_830",
+            "X12_846",
+            "X12_850",
+            "X12_852",
+            "X12_855",
+            "X12_856",
+            "X12_860",
+            "X12_861",
+            "X12_864",
+            "X12_940",
+            "X12_990",
+            "X12_997"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "X12Version": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "VERSION_4010",
+            "VERSION_4030",
+            "VERSION_5010"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "CapabilityArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CapabilityId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Configuration": {
+      "$ref": "#/definitions/CapabilityConfiguration"
+    },
+    "CreatedAt": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "InstructionsDocuments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/S3Location"
+      },
+      "maxItems": 5,
+      "minItems": 0
+    },
+    "ModifiedAt": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 254,
+          "minLength": 1
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0
+    },
+    "Type": {
+      "$ref": "#/definitions/CapabilityType"
+    }
+  },
+  "required": [
+    "Configuration",
+    "Name",
+    "Type"
+  ],
+  "additionalProperties": false
+}

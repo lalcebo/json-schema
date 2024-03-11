@@ -1,0 +1,179 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "An Event Stream resource of Amazon Connect Customer Profiles",
+  "definitions": {
+    "Uri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The StreamARN of the destination to deliver profile events to. For example, arn:aws:kinesis:region:account-id:stream/stream-name"
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "HEALTHY",
+            "UNHEALTHY"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of enabling the Kinesis stream as a destination for export."
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "DomainName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The unique name of the domain."
+    },
+    "EventStreamName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the event stream."
+    },
+    "Uri": {
+      "$ref": "#/definitions/Uri"
+    },
+    "EventStreamArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A unique identifier for the event stream."
+    },
+    "Tags": {
+      "description": "The tags used to organize, track, or control access for this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 50
+    },
+    "CreatedAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The timestamp of when the export was created."
+    },
+    "State": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "RUNNING",
+            "STOPPED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The operational state of destination stream for export."
+    },
+    "DestinationDetails": {
+      "description": "Details regarding the Kinesis stream.",
+      "type": "object",
+      "properties": {
+        "Uri": {
+          "$ref": "#/definitions/Uri"
+        },
+        "Status": {
+          "$ref": "#/definitions/Status"
+        }
+      },
+      "required": [
+        "Uri",
+        "Status"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "DomainName",
+    "EventStreamName",
+    "Uri"
+  ]
+}

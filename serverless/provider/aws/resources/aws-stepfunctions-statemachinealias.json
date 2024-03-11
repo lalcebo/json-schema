@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for StateMachineAlias",
+  "definitions": {
+    "RoutingConfigurationVersion": {
+      "type": "object",
+      "properties": {
+        "StateMachineVersionArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) that identifies one or two state machine versions defined in the routing configuration."
+        },
+        "Weight": {
+          "type": "integer",
+          "description": "The percentage of traffic you want to route to the state machine version. The sum of the weights in the routing configuration must be equal to 100.",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "StateMachineVersionArn",
+        "Weight"
+      ],
+      "additionalProperties": false
+    },
+    "RoutingConfiguration": {
+      "type": "array",
+      "description": "The routing configuration of the alias. One or two versions can be mapped to an alias to split StartExecution requests of the same state machine.",
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/RoutingConfigurationVersion"
+      }
+    },
+    "DeploymentPreference": {
+      "type": "object",
+      "description": "The settings to enable gradual state machine deployments.",
+      "properties": {
+        "StateMachineVersionArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LINEAR",
+                "ALL_AT_ONCE",
+                "CANARY"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The type of deployment to perform."
+        },
+        "Percentage": {
+          "type": "integer",
+          "description": "The percentage of traffic to shift to the new version in each increment.",
+          "minimum": 1,
+          "maximum": 99
+        },
+        "Interval": {
+          "type": "integer",
+          "description": "The time in minutes between each traffic shifting increment.",
+          "minimum": 1,
+          "maximum": 2100
+        },
+        "Alarms": {
+          "type": "array",
+          "description": "A list of CloudWatch alarm names that will be monitored during the deployment. The deployment will fail and rollback if any alarms go into ALARM state.",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      },
+      "required": [
+        "StateMachineVersionArn",
+        "Type"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the alias."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The alias name."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "An optional description of the alias."
+    },
+    "RoutingConfiguration": {
+      "$ref": "#/definitions/RoutingConfiguration"
+    },
+    "DeploymentPreference": {
+      "$ref": "#/definitions/DeploymentPreference"
+    }
+  },
+  "additionalProperties": false,
+  "oneOf": [
+    {
+      "required": [
+        "RoutingConfiguration"
+      ]
+    },
+    {
+      "required": [
+        "DeploymentPreference"
+      ]
+    }
+  ]
+}

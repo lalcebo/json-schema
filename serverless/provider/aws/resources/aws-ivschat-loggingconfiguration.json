@@ -1,0 +1,213 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource type definition for AWS::IVSChat::LoggingConfiguration.",
+  "definitions": {
+    "DestinationConfiguration": {
+      "description": "Destination configuration for IVS Chat logging.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CloudWatchLogs": {
+          "$ref": "#/definitions/CloudWatchLogsDestinationConfiguration"
+        },
+        "Firehose": {
+          "$ref": "#/definitions/FirehoseDestinationConfiguration"
+        },
+        "S3": {
+          "$ref": "#/definitions/S3DestinationConfiguration"
+        }
+      },
+      "required": []
+    },
+    "CloudWatchLogsDestinationConfiguration": {
+      "description": "CloudWatch destination configuration for IVS Chat logging.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LogGroupName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\.\\-_/#A-Za-z0-9]+$",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Name of the Amazon CloudWatch Logs log group where chat activity will be logged."
+        }
+      },
+      "required": [
+        "LogGroupName"
+      ]
+    },
+    "FirehoseDestinationConfiguration": {
+      "description": "Kinesis Firehose destination configuration for IVS Chat logging.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DeliveryStreamName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_.-]+$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Name of the Amazon Kinesis Firehose delivery stream where chat activity will be logged."
+        }
+      },
+      "required": [
+        "DeliveryStreamName"
+      ]
+    },
+    "S3DestinationConfiguration": {
+      "description": "S3 destination configuration for IVS Chat logging.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BucketName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9-.]+$",
+              "minLength": 3,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Name of the Amazon S3 bucket where chat activity will be logged."
+        }
+      },
+      "required": [
+        "BucketName"
+      ]
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws:ivschat:[a-z0-9-]+:[0-9]+:logging-configuration/[a-zA-Z0-9-]+$",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "LoggingConfiguration ARN is automatically generated on creation and assigned as the unique identifier."
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]+$",
+          "minLength": 12,
+          "maxLength": 12
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The system-generated ID of the logging configuration."
+    },
+    "DestinationConfiguration": {
+      "$ref": "#/definitions/DestinationConfiguration"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9-_]*$",
+          "minLength": 0,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the logging configuration. The value does not need to be unique."
+    },
+    "State": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "CREATE_FAILED",
+            "DELETING",
+            "DELETE_FAILED",
+            "UPDATING",
+            "UPDATING_FAILED",
+            "ACTIVE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The state of the logging configuration. When the state is ACTIVE, the configuration is ready to log chat content."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "DestinationConfiguration"
+  ]
+}

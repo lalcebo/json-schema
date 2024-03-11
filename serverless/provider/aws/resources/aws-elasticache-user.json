@@ -1,0 +1,182 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::ElastiCache::User",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z0-9 _\\.\\/=+:\\-@]*$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with 'aws:'. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9 _\\.\\/=+:\\-@]*$",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key"
+      ]
+    }
+  },
+  "properties": {
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Indicates the user status. Can be \"active\", \"modifying\" or \"deleting\"."
+    },
+    "UserId": {
+      "oneOf": [
+        {
+          "pattern": "[a-z][a-z0-9\\\\-]*",
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the user."
+    },
+    "UserName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The username of the user."
+    },
+    "Engine": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "redis"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Must be redis."
+    },
+    "AccessString": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Access permissions string used for this user account."
+    },
+    "NoPasswordRequired": {
+      "description": "Indicates a password is not required for this user account.",
+      "type": "boolean"
+    },
+    "Passwords": {
+      "type": "array",
+      "$comment": "List of passwords.",
+      "uniqueItems": true,
+      "insertionOrder": true,
+      "items": {
+        "type": "string"
+      },
+      "description": "Passwords used for this user account. You can create up to two passwords for each user."
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the user account."
+    },
+    "AuthenticationMode": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "password",
+                "no-password-required",
+                "iam"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Authentication Type"
+        },
+        "Passwords": {
+          "type": "array",
+          "$comment": "List of passwords.",
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "items": {
+            "type": "string"
+          },
+          "description": "Passwords used for this user account. You can create up to two passwords for each user."
+        }
+      },
+      "required": [
+        "Type"
+      ]
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this user.",
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "UserId",
+    "UserName",
+    "Engine"
+  ]
+}

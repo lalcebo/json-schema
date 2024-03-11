@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Schema describing various properties for AWS Proton Environment Account Connections resources.",
+  "definitions": {
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "CONNECTED",
+            "REJECTED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "description": "<p>A description of a resource tag.</p>",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "<p>The key of the resource tag.</p>"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "<p>The value of the resource tag.</p>"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the environment account connection."
+    },
+    "CodebuildRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of an IAM service role in the environment account. AWS Proton uses this role to provision infrastructure resources using CodeBuild-based provisioning in the associated environment account."
+    },
+    "ComponentRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the IAM service role that AWS Proton uses when provisioning directly defined components in the associated environment account. It determines the scope of infrastructure that a component can provision in the account."
+    },
+    "EnvironmentAccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The environment account that's connected to the environment account connection."
+    },
+    "EnvironmentName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z]+[0-9A-Za-z_\\-]*$",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the AWS Proton environment that's created in the associated management account."
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the environment account connection."
+    },
+    "ManagementAccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the management account that accepts or rejects the environment account connection. You create an manage the AWS Proton environment in this account. If the management account accepts the environment account connection, AWS Proton can use the associated IAM role to provision environment infrastructure resources in the associated environment account."
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov):iam::\\d{12}:role/([\\w+=,.@-]{1,512}[/:])*([\\w+=,.@-]{1,64})$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the IAM service role that's created in the environment account. AWS Proton uses this role to provision infrastructure resources in the associated environment account."
+    },
+    "Status": {
+      "description": "The status of the environment account connection.",
+      "$ref": "#/definitions/Status"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "<p>An optional list of metadata items that you can associate with the Proton environment account connection. A tag is a key-value pair.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/proton/latest/userguide/resources.html\">Proton resources and tagging</a> in the\n        <i>Proton User Guide</i>.</p>"
+    }
+  },
+  "additionalIdentifiers": [
+    [
+      "/properties/Id"
+    ]
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource type definition for AWS::SSMIncidents::ReplicationSet",
+  "definitions": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws(-(cn|us-gov|iso(-b)?))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the ReplicationSet."
+    },
+    "RegionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 20
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The AWS region name."
+    },
+    "ReplicationRegion": {
+      "description": "The ReplicationSet regional configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RegionName": {
+          "$ref": "#/definitions/RegionName"
+        },
+        "RegionConfiguration": {
+          "$ref": "#/definitions/RegionConfiguration"
+        }
+      }
+    },
+    "RegionConfiguration": {
+      "description": "The ReplicationSet regional configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SseKmsKeyId": {
+          "$ref": "#/definitions/Arn"
+        }
+      },
+      "required": [
+        "SseKmsKeyId"
+      ]
+    },
+    "DeletionProtected": {
+      "description": "Configures the ReplicationSet deletion protection.",
+      "type": "boolean"
+    },
+    "RegionList": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/definitions/ReplicationRegion"
+      },
+      "insertionOrder": false,
+      "uniqueItems": true
+    },
+    "Tag": {
+      "description": "A key-value pair to tag a resource.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "properties": {
+    "Arn": {
+      "description": "The ARN of the ReplicationSet.",
+      "$ref": "#/definitions/Arn",
+      "additionalProperties": false
+    },
+    "Regions": {
+      "description": "The ReplicationSet configuration.",
+      "$ref": "#/definitions/RegionList"
+    },
+    "DeletionProtected": {
+      "$ref": "#/definitions/DeletionProtected",
+      "default": false
+    },
+    "Tags": {
+      "description": "The tags to apply to the replication set.",
+      "type": "array",
+      "default": [],
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Regions"
+  ],
+  "taggable": true
+}

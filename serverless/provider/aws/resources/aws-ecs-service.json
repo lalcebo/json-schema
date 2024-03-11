@@ -1,0 +1,849 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::ECS::Service",
+  "definitions": {
+    "AwsVpcConfiguration": {
+      "type": "object",
+      "properties": {
+        "AssignPublicIp": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DISABLED",
+                "ENABLED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SecurityGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Subnets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "CapacityProviderStrategyItem": {
+      "type": "object",
+      "properties": {
+        "Base": {
+          "type": "integer"
+        },
+        "CapacityProvider": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Weight": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DeploymentAlarms": {
+      "type": "object",
+      "properties": {
+        "AlarmNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Rollback": {
+          "type": "boolean"
+        },
+        "Enable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "AlarmNames",
+        "Rollback",
+        "Enable"
+      ],
+      "additionalProperties": false
+    },
+    "DeploymentCircuitBreaker": {
+      "type": "object",
+      "properties": {
+        "Enable": {
+          "type": "boolean"
+        },
+        "Rollback": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enable",
+        "Rollback"
+      ],
+      "additionalProperties": false
+    },
+    "DeploymentConfiguration": {
+      "type": "object",
+      "properties": {
+        "DeploymentCircuitBreaker": {
+          "$ref": "#/definitions/DeploymentCircuitBreaker"
+        },
+        "MaximumPercent": {
+          "type": "integer"
+        },
+        "MinimumHealthyPercent": {
+          "type": "integer"
+        },
+        "Alarms": {
+          "$ref": "#/definitions/DeploymentAlarms"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DeploymentController": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CODE_DEPLOY",
+                "ECS",
+                "EXTERNAL"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "EBSTagSpecification": {
+      "type": "object",
+      "required": [
+        "ResourceType"
+      ],
+      "properties": {
+        "ResourceType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          }
+        },
+        "PropagateTags": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SERVICE",
+                "TASK_DEFINITION"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "LoadBalancer": {
+      "type": "object",
+      "properties": {
+        "ContainerName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ContainerPort": {
+          "type": "integer"
+        },
+        "LoadBalancerName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "TargetGroupArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "LogConfiguration": {
+      "type": "object",
+      "properties": {
+        "LogDriver": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Options": {
+          "type": "object",
+          "patternProperties": {
+            ".{1,}": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "SecretOptions": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/Secret"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "NetworkConfiguration": {
+      "type": "object",
+      "properties": {
+        "AwsvpcConfiguration": {
+          "$ref": "#/definitions/AwsVpcConfiguration"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PlacementConstraint": {
+      "type": "object",
+      "properties": {
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "distinctInstance",
+                "memberOf"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "PlacementStrategy": {
+      "type": "object",
+      "properties": {
+        "Field": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "binpack",
+                "random",
+                "spread"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "Secret": {
+      "type": "object",
+      "required": [
+        "Name",
+        "ValueFrom"
+      ],
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ValueFrom": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ServiceConnectClientAlias": {
+      "type": "object",
+      "properties": {
+        "Port": {
+          "type": "integer"
+        },
+        "DnsName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Port"
+      ],
+      "additionalProperties": false
+    },
+    "ServiceConnectConfiguration": {
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "Namespace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServiceConnectService"
+          }
+        },
+        "LogConfiguration": {
+          "$ref": "#/definitions/LogConfiguration"
+        }
+      },
+      "required": [
+        "Enabled"
+      ],
+      "additionalProperties": false
+    },
+    "ServiceConnectService": {
+      "type": "object",
+      "properties": {
+        "PortName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DiscoveryName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ClientAliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ServiceConnectClientAlias"
+          }
+        },
+        "IngressPortOverride": {
+          "type": "integer"
+        },
+        "Tls": {
+          "$ref": "#/definitions/ServiceConnectTlsConfiguration"
+        },
+        "Timeout": {
+          "$ref": "#/definitions/TimeoutConfiguration"
+        }
+      },
+      "required": [
+        "PortName"
+      ],
+      "additionalProperties": false
+    },
+    "ServiceConnectTlsConfiguration": {
+      "type": "object",
+      "properties": {
+        "IssuerCertificateAuthority": {
+          "$ref": "#/definitions/ServiceConnectTlsCertificateAuthority"
+        },
+        "KmsKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "IssuerCertificateAuthority"
+      ],
+      "additionalProperties": false
+    },
+    "ServiceConnectTlsCertificateAuthority": {
+      "type": "object",
+      "properties": {
+        "AwsPcaAuthorityArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ServiceManagedEBSVolumeConfiguration": {
+      "type": "object",
+      "required": [
+        "RoleArn"
+      ],
+      "properties": {
+        "Encrypted": {
+          "type": "boolean"
+        },
+        "KmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "VolumeType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SizeInGiB": {
+          "type": "integer"
+        },
+        "SnapshotId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Iops": {
+          "type": "integer"
+        },
+        "Throughput": {
+          "type": "integer"
+        },
+        "TagSpecifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EBSTagSpecification"
+          }
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "FilesystemType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "TimeoutConfiguration": {
+      "type": "object",
+      "properties": {
+        "IdleTimeoutSeconds": {
+          "type": "integer"
+        },
+        "PerRequestTimeoutSeconds": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ServiceRegistry": {
+      "type": "object",
+      "properties": {
+        "ContainerName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ContainerPort": {
+          "type": "integer"
+        },
+        "Port": {
+          "type": "integer"
+        },
+        "RegistryArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ServiceVolumeConfiguration": {
+      "type": "object",
+      "required": [
+        "Name"
+      ],
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ManagedEBSVolume": {
+          "$ref": "#/definitions/ServiceManagedEBSVolumeConfiguration"
+        }
+      }
+    }
+  },
+  "properties": {
+    "ServiceArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CapacityProviderStrategy": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CapacityProviderStrategyItem"
+      }
+    },
+    "Cluster": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DeploymentConfiguration": {
+      "$ref": "#/definitions/DeploymentConfiguration"
+    },
+    "DeploymentController": {
+      "$ref": "#/definitions/DeploymentController"
+    },
+    "DesiredCount": {
+      "type": "integer"
+    },
+    "EnableECSManagedTags": {
+      "type": "boolean"
+    },
+    "EnableExecuteCommand": {
+      "type": "boolean"
+    },
+    "HealthCheckGracePeriodSeconds": {
+      "type": "integer"
+    },
+    "LaunchType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EC2",
+            "FARGATE",
+            "EXTERNAL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LoadBalancers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LoadBalancer"
+      }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "NetworkConfiguration": {
+      "$ref": "#/definitions/NetworkConfiguration"
+    },
+    "PlacementConstraints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PlacementConstraint"
+      }
+    },
+    "PlacementStrategies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PlacementStrategy"
+      }
+    },
+    "PlatformVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "LATEST"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "PropagateTags": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SERVICE",
+            "TASK_DEFINITION"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Role": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "SchedulingStrategy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DAEMON",
+            "REPLICA"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ServiceConnectConfiguration": {
+      "$ref": "#/definitions/ServiceConnectConfiguration"
+    },
+    "ServiceName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ServiceRegistries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ServiceRegistry"
+      }
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "TaskDefinition": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "VolumeConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ServiceVolumeConfiguration"
+      }
+    }
+  },
+  "additionalProperties": false
+}

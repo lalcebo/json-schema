@@ -1,0 +1,253 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::SageMaker::Endpoint",
+  "additionalProperties": false,
+  "properties": {
+    "RetainAllVariantProperties": {
+      "type": "boolean"
+    },
+    "EndpointName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ExcludeRetainedVariantProperties": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/VariantProperty"
+      }
+    },
+    "EndpointConfigName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DeploymentConfig": {
+      "$ref": "#/definitions/DeploymentConfig"
+    },
+    "RetainDeploymentConfig": {
+      "type": "boolean"
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "CapacitySize": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "type": "integer"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "Value"
+      ]
+    },
+    "RollingUpdatePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaximumExecutionTimeoutInSeconds": {
+          "type": "integer"
+        },
+        "MaximumBatchSize": {
+          "$ref": "#/definitions/CapacitySize"
+        },
+        "WaitIntervalInSeconds": {
+          "type": "integer"
+        },
+        "RollbackMaximumBatchSize": {
+          "$ref": "#/definitions/CapacitySize"
+        }
+      },
+      "required": [
+        "MaximumBatchSize",
+        "WaitIntervalInSeconds"
+      ]
+    },
+    "Alarm": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AlarmName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AlarmName"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    },
+    "AutoRollbackConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Alarms": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/Alarm"
+          }
+        }
+      },
+      "required": [
+        "Alarms"
+      ]
+    },
+    "DeploymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AutoRollbackConfiguration": {
+          "$ref": "#/definitions/AutoRollbackConfig"
+        },
+        "RollingUpdatePolicy": {
+          "$ref": "#/definitions/RollingUpdatePolicy"
+        },
+        "BlueGreenUpdatePolicy": {
+          "$ref": "#/definitions/BlueGreenUpdatePolicy"
+        }
+      }
+    },
+    "BlueGreenUpdatePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaximumExecutionTimeoutInSeconds": {
+          "type": "integer"
+        },
+        "TerminationWaitInSeconds": {
+          "type": "integer"
+        },
+        "TrafficRoutingConfiguration": {
+          "$ref": "#/definitions/TrafficRoutingConfig"
+        }
+      },
+      "required": [
+        "TrafficRoutingConfiguration"
+      ]
+    },
+    "TrafficRoutingConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "LinearStepSize": {
+          "$ref": "#/definitions/CapacitySize"
+        },
+        "CanarySize": {
+          "$ref": "#/definitions/CapacitySize"
+        },
+        "WaitIntervalInSeconds": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Type"
+      ]
+    },
+    "VariantProperty": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "VariantPropertyType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "EndpointConfigName"
+  ]
+}

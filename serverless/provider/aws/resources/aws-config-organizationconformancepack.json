@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::Config::OrganizationConformancePack.",
+  "documentationUrl": "https://docs.aws.amazon.com/config/latest/developerguide/conformance-pack-organization-apis.html",
+  "definitions": {
+    "ConformancePackInputParameter": {
+      "description": "Input parameters in the form of key-value pairs for the conformance pack.",
+      "type": "object",
+      "properties": {
+        "ParameterName": {
+          "$ref": "#/definitions/ParameterName"
+        },
+        "ParameterValue": {
+          "$ref": "#/definitions/ParameterValue"
+        }
+      },
+      "required": [
+        "ParameterName",
+        "ParameterValue"
+      ]
+    },
+    "ParameterName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ParameterValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 4096
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AccountId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "OrganizationConformancePackName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z][-a-zA-Z0-9]*",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the organization conformance pack."
+    },
+    "TemplateS3Uri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "s3://.*",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Location of file containing the template body."
+    },
+    "TemplateBody": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 51200
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A string containing full conformance pack template body."
+    },
+    "DeliveryS3Bucket": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "AWS Config stores intermediate files while processing conformance pack template."
+    },
+    "DeliveryS3KeyPrefix": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The prefix for the delivery S3 bucket."
+    },
+    "ConformancePackInputParameters": {
+      "description": "A list of ConformancePackInputParameter objects.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ConformancePackInputParameter"
+      },
+      "minItems": 0,
+      "maxItems": 60
+    },
+    "ExcludedAccounts": {
+      "description": "A list of AWS accounts to be excluded from an organization conformance pack while deploying a conformance pack.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AccountId"
+      },
+      "minItems": 0,
+      "maxItems": 1000
+    }
+  },
+  "required": [
+    "OrganizationConformancePackName"
+  ],
+  "additionalProperties": false
+}

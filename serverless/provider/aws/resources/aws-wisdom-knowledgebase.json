@@ -1,0 +1,221 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::Wisdom::KnowledgeBase Resource Type",
+  "definitions": {
+    "AppIntegrationsConfiguration": {
+      "type": "object",
+      "properties": {
+        "ObjectFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 4096,
+            "minLength": 1
+          },
+          "insertionOrder": false,
+          "maxItems": 100,
+          "minItems": 1
+        },
+        "AppIntegrationArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^arn:[a-z-]+?:[a-z-]+?:[a-z0-9-]*?:([0-9]{12})?:[a-zA-Z0-9-:/]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AppIntegrationArn"
+      ],
+      "additionalProperties": false
+    },
+    "KnowledgeBaseType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EXTERNAL",
+            "CUSTOM"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "RenderingConfiguration": {
+      "type": "object",
+      "properties": {
+        "TemplateUri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4096,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ServerSideEncryptionConfiguration": {
+      "type": "object",
+      "properties": {
+        "KmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4096,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "SourceConfiguration": {
+      "type": "object",
+      "properties": {
+        "AppIntegrations": {
+          "$ref": "#/definitions/AppIntegrationsConfiguration"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "AppIntegrations"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "type": "object"
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "KnowledgeBaseArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "KnowledgeBaseId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "KnowledgeBaseType": {
+      "$ref": "#/definitions/KnowledgeBaseType"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "RenderingConfiguration": {
+      "$ref": "#/definitions/RenderingConfiguration"
+    },
+    "ServerSideEncryptionConfiguration": {
+      "$ref": "#/definitions/ServerSideEncryptionConfiguration"
+    },
+    "SourceConfiguration": {
+      "$ref": "#/definitions/SourceConfiguration"
+    },
+    "Tags": {
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "KnowledgeBaseType",
+    "Name"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/KnowledgeBaseArn"
+    ]
+  ],
+  "additionalProperties": false,
+  "taggable": false,
+  "replacementStrategy": "delete_then_create"
+}

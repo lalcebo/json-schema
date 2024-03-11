@@ -1,0 +1,171 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::Personalize::Dataset.",
+  "definitions": {
+    "DatasetImportJob": {
+      "description": "Initial DatasetImportJob for the created dataset",
+      "type": "object",
+      "properties": {
+        "JobName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
+              "minLength": 1,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name for the dataset import job."
+        },
+        "DatasetImportJobArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of the dataset import job"
+        },
+        "DatasetArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of the dataset that receives the imported data"
+        },
+        "DataSource": {
+          "type": "object",
+          "description": "The Amazon S3 bucket that contains the training data to import.",
+          "properties": {
+            "DataLocation": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 256,
+                  "pattern": "(s3|http|https)://.+"
+                },
+                {
+                  "$ref": "../component/functions.json#/AwsFunctionString"
+                }
+              ],
+              "description": "The path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored."
+            }
+          },
+          "additionalProperties": false
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "arn:([a-z\\d-]+):iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of the IAM role that has permissions to read from the Amazon S3 data source."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_]*",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name for the dataset"
+    },
+    "DatasetArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the dataset"
+    },
+    "DatasetType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Interactions",
+            "Items",
+            "Users"
+          ],
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of dataset"
+    },
+    "DatasetGroupArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the dataset group to add the dataset to"
+    },
+    "SchemaArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "arn:([a-z\\d-]+):personalize:.*:.*:.+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the schema to associate with the dataset. The schema defines the dataset fields."
+    },
+    "DatasetImportJob": {
+      "$ref": "#/definitions/DatasetImportJob"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "DatasetType",
+    "DatasetGroupArn",
+    "SchemaArn"
+  ],
+  "replacementStrategy": "delete_then_create",
+  "taggable": false
+}

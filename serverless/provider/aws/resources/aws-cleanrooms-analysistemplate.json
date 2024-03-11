@@ -1,0 +1,299 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Represents a stored analysis within a collaboration",
+  "definitions": {
+    "AnalysisParameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 250
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "[0-9a-zA-Z_]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SMALLINT",
+                "INTEGER",
+                "BIGINT",
+                "DECIMAL",
+                "REAL",
+                "DOUBLE_PRECISION",
+                "BOOLEAN",
+                "CHAR",
+                "VARCHAR",
+                "DATE",
+                "TIMESTAMP",
+                "TIMESTAMPTZ",
+                "TIME",
+                "TIMETZ",
+                "VARBYTE"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "Type"
+      ]
+    },
+    "TableName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ReferencedTables": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/TableName"
+      },
+      "minItems": 0
+    },
+    "AnalysisSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ReferencedTables": {
+          "$ref": "#/definitions/ReferencedTables"
+        }
+      },
+      "required": [
+        "ReferencedTables"
+      ]
+    },
+    "AnalysisSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Text": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 15000
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Text"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CollaborationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CollaborationIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this cleanrooms analysis template.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "type": "array"
+    },
+    "AnalysisParameters": {
+      "description": "The member who can query can provide this placeholder for a literal data value in an analysis template",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AnalysisParameter"
+      },
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 10
+    },
+    "AnalysisTemplateIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MembershipArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MembershipIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Schema": {
+      "$ref": "#/definitions/AnalysisSchema"
+    },
+    "Source": {
+      "$ref": "#/definitions/AnalysisSource"
+    },
+    "Format": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SQL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "Source",
+    "Format",
+    "Name",
+    "MembershipIdentifier"
+  ],
+  "replacementStrategy": "delete_then_create",
+  "additionalProperties": false
+}

@@ -1,0 +1,165 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::CodeDeploy::DeploymentConfig",
+  "definitions": {
+    "TimeBasedLinear": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LinearInterval": {
+          "type": "integer"
+        },
+        "LinearPercentage": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "LinearInterval",
+        "LinearPercentage"
+      ]
+    },
+    "TimeBasedCanary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CanaryPercentage": {
+          "type": "integer"
+        },
+        "CanaryInterval": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "CanaryPercentage",
+        "CanaryInterval"
+      ]
+    },
+    "TrafficRoutingConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "TimeBasedLinear": {
+          "$ref": "#/definitions/TimeBasedLinear"
+        },
+        "TimeBasedCanary": {
+          "$ref": "#/definitions/TimeBasedCanary"
+        }
+      },
+      "required": [
+        "Type"
+      ]
+    },
+    "MinimumHealthyHostsPerZone": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "type": "integer"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "Value"
+      ]
+    },
+    "ZonalConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FirstZoneMonitorDurationInSeconds": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "MonitorDurationInSeconds": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "MinimumHealthyHostsPerZone": {
+          "$ref": "#/definitions/MinimumHealthyHostsPerZone"
+        }
+      },
+      "required": []
+    },
+    "MinimumHealthyHosts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "type": "integer"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "ComputePlatform": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The destination platform type for the deployment (Lambda, Server, or ECS)."
+    },
+    "DeploymentConfigName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A name for the deployment configuration. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the deployment configuration name. For more information, see Name Type."
+    },
+    "MinimumHealthyHosts": {
+      "description": "The minimum number of healthy instances that should be available at any time during the deployment. There are two parameters expected in the input: type and value.",
+      "$ref": "#/definitions/MinimumHealthyHosts"
+    },
+    "ZonalConfig": {
+      "description": "The zonal deployment config that specifies how the zonal deployment behaves",
+      "$ref": "#/definitions/ZonalConfig"
+    },
+    "TrafficRoutingConfig": {
+      "description": "The configuration that specifies how the deployment traffic is routed.",
+      "$ref": "#/definitions/TrafficRoutingConfig"
+    }
+  },
+  "additionalProperties": false
+}

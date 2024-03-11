@@ -1,0 +1,225 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::GuardDuty::Detector",
+  "additionalProperties": false,
+  "properties": {
+    "FindingPublishingFrequency": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Enable": {
+      "type": "boolean"
+    },
+    "DataSources": {
+      "$ref": "#/definitions/CFNDataSourceConfigurations"
+    },
+    "Features": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CFNFeatureConfiguration"
+      }
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TagItem"
+      }
+    }
+  },
+  "definitions": {
+    "TagItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "CFNS3LogsConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enable"
+      ]
+    },
+    "CFNKubernetesAuditLogsConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enable"
+      ]
+    },
+    "CFNKubernetesConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuditLogs": {
+          "$ref": "#/definitions/CFNKubernetesAuditLogsConfiguration"
+        }
+      },
+      "required": [
+        "AuditLogs"
+      ]
+    },
+    "CFNDataSourceConfigurations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3Logs": {
+          "$ref": "#/definitions/CFNS3LogsConfiguration"
+        },
+        "Kubernetes": {
+          "$ref": "#/definitions/CFNKubernetesConfiguration"
+        },
+        "MalwareProtection": {
+          "$ref": "#/definitions/CFNMalwareProtectionConfiguration"
+        }
+      }
+    },
+    "CFNMalwareProtectionConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ScanEc2InstanceWithFindings": {
+          "$ref": "#/definitions/CFNScanEc2InstanceWithFindingsConfiguration"
+        }
+      }
+    },
+    "CFNScanEc2InstanceWithFindingsConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EbsVolumes": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CFNFeatureConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "AdditionalConfiguration": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CFNFeatureAdditionalConfiguration"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "Status"
+      ]
+    },
+    "CFNFeatureAdditionalConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "Enable"
+  ]
+}

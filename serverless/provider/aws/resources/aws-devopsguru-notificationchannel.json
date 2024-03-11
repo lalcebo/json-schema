@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "This resource schema represents the NotificationChannel resource in the Amazon DevOps Guru.",
+  "definitions": {
+    "NotificationChannelConfig": {
+      "description": "Information about notification channels you have configured with DevOps Guru.",
+      "type": "object",
+      "properties": {
+        "Sns": {
+          "$ref": "#/definitions/SnsChannelConfig"
+        },
+        "Filters": {
+          "$ref": "#/definitions/NotificationFilterConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SnsChannelConfig": {
+      "description": "Information about a notification channel configured in DevOps Guru to send notifications when insights are created.",
+      "type": "object",
+      "properties": {
+        "TopicArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 1024,
+              "pattern": "^arn:aws[a-z0-9-]*:sns:[a-z0-9-]+:\\d{12}:[^:]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "NotificationFilterConfig": {
+      "description": "Information about filters of a notification channel configured in DevOpsGuru to filter for insights.",
+      "type": "object",
+      "properties": {
+        "Severities": {
+          "$ref": "#/definitions/InsightSeveritiesFilterList"
+        },
+        "MessageTypes": {
+          "$ref": "#/definitions/NotificationMessageTypesFilterList"
+        }
+      },
+      "additionalProperties": false
+    },
+    "InsightSeverity": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "DevOps Guru Insight Severity Enum"
+    },
+    "NotificationMessageType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NEW_INSIGHT",
+            "CLOSED_INSIGHT",
+            "NEW_ASSOCIATION",
+            "SEVERITY_UPGRADED",
+            "NEW_RECOMMENDATION"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "DevOps Guru NotificationMessageType Enum"
+    },
+    "InsightSeveritiesFilterList": {
+      "description": "DevOps Guru insight severities to filter for",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/InsightSeverity"
+      },
+      "maxItems": 3,
+      "minItems": 1
+    },
+    "NotificationMessageTypesFilterList": {
+      "description": "DevOps Guru message types to filter for",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/NotificationMessageType"
+      },
+      "maxItems": 5,
+      "minItems": 1
+    }
+  },
+  "properties": {
+    "Config": {
+      "$ref": "#/definitions/NotificationChannelConfig"
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of a notification channel."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Config"
+  ]
+}

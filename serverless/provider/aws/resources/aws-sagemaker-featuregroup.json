@@ -1,0 +1,431 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::SageMaker::FeatureGroup",
+  "additionalProperties": false,
+  "properties": {
+    "FeatureGroupName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Name of the FeatureGroup."
+    },
+    "RecordIdentifierFeatureName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Record Identifier Feature Name."
+    },
+    "EventTimeFeatureName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Event Time Feature Name."
+    },
+    "FeatureDefinitions": {
+      "type": "array",
+      "description": "An Array of Feature Definition",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "minItems": 1,
+      "maxItems": 2500,
+      "items": {
+        "$ref": "#/definitions/FeatureDefinition"
+      }
+    },
+    "OnlineStoreConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SecurityConfig": {
+          "$ref": "#/definitions/OnlineStoreSecurityConfig"
+        },
+        "EnableOnlineStore": {
+          "type": "boolean"
+        },
+        "StorageType": {
+          "$ref": "#/definitions/StorageType"
+        },
+        "TtlDuration": {
+          "$ref": "#/definitions/TtlDuration"
+        }
+      }
+    },
+    "OfflineStoreConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3StorageConfig": {
+          "$ref": "#/definitions/S3StorageConfig"
+        },
+        "DisableGlueTableCreation": {
+          "type": "boolean"
+        },
+        "DataCatalogConfig": {
+          "$ref": "#/definitions/DataCatalogConfig"
+        },
+        "TableFormat": {
+          "$ref": "#/definitions/TableFormat"
+        }
+      },
+      "required": [
+        "S3StorageConfig"
+      ]
+    },
+    "ThroughputConfig": {
+      "$ref": "#/definitions/ThroughputConfig"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Role Arn"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Description about the FeatureGroup."
+    },
+    "CreationTime": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A timestamp of FeatureGroup creation time."
+    },
+    "FeatureGroupStatus": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the feature group."
+    },
+    "Tags": {
+      "type": "array",
+      "description": "An array of key-value pair to apply to this resource.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "FeatureDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FeatureName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,63}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "FeatureType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Integral",
+                "Fractional",
+                "String"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FeatureName",
+        "FeatureType"
+      ]
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StorageType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Standard",
+            "InMemory"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "TtlDuration": {
+      "type": "object",
+      "description": "TTL configuration of the feature group",
+      "additionalProperties": false,
+      "properties": {
+        "Unit": {
+          "$ref": "#/definitions/Unit"
+        },
+        "Value": {
+          "$ref": "#/definitions/Value"
+        }
+      }
+    },
+    "Unit": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Seconds",
+            "Minutes",
+            "Hours",
+            "Days",
+            "Weeks"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Unit of ttl configuration"
+    },
+    "Value": {
+      "type": "integer",
+      "description": "Value of ttl configuration"
+    },
+    "OnlineStoreSecurityConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "KmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        }
+      }
+    },
+    "S3StorageConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3Uri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "pattern": "^(https|s3)://([^/]+)/?(.*)$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "KmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        }
+      },
+      "required": [
+        "S3Uri"
+      ]
+    },
+    "DataCatalogConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TableName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\t]*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Catalog": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\t]*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Database": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\t]*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "TableName",
+        "Catalog",
+        "Database"
+      ]
+    },
+    "TableFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Iceberg",
+            "Glue"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Format for the offline store feature group. Iceberg is the optimal format for feature groups shared between offline and online stores."
+    },
+    "ThroughputMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OnDemand",
+            "Provisioned"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Throughput mode configuration of the feature group"
+    },
+    "ThroughputConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ThroughputMode": {
+          "$ref": "#/definitions/ThroughputMode"
+        },
+        "ProvisionedReadCapacityUnits": {
+          "type": "integer",
+          "description": "For provisioned feature groups with online store enabled, this indicates the read throughput you are billed for and can consume without throttling."
+        },
+        "ProvisionedWriteCapacityUnits": {
+          "type": "integer",
+          "description": "For provisioned feature groups, this indicates the write throughput you are billed for and can consume without throttling."
+        }
+      },
+      "required": [
+        "ThroughputMode"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "description": "A key-value pair to associate with a resource.",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "required": [
+    "FeatureGroupName",
+    "RecordIdentifierFeatureName",
+    "EventTimeFeatureName",
+    "FeatureDefinitions"
+  ]
+}

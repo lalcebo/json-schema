@@ -1,0 +1,401 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource type definition for AWS::NetworkFirewall::FirewallPolicy",
+  "additionalProperties": false,
+  "definitions": {
+    "ResourceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(arn:aws.*)$",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A resource ARN."
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^.*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255,
+              "pattern": "^.*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "FirewallPolicy": {
+      "type": "object",
+      "properties": {
+        "StatelessDefaultActions": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "StatelessFragmentDefaultActions": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "StatelessCustomActions": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CustomAction"
+          }
+        },
+        "StatelessRuleGroupReferences": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/StatelessRuleGroupReference"
+          }
+        },
+        "StatefulRuleGroupReferences": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/StatefulRuleGroupReference"
+          }
+        },
+        "StatefulDefaultActions": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "StatefulEngineOptions": {
+          "$ref": "#/definitions/StatefulEngineOptions"
+        },
+        "PolicyVariables": {
+          "type": "object",
+          "properties": {
+            "RuleVariables": {
+              "$ref": "#/definitions/RuleVariables"
+            }
+          },
+          "additionalProperties": false
+        },
+        "TLSInspectionConfigurationArn": {
+          "$ref": "#/definitions/ResourceArn"
+        }
+      },
+      "required": [
+        "StatelessDefaultActions",
+        "StatelessFragmentDefaultActions"
+      ],
+      "additionalProperties": false
+    },
+    "RuleVariables": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z0-9_]{1,32}$": {
+          "$ref": "#/definitions/IPSet"
+        }
+      },
+      "additionalProperties": false
+    },
+    "CustomAction": {
+      "type": "object",
+      "properties": {
+        "ActionName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ActionDefinition": {
+          "$ref": "#/definitions/ActionDefinition"
+        }
+      },
+      "required": [
+        "ActionName",
+        "ActionDefinition"
+      ],
+      "additionalProperties": false
+    },
+    "ActionDefinition": {
+      "type": "object",
+      "properties": {
+        "PublishMetricAction": {
+          "$ref": "#/definitions/PublishMetricAction"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PublishMetricAction": {
+      "type": "object",
+      "properties": {
+        "Dimensions": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/Dimension"
+          }
+        }
+      },
+      "required": [
+        "Dimensions"
+      ],
+      "additionalProperties": false
+    },
+    "Dimension": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9-_ ]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "StatefulRuleGroupReference": {
+      "type": "object",
+      "properties": {
+        "ResourceArn": {
+          "$ref": "#/definitions/ResourceArn"
+        },
+        "Priority": {
+          "$ref": "#/definitions/Priority"
+        },
+        "Override": {
+          "$ref": "#/definitions/StatefulRuleGroupOverride"
+        }
+      },
+      "required": [
+        "ResourceArn"
+      ],
+      "additionalProperties": false
+    },
+    "StatelessRuleGroupReference": {
+      "type": "object",
+      "properties": {
+        "ResourceArn": {
+          "$ref": "#/definitions/ResourceArn"
+        },
+        "Priority": {
+          "$ref": "#/definitions/Priority"
+        }
+      },
+      "required": [
+        "ResourceArn",
+        "Priority"
+      ],
+      "additionalProperties": false
+    },
+    "Priority": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "VariableDefinition": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^.*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "IPSet": {
+      "type": "object",
+      "properties": {
+        "Definition": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/VariableDefinition"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "StatefulRuleGroupOverride": {
+      "type": "object",
+      "properties": {
+        "Action": {
+          "$ref": "#/definitions/OverrideAction"
+        }
+      },
+      "additionalProperties": false
+    },
+    "OverrideAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DROP_TO_ALERT"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StatefulEngineOptions": {
+      "type": "object",
+      "properties": {
+        "RuleOrder": {
+          "$ref": "#/definitions/RuleOrder"
+        },
+        "StreamExceptionPolicy": {
+          "$ref": "#/definitions/StreamExceptionPolicy"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RuleOrder": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DEFAULT_ACTION_ORDER",
+            "STRICT_ORDER"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StreamExceptionPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DROP",
+            "CONTINUE",
+            "REJECT"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "FirewallPolicyName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9-]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "FirewallPolicyArn": {
+      "$ref": "#/definitions/ResourceArn"
+    },
+    "FirewallPolicy": {
+      "$ref": "#/definitions/FirewallPolicy"
+    },
+    "FirewallPolicyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "pattern": "^([0-9a-f]{8})-([0-9a-f]{4}-){3}([0-9a-f]{12})$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^.*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "FirewallPolicyName",
+    "FirewallPolicy"
+  ]
+}

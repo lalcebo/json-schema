@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::DataSync::LocationFSxOpenZFS.",
+  "definitions": {
+    "Tag": {
+      "additionalProperties": false,
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key for an AWS resource tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for an AWS resource tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "Protocol": {
+      "additionalProperties": false,
+      "description": "Configuration settings for an NFS or SMB protocol, currently only support NFS",
+      "type": "object",
+      "properties": {
+        "NFS": {
+          "$ref": "#/definitions/NFS"
+        }
+      }
+    },
+    "NFS": {
+      "additionalProperties": false,
+      "description": "FSx OpenZFS file system NFS protocol information",
+      "type": "object",
+      "properties": {
+        "MountOptions": {
+          "$ref": "#/definitions/MountOptions"
+        }
+      },
+      "required": [
+        "MountOptions"
+      ]
+    },
+    "MountOptions": {
+      "additionalProperties": false,
+      "description": "The NFS mount options that DataSync can use to mount your NFS share.",
+      "type": "object",
+      "properties": {
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AUTOMATIC",
+                "NFS3",
+                "NFS4_0",
+                "NFS4_1"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The specific NFS version that you want DataSync to use to mount your NFS share."
+        }
+      }
+    }
+  },
+  "properties": {
+    "FsxFilesystemArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):fsx:[a-z\\-0-9]+:[0-9]{12}:file-system/fs-[0-9a-f]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for the FSx OpenZFS file system."
+    },
+    "SecurityGroupArns": {
+      "description": "The ARNs of the security groups that are to use to configure the FSx OpenZFS file system.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 128,
+        "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/sg-[a-f0-9]+$"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "insertionOrder": false
+    },
+    "Protocol": {
+      "$ref": "#/definitions/Protocol"
+    },
+    "Subdirectory": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 4096,
+          "pattern": "^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A subdirectory in the location's path."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "maxItems": 50,
+      "minItems": 0,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "LocationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the Amazon FSx OpenZFS file system location that is created."
+    },
+    "LocationUri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(efs|nfs|s3|smb|fsxw|hdfs|fsxl|fsxz)://[a-zA-Z0-9.:/\\-]+$",
+          "maxLength": 4356
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The URL of the FSx OpenZFS that was described."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "SecurityGroupArns",
+    "Protocol"
+  ]
+}

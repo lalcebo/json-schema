@@ -1,0 +1,384 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource for Greengrass component version.",
+  "definitions": {
+    "LambdaFunctionRecipeSource": {
+      "type": "object",
+      "properties": {
+        "LambdaArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:[^:]*:lambda:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ComponentName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ComponentVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ComponentPlatforms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ComponentPlatform"
+          },
+          "insertionOrder": false
+        },
+        "ComponentDependencies": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "$ref": "#/definitions/ComponentDependencyRequirement"
+            }
+          },
+          "additionalProperties": false
+        },
+        "ComponentLambdaParameters": {
+          "$ref": "#/definitions/LambdaExecutionParameters"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentPlatform": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Attributes": {
+          "type": "object",
+          "patternProperties": {
+            ".+": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "ComponentDependencyRequirement": {
+      "type": "object",
+      "properties": {
+        "VersionRequirement": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DependencyType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SOFT",
+                "HARD"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "LambdaExecutionParameters": {
+      "type": "object",
+      "properties": {
+        "EventSources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LambdaEventSource"
+          },
+          "insertionOrder": false
+        },
+        "MaxQueueSize": {
+          "type": "integer"
+        },
+        "MaxInstancesCount": {
+          "type": "integer"
+        },
+        "MaxIdleTimeInSeconds": {
+          "type": "integer"
+        },
+        "TimeoutInSeconds": {
+          "type": "integer"
+        },
+        "StatusTimeoutInSeconds": {
+          "type": "integer"
+        },
+        "Pinned": {
+          "type": "boolean"
+        },
+        "InputPayloadEncodingType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "json",
+                "binary"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ExecArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "insertionOrder": true
+        },
+        "EnvironmentVariables": {
+          "type": "object",
+          "patternProperties": {
+            ".+": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "LinuxProcessParams": {
+          "$ref": "#/definitions/LambdaLinuxProcessParams"
+        }
+      },
+      "additionalProperties": false
+    },
+    "LambdaEventSource": {
+      "type": "object",
+      "properties": {
+        "Topic": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PUB_SUB",
+                "IOT_CORE"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "LambdaLinuxProcessParams": {
+      "type": "object",
+      "properties": {
+        "IsolationMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "GreengrassContainer",
+                "NoContainer"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ContainerParams": {
+          "$ref": "#/definitions/LambdaContainerParams"
+        }
+      },
+      "additionalProperties": false
+    },
+    "LambdaContainerParams": {
+      "type": "object",
+      "properties": {
+        "MemorySizeInKB": {
+          "type": "integer"
+        },
+        "MountROSysfs": {
+          "type": "boolean"
+        },
+        "Volumes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LambdaVolumeMount"
+          },
+          "insertionOrder": false
+        },
+        "Devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LambdaDeviceMount"
+          },
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "LambdaVolumeMount": {
+      "type": "object",
+      "properties": {
+        "SourcePath": {
+          "$ref": "#/definitions/FilesystemPath"
+        },
+        "DestinationPath": {
+          "$ref": "#/definitions/FilesystemPath"
+        },
+        "Permission": {
+          "$ref": "#/definitions/LambdaFilesystemPermission"
+        },
+        "AddGroupOwner": {
+          "$ref": "#/definitions/LambdaAddGroupOwnerBoolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "LambdaDeviceMount": {
+      "type": "object",
+      "properties": {
+        "Path": {
+          "$ref": "#/definitions/FilesystemPath"
+        },
+        "Permission": {
+          "$ref": "#/definitions/LambdaFilesystemPermission"
+        },
+        "AddGroupOwner": {
+          "$ref": "#/definitions/LambdaAddGroupOwnerBoolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FilesystemPath": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LambdaFilesystemPermission": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ro",
+            "rw"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LambdaAddGroupOwnerBoolean": {
+      "type": "boolean"
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ComponentName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ComponentVersion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "InlineRecipe": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LambdaFunction": {
+      "$ref": "#/definitions/LambdaFunctionRecipeSource"
+    },
+    "Tags": {
+      "type": "object",
+      "patternProperties": {
+        "^(?!aws:)[a-zA-Z+-=._:/]{1,128}$": {
+          "type": "string",
+          "maxLength": 256
+        }
+      },
+      "maxProperties": 50,
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "additionalIdentifiers": [
+    [
+      "/properties/ComponentName",
+      "/properties/ComponentVersion"
+    ]
+  ]
+}

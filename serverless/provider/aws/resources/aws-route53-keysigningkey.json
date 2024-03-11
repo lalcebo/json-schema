@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Represents a key signing key (KSK) associated with a hosted zone. You can only have two KSKs per hosted zone.",
+  "properties": {
+    "HostedZoneId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{1,32}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The unique string (ID) used to identify a hosted zone."
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A string specifying the initial status of the key signing key (KSK). You can set the value to ACTIVE or INACTIVE."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_]{3,128}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "An alphanumeric string used to identify a key signing key (KSK). Name must be unique for each key signing key in the same hosted zone."
+    },
+    "KeyManagementServiceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon resource name (ARN) for a customer managed key (CMK) in AWS Key Management Service (KMS). The KeyManagementServiceArn must be unique for each key signing key (KSK) in a single hosted zone."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Status",
+    "HostedZoneId",
+    "Name",
+    "KeyManagementServiceArn"
+  ]
+}

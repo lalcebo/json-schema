@@ -1,0 +1,271 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::DataSync::LocationFSxONTAP.",
+  "definitions": {
+    "Tag": {
+      "additionalProperties": false,
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key for an AWS resource tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9\\s+=._:@/-]+$",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for an AWS resource tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "Protocol": {
+      "additionalProperties": false,
+      "description": "Configuration settings for NFS or SMB protocol.",
+      "type": "object",
+      "properties": {
+        "NFS": {
+          "$ref": "#/definitions/NFS"
+        },
+        "SMB": {
+          "$ref": "#/definitions/SMB"
+        }
+      }
+    },
+    "NFS": {
+      "additionalProperties": false,
+      "description": "NFS protocol configuration for FSx ONTAP file system.",
+      "type": "object",
+      "properties": {
+        "MountOptions": {
+          "$ref": "#/definitions/NfsMountOptions"
+        }
+      },
+      "required": [
+        "MountOptions"
+      ]
+    },
+    "SMB": {
+      "additionalProperties": false,
+      "description": "SMB protocol configuration for FSx ONTAP file system.",
+      "type": "object",
+      "properties": {
+        "MountOptions": {
+          "$ref": "#/definitions/SmbMountOptions"
+        },
+        "Domain": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 253,
+              "pattern": "^([A-Za-z0-9]+[A-Za-z0-9-.]*)*[A-Za-z0-9-]*[A-Za-z0-9]$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the Windows domain that the SMB server belongs to."
+        },
+        "Password": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 104,
+              "pattern": "^.{0,104}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The password of the user who can mount the share and has the permissions to access files and folders in the SMB share."
+        },
+        "User": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 104,
+              "pattern": "^[^\\x5B\\x5D\\\\/:;|=,+*?]{1,104}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The user who can mount the share, has the permissions to access files and folders in the SMB share."
+        }
+      },
+      "required": [
+        "User",
+        "Password",
+        "MountOptions"
+      ]
+    },
+    "NfsMountOptions": {
+      "additionalProperties": false,
+      "description": "The NFS mount options that DataSync can use to mount your NFS share.",
+      "type": "object",
+      "properties": {
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AUTOMATIC",
+                "NFS3",
+                "NFS4_0",
+                "NFS4_1"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The specific NFS version that you want DataSync to use to mount your NFS share."
+        }
+      }
+    },
+    "SmbMountOptions": {
+      "additionalProperties": false,
+      "description": "The mount options used by DataSync to access the SMB server.",
+      "type": "object",
+      "properties": {
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AUTOMATIC",
+                "SMB2",
+                "SMB3"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The specific SMB version that you want DataSync to use to mount your SMB share."
+        }
+      }
+    }
+  },
+  "properties": {
+    "StorageVirtualMachineArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 162,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):fsx:[a-z\\-0-9]+:[0-9]{12}:storage-virtual-machine/fs-[0-9a-f]+/svm-[0-9a-f]{17,}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for the FSx ONTAP SVM."
+    },
+    "FsxFilesystemArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):fsx:[a-z\\-0-9]+:[0-9]{12}:file-system/fs-[0-9a-f]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for the FSx ONAP file system."
+    },
+    "SecurityGroupArns": {
+      "description": "The ARNs of the security groups that are to use to configure the FSx ONTAP file system.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 128,
+        "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/sg-[a-f0-9]+$"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "insertionOrder": false
+    },
+    "Protocol": {
+      "$ref": "#/definitions/Protocol"
+    },
+    "Subdirectory": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 4096,
+          "pattern": "^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A subdirectory in the location's path."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "maxItems": 50,
+      "minItems": 0,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "LocationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the Amazon FSx ONTAP file system location that is created."
+    },
+    "LocationUri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(efs|nfs|s3|smb|hdfs|fsx[a-z0-9-]+)://[a-zA-Z0-9.:/\\-]+$",
+          "maxLength": 4360
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The URL of the FSx ONTAP file system that was described."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "SecurityGroupArns",
+    "StorageVirtualMachineArn"
+  ]
+}

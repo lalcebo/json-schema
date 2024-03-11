@@ -1,0 +1,265 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Represents an AWS account that is a part of a collaboration",
+  "definitions": {
+    "MembershipQueryLogStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MembershipStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "REMOVED",
+            "COLLABORATION_DELETED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    },
+    "ResultFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CSV",
+            "PARQUET"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ProtectedQueryS3OutputConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ResultFormat": {
+          "$ref": "#/definitions/ResultFormat"
+        },
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "KeyPrefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ResultFormat",
+        "Bucket"
+      ]
+    },
+    "MembershipProtectedQueryOutputConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3": {
+          "$ref": "#/definitions/ProtectedQueryS3OutputConfiguration"
+        }
+      },
+      "required": [
+        "S3"
+      ]
+    },
+    "MembershipProtectedQueryResultConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "OutputConfiguration": {
+          "$ref": "#/definitions/MembershipProtectedQueryOutputConfiguration"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "OutputConfiguration"
+      ]
+    },
+    "MembershipPaymentConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "QueryCompute": {
+          "$ref": "#/definitions/MembershipQueryComputePaymentConfig"
+        }
+      },
+      "required": [
+        "QueryCompute"
+      ]
+    },
+    "MembershipQueryComputePaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ]
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this cleanrooms membership.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "uniqueItems": true,
+      "type": "array"
+    },
+    "CollaborationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CollaborationCreatorAccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 12,
+          "minLength": 12,
+          "pattern": "^\\d+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "CollaborationIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MembershipIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "QueryLogStatus": {
+      "$ref": "#/definitions/MembershipQueryLogStatus"
+    },
+    "DefaultResultConfiguration": {
+      "$ref": "#/definitions/MembershipProtectedQueryResultConfiguration"
+    },
+    "PaymentConfiguration": {
+      "$ref": "#/definitions/MembershipPaymentConfiguration"
+    }
+  },
+  "required": [
+    "CollaborationIdentifier",
+    "QueryLogStatus"
+  ],
+  "additionalProperties": false
+}

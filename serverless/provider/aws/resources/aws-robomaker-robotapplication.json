@@ -1,0 +1,184 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "This schema is for testing purpose only.",
+  "definitions": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-zA-Z0-9-]{1,128}$": {
+          "type": "string",
+          "description": "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "SourceConfig": {
+      "type": "object",
+      "properties": {
+        "S3Bucket": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Arn of the S3Bucket that stores the robot application source."
+        },
+        "S3Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The s3 key of robot application source."
+        },
+        "Architecture": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "enum": [
+                "X86_64",
+                "ARM64",
+                "ARMHF"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The architecture of robot application."
+        }
+      },
+      "required": [
+        "S3Bucket",
+        "S3Key",
+        "Architecture"
+      ],
+      "additionalProperties": false
+    },
+    "RobotSoftwareSuite": {
+      "description": "The robot software suite used by the robot application.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ROS",
+                "ROS2",
+                "General"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of robot software suite."
+        },
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Kinetic",
+                "Melodic",
+                "Dashing"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The version of robot software suite."
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the robot application."
+    },
+    "Sources": {
+      "description": "The sources of the robot application.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SourceConfig"
+      }
+    },
+    "Environment": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The URI of the Docker image for the robot application."
+    },
+    "RobotSoftwareSuite": {
+      "$ref": "#/definitions/RobotSoftwareSuite"
+    },
+    "CurrentRevisionId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The revision ID of robot application."
+    },
+    "Arn": {
+      "$ref": "#/definitions/Arn"
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "RobotSoftwareSuite"
+  ]
+}

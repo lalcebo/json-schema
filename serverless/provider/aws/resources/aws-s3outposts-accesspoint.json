@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type Definition for AWS::S3Outposts::AccessPoint",
+  "definitions": {
+    "VpcConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "VpcId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Virtual Private Cloud (VPC) Id from which AccessPoint will allow requests."
+        }
+      }
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:[^:]+:s3-outposts:[a-zA-Z0-9\\-]+:\\d{12}:outpost\\/[^:]+\\/accesspoint\\/[^:]+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the specified AccessPoint."
+    },
+    "Bucket": {
+      "oneOf": [
+        {
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:[^:]+:s3-outposts:[a-zA-Z0-9\\-]+:\\d{12}:outpost\\/[^:]+\\/bucket\\/[^:]+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the bucket you want to associate this AccessPoint with."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "maxLength": 50,
+          "minLength": 3,
+          "pattern": "^[a-z0-9]([a-z0-9\\\\-]*[a-z0-9])?$",
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A name for the AccessPoint."
+    },
+    "VpcConfiguration": {
+      "description": "Virtual Private Cloud (VPC) from which requests can be made to the AccessPoint.",
+      "$ref": "#/definitions/VpcConfiguration"
+    },
+    "Policy": {
+      "description": "The access point policy associated with this access point.",
+      "type": "object"
+    }
+  },
+  "taggable": false,
+  "additionalProperties": false,
+  "required": [
+    "Bucket",
+    "Name",
+    "VpcConfiguration"
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Represents an application that runs on an AWS Mainframe Modernization Environment",
+  "definitions": {
+    "Definition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "S3Location",
+          "properties": {
+            "S3Location": {
+              "type": "string",
+              "pattern": "^\\S{1,2000}$"
+            }
+          },
+          "required": [
+            "S3Location"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Content",
+          "properties": {
+            "Content": {
+              "type": "string",
+              "maxLength": 65000,
+              "minLength": 1
+            }
+          },
+          "required": [
+            "Content"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "EngineType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "microfocus",
+            "bluage"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "TagMap": {
+      "type": "object",
+      "maxProperties": 200,
+      "minProperties": 0,
+      "patternProperties": {
+        "^(?!aws:).+$": {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "ApplicationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ApplicationId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\S{1,80}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Definition": {
+      "$ref": "#/definitions/Definition"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 0
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "EngineType": {
+      "$ref": "#/definitions/EngineType"
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID or the Amazon Resource Name (ARN) of the customer managed KMS Key used for encrypting application-related resources."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]|):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "required": [
+    "Definition",
+    "EngineType",
+    "Name"
+  ],
+  "additionalProperties": false
+}

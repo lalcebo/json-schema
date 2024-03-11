@@ -1,0 +1,392 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Creates an AWS Firewall Manager policy.",
+  "definitions": {
+    "AccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-9]*)$",
+          "minLength": 12,
+          "maxLength": 12
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "An AWS account ID."
+    },
+    "Base62Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9A-Z]{22}$",
+          "minLength": 22,
+          "maxLength": 22
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A Base62 ID"
+    },
+    "OrganizationalUnitId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$",
+          "minLength": 16,
+          "maxLength": 68
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "An Organizational Unit ID."
+    },
+    "IEMap": {
+      "description": "An FMS includeMap or excludeMap.",
+      "type": "object",
+      "properties": {
+        "ACCOUNT": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccountId"
+          },
+          "insertionOrder": true
+        },
+        "ORGUNIT": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OrganizationalUnitId"
+          },
+          "insertionOrder": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "PolicyTag": {
+      "description": "A policy tag.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^([^\\s]*)$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^([^\\s]*)$",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "ResourceTag": {
+      "description": "A resource tag.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key"
+      ]
+    },
+    "ResourceType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([^\\s]*)$",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "An AWS resource type"
+    },
+    "ResourceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([^\\s]*)$",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A resource ARN."
+    },
+    "SecurityServicePolicyData": {
+      "description": "Firewall security service policy data.",
+      "type": "object",
+      "properties": {
+        "ManagedServiceData": {
+          "$ref": "#/definitions/ManagedServiceData"
+        },
+        "Type": {
+          "$ref": "#/definitions/PolicyType"
+        },
+        "PolicyOption": {
+          "$ref": "#/definitions/PolicyOption"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Type"
+      ]
+    },
+    "FirewallDeploymentModel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DISTRIBUTED",
+            "CENTRALIZED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Firewall deployment mode."
+    },
+    "ManagedServiceData": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Firewall managed service data."
+    },
+    "PolicyType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "WAF",
+            "WAFV2",
+            "SHIELD_ADVANCED",
+            "SECURITY_GROUPS_COMMON",
+            "SECURITY_GROUPS_CONTENT_AUDIT",
+            "SECURITY_GROUPS_USAGE_AUDIT",
+            "NETWORK_FIREWALL",
+            "THIRD_PARTY_FIREWALL",
+            "DNS_FIREWALL",
+            "IMPORT_NETWORK_FIREWALL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Firewall policy type."
+    },
+    "NetworkFirewallPolicy": {
+      "description": "Network firewall policy.",
+      "type": "object",
+      "properties": {
+        "FirewallDeploymentModel": {
+          "$ref": "#/definitions/FirewallDeploymentModel"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "FirewallDeploymentModel"
+      ]
+    },
+    "ThirdPartyFirewallPolicy": {
+      "description": "Third party firewall policy.",
+      "type": "object",
+      "properties": {
+        "FirewallDeploymentModel": {
+          "$ref": "#/definitions/FirewallDeploymentModel"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "FirewallDeploymentModel"
+      ]
+    },
+    "PolicyOption": {
+      "description": "Firewall policy option.",
+      "type": "object",
+      "properties": {
+        "NetworkFirewallPolicy": {
+          "$ref": "#/definitions/NetworkFirewallPolicy"
+        },
+        "ThirdPartyFirewallPolicy": {
+          "$ref": "#/definitions/ThirdPartyFirewallPolicy"
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "NetworkFirewallPolicy"
+          ]
+        },
+        {
+          "required": [
+            "ThirdPartyFirewallPolicy"
+          ]
+        }
+      ]
+    }
+  },
+  "properties": {
+    "ExcludeMap": {
+      "$ref": "#/definitions/IEMap"
+    },
+    "ExcludeResourceTags": {
+      "type": "boolean"
+    },
+    "IncludeMap": {
+      "$ref": "#/definitions/IEMap"
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9A-Z-]{36}$",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "PolicyName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-zA-Z0-9_.:/=+\\-@\\s]+)$",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "PolicyDescription": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-zA-Z0-9_.:/=+\\-@\\s]+)$",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "RemediationEnabled": {
+      "type": "boolean"
+    },
+    "ResourceTags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ResourceTag"
+      },
+      "maxItems": 8,
+      "insertionOrder": true
+    },
+    "ResourceType": {
+      "$ref": "#/definitions/ResourceType"
+    },
+    "ResourceTypeList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ResourceType"
+      },
+      "insertionOrder": true
+    },
+    "ResourceSetIds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Base62Id"
+      },
+      "insertionOrder": true,
+      "uniqueItems": true
+    },
+    "SecurityServicePolicyData": {
+      "$ref": "#/definitions/SecurityServicePolicyData"
+    },
+    "Arn": {
+      "$ref": "#/definitions/ResourceArn"
+    },
+    "DeleteAllPolicyResources": {
+      "type": "boolean"
+    },
+    "ResourcesCleanUp": {
+      "type": "boolean"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PolicyTag"
+      },
+      "insertionOrder": true
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ExcludeResourceTags",
+    "PolicyName",
+    "RemediationEnabled",
+    "SecurityServicePolicyData"
+  ]
+}

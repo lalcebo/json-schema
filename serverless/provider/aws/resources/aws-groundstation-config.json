@@ -1,0 +1,422 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "AWS Ground Station config resource type for CloudFormation.",
+  "definitions": {
+    "JsonString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[{}\\[\\]:.,\"0-9A-z\\-_\\s]{1,8192}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ConfigData": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "AntennaDownlinkConfig": {
+          "$ref": "#/definitions/AntennaDownlinkConfig"
+        },
+        "TrackingConfig": {
+          "$ref": "#/definitions/TrackingConfig"
+        },
+        "DataflowEndpointConfig": {
+          "$ref": "#/definitions/DataflowEndpointConfig"
+        },
+        "AntennaDownlinkDemodDecodeConfig": {
+          "$ref": "#/definitions/AntennaDownlinkDemodDecodeConfig"
+        },
+        "AntennaUplinkConfig": {
+          "$ref": "#/definitions/AntennaUplinkConfig"
+        },
+        "UplinkEchoConfig": {
+          "$ref": "#/definitions/UplinkEchoConfig"
+        },
+        "S3RecordingConfig": {
+          "$ref": "#/definitions/S3RecordingConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "EirpUnits": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "dBW"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Eirp": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "type": "number"
+        },
+        "Units": {
+          "$ref": "#/definitions/EirpUnits"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FrequencyUnits": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GHz",
+            "MHz",
+            "kHz"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "BandwidthUnits": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GHz",
+            "MHz",
+            "kHz"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "FrequencyBandwidth": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "type": "number"
+        },
+        "Units": {
+          "$ref": "#/definitions/BandwidthUnits"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Frequency": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "type": "number"
+        },
+        "Units": {
+          "$ref": "#/definitions/FrequencyUnits"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Polarization": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LEFT_HAND",
+            "RIGHT_HAND",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "S3KeyPrefix": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-zA-Z0-9_\\-=/]|\\{satellite_id\\}|\\{config\\-name}|\\{s3\\-config-id}|\\{year\\}|\\{month\\}|\\{day\\}){1,900}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "BucketArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "UplinkSpectrumConfig": {
+      "type": "object",
+      "properties": {
+        "CenterFrequency": {
+          "$ref": "#/definitions/Frequency"
+        },
+        "Polarization": {
+          "$ref": "#/definitions/Polarization"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SpectrumConfig": {
+      "type": "object",
+      "properties": {
+        "CenterFrequency": {
+          "$ref": "#/definitions/Frequency"
+        },
+        "Bandwidth": {
+          "$ref": "#/definitions/FrequencyBandwidth"
+        },
+        "Polarization": {
+          "$ref": "#/definitions/Polarization"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AntennaDownlinkConfig": {
+      "type": "object",
+      "properties": {
+        "SpectrumConfig": {
+          "$ref": "#/definitions/SpectrumConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "TrackingConfig": {
+      "type": "object",
+      "properties": {
+        "Autotrack": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "REQUIRED",
+                "PREFERRED",
+                "REMOVED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "DataflowEndpointConfig": {
+      "type": "object",
+      "properties": {
+        "DataflowEndpointName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DataflowEndpointRegion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "DemodulationConfig": {
+      "type": "object",
+      "properties": {
+        "UnvalidatedJSON": {
+          "$ref": "#/definitions/JsonString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DecodeConfig": {
+      "type": "object",
+      "properties": {
+        "UnvalidatedJSON": {
+          "$ref": "#/definitions/JsonString"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AntennaDownlinkDemodDecodeConfig": {
+      "type": "object",
+      "properties": {
+        "SpectrumConfig": {
+          "$ref": "#/definitions/SpectrumConfig"
+        },
+        "DemodulationConfig": {
+          "$ref": "#/definitions/DemodulationConfig"
+        },
+        "DecodeConfig": {
+          "$ref": "#/definitions/DecodeConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AntennaUplinkConfig": {
+      "type": "object",
+      "properties": {
+        "SpectrumConfig": {
+          "$ref": "#/definitions/UplinkSpectrumConfig"
+        },
+        "TargetEirp": {
+          "$ref": "#/definitions/Eirp"
+        },
+        "TransmitDisabled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UplinkEchoConfig": {
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "AntennaUplinkConfigArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "S3RecordingConfig": {
+      "type": "object",
+      "properties": {
+        "BucketArn": {
+          "$ref": "#/definitions/BucketArn"
+        },
+        "RoleArn": {
+          "$ref": "#/definitions/RoleArn"
+        },
+        "Prefix": {
+          "$ref": "#/definitions/S3KeyPrefix"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[ a-zA-Z0-9_:-]{1,256}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ConfigData": {
+      "$ref": "#/definitions/ConfigData"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "Name",
+    "ConfigData"
+  ],
+  "additionalProperties": false
+}

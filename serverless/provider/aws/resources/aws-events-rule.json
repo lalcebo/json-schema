@@ -1,0 +1,825 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::Events::Rule",
+  "additionalProperties": false,
+  "definitions": {
+    "CapacityProviderStrategyItem": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "CapacityProvider": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Base": {
+          "type": "integer"
+        },
+        "Weight": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "CapacityProvider"
+      ]
+    },
+    "HttpParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PathParameterValues": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "HeaderParameters": {
+          "patternProperties": {
+            "[a-zA-Z0-9]+": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "QueryStringParameters": {
+          "patternProperties": {
+            "[a-zA-Z0-9]+": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object"
+        }
+      }
+    },
+    "DeadLetterConfig": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "RunCommandParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "RunCommandTargets": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RunCommandTarget"
+          }
+        }
+      },
+      "required": [
+        "RunCommandTargets"
+      ]
+    },
+    "PlacementStrategy": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Field": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "InputTransformer": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "InputPathsMap": {
+          "patternProperties": {
+            "[a-zA-Z0-9]+": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "InputTemplate": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "InputTemplate"
+      ]
+    },
+    "KinesisParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PartitionKeyPath": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "PartitionKeyPath"
+      ]
+    },
+    "BatchRetryStrategy": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Attempts": {
+          "type": "integer"
+        }
+      }
+    },
+    "RedshiftDataParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "StatementName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Sqls": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Database": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SecretManagerArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DbUser": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Sql": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "WithEvent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Database"
+      ]
+    },
+    "AppSyncParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "GraphQLOperation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "GraphQLOperation"
+      ]
+    },
+    "Target": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "InputPath": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "HttpParameters": {
+          "$ref": "#/definitions/HttpParameters"
+        },
+        "DeadLetterConfig": {
+          "$ref": "#/definitions/DeadLetterConfig"
+        },
+        "RunCommandParameters": {
+          "$ref": "#/definitions/RunCommandParameters"
+        },
+        "InputTransformer": {
+          "$ref": "#/definitions/InputTransformer"
+        },
+        "KinesisParameters": {
+          "$ref": "#/definitions/KinesisParameters"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "RedshiftDataParameters": {
+          "$ref": "#/definitions/RedshiftDataParameters"
+        },
+        "AppSyncParameters": {
+          "$ref": "#/definitions/AppSyncParameters"
+        },
+        "Input": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SqsParameters": {
+          "$ref": "#/definitions/SqsParameters"
+        },
+        "EcsParameters": {
+          "$ref": "#/definitions/EcsParameters"
+        },
+        "BatchParameters": {
+          "$ref": "#/definitions/BatchParameters"
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SageMakerPipelineParameters": {
+          "$ref": "#/definitions/SageMakerPipelineParameters"
+        },
+        "RetryPolicy": {
+          "$ref": "#/definitions/RetryPolicy"
+        }
+      },
+      "required": [
+        "Id",
+        "Arn"
+      ]
+    },
+    "PlacementConstraint": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "AwsVpcConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SecurityGroups": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Subnets": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "AssignPublicIp": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Subnets"
+      ]
+    },
+    "SqsParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "MessageGroupId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "MessageGroupId"
+      ]
+    },
+    "RunCommandTarget": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Values": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Values",
+        "Key"
+      ]
+    },
+    "EcsParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PlatformVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Group": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "EnableECSManagedTags": {
+          "type": "boolean"
+        },
+        "EnableExecuteCommand": {
+          "type": "boolean"
+        },
+        "PlacementConstraints": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PlacementConstraint"
+          }
+        },
+        "PropagateTags": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "TaskCount": {
+          "type": "integer"
+        },
+        "PlacementStrategies": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PlacementStrategy"
+          }
+        },
+        "CapacityProviderStrategy": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CapacityProviderStrategyItem"
+          }
+        },
+        "LaunchType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ReferenceId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "TagList": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tag"
+          }
+        },
+        "NetworkConfiguration": {
+          "$ref": "#/definitions/NetworkConfiguration"
+        },
+        "TaskDefinitionArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "TaskDefinitionArn"
+      ]
+    },
+    "BatchParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ArrayProperties": {
+          "$ref": "#/definitions/BatchArrayProperties"
+        },
+        "JobName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "RetryStrategy": {
+          "$ref": "#/definitions/BatchRetryStrategy"
+        },
+        "JobDefinition": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "JobName",
+        "JobDefinition"
+      ]
+    },
+    "NetworkConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "AwsVpcConfiguration": {
+          "$ref": "#/definitions/AwsVpcConfiguration"
+        }
+      }
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "SageMakerPipelineParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PipelineParameterList": {
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SageMakerPipelineParameter"
+          }
+        }
+      }
+    },
+    "RetryPolicy": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "MaximumRetryAttempts": {
+          "type": "integer"
+        },
+        "MaximumEventAgeInSeconds": {
+          "type": "integer"
+        }
+      }
+    },
+    "BatchArrayProperties": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Size": {
+          "type": "integer"
+        }
+      }
+    },
+    "SageMakerPipelineParameter": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Name"
+      ]
+    }
+  },
+  "properties": {
+    "EventBusName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used."
+    },
+    "EventPattern": {
+      "description": "The event pattern of the rule. For more information, see Events and Event Patterns in the Amazon EventBridge User Guide.",
+      "type": [
+        "string",
+        "object"
+      ]
+    },
+    "ScheduleExpression": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The scheduling expression. For example, \"cron(0 20 * * ? *)\", \"rate(5 minutes)\". For more information, see Creating an Amazon EventBridge rule that runs on a schedule."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The description of the rule."
+    },
+    "State": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DISABLED",
+            "ENABLED",
+            "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The state of the rule."
+    },
+    "Targets": {
+      "uniqueItems": true,
+      "description": "Adds the specified targets to the specified rule, or updates the targets if they are already associated with the rule.\nTargets are the resources that are invoked when a rule is triggered.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Target"
+      }
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the rule, such as arn:aws:events:us-east-2:123456789012:rule/example."
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the role that is used for target invocation."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the rule."
+    }
+  },
+  "conditionalCreateOnlyProperties": [
+    "/properties/EventBusName"
+  ]
+}

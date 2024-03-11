@@ -1,0 +1,242 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::RDS::DBProxy",
+  "definitions": {
+    "AuthFormat": {
+      "type": "object",
+      "properties": {
+        "AuthScheme": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SECRETS"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The type of authentication that the proxy uses for connections from the proxy to the underlying database. "
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A user-specified description about the authentication used by a proxy to log in as a specific database user. "
+        },
+        "IAMAuth": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DISABLED",
+                "REQUIRED",
+                "ENABLED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Whether to require or disallow Amazon Web Services Identity and Access Management (IAM) authentication for connections to the proxy. The ENABLED value is valid only for proxies with RDS for Microsoft SQL Server."
+        },
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) representing the secret that the proxy uses to authenticate to the RDS DB instance or Aurora DB cluster. These secrets are stored within Amazon Secrets Manager. "
+        },
+        "ClientPasswordAuthType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MYSQL_NATIVE_PASSWORD",
+                "POSTGRES_SCRAM_SHA_256",
+                "POSTGRES_MD5",
+                "SQL_SERVER_AUTHENTICATION"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The type of authentication the proxy uses for connections from clients."
+        }
+      },
+      "additionalProperties": false
+    },
+    "TagFormat": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(\\w|\\d|\\s|\\\\|-|\\.:=+-)*",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(\\w|\\d|\\s|\\\\|-|\\.:=+-)*",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Auth": {
+      "description": "The authorization mechanism that the proxy uses.",
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/AuthFormat"
+      }
+    },
+    "DBProxyArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for the proxy."
+    },
+    "DBProxyName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[0-z]*",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The identifier for the proxy. This name must be unique for all proxies owned by your AWS account in the specified AWS Region."
+    },
+    "DebugLogging": {
+      "description": "Whether the proxy includes detailed information about SQL statements in its logs.",
+      "type": "boolean"
+    },
+    "Endpoint": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The endpoint that you can use to connect to the proxy. You include the endpoint value in the connection string for a database client application."
+    },
+    "EngineFamily": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MYSQL",
+            "POSTGRESQL",
+            "SQLSERVER"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The kinds of databases that the proxy can connect to."
+    },
+    "IdleClientTimeout": {
+      "description": "The number of seconds that a connection to the proxy can be inactive before the proxy disconnects it.",
+      "type": "integer"
+    },
+    "RequireTLS": {
+      "description": "A Boolean parameter that specifies whether Transport Layer Security (TLS) encryption is required for connections to the proxy.",
+      "type": "boolean"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the IAM role that the proxy uses to access secrets in AWS Secrets Manager."
+    },
+    "Tags": {
+      "description": "An optional set of key-value pairs to associate arbitrary data of your choosing with the proxy.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/TagFormat"
+      }
+    },
+    "VpcId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "VPC ID to associate with the new DB proxy."
+    },
+    "VpcSecurityGroupIds": {
+      "description": "VPC security group IDs to associate with the new proxy.",
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "VpcSubnetIds": {
+      "description": "VPC subnet IDs to associate with the new proxy.",
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 2,
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Auth",
+    "DBProxyName",
+    "EngineFamily",
+    "RoleArn",
+    "VpcSubnetIds"
+  ]
+}

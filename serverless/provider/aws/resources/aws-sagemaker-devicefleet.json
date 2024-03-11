@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::SageMaker::DeviceFleet",
+  "definitions": {
+    "EdgeOutputConfig": {
+      "type": "object",
+      "properties": {
+        "S3OutputLocation": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^s3://([^/]+)/?(.*)$",
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Simple Storage (S3) bucket URI"
+        },
+        "KmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-zA-Z0-9:_-]+",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The KMS key id used for encryption on the S3 bucket"
+        }
+      },
+      "required": [
+        "S3OutputLocation"
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "description": "Key-value pair to associate as a tag for the resource",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^((?!aws:)[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key value of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\S\\s]+",
+          "minLength": 0,
+          "maxLength": 800
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Description for the edge device fleet"
+    },
+    "DeviceFleetName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9](-*_*[a-zA-Z0-9])*$",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the edge device fleet"
+    },
+    "OutputConfig": {
+      "description": "S3 bucket and an ecryption key id (if available) to store outputs for the fleet",
+      "$ref": "#/definitions/EdgeOutputConfig"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Role associated with the device fleet"
+    },
+    "Tags": {
+      "description": "Associate tags with the resource",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "DeviceFleetName",
+    "OutputConfig",
+    "RoleArn"
+  ],
+  "additionalProperties": false
+}

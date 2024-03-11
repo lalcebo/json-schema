@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Describes an endpoint authorization for authorizing Redshift-managed VPC endpoint access to a cluster across AWS accounts.",
+  "definitions": {
+    "AwsAccount": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\d{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "VpcId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^vpc-[A-Za-z0-9]{1,17}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "Grantor": {
+      "description": "The AWS account ID of the cluster owner.",
+      "$ref": "#/definitions/AwsAccount"
+    },
+    "Grantee": {
+      "description": "The AWS account ID of the grantee of the cluster.",
+      "$ref": "#/definitions/AwsAccount"
+    },
+    "ClusterIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(?=^[a-z][a-z0-9]*(-[a-z0-9]+)*$).{1,63}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The cluster identifier."
+    },
+    "AuthorizeTime": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The time (UTC) when the authorization was created."
+    },
+    "ClusterStatus": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the cluster."
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the authorization action."
+    },
+    "AllowedAllVPCs": {
+      "description": "Indicates whether all VPCs in the grantee account are allowed access to the cluster.",
+      "type": "boolean"
+    },
+    "AllowedVPCs": {
+      "description": "The VPCs allowed access to the cluster.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/VpcId"
+      }
+    },
+    "EndpointCount": {
+      "description": "The number of Redshift-managed VPC endpoints created for the authorization.",
+      "type": "integer"
+    },
+    "Account": {
+      "description": "The target AWS account ID to grant or revoke access for.",
+      "$ref": "#/definitions/AwsAccount"
+    },
+    "VpcIds": {
+      "description": "The virtual private cloud (VPC) identifiers to grant or revoke access to.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/VpcId"
+      }
+    },
+    "Force": {
+      "description": " Indicates whether to force the revoke action. If true, the Redshift-managed VPC endpoints associated with the endpoint authorization are also deleted.",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ClusterIdentifier",
+    "Account"
+  ]
+}

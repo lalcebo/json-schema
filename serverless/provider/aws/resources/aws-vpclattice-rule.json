@@ -1,0 +1,387 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Creates a listener rule. Each listener has a default rule for checking connection requests, but you can define additional rules. Each rule consists of a priority, one or more actions, and one or more conditions.",
+  "additionalProperties": false,
+  "definitions": {
+    "Forward": {
+      "type": "object",
+      "properties": {
+        "TargetGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WeightedTargetGroup"
+          },
+          "maxItems": 2,
+          "minItems": 1,
+          "insertionOrder": false
+        }
+      },
+      "required": [
+        "TargetGroups"
+      ],
+      "additionalProperties": false
+    },
+    "FixedResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StatusCode": {
+          "type": "integer",
+          "maximum": 599,
+          "minimum": 100
+        }
+      },
+      "required": [
+        "StatusCode"
+      ]
+    },
+    "HeaderMatch": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 40,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Match": {
+          "$ref": "#/definitions/HeaderMatchType"
+        },
+        "CaseSensitive": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "Match",
+        "Name"
+      ],
+      "additionalProperties": false
+    },
+    "HeaderMatchType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Exact": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Contains": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "HttpMatch": {
+      "type": "object",
+      "properties": {
+        "Method": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CONNECT",
+                "DELETE",
+                "GET",
+                "HEAD",
+                "OPTIONS",
+                "POST",
+                "PUT",
+                "TRACE"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "PathMatch": {
+          "$ref": "#/definitions/PathMatch"
+        },
+        "HeaderMatches": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "$ref": "#/definitions/HeaderMatch"
+          },
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "PathMatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Match": {
+          "$ref": "#/definitions/PathMatchType"
+        },
+        "CaseSensitive": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "Match"
+      ]
+    },
+    "PathMatchType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Exact": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^\\/[a-zA-Z0-9@:%_+.~#?&\\/=-]*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^\\/[a-zA-Z0-9@:%_+.~#?&\\/=-]*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "Action": {
+      "type": "object",
+      "title": "Forward",
+      "properties": {
+        "Forward": {
+          "$ref": "#/definitions/Forward"
+        },
+        "FixedResponse": {
+          "$ref": "#/definitions/FixedResponse"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Match": {
+      "type": "object",
+      "title": "HttpMatch",
+      "properties": {
+        "HttpMatch": {
+          "$ref": "#/definitions/HttpMatch"
+        }
+      },
+      "required": [
+        "HttpMatch"
+      ],
+      "additionalProperties": false
+    },
+    "WeightedTargetGroup": {
+      "type": "object",
+      "properties": {
+        "TargetGroupIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^((tg-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:targetgroup/tg-[0-9a-z]{17}))$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Weight": {
+          "type": "integer",
+          "maximum": 999,
+          "minimum": 1
+        }
+      },
+      "required": [
+        "TargetGroupIdentifier"
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "Action": {
+      "$ref": "#/definitions/Action"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:service/svc-[0-9a-z]{17}/listener/listener-[0-9a-z]{17}/rule/((rule-[0-9a-z]{17})|(default))$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 22,
+          "minLength": 7,
+          "pattern": "^((rule-[0-9a-z]{17})|(default))$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ListenerIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^((listener-[0-9a-z]{17})|(arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:service/svc-[0-9a-z]{17}/listener/listener-[0-9a-z]{17}))$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Match": {
+      "$ref": "#/definitions/Match"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 63,
+          "minLength": 3,
+          "pattern": "^(?!rule-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Priority": {
+      "type": "integer",
+      "maximum": 100,
+      "minimum": 1
+    },
+    "ServiceIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^((svc-[0-9a-z]{17})|(arn(:[a-z0-9]+([.-][a-z0-9]+)*){2}(:([a-z0-9]+([.-][a-z0-9]+)*)?){2}:service/svc-[0-9a-z]{17}))$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "propertyTransform": {
+    "/properties/Action/Forward/TargetGroups/*/TargetGroupIdentifier": "$split(TargetGroupIdentifier, \"/\")[-1]"
+  },
+  "required": [
+    "Action",
+    "Match",
+    "Priority"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/ServiceIdentifier",
+      "/properties/ListenerIdentifier",
+      "/properties/Name"
+    ]
+  ]
+}

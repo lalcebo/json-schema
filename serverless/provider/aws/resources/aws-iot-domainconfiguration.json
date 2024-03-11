@@ -1,0 +1,257 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Create and manage a Domain Configuration",
+  "definitions": {
+    "AuthorizerConfig": {
+      "type": "object",
+      "properties": {
+        "AllowAuthorizerOverride": {
+          "type": "boolean"
+        },
+        "DefaultAuthorizerName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\w=,@-]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ServerCertificateConfig": {
+      "type": "object",
+      "properties": {
+        "EnableOCSPCheck": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ServerCertificateSummary": {
+      "type": "object",
+      "properties": {
+        "ServerCertificateArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ServerCertificateStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "INVALID",
+                "VALID"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ServerCertificateStatusDetail": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "TlsConfig": {
+      "type": "object",
+      "properties": {
+        "SecurityPolicy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "DomainConfigurationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\w.-]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AuthorizerConfig": {
+      "$ref": "#/definitions/AuthorizerConfig"
+    },
+    "DomainName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 253
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ServerCertificateArns": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 1,
+      "insertionOrder": true,
+      "items": {
+        "type": "string",
+        "pattern": "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$",
+        "minLength": 1,
+        "maxLength": 2048
+      }
+    },
+    "ServiceType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DATA",
+            "CREDENTIAL_PROVIDER",
+            "JOBS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ValidationCertificateArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DomainConfigurationStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DomainType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENDPOINT",
+            "AWS_MANAGED",
+            "CUSTOMER_MANAGED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ServerCertificateConfig": {
+      "$ref": "#/definitions/ServerCertificateConfig"
+    },
+    "ServerCertificates": {
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/ServerCertificateSummary"
+      }
+    },
+    "TlsConfig": {
+      "$ref": "#/definitions/TlsConfig"
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": []
+}

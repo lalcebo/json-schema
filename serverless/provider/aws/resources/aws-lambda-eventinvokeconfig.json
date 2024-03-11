@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::Lambda::EventInvokeConfig resource configures options for asynchronous invocation on a version or an alias.",
+  "definitions": {
+    "DestinationConfig": {
+      "description": "A destination for events after they have been sent to a function for processing.",
+      "type": "object",
+      "properties": {
+        "OnFailure": {
+          "$ref": "#/definitions/OnFailure"
+        },
+        "OnSuccess": {
+          "$ref": "#/definitions/OnSuccess"
+        }
+      },
+      "additionalProperties": false
+    },
+    "OnFailure": {
+      "description": "The destination configuration for failed invocations.",
+      "type": "object",
+      "properties": {
+        "Destination": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
+              "minLength": 0,
+              "maxLength": 350
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the destination resource."
+        }
+      },
+      "required": [
+        "Destination"
+      ],
+      "additionalProperties": false
+    },
+    "OnSuccess": {
+      "description": "The destination configuration for successful invocations.",
+      "type": "object",
+      "properties": {
+        "Destination": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
+              "minLength": 0,
+              "maxLength": 350
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the destination resource."
+        }
+      },
+      "required": [
+        "Destination"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "DestinationConfig": {
+      "$ref": "#/definitions/DestinationConfig"
+    },
+    "FunctionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the Lambda function."
+    },
+    "MaximumEventAgeInSeconds": {
+      "description": "The maximum age of a request that Lambda sends to a function for processing.",
+      "type": "integer",
+      "minimum": 60,
+      "maximum": 21600
+    },
+    "MaximumRetryAttempts": {
+      "description": "The maximum number of times to retry when the function returns an error.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "Qualifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(|[a-zA-Z0-9$_-]{1,129})$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The identifier of a version or alias."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "FunctionName",
+    "Qualifier"
+  ]
+}

@@ -1,0 +1,826 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::Cognito::UserPool",
+  "definitions": {
+    "PasswordPolicy": {
+      "type": "object",
+      "properties": {
+        "MinimumLength": {
+          "type": "integer"
+        },
+        "RequireLowercase": {
+          "type": "boolean"
+        },
+        "RequireNumbers": {
+          "type": "boolean"
+        },
+        "RequireSymbols": {
+          "type": "boolean"
+        },
+        "RequireUppercase": {
+          "type": "boolean"
+        },
+        "TemporaryPasswordValidityDays": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Policies": {
+      "type": "object",
+      "properties": {
+        "PasswordPolicy": {
+          "$ref": "#/definitions/PasswordPolicy"
+        }
+      },
+      "additionalProperties": false
+    },
+    "InviteMessageTemplate": {
+      "type": "object",
+      "properties": {
+        "EmailMessage": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "EmailSubject": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SMSMessage": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "RecoveryOption": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Priority": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AccountRecoverySetting": {
+      "type": "object",
+      "properties": {
+        "RecoveryMechanisms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RecoveryOption"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "AdminCreateUserConfig": {
+      "type": "object",
+      "properties": {
+        "AllowAdminCreateUserOnly": {
+          "type": "boolean"
+        },
+        "InviteMessageTemplate": {
+          "$ref": "#/definitions/InviteMessageTemplate"
+        },
+        "UnusedAccountValidityDays": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DeviceConfiguration": {
+      "type": "object",
+      "properties": {
+        "ChallengeRequiredOnNewDevice": {
+          "type": "boolean"
+        },
+        "DeviceOnlyRememberedOnUserPrompt": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "EmailConfiguration": {
+      "type": "object",
+      "properties": {
+        "ReplyToEmailAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SourceArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "From": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ConfigurationSet": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "EmailSendingAccount": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "CustomEmailSender": {
+      "type": "object",
+      "properties": {
+        "LambdaVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "LambdaArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "CustomSMSSender": {
+      "type": "object",
+      "properties": {
+        "LambdaVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "LambdaArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "PreTokenGenerationConfig": {
+      "type": "object",
+      "properties": {
+        "LambdaVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "LambdaArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "LambdaConfig": {
+      "type": "object",
+      "properties": {
+        "CreateAuthChallenge": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "CustomMessage": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DefineAuthChallenge": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "PostAuthentication": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "PostConfirmation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "PreAuthentication": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "PreSignUp": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "VerifyAuthChallengeResponse": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "UserMigration": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "PreTokenGeneration": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "CustomEmailSender": {
+          "$ref": "#/definitions/CustomEmailSender"
+        },
+        "CustomSMSSender": {
+          "$ref": "#/definitions/CustomSMSSender"
+        },
+        "KMSKeyID": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "PreTokenGenerationConfig": {
+          "$ref": "#/definitions/PreTokenGenerationConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SmsConfiguration": {
+      "type": "object",
+      "properties": {
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SnsCallerArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SnsRegion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "StringAttributeConstraints": {
+      "type": "object",
+      "properties": {
+        "MaxLength": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "MinLength": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "NumberAttributeConstraints": {
+      "type": "object",
+      "properties": {
+        "MaxValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "MinValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "SchemaAttribute": {
+      "type": "object",
+      "properties": {
+        "AttributeDataType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DeveloperOnlyAttribute": {
+          "type": "boolean"
+        },
+        "Mutable": {
+          "type": "boolean"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "NumberAttributeConstraints": {
+          "$ref": "#/definitions/NumberAttributeConstraints"
+        },
+        "StringAttributeConstraints": {
+          "$ref": "#/definitions/StringAttributeConstraints"
+        },
+        "Required": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UsernameConfiguration": {
+      "type": "object",
+      "properties": {
+        "CaseSensitive": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UserAttributeUpdateSettings": {
+      "type": "object",
+      "properties": {
+        "AttributesRequireVerificationBeforeUpdate": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "AttributesRequireVerificationBeforeUpdate"
+      ],
+      "additionalProperties": false
+    },
+    "VerificationMessageTemplate": {
+      "type": "object",
+      "properties": {
+        "DefaultEmailOption": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "EmailMessage": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "EmailMessageByLink": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "EmailSubject": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "EmailSubjectByLink": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "SmsMessage": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "UserPoolAddOns": {
+      "type": "object",
+      "properties": {
+        "AdvancedSecurityMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "UserPoolName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Policies": {
+      "$ref": "#/definitions/Policies"
+    },
+    "AccountRecoverySetting": {
+      "$ref": "#/definitions/AccountRecoverySetting"
+    },
+    "AdminCreateUserConfig": {
+      "$ref": "#/definitions/AdminCreateUserConfig"
+    },
+    "AliasAttributes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "UsernameAttributes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "AutoVerifiedAttributes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "DeviceConfiguration": {
+      "$ref": "#/definitions/DeviceConfiguration"
+    },
+    "EmailConfiguration": {
+      "$ref": "#/definitions/EmailConfiguration"
+    },
+    "EmailVerificationMessage": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 20000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "EmailVerificationSubject": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DeletionProtection": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LambdaConfig": {
+      "$ref": "#/definitions/LambdaConfig"
+    },
+    "MfaConfiguration": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "EnabledMfas": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "SmsAuthenticationMessage": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 140
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "SmsConfiguration": {
+      "$ref": "#/definitions/SmsConfiguration"
+    },
+    "SmsVerificationMessage": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 140
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SchemaAttribute"
+      }
+    },
+    "UsernameConfiguration": {
+      "$ref": "#/definitions/UsernameConfiguration"
+    },
+    "UserAttributeUpdateSettings": {
+      "$ref": "#/definitions/UserAttributeUpdateSettings"
+    },
+    "UserPoolTags": {
+      "type": "object",
+      "patternProperties": {
+        "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "VerificationMessageTemplate": {
+      "$ref": "#/definitions/VerificationMessageTemplate"
+    },
+    "UserPoolAddOns": {
+      "$ref": "#/definitions/UserPoolAddOns"
+    },
+    "ProviderName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ProviderURL": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "UserPoolId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "propertyTransform": {
+    "/properties/Schema/*/Name": "'custom:' & '' & Name"
+  }
+}

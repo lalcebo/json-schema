@@ -1,0 +1,205 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "AWS Ground Station Mission Profile resource type for CloudFormation.",
+  "definitions": {
+    "DataflowEdge": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Destination": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "StreamsKmsKey": {
+      "type": "object",
+      "properties": {
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "KmsAliasArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "KmsKeyArn"
+          ]
+        },
+        {
+          "required": [
+            "KmsAliasArn"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[ a-zA-Z0-9_:-]{1,256}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A name used to identify a mission profile."
+    },
+    "ContactPrePassDurationSeconds": {
+      "description": "Pre-pass time needed before the contact.",
+      "type": "integer"
+    },
+    "ContactPostPassDurationSeconds": {
+      "description": "Post-pass time needed after the contact.",
+      "type": "integer"
+    },
+    "MinimumViableContactDurationSeconds": {
+      "description": "Visibilities with shorter duration than the specified minimum viable contact duration will be ignored when searching for available contacts.",
+      "type": "integer"
+    },
+    "StreamsKmsKey": {
+      "description": "The ARN of a KMS Key used for encrypting data during transmission from the source to destination locations.",
+      "$ref": "#/definitions/StreamsKmsKey"
+    },
+    "StreamsKmsRole": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the KMS Key or Alias Key role used to define permissions on KMS Key usage."
+    },
+    "DataflowEdges": {
+      "description": "",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/DataflowEdge"
+      }
+    },
+    "TrackingConfigArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Region": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "Name",
+    "MinimumViableContactDurationSeconds",
+    "DataflowEdges",
+    "TrackingConfigArn"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::ARCZonalShift::ZonalAutoshiftConfiguration Resource Type",
+  "definitions": {
+    "ZonalAutoshiftStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ControlCondition": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/ControlConditionType"
+        },
+        "AlarmIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 8,
+              "pattern": "^arn:.*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AlarmIdentifier",
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "ControlConditionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CLOUDWATCH"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "PracticeRunConfiguration": {
+      "type": "object",
+      "properties": {
+        "BlockingAlarms": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ControlCondition"
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "OutcomeAlarms": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ControlCondition"
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "BlockedDates": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "type": "string",
+            "maxLength": 10,
+            "minLength": 10,
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "maxItems": 15,
+          "minItems": 0
+        },
+        "BlockedWindows": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "type": "string",
+            "maxLength": 19,
+            "minLength": 19,
+            "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun):[0-9]{2}:[0-9]{2}-(Mon|Tue|Wed|Thu|Fri|Sat|Sun):[0-9]{2}:[0-9]{2}$"
+          },
+          "maxItems": 15,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "OutcomeAlarms"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "ZonalAutoshiftStatus": {
+      "$ref": "#/definitions/ZonalAutoshiftStatus",
+      "dependencies": {
+        "ZonalAutoshiftStatus": [
+          "PracticeRunConfiguration"
+        ]
+      }
+    },
+    "PracticeRunConfiguration": {
+      "$ref": "#/definitions/PracticeRunConfiguration"
+    },
+    "ResourceIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 8
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

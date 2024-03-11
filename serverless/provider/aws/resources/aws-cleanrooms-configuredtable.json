@@ -1,0 +1,570 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Represents a table that can be associated with collaborations",
+  "definitions": {
+    "AnalysisRuleColumnName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 127,
+          "minLength": 1,
+          "pattern": "^[a-z0-9_](([a-z0-9_ ]+-)*([a-z0-9_ ]+))?$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AggregateColumn": {
+      "type": "object",
+      "properties": {
+        "ColumnNames": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AnalysisRuleColumnName"
+          },
+          "minItems": 1
+        },
+        "Function": {
+          "$ref": "#/definitions/AggregateFunctionName"
+        }
+      },
+      "required": [
+        "ColumnNames",
+        "Function"
+      ],
+      "additionalProperties": false
+    },
+    "AggregateFunctionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SUM",
+            "SUM_DISTINCT",
+            "COUNT",
+            "COUNT_DISTINCT",
+            "AVG"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AggregationConstraint": {
+      "type": "object",
+      "properties": {
+        "ColumnName": {
+          "$ref": "#/definitions/AnalysisRuleColumnName"
+        },
+        "Minimum": {
+          "type": "number",
+          "minimum": 2,
+          "maximum": 100000
+        },
+        "Type": {
+          "$ref": "#/definitions/AggregationType"
+        }
+      },
+      "required": [
+        "ColumnName",
+        "Minimum",
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "AggregationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "COUNT_DISTINCT"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "JoinOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OR",
+            "AND"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AnalysisMethod": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DIRECT_QUERY"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "JoinRequiredOption": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "QUERY_RUNNER"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ScalarFunctions": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "TRUNC",
+            "ABS",
+            "CEILING",
+            "FLOOR",
+            "LN",
+            "LOG",
+            "ROUND",
+            "SQRT",
+            "CAST",
+            "LOWER",
+            "RTRIM",
+            "UPPER",
+            "COALESCE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AnalysisRuleAggregation": {
+      "type": "object",
+      "properties": {
+        "AggregateColumns": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AggregateColumn"
+          },
+          "minItems": 1
+        },
+        "JoinColumns": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AnalysisRuleColumnName"
+          }
+        },
+        "AllowedJoinOperators": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/JoinOperator"
+          },
+          "maxItems": 2
+        },
+        "JoinRequired": {
+          "$ref": "#/definitions/JoinRequiredOption"
+        },
+        "DimensionColumns": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AnalysisRuleColumnName"
+          }
+        },
+        "ScalarFunctions": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ScalarFunctions"
+          }
+        },
+        "OutputConstraints": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AggregationConstraint"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "AggregateColumns",
+        "JoinColumns",
+        "DimensionColumns",
+        "ScalarFunctions",
+        "OutputConstraints"
+      ],
+      "additionalProperties": false
+    },
+    "AnalysisRuleList": {
+      "type": "object",
+      "properties": {
+        "JoinColumns": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AnalysisRuleColumnName"
+          },
+          "minItems": 1
+        },
+        "AllowedJoinOperators": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/JoinOperator"
+          },
+          "maxItems": 2
+        },
+        "ListColumns": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AnalysisRuleColumnName"
+          }
+        }
+      },
+      "required": [
+        "JoinColumns",
+        "ListColumns"
+      ],
+      "additionalProperties": false
+    },
+    "AllowedAnalysis": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200,
+          "pattern": "(ANY_QUERY|arn:[\\w]{3}:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/analysistemplate/[\\d\\w-]+)"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AllowedAnalyses": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "items": {
+        "$ref": "#/definitions/AllowedAnalysis"
+      }
+    },
+    "AllowedAnalysisProvider": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 12,
+          "pattern": "\\d+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AllowedAnalysisProviders": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "items": {
+        "$ref": "#/definitions/AllowedAnalysisProvider"
+      }
+    },
+    "AnalysisRuleCustom": {
+      "type": "object",
+      "properties": {
+        "AllowedAnalyses": {
+          "$ref": "#/definitions/AllowedAnalyses"
+        },
+        "AllowedAnalysisProviders": {
+          "$ref": "#/definitions/AllowedAnalysisProviders"
+        }
+      },
+      "required": [
+        "AllowedAnalyses"
+      ],
+      "additionalProperties": false
+    },
+    "ConfiguredTableAnalysisRulePolicy": {
+      "type": "object",
+      "title": "V1",
+      "properties": {
+        "V1": {
+          "$ref": "#/definitions/ConfiguredTableAnalysisRulePolicyV1"
+        }
+      },
+      "required": [
+        "V1"
+      ],
+      "additionalProperties": false
+    },
+    "ConfiguredTableAnalysisRulePolicyV1": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "List",
+          "properties": {
+            "List": {
+              "$ref": "#/definitions/AnalysisRuleList"
+            }
+          },
+          "required": [
+            "List"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Aggregation",
+          "properties": {
+            "Aggregation": {
+              "$ref": "#/definitions/AnalysisRuleAggregation"
+            }
+          },
+          "required": [
+            "Aggregation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Custom",
+          "properties": {
+            "Custom": {
+              "$ref": "#/definitions/AnalysisRuleCustom"
+            }
+          },
+          "required": [
+            "Custom"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ConfiguredTableAnalysisRuleType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AGGREGATION",
+            "LIST",
+            "CUSTOM"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "GlueTableReference": {
+      "type": "object",
+      "properties": {
+        "TableName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DatabaseName",
+        "TableName"
+      ],
+      "additionalProperties": false
+    },
+    "AnalysisRule": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/ConfiguredTableAnalysisRuleType"
+        },
+        "Policy": {
+          "$ref": "#/definitions/ConfiguredTableAnalysisRulePolicy"
+        }
+      },
+      "required": [
+        "Type",
+        "Policy"
+      ],
+      "additionalProperties": false
+    },
+    "TableReference": {
+      "type": "object",
+      "title": "Glue",
+      "properties": {
+        "Glue": {
+          "$ref": "#/definitions/GlueTableReference"
+        }
+      },
+      "required": [
+        "Glue"
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this cleanrooms collaboration.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "uniqueItems": true,
+      "type": "array"
+    },
+    "AllowedColumns": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "type": "string",
+        "maxLength": 128,
+        "pattern": "^[a-z0-9_](([a-z0-9_ ]+-)*([a-z0-9_ ]+))?$"
+      },
+      "maxItems": 100,
+      "minItems": 1
+    },
+    "AnalysisMethod": {
+      "$ref": "#/definitions/AnalysisMethod"
+    },
+    "ConfiguredTableIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AnalysisRules": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AnalysisRule"
+      },
+      "maxItems": 1,
+      "minItems": 1
+    },
+    "TableReference": {
+      "$ref": "#/definitions/TableReference"
+    }
+  },
+  "required": [
+    "AllowedColumns",
+    "AnalysisMethod",
+    "Name",
+    "TableReference"
+  ],
+  "additionalProperties": false
+}

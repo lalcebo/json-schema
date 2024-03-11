@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "This resource represents a schema of Glue Schema Registry.",
+  "definitions": {
+    "Registry": {
+      "type": "object",
+      "description": "Identifier for the registry which the schema is part of.",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Name of the registry in which the schema will be created."
+        },
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:aws(-(cn|us-gov|iso(-[bef])?))?:glue:.*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Amazon Resource Name for the Registry."
+        }
+      },
+      "additionalProperties": false
+    },
+    "SchemaVersion": {
+      "type": "object",
+      "description": "Specify checkpoint version for update. This is only required to update the Compatibility.",
+      "properties": {
+        "IsLatest": {
+          "description": "Indicates if the latest version needs to be updated.",
+          "type": "boolean"
+        },
+        "VersionNumber": {
+          "description": "Indicates the version number in the schema to update.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A key to identify the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Corresponding tag value for the key."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-(cn|us-gov|iso(-[bef])?))?:glue:.*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Amazon Resource Name for the Schema."
+    },
+    "Registry": {
+      "$ref": "#/definitions/Registry"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Name of the schema."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description of the schema. If description is not provided, there will not be any default value for this."
+    },
+    "DataFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AVRO",
+            "JSON",
+            "PROTOBUF"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Data format name to use for the schema. Accepted values: 'AVRO', 'JSON', 'PROTOBUF'"
+    },
+    "Compatibility": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "DISABLED",
+            "BACKWARD",
+            "BACKWARD_ALL",
+            "FORWARD",
+            "FORWARD_ALL",
+            "FULL",
+            "FULL_ALL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Compatibility setting for the schema."
+    },
+    "SchemaDefinition": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 170000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Definition for the initial schema version in plain-text."
+    },
+    "CheckpointVersion": {
+      "$ref": "#/definitions/SchemaVersion"
+    },
+    "Tags": {
+      "description": "List of tags to tag the schema",
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "InitialSchemaVersionId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Represents the version ID associated with the initial schema version."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "DataFormat",
+    "SchemaDefinition",
+    "Compatibility"
+  ]
+}

@@ -1,0 +1,296 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::SageMaker::AppImageConfig",
+  "additionalProperties": false,
+  "properties": {
+    "AppImageConfigArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:app-image-config/.*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the AppImageConfig."
+    },
+    "AppImageConfigName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 63,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Name of the AppImageConfig."
+    },
+    "KernelGatewayImageConfig": {
+      "$ref": "#/definitions/KernelGatewayImageConfig",
+      "description": "The KernelGatewayImageConfig."
+    },
+    "JupyterLabAppImageConfig": {
+      "$ref": "#/definitions/JupyterLabAppImageConfig",
+      "description": "The JupyterLabAppImageConfig."
+    },
+    "Tags": {
+      "type": "array",
+      "description": "A list of tags to apply to the AppImageConfig.",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 50
+    }
+  },
+  "definitions": {
+    "KernelGatewayImageConfig": {
+      "type": "object",
+      "description": "The configuration for the file system and kernels in a SageMaker image running as a KernelGateway app.",
+      "additionalProperties": false,
+      "properties": {
+        "FileSystemConfig": {
+          "$ref": "#/definitions/FileSystemConfig",
+          "description": "The Amazon Elastic File System (EFS) storage configuration for a SageMaker image."
+        },
+        "KernelSpecs": {
+          "type": "array",
+          "description": "The specification of the Jupyter kernels in the image.",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/definitions/KernelSpec"
+          }
+        }
+      },
+      "required": [
+        "KernelSpecs"
+      ]
+    },
+    "JupyterLabAppImageConfig": {
+      "type": "object",
+      "description": "The configuration for the kernels in a SageMaker image running as a JupyterLab app.",
+      "additionalProperties": false,
+      "properties": {
+        "ContainerConfig": {
+          "$ref": "#/definitions/ContainerConfig",
+          "description": "The container configuration for a SageMaker image."
+        }
+      }
+    },
+    "ContainerConfig": {
+      "type": "object",
+      "description": "The container configuration for a SageMaker image.",
+      "additionalProperties": false,
+      "properties": {
+        "ContainerArguments": {
+          "type": "array",
+          "description": "A list of arguments to apply to the container.",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CustomImageContainerArguments"
+          },
+          "minItems": 0,
+          "maxItems": 50
+        },
+        "ContainerEntrypoint": {
+          "type": "array",
+          "description": "The custom entry point to use on container.",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CustomImageContainerEntrypoint"
+          },
+          "minItems": 0,
+          "maxItems": 1
+        },
+        "ContainerEnvironmentVariables": {
+          "type": "array",
+          "description": "A list of variables to apply to the custom container.",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CustomImageContainerEnvironmentVariable"
+          },
+          "minItems": 0,
+          "maxItems": 25
+        }
+      }
+    },
+    "CustomImageContainerArguments": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?!\\s*$).+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The container image arguments"
+    },
+    "CustomImageContainerEntrypoint": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^(?!\\s*$).+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The container entry point"
+    },
+    "CustomImageContainerEnvironmentVariable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^(?!\\s*$).+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^(?!\\s*$).+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "FileSystemConfig": {
+      "type": "object",
+      "description": "The Amazon Elastic File System (EFS) storage configuration for a SageMaker image.",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultGid": {
+          "type": "integer",
+          "description": "The default POSIX group ID (GID). If not specified, defaults to 100.",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "DefaultUid": {
+          "type": "integer",
+          "description": "The default POSIX user ID (UID). If not specified, defaults to 1000.",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "MountPath": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "pattern": "^/.*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The path within the image to mount the user's EFS home directory. The directory should be empty. If not specified, defaults to /home/sagemaker-user."
+        }
+      }
+    },
+    "KernelSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DisplayName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The display name of the kernel."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the kernel."
+        }
+      },
+      "required": [
+        "Name"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "required": [
+    "AppImageConfigName"
+  ]
+}

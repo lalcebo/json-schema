@@ -1,0 +1,265 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::Connect::QuickConnect",
+  "definitions": {
+    "PhoneNumber": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\+[1-9]\\d{1,14}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The phone number in E.164 format."
+    },
+    "ContactFlowArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/contact-flow/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The identifier of the contact flow."
+    },
+    "QueueArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/queue/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The identifier for the queue."
+    },
+    "UserArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/agent/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The identifier of the user."
+    },
+    "PhoneNumberQuickConnectConfig": {
+      "description": "The phone configuration. This is required only if QuickConnectType is PHONE_NUMBER.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PhoneNumber": {
+          "$ref": "#/definitions/PhoneNumber"
+        }
+      },
+      "required": [
+        "PhoneNumber"
+      ]
+    },
+    "QueueQuickConnectConfig": {
+      "description": "The queue configuration. This is required only if QuickConnectType is QUEUE.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ContactFlowArn": {
+          "$ref": "#/definitions/ContactFlowArn"
+        },
+        "QueueArn": {
+          "$ref": "#/definitions/QueueArn"
+        }
+      },
+      "required": [
+        "ContactFlowArn",
+        "QueueArn"
+      ]
+    },
+    "UserQuickConnectConfig": {
+      "description": "The user configuration. This is required only if QuickConnectType is USER.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ContactFlowArn": {
+          "$ref": "#/definitions/ContactFlowArn"
+        },
+        "UserArn": {
+          "$ref": "#/definitions/UserArn"
+        }
+      },
+      "required": [
+        "ContactFlowArn",
+        "UserArn"
+      ]
+    },
+    "QuickConnectConfig": {
+      "description": "Configuration settings for the quick connect.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "QuickConnectType": {
+          "$ref": "#/definitions/QuickConnectType"
+        },
+        "PhoneConfig": {
+          "$ref": "#/definitions/PhoneNumberQuickConnectConfig"
+        },
+        "QueueConfig": {
+          "$ref": "#/definitions/QueueQuickConnectConfig"
+        },
+        "UserConfig": {
+          "$ref": "#/definitions/UserQuickConnectConfig"
+        }
+      },
+      "required": [
+        "QuickConnectType"
+      ]
+    },
+    "QuickConnectType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PHONE_NUMBER",
+            "QUEUE",
+            "USER"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE)."
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is maximum of 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "InstanceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The identifier of the Amazon Connect instance."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 127
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the quick connect."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The description of the quick connect."
+    },
+    "QuickConnectConfig": {
+      "description": "Configuration settings for the quick connect.",
+      "$ref": "#/definitions/QuickConnectConfig"
+    },
+    "QuickConnectArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*/transfer-destination/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for the quick connect."
+    },
+    "Tags": {
+      "type": "array",
+      "maxItems": 200,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "One or more tags.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "QuickConnectType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PHONE_NUMBER",
+            "QUEUE",
+            "USER"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of quick connect. In the Amazon Connect console, when you create a quick connect, you are prompted to assign one of the following types: Agent (USER), External (PHONE_NUMBER), or Queue (QUEUE)."
+    }
+  },
+  "required": [
+    "Name",
+    "InstanceArn",
+    "QuickConnectConfig"
+  ],
+  "additionalProperties": false
+}

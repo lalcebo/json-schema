@@ -1,0 +1,321 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "An ObjectType resource of Amazon Connect Customer Profiles",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "FieldMap": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ObjectTypeField": {
+          "$ref": "#/definitions/ObjectTypeField"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ObjectTypeField": {
+      "description": "Represents a field in a ProfileObjectType.",
+      "type": "object",
+      "properties": {
+        "Source": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A field of a ProfileObject. For example: _source.FirstName, where \"_source\" is a ProfileObjectType of a Zendesk user and \"FirstName\" is a field in that ObjectType."
+        },
+        "Target": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The location of the data in the standard ProfileObject model. For example: _profile.Address.PostalCode."
+        },
+        "ContentType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "STRING",
+                "NUMBER",
+                "PHONE_NUMBER",
+                "EMAIL_ADDRESS",
+                "NAME"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The content type of the field. Used for determining equality when searching."
+        }
+      },
+      "additionalProperties": false
+    },
+    "KeyMap": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ObjectTypeKeyList": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ObjectTypeKey"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ObjectTypeKey": {
+      "description": "An object that defines the Key element of a ProfileObject. A Key is a special element that can be used to search for a customer profile.",
+      "type": "object",
+      "properties": {
+        "FieldNames": {
+          "description": "The reference for the key name of the fields map. ",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "StandardIdentifiers": {
+          "description": "The types of keys that a ProfileObject can have. Each ProfileObject can have only 1 UNIQUE key but multiple PROFILE keys. PROFILE means that this key can be used to tie an object to a PROFILE. UNIQUE means that it can be used to uniquely identify an object. If a key a is marked as SECONDARY, it will be used to search for profiles after all other PROFILE keys have been searched. A LOOKUP_ONLY key is only used to match a profile but is not persisted to be used for searching of the profile. A NEW_ONLY key is only used if the profile does not already exist before the object is ingested, otherwise it is only used for matching objects to profiles.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "PROFILE",
+              "UNIQUE",
+              "SECONDARY",
+              "LOOKUP_ONLY",
+              "NEW_ONLY",
+              "ASSET",
+              "CASE",
+              "ORDER"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "DomainName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The unique name of the domain."
+    },
+    "ObjectTypeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z_0-9-]*$",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the profile object type."
+    },
+    "AllowProfileCreation": {
+      "description": "Indicates whether a profile should be created when data is received.",
+      "type": "boolean"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Description of the profile object type."
+    },
+    "EncryptionKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The default encryption key"
+    },
+    "ExpirationDays": {
+      "description": "The default number of days until the data within the domain expires.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1098
+    },
+    "Fields": {
+      "description": "A list of the name and ObjectType field.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/FieldMap"
+      }
+    },
+    "Keys": {
+      "description": "A list of unique keys that can be used to map data to the profile.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/KeyMap"
+      }
+    },
+    "CreatedAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The time of this integration got created."
+    },
+    "LastUpdatedAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The time of this integration got last updated at."
+    },
+    "SourceLastUpdatedTimestampFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The format of your sourceLastUpdatedTimestamp that was previously set up."
+    },
+    "Tags": {
+      "description": "The tags (keys and values) associated with the integration.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 50
+    },
+    "TemplateId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A unique identifier for the object template."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "DomainName",
+    "ObjectTypeName",
+    "Description"
+  ]
+}

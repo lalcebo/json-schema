@@ -1,0 +1,226 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::MediaConnect::FlowOutput",
+  "definitions": {
+    "Encryption": {
+      "type": "object",
+      "description": "Information about the encryption of the flow.",
+      "properties": {
+        "Algorithm": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "aes128",
+                "aes192",
+                "aes256"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The type of algorithm that is used for the encryption (such as aes128, aes192, or aes256)."
+        },
+        "KeyType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "static-key",
+                "srt-password"
+              ],
+              "default": "static-key"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The type of key that is used for the encryption. If no keyType is provided, the service will use the default setting (static-key)."
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of the role that you created during setup (when you set up AWS Elemental MediaConnect as a trusted entity)."
+        },
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": " The ARN of the secret that you created in AWS Secrets Manager to store the encryption key. This parameter is required for static key encryption and is not valid for SPEKE encryption."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "RoleArn",
+        "SecretArn"
+      ]
+    },
+    "VpcInterfaceAttachment": {
+      "type": "object",
+      "description": "The settings for attaching a VPC interface to an output.",
+      "properties": {
+        "VpcInterfaceName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the VPC interface to use for this output."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "FlowArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN), a unique identifier for any AWS resource, of the flow."
+    },
+    "OutputArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the output."
+    },
+    "CidrAllowList": {
+      "type": "array",
+      "description": "The range of IP addresses that should be allowed to initiate output requests to this flow. These IP addresses should be in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Encryption": {
+      "$ref": "#/definitions/Encryption",
+      "description": "The type of key used for the encryption. If no keyType is provided, the service will use the default setting (static-key)."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description of the output."
+    },
+    "Destination": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The address where you want to send the output."
+    },
+    "MaxLatency": {
+      "type": "integer",
+      "description": "The maximum latency in milliseconds. This parameter applies only to RIST-based and Zixi-based streams."
+    },
+    "MinLatency": {
+      "type": "integer",
+      "description": "The minimum latency in milliseconds."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the output. This value must be unique within the current flow."
+    },
+    "Port": {
+      "type": "integer",
+      "description": "The port to use when content is distributed to this output."
+    },
+    "Protocol": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "zixi-push",
+            "rtp-fec",
+            "rtp",
+            "zixi-pull",
+            "rist",
+            "fujitsu-qos",
+            "srt-listener",
+            "srt-caller"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The protocol that is used by the source or output."
+    },
+    "RemoteId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The remote ID for the Zixi-pull stream."
+    },
+    "SmoothingLatency": {
+      "type": "integer",
+      "description": "The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams."
+    },
+    "StreamId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The stream ID that you want to use for this transport. This parameter applies only to Zixi-based streams."
+    },
+    "VpcInterfaceAttachment": {
+      "$ref": "#/definitions/VpcInterfaceAttachment",
+      "description": "The name of the VPC interface attachment to use for this output."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "FlowArn",
+    "Protocol"
+  ]
+}

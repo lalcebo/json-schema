@@ -1,0 +1,296 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.",
+  "definitions": {
+    "Subscriber": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SNS",
+                "EMAIL"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Address": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "Address"
+      ],
+      "additionalProperties": false
+    },
+    "ActionThreshold": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "type": "number"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PERCENTAGE",
+                "ABSOLUTE_VALUE"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "IamActionDefinition": {
+      "type": "object",
+      "properties": {
+        "PolicyArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "Groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "Users": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "PolicyArn"
+      ],
+      "additionalProperties": false
+    },
+    "ScpActionDefinition": {
+      "type": "object",
+      "properties": {
+        "PolicyId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "TargetIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "PolicyId",
+        "TargetIds"
+      ],
+      "additionalProperties": false
+    },
+    "SsmActionDefinition": {
+      "type": "object",
+      "properties": {
+        "Subtype": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "STOP_EC2_INSTANCES",
+                "STOP_RDS_INSTANCES"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "InstanceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "Subtype",
+        "Region",
+        "InstanceIds"
+      ],
+      "additionalProperties": false
+    },
+    "Definition": {
+      "type": "object",
+      "properties": {
+        "IamActionDefinition": {
+          "$ref": "#/definitions/IamActionDefinition"
+        },
+        "ScpActionDefinition": {
+          "$ref": "#/definitions/ScpActionDefinition"
+        },
+        "SsmActionDefinition": {
+          "$ref": "#/definitions/SsmActionDefinition"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "ActionId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "BudgetName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "NotificationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTUAL",
+            "FORECASTED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ActionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "APPLY_IAM_POLICY",
+            "APPLY_SCP_POLICY",
+            "RUN_SSM_DOCUMENTS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ActionThreshold": {
+      "$ref": "#/definitions/ActionThreshold"
+    },
+    "ExecutionRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ApprovalModel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AUTOMATIC",
+            "MANUAL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Subscribers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Subscriber"
+      },
+      "maxItems": 11,
+      "minItems": 1
+    },
+    "Definition": {
+      "$ref": "#/definitions/Definition"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "BudgetName",
+    "NotificationType",
+    "ActionType",
+    "ActionThreshold",
+    "ExecutionRoleArn",
+    "Definition",
+    "Subscribers"
+  ]
+}

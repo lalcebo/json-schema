@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Collection of schemas to be used together with Aws IAM",
+  "additionalProperties": false,
+  "AwsIamRoleStatement": {
+    "title": "AwsIamRoleStatement",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "Action": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "Condition": {
+        "additionalProperties": {},
+        "type": "object"
+      },
+      "Effect": {
+        "enum": [
+          "Allow",
+          "Deny"
+        ],
+        "type": "string"
+      },
+      "NotAction": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "NotResource": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "functions.json#/AwsFunction"
+            },
+            "type": "array"
+          },
+          {
+            "$ref": "functions.json#/AwsFunction"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        ]
+      },
+      "Resource": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "functions.json#/AwsFunction"
+            },
+            "type": "array"
+          },
+          {
+            "$ref": "functions.json#/AwsFunction"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        ]
+      },
+      "Sid": {
+        "type": "string"
+      }
+    }
+  },
+  "AwsStackPolicyAllowedAction": {
+    "title": "AwsStackPolicyAllowedAction",
+    "type": "string",
+    "enum": [
+      "Update:Modify",
+      "Update:Replace",
+      "Update:Delete",
+      "Update:*"
+    ]
+  },
+  "AwsStackPolicyStatement": {
+    "title": "AwsStackPolicyStatement",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "Action": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "#/AwsStackPolicyAllowedAction"
+            },
+            "type": "array"
+          },
+          {
+            "$ref": "#/AwsStackPolicyAllowedAction"
+          }
+        ]
+      },
+      "NotAction": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "#/AwsStackPolicyAllowedAction"
+            },
+            "type": "array"
+          },
+          {
+            "$ref": "#/AwsStackPolicyAllowedAction"
+          }
+        ]
+      },
+      "Condition": {
+        "additionalProperties": {},
+        "type": "object"
+      },
+      "Effect": {
+        "enum": [
+          "Allow",
+          "Deny"
+        ],
+        "type": "string"
+      },
+      "Resource": {
+        "anyOf": [
+          {
+            "items": {
+              "$ref": "functions.json#/AwsFunction"
+            },
+            "type": "array"
+          },
+          {
+            "$ref": "functions.json#/AwsFunction"
+          },
+          {
+            "type": "string"
+          },
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        ]
+      },
+      "Principal": {
+        "type": "string",
+        "enum": [
+          "*"
+        ]
+      }
+    }
+  },
+  "AwsIamConfiguration": {
+    "title": "AwsIamConfiguration",
+    "description": "The new IAM object definition with version 3. See docs here:- https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml#iam-permissions",
+    "type": "object",
+    "properties": {
+      "stackPolicy": {
+        "type": "array",
+        "items": {
+          "$ref": "#/AwsStackPolicyStatement"
+        }
+      },
+      "role": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "statements": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/AwsIamRoleStatement"
+                }
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "managedPolicies": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "permissionsBoundary": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "deploymentRole": {
+        "type": "string",
+        "description": "ARN of an IAM role for CloudFormation service. If specified, CloudFormation uses the role's credentials"
+      }
+    },
+    "additionalProperties": false
+  },
+  "required": [
+    "AwsIamRoleStatement"
+  ]
+}

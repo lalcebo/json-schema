@@ -1,0 +1,373 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.",
+  "definitions": {
+    "FederationParameters": {
+      "description": "Additional parameters to identify Federation mode",
+      "type": "object",
+      "properties": {
+        "SamlMetadataURL": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https?://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]{1,1000}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "SAML metadata URL to link with the Environment"
+        },
+        "FederationProviderName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[^_\\p{Z}][\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}][^_\\p{Z}]+",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Federation provider name to link with the Environment"
+        },
+        "SamlMetadataDocument": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*",
+              "minLength": 1000,
+              "maxLength": 10000000
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "SAML metadata document to link the federation provider to the Environment"
+        },
+        "ApplicationCallBackURL": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https?://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]{1,1000}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "SAML metadata URL to link with the Environment"
+        },
+        "FederationURN": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "SAML metadata URL to link with the Environment"
+        },
+        "AttributeMap": {
+          "description": "Attribute map for SAML configuration",
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "type": "object",
+            "properties": {
+              "Key": {
+                "type": "string",
+                "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "Value": {
+                "type": "string",
+                "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.",
+                "minLength": 0,
+                "maxLength": 256
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "SuperuserParameters": {
+      "description": "Parameters of the first Superuser for the FinSpace Environment",
+      "type": "object",
+      "properties": {
+        "FirstName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9]{1,50}$",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "First name"
+        },
+        "LastName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9]{1,50}$",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Last name"
+        },
+        "EmailAddress": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+[.]+[A-Za-z]+",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Email address"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DataBundleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws:finspace:[A-Za-z0-9_/.-]{0,63}:\\d*:data-bundle/[0-9A-Za-z_-]{1,128}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tag": {
+      "description": "A list of all tags for a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "EnvironmentId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]{1,26}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Unique identifier for representing FinSpace Environment"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9-]*[a-zA-Z0-9]{1,255}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Name of the Environment"
+    },
+    "AwsAccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]{1,26}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "AWS account ID associated with the Environment"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9. ]{1,1000}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Description of the Environment"
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATE_REQUESTED",
+            "CREATING",
+            "CREATED",
+            "DELETE_REQUESTED",
+            "DELETING",
+            "DELETED",
+            "FAILED_CREATION",
+            "FAILED_DELETION",
+            "RETRY_DELETION",
+            "SUSPENDED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "State of the Environment"
+    },
+    "EnvironmentUrl": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]{1,1000}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "URL used to login to the Environment"
+    },
+    "EnvironmentArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws:finspace:[A-Za-z0-9_/.-]{0,63}:\\d+:environment/[0-9A-Za-z_-]{1,128}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "ARN of the Environment"
+    },
+    "SageMakerStudioDomainUrl": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z-0-9-:\\/.]*{1,1000}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "SageMaker Studio Domain URL associated with the Environment"
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z-0-9-:\\/]*{1,1000}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "KMS key used to encrypt customer data within FinSpace Environment infrastructure"
+    },
+    "DedicatedServiceAccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]{1,26}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "ID for FinSpace created account used to store Environment artifacts"
+    },
+    "FederationMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LOCAL",
+            "FEDERATED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Federation mode used with the Environment"
+    },
+    "FederationParameters": {
+      "$ref": "#/definitions/FederationParameters"
+    },
+    "SuperuserParameters": {
+      "$ref": "#/definitions/SuperuserParameters"
+    },
+    "DataBundles": {
+      "description": "ARNs of FinSpace Data Bundles to install",
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/DataBundleArn"
+      }
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name"
+  ]
+}

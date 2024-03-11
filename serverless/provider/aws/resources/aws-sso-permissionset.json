@@ -1,0 +1,231 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for SSO PermissionSet",
+  "definitions": {
+    "Tag": {
+      "description": "The metadata that you apply to the permission set to help you categorize and organize them.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\w+=,.@-]+",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\w+=,.@-]+",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "ManagedPolicyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The managed policy to attach."
+    },
+    "CustomerManagedPolicyReference": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\w+=,.@-]+",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Path": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "((/[A-Za-z0-9\\.,\\+@=_-]+)*)/",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "additionalProperties": false
+    },
+    "PermissionsBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CustomerManagedPolicyReference": {
+          "$ref": "#/definitions/CustomerManagedPolicyReference"
+        },
+        "ManagedPolicyArn": {
+          "$ref": "#/definitions/ManagedPolicyArn"
+        }
+      }
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\w+=,.@-]+",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name you want to assign to this permission set."
+    },
+    "PermissionSetArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16}",
+          "minLength": 10,
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The permission set that the policy will be attached to"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*",
+          "minLength": 1,
+          "maxLength": 700
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The permission set description."
+    },
+    "InstanceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+          "minLength": 10,
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The sso instance arn that the permission set is owned."
+    },
+    "SessionDuration": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The length of time that a user can be signed in to an AWS account."
+    },
+    "RelayStateType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9&amp;$@#\\/%?=~\\-_'&quot;|!:,.;*+\\[\\]\\ \\(\\)\\{\\}]+",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The relay state URL that redirect links to any service in the AWS Management Console."
+    },
+    "ManagedPolicies": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/ManagedPolicyArn"
+      },
+      "maxItems": 20,
+      "default": []
+    },
+    "InlinePolicy": {
+      "description": "The inline policy to put in permission set.",
+      "type": [
+        "object",
+        "string"
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 50
+    },
+    "CustomerManagedPolicyReferences": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/CustomerManagedPolicyReference"
+      },
+      "maxItems": 20,
+      "default": []
+    },
+    "PermissionsBoundary": {
+      "$ref": "#/definitions/PermissionsBoundary"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "InstanceArn"
+  ]
+}

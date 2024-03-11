@@ -1,0 +1,686 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::SageMaker::UserProfile",
+  "additionalProperties": false,
+  "properties": {
+    "UserProfileArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:user-profile/.*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The user profile Amazon Resource Name (ARN)."
+    },
+    "DomainId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the associated Domain."
+    },
+    "SingleSignOnUserIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "UserName"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A specifier for the type of value specified in SingleSignOnUserValue. Currently, the only supported value is \"UserName\". If the Domain's AuthMode is SSO, this field is required. If the Domain's AuthMode is not SSO, this field cannot be specified."
+    },
+    "SingleSignOnUserValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The username of the associated AWS Single Sign-On User for this UserProfile. If the Domain's AuthMode is SSO, this field is required, and must match a valid username of a user in your directory. If the Domain's AuthMode is not SSO, this field cannot be specified."
+    },
+    "UserProfileName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A name for the UserProfile."
+    },
+    "UserSettings": {
+      "$ref": "#/definitions/UserSettings",
+      "description": "A collection of settings.",
+      "uniqueItems": false,
+      "minItems": 0,
+      "maxItems": 50
+    },
+    "Tags": {
+      "type": "array",
+      "description": "A list of tags to apply to the user profile.",
+      "uniqueItems": false,
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "UserSettings": {
+      "type": "object",
+      "description": "A collection of settings that apply to users of Amazon SageMaker Studio. These settings are specified when the CreateUserProfile API is called, and as DefaultUserSettings when the CreateDomain API is called.",
+      "additionalProperties": false,
+      "properties": {
+        "ExecutionRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 2048,
+              "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The user profile Amazon Resource Name (ARN)."
+        },
+        "JupyterServerAppSettings": {
+          "$ref": "#/definitions/JupyterServerAppSettings",
+          "description": "The Jupyter server's app settings."
+        },
+        "KernelGatewayAppSettings": {
+          "$ref": "#/definitions/KernelGatewayAppSettings",
+          "description": "The kernel gateway app settings."
+        },
+        "RStudioServerProAppSettings": {
+          "$ref": "#/definitions/RStudioServerProAppSettings"
+        },
+        "JupyterLabAppSettings": {
+          "$ref": "#/definitions/JupyterLabAppSettings"
+        },
+        "SpaceStorageSettings": {
+          "$ref": "#/definitions/DefaultSpaceStorageSettings"
+        },
+        "CodeEditorAppSettings": {
+          "$ref": "#/definitions/CodeEditorAppSettings"
+        },
+        "DefaultLandingUri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1023
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Defines which Amazon SageMaker application users are directed to by default."
+        },
+        "StudioWebPortal": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Indicates whether the Studio experience is available to users. If not, users cannot access Studio."
+        },
+        "CustomPosixUserConfig": {
+          "$ref": "#/definitions/CustomPosixUserConfig"
+        },
+        "CustomFileSystemConfigs": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 0,
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/definitions/CustomFileSystemConfig"
+          }
+        },
+        "SecurityGroups": {
+          "type": "array",
+          "description": "The security groups for the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.",
+          "uniqueItems": false,
+          "minItems": 0,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "maxLength": 32,
+            "pattern": "[-0-9a-zA-Z]+"
+          }
+        },
+        "SharingSettings": {
+          "$ref": "#/definitions/SharingSettings",
+          "description": "The sharing settings."
+        }
+      }
+    },
+    "JupyterServerAppSettings": {
+      "type": "object",
+      "description": "The JupyterServer app settings.",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultResourceSpec": {
+          "$ref": "#/definitions/ResourceSpec"
+        }
+      }
+    },
+    "ResourceSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InstanceType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "system",
+                "ml.t3.micro",
+                "ml.t3.small",
+                "ml.t3.medium",
+                "ml.t3.large",
+                "ml.t3.xlarge",
+                "ml.t3.2xlarge",
+                "ml.m5.large",
+                "ml.m5.xlarge",
+                "ml.m5.2xlarge",
+                "ml.m5.4xlarge",
+                "ml.m5.8xlarge",
+                "ml.m5.12xlarge",
+                "ml.m5.16xlarge",
+                "ml.m5.24xlarge",
+                "ml.c5.large",
+                "ml.c5.xlarge",
+                "ml.c5.2xlarge",
+                "ml.c5.4xlarge",
+                "ml.c5.9xlarge",
+                "ml.c5.12xlarge",
+                "ml.c5.18xlarge",
+                "ml.c5.24xlarge",
+                "ml.p3.2xlarge",
+                "ml.p3.8xlarge",
+                "ml.p3.16xlarge",
+                "ml.g4dn.xlarge",
+                "ml.g4dn.2xlarge",
+                "ml.g4dn.4xlarge",
+                "ml.g4dn.8xlarge",
+                "ml.g4dn.12xlarge",
+                "ml.g4dn.16xlarge",
+                "ml.r5.large",
+                "ml.r5.xlarge",
+                "ml.r5.2xlarge",
+                "ml.r5.4xlarge",
+                "ml.r5.8xlarge",
+                "ml.r5.12xlarge",
+                "ml.r5.16xlarge",
+                "ml.r5.24xlarge",
+                "ml.p3dn.24xlarge",
+                "ml.m5d.large",
+                "ml.m5d.xlarge",
+                "ml.m5d.2xlarge",
+                "ml.m5d.4xlarge",
+                "ml.m5d.8xlarge",
+                "ml.m5d.12xlarge",
+                "ml.m5d.16xlarge",
+                "ml.m5d.24xlarge",
+                "ml.g5.xlarge",
+                "ml.g5.2xlarge",
+                "ml.g5.4xlarge",
+                "ml.g5.8xlarge",
+                "ml.g5.12xlarge",
+                "ml.g5.16xlarge",
+                "ml.g5.24xlarge",
+                "ml.g5.48xlarge",
+                "ml.p4d.24xlarge",
+                "ml.p4de.24xlarge",
+                "ml.geospatial.interactive",
+                "ml.trn1.2xlarge",
+                "ml.trn1.32xlarge",
+                "ml.trn1n.32xlarge"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The instance type that the image version runs on."
+        },
+        "SageMakerImageArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image/[a-z0-9]([-.]?[a-z0-9])*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of the SageMaker image that the image version belongs to."
+        },
+        "SageMakerImageVersionArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image-version/[a-z0-9]([-.]?[a-z0-9])*/[0-9]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of the image version created on the instance."
+        }
+      }
+    },
+    "KernelGatewayAppSettings": {
+      "type": "object",
+      "description": "The kernel gateway app settings.",
+      "additionalProperties": false,
+      "properties": {
+        "CustomImages": {
+          "type": "array",
+          "description": "A list of custom SageMaker images that are configured to run as a KernelGateway app.",
+          "uniqueItems": false,
+          "minItems": 0,
+          "maxItems": 30,
+          "items": {
+            "$ref": "#/definitions/CustomImage"
+          }
+        },
+        "DefaultResourceSpec": {
+          "$ref": "#/definitions/ResourceSpec",
+          "description": "The default instance type and the Amazon Resource Name (ARN) of the default SageMaker image used by the KernelGateway app."
+        }
+      }
+    },
+    "JupyterLabAppSettings": {
+      "type": "object",
+      "description": "The JupyterLab app settings.",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultResourceSpec": {
+          "$ref": "#/definitions/ResourceSpec",
+          "description": "The default instance type and the Amazon Resource Name (ARN) of the default SageMaker image used by the JupyterLab app."
+        },
+        "LifecycleConfigArns": {
+          "type": "array",
+          "description": "A list of LifecycleConfigArns available for use with JupyterLab apps.",
+          "uniqueItems": false,
+          "minItems": 0,
+          "maxItems": 30,
+          "items": {
+            "$ref": "#/definitions/StudioLifecycleConfigArn"
+          }
+        },
+        "CodeRepositories": {
+          "type": "array",
+          "description": "A list of CodeRepositories available for use with JupyterLab apps.",
+          "uniqueItems": false,
+          "minItems": 0,
+          "maxItems": 30,
+          "items": {
+            "$ref": "#/definitions/CodeRepository"
+          }
+        },
+        "CustomImages": {
+          "type": "array",
+          "description": "A list of custom images available for use for JupyterLab apps",
+          "uniqueItems": false,
+          "minItems": 0,
+          "maxItems": 30,
+          "items": {
+            "$ref": "#/definitions/CustomImage"
+          }
+        }
+      }
+    },
+    "CodeRepository": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RepositoryUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^https://([.\\-_a-zA-Z0-9]+/?){3,1016}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A CodeRepository (valid URL) to be used within Jupyter's Git extension."
+        }
+      },
+      "required": [
+        "RepositoryUrl"
+      ]
+    },
+    "DefaultSpaceStorageSettings": {
+      "type": "object",
+      "description": "Default storage settings for a space.",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultEbsStorageSettings": {
+          "$ref": "#/definitions/DefaultEbsStorageSettings"
+        }
+      }
+    },
+    "DefaultEbsStorageSettings": {
+      "type": "object",
+      "description": "Properties related to the Amazon Elastic Block Store volume.",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultEbsVolumeSizeInGb": {
+          "description": "Default size of the Amazon EBS volume in Gb",
+          "$ref": "#/definitions/SpaceEbsVolumeSizeInGb"
+        },
+        "MaximumEbsVolumeSizeInGb": {
+          "description": "Maximum size of the Amazon EBS volume in Gb. Must be greater than or equal to the DefaultEbsVolumeSizeInGb.",
+          "$ref": "#/definitions/SpaceEbsVolumeSizeInGb"
+        }
+      },
+      "required": [
+        "DefaultEbsVolumeSizeInGb",
+        "MaximumEbsVolumeSizeInGb"
+      ]
+    },
+    "SpaceEbsVolumeSizeInGb": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 16384
+    },
+    "CodeEditorAppSettings": {
+      "type": "object",
+      "description": "The CodeEditor app settings.",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultResourceSpec": {
+          "$ref": "#/definitions/ResourceSpec",
+          "description": "The default instance type and the Amazon Resource Name (ARN) of the default SageMaker image used by the CodeEditor app."
+        },
+        "LifecycleConfigArns": {
+          "type": "array",
+          "description": "A list of LifecycleConfigArns available for use with CodeEditor apps.",
+          "uniqueItems": false,
+          "minItems": 0,
+          "maxItems": 30,
+          "items": {
+            "$ref": "#/definitions/StudioLifecycleConfigArn"
+          }
+        }
+      }
+    },
+    "StudioLifecycleConfigArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:studio-lifecycle-config/.*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the Lifecycle Configuration to attach to the Resource."
+    },
+    "CustomPosixUserConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Uid": {
+          "type": "integer",
+          "minimum": 10000,
+          "maximum": 4000000
+        },
+        "Gid": {
+          "type": "integer",
+          "minimum": 1001,
+          "maximum": 4000000
+        }
+      },
+      "required": [
+        "Uid",
+        "Gid"
+      ]
+    },
+    "CustomFileSystemConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EFSFileSystemConfig": {
+          "$ref": "#/definitions/EFSFileSystemConfig"
+        }
+      }
+    },
+    "EFSFileSystemConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FileSystemPath": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\/\\S*$",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "FileSystemId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 11,
+              "maxLength": 21,
+              "pattern": "^(fs-[0-9a-f]{8,})$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FileSystemId"
+      ]
+    },
+    "CustomImage": {
+      "type": "object",
+      "description": "A custom SageMaker image.",
+      "additionalProperties": false,
+      "properties": {
+        "AppImageConfigName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Name of the AppImageConfig."
+        },
+        "ImageName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "pattern": "^[a-zA-Z0-9]([-.]?[a-zA-Z0-9]){0,62}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the CustomImage. Must be unique to your account."
+        },
+        "ImageVersionNumber": {
+          "type": "integer",
+          "description": "The version number of the CustomImage.",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "AppImageConfigName",
+        "ImageName"
+      ]
+    },
+    "SharingSettings": {
+      "type": "object",
+      "description": "Specifies options when sharing an Amazon SageMaker Studio notebook. These settings are specified as part of DefaultUserSettings when the CreateDomain API is called, and as part of UserSettings when the CreateUserProfile API is called.",
+      "additionalProperties": false,
+      "properties": {
+        "NotebookOutputOption": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Allowed",
+                "Disabled"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Whether to include the notebook cell output when sharing the notebook. The default is Disabled."
+        },
+        "S3KmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": ".*"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "When NotebookOutputOption is Allowed, the AWS Key Management Service (KMS) encryption key ID used to encrypt the notebook cell output in the Amazon S3 bucket."
+        },
+        "S3OutputPath": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "pattern": "^(https|s3)://([^/]+)/?(.*)$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "When NotebookOutputOption is Allowed, the Amazon S3 bucket used to store the shared notebook snapshots."
+        }
+      }
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "RStudioServerProAppSettings": {
+      "type": "object",
+      "description": "A collection of settings that configure user interaction with the RStudioServerPro app.",
+      "additionalProperties": false,
+      "properties": {
+        "AccessStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Indicates whether the current user has access to the RStudioServerPro app."
+        },
+        "UserGroup": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "R_STUDIO_ADMIN",
+                "R_STUDIO_USER"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The level of permissions that the user has within the RStudioServerPro app. This value defaults to User. The Admin value allows the user access to the RStudio Administrative Dashboard."
+        }
+      }
+    }
+  },
+  "required": [
+    "DomainId",
+    "UserProfileName"
+  ]
+}

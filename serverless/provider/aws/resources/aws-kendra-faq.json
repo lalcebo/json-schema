@@ -1,0 +1,224 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "A Kendra FAQ resource",
+  "definitions": {
+    "Tag": {
+      "description": "A label for tagging Kendra resources",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A string containing the value for the tag"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "TagList": {
+      "description": "List of tags",
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "IndexId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Unique ID of Index"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Description of the FAQ"
+    },
+    "FileFormat": {
+      "oneOf": [
+        {
+          "enum": [
+            "CSV",
+            "CSV_WITH_HEADER",
+            "JSON"
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Format of the input file"
+    },
+    "S3Path": {
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "$ref": "#/definitions/S3BucketName"
+        },
+        "Key": {
+          "$ref": "#/definitions/S3ObjectKey"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Bucket",
+        "Key"
+      ]
+    },
+    "S3BucketName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63,
+          "pattern": "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "S3ObjectKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "FaqName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1284,
+          "pattern": "arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Unique ID of the FAQ"
+    }
+  },
+  "properties": {
+    "Id": {
+      "$ref": "#/definitions/Id"
+    },
+    "IndexId": {
+      "description": "Index ID",
+      "$ref": "#/definitions/IndexId"
+    },
+    "Name": {
+      "description": "FAQ name",
+      "$ref": "#/definitions/FaqName"
+    },
+    "Description": {
+      "description": "FAQ description",
+      "$ref": "#/definitions/Description"
+    },
+    "FileFormat": {
+      "description": "FAQ file format",
+      "$ref": "#/definitions/FileFormat"
+    },
+    "S3Path": {
+      "description": "FAQ S3 path",
+      "$ref": "#/definitions/S3Path"
+    },
+    "RoleArn": {
+      "description": "FAQ role ARN",
+      "$ref": "#/definitions/RoleArn"
+    },
+    "Tags": {
+      "description": "Tags for labeling the FAQ",
+      "$ref": "#/definitions/TagList"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "IndexId",
+    "Name",
+    "S3Path",
+    "RoleArn"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "AWS Route53 Recovery Readiness Recovery Group Schema and API specifications.",
+  "taggable": true,
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "properties": {
+    "RecoveryGroupName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9_]+",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the recovery group to create."
+    },
+    "Cells": {
+      "description": "A list of the cell Amazon Resource Names (ARNs) in the recovery group.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "maxItems": 5,
+      "insertionOrder": false
+    },
+    "RecoveryGroupArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A collection of tags associated with a resource."
+    },
+    "Tags": {
+      "description": "A collection of tags associated with a resource.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag",
+        "maxItems": 20
+      },
+      "insertionOrder": false
+    }
+  },
+  "additionalProperties": false
+}

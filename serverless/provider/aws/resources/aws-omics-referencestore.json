@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::Omics::ReferenceStore Resource Type",
+  "definitions": {
+    "EncryptionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "KMS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "SseConfig": {
+      "type": "object",
+      "description": "Server-side encryption (SSE) settings for a store.",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/EncryptionType"
+        },
+        "KeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "arn:([^:\n]*):([^:\n]*):([^:\n]*):([0-9]{12}):([^:\n]*)"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "An encryption key ARN."
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "TagMap": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 127,
+          "minLength": 1,
+          "pattern": "^arn:.+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The store's ARN."
+    },
+    "CreationTime": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "When the store was created."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "pattern": "^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description for the store."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 127,
+          "minLength": 1,
+          "pattern": "^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A name for the store."
+    },
+    "ReferenceStoreId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 10,
+          "pattern": "^[0-9]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "SseConfig": {
+      "$ref": "#/definitions/SseConfig"
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "required": [
+    "Name"
+  ],
+  "additionalProperties": false
+}

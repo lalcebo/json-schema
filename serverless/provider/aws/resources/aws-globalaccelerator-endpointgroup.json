@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::GlobalAccelerator::EndpointGroup",
+  "definitions": {
+    "EndpointConfiguration": {
+      "description": "The configuration for a given endpoint",
+      "type": "object",
+      "properties": {
+        "EndpointId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Id of the endpoint. For Network/Application Load Balancer this value is the ARN.  For EIP, this value is the allocation ID.  For EC2 instances, this is the EC2 instance ID"
+        },
+        "AttachmentArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Attachment ARN that provides access control to the cross account endpoint. Not required for resources hosted in the same account as the endpoint group."
+        },
+        "Weight": {
+          "description": "The weight for the endpoint.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255,
+          "default": 100
+        },
+        "ClientIPPreservationEnabled": {
+          "description": "true if client ip should be preserved",
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": [
+        "EndpointId"
+      ],
+      "additionalProperties": false
+    },
+    "Port": {
+      "description": "A network port number",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "PortOverride": {
+      "description": "listener to endpoint port mapping.",
+      "type": "object",
+      "properties": {
+        "ListenerPort": {
+          "$ref": "#/definitions/Port"
+        },
+        "EndpointPort": {
+          "$ref": "#/definitions/Port"
+        }
+      },
+      "required": [
+        "ListenerPort",
+        "EndpointPort"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "ListenerArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the listener"
+    },
+    "EndpointGroupRegion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the AWS Region where the endpoint group is located"
+    },
+    "EndpointConfigurations": {
+      "description": "The list of endpoint objects.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EndpointConfiguration"
+      }
+    },
+    "TrafficDialPercentage": {
+      "description": "The percentage of traffic to sent to an AWS Region",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 100
+    },
+    "HealthCheckPort": {
+      "description": "The port that AWS Global Accelerator uses to check the health of endpoints in this endpoint group.",
+      "type": "integer",
+      "minimum": -1,
+      "maximum": 65535,
+      "default": -1
+    },
+    "HealthCheckProtocol": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "TCP",
+          "enum": [
+            "TCP",
+            "HTTP",
+            "HTTPS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The protocol that AWS Global Accelerator uses to check the health of endpoints in this endpoint group."
+    },
+    "HealthCheckPath": {
+      "oneOf": [
+        {
+          "description": "",
+          "type": "string",
+          "default": "/"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "HealthCheckIntervalSeconds": {
+      "description": "The time in seconds between each health check for an endpoint. Must be a value of 10 or 30",
+      "type": "integer",
+      "default": 30
+    },
+    "ThresholdCount": {
+      "description": "The number of consecutive health checks required to set the state of the endpoint to unhealthy.",
+      "type": "integer",
+      "default": 3
+    },
+    "EndpointGroupArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the endpoint group"
+    },
+    "PortOverrides": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PortOverride"
+      }
+    }
+  },
+  "required": [
+    "ListenerArn",
+    "EndpointGroupRegion"
+  ],
+  "additionalProperties": false
+}
