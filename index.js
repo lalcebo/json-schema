@@ -27,12 +27,6 @@ function applyCFStringFunctions(obj) {
                     {
                         ...val
                     },
-                    /*
-                    {
-                        pattern: "\\$\\{.*",
-                        type: "string"
-                    },
-                    */
                     {
                         "$ref": "../component/functions.json#/AwsFunctionString"
                     }
@@ -162,7 +156,7 @@ function getThirdPartySchemas() {
                     ],
                 },
                 Properties: {
-                    $ref: `resources/${resource}`
+                    $ref: `resource/${resource}`
                 },
                 ...sharedAttributes
             },
@@ -214,7 +208,7 @@ function getThirdPartySchemas() {
         delete schema.sourceUrl
         delete schema.deprecatedProperties
 
-        const resourcesDir = `serverless/provider/aws/resources`;
+        const resourcesDir = `serverless/provider/aws/resource`;
         fs.mkdirSync(resourcesDir, {recursive: true})
 
         fs.writeFileSync(

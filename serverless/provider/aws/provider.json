@@ -129,7 +129,11 @@
       "type": "object"
     },
     "AwsFunction": {
+      "type": "object",
       "properties": {
+        "name": {
+          "type": "string"
+        },
         "awsKmsKeyArn": {
           "type": "string"
         },
@@ -191,9 +195,6 @@
             "string",
             "number"
           ]
-        },
-        "name": {
-          "type": "string"
         },
         "onError": {
           "type": "string"
@@ -294,9 +295,19 @@
         },
         "runtimeManagement": {
           "$ref": "component/lambda.json#/AwsLambdaRuntimeManagement"
+        },
+        "architecture": {
+          "description": "The instruction set architecture of a Lambda function determines the type of computer processor that Lambda uses to run the function.",
+          "default": "x86_64",
+          "enum": [
+            "x86_64",
+            "arm64"
+          ]
         }
       },
-      "type": "object"
+      "required": [
+        "name"
+      ]
     },
     "AwsCloudFront": {
       "properties": {
@@ -554,26 +565,6 @@
           "required": [
             "schedule"
           ]
-        }
-      ]
-    },
-    "AwsFunctions": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/AwsFunction"
-          }
-        },
-        {
-          "type": "string",
-          "minLength": 1
-        },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "../../reference.json#/definitions/ServerlessFilePath"
-          }
         }
       ]
     },
@@ -1713,10 +1704,10 @@
       ]
     },
     "name": {
+      "default": "aws",
       "enum": [
         "aws"
-      ],
-      "type": "string"
+      ]
     },
     "notificationArns": {
       "items": {
