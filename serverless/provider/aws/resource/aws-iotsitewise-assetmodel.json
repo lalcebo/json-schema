@@ -1,0 +1,761 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::IoTSiteWise::AssetModel",
+  "definitions": {
+    "AssetModelCompositeModel": {
+      "description": "Contains a composite model definition in an asset model. This composite model definition is applied to all assets created from the asset model.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "Type"
+      ],
+      "properties": {
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Actual ID of the composite model"
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 128,
+              "pattern": "[a-zA-Z0-9_][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9_]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The External ID of the composite model"
+        },
+        "ComposedAssetModelId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The component model ID for which the composite model is composed of"
+        },
+        "ParentAssetModelCompositeModelExternalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 128,
+              "pattern": "[a-zA-Z0-9_][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9_]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The parent composite model External ID"
+        },
+        "Path": {
+          "description": "The path of the composite model. This is only for derived composite models",
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A description for the asset composite model."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A unique, friendly name for the asset composite model."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The type of the composite model. For alarm composite models, this type is AWS/ALARM"
+        },
+        "CompositeModelProperties": {
+          "description": "The property definitions of the asset model. You can specify up to 200 properties per asset model.",
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AssetModelProperty"
+          }
+        }
+      }
+    },
+    "PropertyPathDefinition": {
+      "description": "The definition for property path which is used to reference properties in transforms/metrics",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Name"
+      ],
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the property"
+        }
+      }
+    },
+    "AssetModelProperty": {
+      "description": "Contains information about an asset model property.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "DataType",
+        "Type"
+      ],
+      "properties": {
+        "LogicalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[^\\u0000-\\u001F\\u007F]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Customer provided Logical ID for property."
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ID of the Asset Model Property"
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 128,
+              "pattern": "[a-zA-Z0-9_][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9_]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The External ID of the Asset Model Property"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the asset model property."
+        },
+        "DataType": {
+          "description": "The data type of the asset model property.",
+          "$ref": "#/definitions/DataType"
+        },
+        "DataTypeSpec": {
+          "description": "The data type of the structure for this property.",
+          "$ref": "#/definitions/DataTypeSpec"
+        },
+        "Unit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The unit of the asset model property, such as Newtons or RPM."
+        },
+        "Type": {
+          "description": "The property type",
+          "$ref": "#/definitions/PropertyType"
+        }
+      }
+    },
+    "DataType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STRING",
+            "INTEGER",
+            "DOUBLE",
+            "BOOLEAN",
+            "STRUCT"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DataTypeSpec": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS/ALARM_STATE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "PropertyType": {
+      "description": "Contains a property type, which can be one of attribute, measurement, metric, or transform.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "TypeName"
+      ],
+      "properties": {
+        "TypeName": {
+          "$ref": "#/definitions/TypeName"
+        },
+        "Attribute": {
+          "$ref": "#/definitions/Attribute"
+        },
+        "Transform": {
+          "$ref": "#/definitions/Transform"
+        },
+        "Metric": {
+          "$ref": "#/definitions/Metric"
+        }
+      }
+    },
+    "TypeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Measurement",
+            "Attribute",
+            "Transform",
+            "Metric"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Attribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "Transform": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The mathematical expression that defines the transformation function. You can specify up to 10 functions per expression."
+        },
+        "Variables": {
+          "description": "The list of variables used in the expression.",
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ExpressionVariable"
+          }
+        }
+      },
+      "required": [
+        "Expression",
+        "Variables"
+      ]
+    },
+    "Metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The mathematical expression that defines the metric aggregation function. You can specify up to 10 functions per expression."
+        },
+        "Variables": {
+          "description": "The list of variables used in the expression.",
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExpressionVariable"
+          }
+        },
+        "Window": {
+          "description": "The window (time interval) over which AWS IoT SiteWise computes the metric's aggregation expression",
+          "$ref": "#/definitions/MetricWindow"
+        }
+      },
+      "required": [
+        "Expression",
+        "Variables",
+        "Window"
+      ]
+    },
+    "MetricWindow": {
+      "description": "Contains a time interval window used for data aggregate computations (for example, average, sum, count, and so on).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Tumbling": {
+          "$ref": "#/definitions/TumblingWindow"
+        }
+      }
+    },
+    "TumblingWindow": {
+      "description": "Contains a tumbling window, which is a repeating fixed-sized, non-overlapping, and contiguous time interval. This window is used in metric and aggregation computations.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Interval": {
+          "$ref": "#/definitions/Interval"
+        },
+        "Offset": {
+          "$ref": "#/definitions/Offset"
+        }
+      },
+      "required": [
+        "Interval"
+      ]
+    },
+    "Interval": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The time interval for the tumbling window."
+    },
+    "Offset": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The shift or reference point on timeline for the contiguous time intervals."
+    },
+    "ExpressionVariable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The friendly name of the variable to be used in the expression."
+        },
+        "Value": {
+          "description": "The variable that identifies an asset property from which to use values.",
+          "$ref": "#/definitions/VariableValue"
+        }
+      },
+      "required": [
+        "Name",
+        "Value"
+      ]
+    },
+    "VariableValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PropertyLogicalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[^\\u0000-\\u001F\\u007F]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "PropertyId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ID of the property that is trying to be referenced"
+        },
+        "PropertyExternalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 128,
+              "pattern": "[a-zA-Z0-9_][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9_]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The External ID of the property that is trying to be referenced"
+        },
+        "PropertyPath": {
+          "description": "The path of the property that is trying to be referenced",
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "$ref": "#/definitions/PropertyPathDefinition"
+          }
+        },
+        "HierarchyLogicalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[^\\u0000-\\u001F\\u007F]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "HierarchyId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ID of the hierarchy that is trying to be referenced"
+        },
+        "HierarchyExternalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 128,
+              "pattern": "[a-zA-Z0-9_][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9_]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The External ID of the hierarchy that is trying to be referenced"
+        }
+      }
+    },
+    "AssetModelHierarchy": {
+      "description": "Contains information about an asset model hierarchy.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "ChildAssetModelId"
+      ],
+      "properties": {
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 36,
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Customer provided actual ID for hierarchy"
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 128,
+              "pattern": "[a-zA-Z0-9_][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9_]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Customer provided external ID for hierarchy"
+        },
+        "LogicalId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[^\\u0000-\\u001F\\u007F]+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Customer provided logical ID for hierarchy."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the asset model hierarchy."
+        },
+        "ChildAssetModelId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ID of the asset model. All assets in this hierarchy must be instances of the child AssetModelId asset model."
+        }
+      }
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "properties": {
+    "AssetModelId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 36,
+          "maxLength": 36,
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the asset model."
+    },
+    "AssetModelType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of the asset model (ASSET_MODEL OR COMPONENT_MODEL)"
+    },
+    "AssetModelExternalId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 128,
+          "pattern": "[a-zA-Z0-9_][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9_]+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The external ID of the asset model."
+    },
+    "AssetModelArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the asset model, which has the following format."
+    },
+    "AssetModelName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A unique, friendly name for the asset model."
+    },
+    "AssetModelDescription": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description for the asset model."
+    },
+    "AssetModelProperties": {
+      "description": "The property definitions of the asset model. You can specify up to 200 properties per asset model.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AssetModelProperty"
+      }
+    },
+    "AssetModelCompositeModels": {
+      "description": "The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AssetModelCompositeModel"
+      }
+    },
+    "AssetModelHierarchies": {
+      "description": "The hierarchy definitions of the asset model. Each hierarchy specifies an asset model whose assets can be children of any other assets created from this asset model. You can specify up to 10 hierarchies per asset model.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AssetModelHierarchy"
+      }
+    },
+    "Tags": {
+      "description": "A list of key-value pairs that contain metadata for the asset model.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "taggable": true,
+  "required": [
+    "AssetModelName"
+  ]
+}

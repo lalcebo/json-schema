@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::S3::AccessGrant resource is an Amazon S3 resource type representing permissions to a specific S3 bucket or prefix hosted in an S3 Access Grants instance.",
+  "definitions": {
+    "Grantee": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "GranteeType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "IAM",
+                "DIRECTORY_USER",
+                "DIRECTORY_GROUP"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Configures the transfer acceleration state for an Amazon S3 bucket."
+        },
+        "GranteeIdentifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The unique identifier of the Grantee"
+        }
+      },
+      "required": [
+        "GranteeType",
+        "GranteeIdentifier"
+      ]
+    },
+    "AccessGrantsLocationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3SubPrefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The S3 sub prefix of a registered location in your S3 Access Grants instance"
+        }
+      },
+      "required": [
+        "S3SubPrefix"
+      ]
+    },
+    "AccessGrantArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "the Amazon Resource Name (ARN) of the specified access grant."
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "properties": {
+    "AccessGrantId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "examples": [
+            "7c89cbd1-0f4e-40e3-861d-afb906952b77"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID assigned to this access grant."
+    },
+    "AccessGrantsLocationId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "examples": [
+            "125f332b-a499-4eb6-806f-8a6a1aa4cb96"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The custom S3 location to be accessed by the grantee"
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Permission": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "READ",
+            "WRITE",
+            "READWRITE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The level of access to be afforded to the grantee"
+    },
+    "ApplicationArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the application grantees will use to access the location"
+    },
+    "S3PrefixType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Object"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of S3SubPrefix."
+    },
+    "GrantScope": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The S3 path of the data to which you are granting access. It is a combination of the S3 path of the registered location and the subprefix."
+    },
+    "AccessGrantArn": {
+      "$ref": "#/definitions/AccessGrantArn",
+      "description": "The Amazon Resource Name (ARN) of the specified access grant.",
+      "examples": [
+        "arn:aws:s3:us-east-2:111122223333:access-grants/default/grant/7c89cbd1-0f4e-40e3-861d-afb906952b77"
+      ]
+    },
+    "Grantee": {
+      "$ref": "#/definitions/Grantee",
+      "description": "The principal who will be granted permission to access S3."
+    },
+    "AccessGrantsLocationConfiguration": {
+      "$ref": "#/definitions/AccessGrantsLocationConfiguration",
+      "description": "The configuration options of the grant location, which is the S3 path to the data to which you are granting access."
+    }
+  },
+  "required": [
+    "Grantee",
+    "Permission",
+    "AccessGrantsLocationId"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,325 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::SSM::Association resource associates an SSM document in AWS Systems Manager with EC2 instances that contain a configuration agent to process the document.",
+  "definitions": {
+    "Target": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]{1,128}$|resource-groups:Name"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 0,
+          "maxItems": 50
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Values"
+      ]
+    },
+    "ParameterValues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "S3Region": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 20
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "S3BucketName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "S3KeyPrefix": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "S3OutputLocation": {
+      "type": "object",
+      "properties": {
+        "OutputS3Region": {
+          "$ref": "#/definitions/S3Region"
+        },
+        "OutputS3BucketName": {
+          "$ref": "#/definitions/S3BucketName"
+        },
+        "OutputS3KeyPrefix": {
+          "$ref": "#/definitions/S3KeyPrefix"
+        }
+      },
+      "additionalProperties": false
+    },
+    "InstanceAssociationOutputLocation": {
+      "type": "object",
+      "properties": {
+        "S3Location": {
+          "$ref": "#/definitions/S3OutputLocation"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "AssociationId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+          "examples": [
+            "88df7b09-95e8-48c4-a3cb-08c2c20d5110",
+            "203dd0ec-0055-4bf0-a872-707f72ef06aa"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Unique identifier of the association."
+    },
+    "AssociationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_\\-.]{3,128}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the association."
+    },
+    "DocumentVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The version of the SSM document to associate with the target."
+    },
+    "InstanceId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "(^i-(\\w{8}|\\w{17})$)|(^mi-\\w{17}$)",
+          "examples": [
+            "i-0e60836d21cf313c4",
+            "mi-0532c22e49636ee13"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the instance that the SSM document is associated with."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_\\-.:/]{3,200}$",
+          "examples": [
+            "AWS-GatherSoftwareInventory",
+            "MyCustomSSMDocument"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the SSM document."
+    },
+    "Parameters": {
+      "description": "Parameter values that the SSM document uses at runtime.",
+      "type": "object",
+      "patternProperties": {
+        ".*{1,255}": {
+          "$ref": "#/definitions/ParameterValues"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ScheduleExpression": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "examples": [
+            "cron(0 0 */1 * * ? *)",
+            "cron(0 16 ? * TUE *)",
+            "rate(30 minutes)",
+            "rate(7 days)"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A Cron or Rate expression that specifies when the association is applied to the target."
+    },
+    "Targets": {
+      "description": "The targets that the SSM document sends commands to.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Target"
+      },
+      "minItems": 0,
+      "maxItems": 5
+    },
+    "OutputLocation": {
+      "$ref": "#/definitions/InstanceAssociationOutputLocation"
+    },
+    "AutomationTargetParameterName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MaxErrors": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([1-9][0-9]{0,6}|[0]|[1-9][0-9]%|[0-9]%|100%)$",
+          "examples": [
+            "1%",
+            "10%",
+            "50%",
+            "1"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MaxConcurrency": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([1-9][0-9]{0,6}|[1-9][0-9]%|[1-9]%|100%)$",
+          "examples": [
+            "1%",
+            "10%",
+            "50%",
+            "1"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ComplianceSeverity": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CRITICAL",
+            "HIGH",
+            "MEDIUM",
+            "LOW",
+            "UNSPECIFIED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "SyncCompliance": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AUTO",
+            "MANUAL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "WaitForSuccessTimeoutSeconds": {
+      "type": "integer",
+      "minimum": 15,
+      "maximum": 172800
+    },
+    "ApplyOnlyAtCronInterval": {
+      "type": "boolean"
+    },
+    "CalendarNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "examples": [
+        [
+          "calendar1",
+          "calendar2"
+        ],
+        [
+          "calendar3"
+        ]
+      ]
+    },
+    "ScheduleOffset": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6
+    }
+  },
+  "required": [
+    "Name"
+  ],
+  "additionalProperties": false
+}

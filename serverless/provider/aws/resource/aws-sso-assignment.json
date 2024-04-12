@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for SSO assignmet",
+  "properties": {
+    "InstanceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}",
+          "minLength": 10,
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The sso instance that the permission set is owned."
+    },
+    "TargetId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "\\d{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The account id to be provisioned."
+    },
+    "TargetType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS_ACCOUNT"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of resource to be provsioned to, only aws account now"
+    },
+    "PermissionSetArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::permissionSet/(sso)?ins-[a-zA-Z0-9-.]{16}/ps-[a-zA-Z0-9-./]{16}",
+          "minLength": 10,
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The permission set that the assignemt will be assigned"
+    },
+    "PrincipalType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "USER",
+            "GROUP"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The assignee's type, user/group"
+    },
+    "PrincipalId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$",
+          "minLength": 1,
+          "maxLength": 47
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The assignee's identifier, user id/group id"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "InstanceArn",
+    "TargetId",
+    "TargetType",
+    "PermissionSetArn",
+    "PrincipalType",
+    "PrincipalId"
+  ]
+}

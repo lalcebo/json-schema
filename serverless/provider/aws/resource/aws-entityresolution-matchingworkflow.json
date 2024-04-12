@@ -1,0 +1,441 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "MatchingWorkflow defined in AWS Entity Resolution service",
+  "definitions": {
+    "EntityName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]*$",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "AttributeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9- \\t]*$",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "SchemaMappingArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn):entityresolution:.*:[0-9]+:(schemamapping/.*)$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The SchemaMapping arn associated with the Schema"
+    },
+    "KMSArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn):kms:.*:[0-9]+:.*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MatchingWorkflowArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn):entityresolution:.*:[0-9]+:(matchingworkflow/.*)$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The default MatchingWorkflow arn"
+    },
+    "CreatedAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The time of this MatchingWorkflow got created"
+    },
+    "UpdatedAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The time of this MatchingWorkflow got last updated at"
+    },
+    "InputSource": {
+      "type": "object",
+      "properties": {
+        "InputSourceARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:(aws|aws-us-gov|aws-cn):.*:.*:[0-9]+:.*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "An Glue table ARN for the input source table"
+        },
+        "SchemaArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "$ref": "#/definitions/SchemaMappingArn"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "ApplyNormalization": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "InputSourceARN",
+        "SchemaArn"
+      ],
+      "additionalProperties": false
+    },
+    "OutputSource": {
+      "type": "object",
+      "properties": {
+        "OutputS3Path": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^s3://([^/]+)/?(.*?([^/]+)/?)$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The S3 path to which Entity Resolution will write the output table"
+        },
+        "Output": {
+          "type": "array",
+          "insertionOrder": false,
+          "minItems": 0,
+          "maxItems": 750,
+          "items": {
+            "$ref": "#/definitions/OutputAttribute"
+          }
+        },
+        "KMSArn": {
+          "$ref": "#/definitions/KMSArn"
+        },
+        "ApplyNormalization": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Output",
+        "OutputS3Path"
+      ],
+      "additionalProperties": false
+    },
+    "OutputAttribute": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "$ref": "#/definitions/AttributeName"
+        },
+        "Hashed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "additionalProperties": false
+    },
+    "ResolutionTechniques": {
+      "type": "object",
+      "properties": {
+        "ResolutionType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "RULE_MATCHING",
+                "ML_MATCHING",
+                "PROVIDER"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "RuleBasedProperties": {
+          "$ref": "#/definitions/RuleBasedProperties"
+        },
+        "ProviderProperties": {
+          "$ref": "#/definitions/ProviderProperties"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RuleBasedProperties": {
+      "type": "object",
+      "properties": {
+        "Rules": {
+          "type": "array",
+          "insertionOrder": false,
+          "minItems": 1,
+          "maxItems": 15,
+          "items": {
+            "$ref": "#/definitions/Rule"
+          }
+        },
+        "AttributeMatchingModel": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ONE_TO_ONE",
+                "MANY_TO_MANY"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AttributeMatchingModel",
+        "Rules"
+      ],
+      "additionalProperties": false
+    },
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "RuleName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z_0-9- \\t]*$",
+              "minLength": 0,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "MatchingKeys": {
+          "type": "array",
+          "insertionOrder": false,
+          "minItems": 1,
+          "maxItems": 15,
+          "items": {
+            "$ref": "#/definitions/AttributeName"
+          }
+        }
+      },
+      "required": [
+        "RuleName",
+        "MatchingKeys"
+      ],
+      "additionalProperties": false
+    },
+    "ProviderProperties": {
+      "type": "object",
+      "properties": {
+        "ProviderServiceArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Arn of the Provider service being used."
+        },
+        "ProviderConfiguration": {
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^.+$": {
+              "type": "string"
+            }
+          },
+          "description": "Additional Provider configuration that would be required for the provider service. The Configuration must be in JSON string format"
+        },
+        "IntermediateSourceConfiguration": {
+          "$ref": "#/definitions/IntermediateSourceConfiguration"
+        }
+      },
+      "required": [
+        "ProviderServiceArn"
+      ],
+      "additionalProperties": false
+    },
+    "IntermediateSourceConfiguration": {
+      "type": "object",
+      "properties": {
+        "IntermediateS3Path": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The s3 path that would be used to stage the intermediate data being generated during workflow execution."
+        }
+      },
+      "required": [
+        "IntermediateS3Path"
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "WorkflowName": {
+      "description": "The name of the MatchingWorkflow",
+      "$ref": "#/definitions/EntityName"
+    },
+    "Description": {
+      "description": "The description of the MatchingWorkflow",
+      "$ref": "#/definitions/Description"
+    },
+    "InputSourceConfig": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/definitions/InputSource"
+      }
+    },
+    "OutputSourceConfig": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/definitions/OutputSource"
+      }
+    },
+    "ResolutionTechniques": {
+      "$ref": "#/definitions/ResolutionTechniques"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn):iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "WorkflowArn": {
+      "$ref": "#/definitions/MatchingWorkflowArn"
+    },
+    "CreatedAt": {
+      "$ref": "#/definitions/CreatedAt"
+    },
+    "UpdatedAt": {
+      "$ref": "#/definitions/UpdatedAt"
+    }
+  },
+  "required": [
+    "WorkflowName",
+    "InputSourceConfig",
+    "OutputSourceConfig",
+    "ResolutionTechniques",
+    "RoleArn"
+  ],
+  "additionalProperties": false
+}

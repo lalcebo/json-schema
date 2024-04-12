@@ -1,0 +1,187 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::VerifiedPermissions::Policy Resource Type",
+  "definitions": {
+    "EntityIdentifier": {
+      "type": "object",
+      "properties": {
+        "EntityType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^.*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "EntityId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^.*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "EntityId",
+        "EntityType"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyDefinition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Static",
+          "properties": {
+            "Static": {
+              "$ref": "#/definitions/StaticPolicyDefinition"
+            }
+          },
+          "required": [
+            "Static"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "TemplateLinked",
+          "properties": {
+            "TemplateLinked": {
+              "$ref": "#/definitions/TemplateLinkedPolicyDefinition"
+            }
+          },
+          "required": [
+            "TemplateLinked"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "PolicyType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STATIC",
+            "TEMPLATE_LINKED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "StaticPolicyDefinition": {
+      "type": "object",
+      "properties": {
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 150,
+              "minLength": 0
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Statement": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 10000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Statement"
+      ],
+      "additionalProperties": false
+    },
+    "TemplateLinkedPolicyDefinition": {
+      "type": "object",
+      "properties": {
+        "PolicyTemplateId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9-]*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Principal": {
+          "$ref": "#/definitions/EntityIdentifier"
+        },
+        "Resource": {
+          "$ref": "#/definitions/EntityIdentifier"
+        }
+      },
+      "required": [
+        "PolicyTemplateId"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Definition": {
+      "$ref": "#/definitions/PolicyDefinition"
+    },
+    "PolicyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "PolicyStoreId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-]*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "PolicyType": {
+      "$ref": "#/definitions/PolicyType"
+    }
+  },
+  "required": [
+    "Definition",
+    "PolicyStoreId"
+  ],
+  "additionalProperties": false
+}

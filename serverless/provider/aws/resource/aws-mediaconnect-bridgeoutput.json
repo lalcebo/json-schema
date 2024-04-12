@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::MediaConnect::BridgeOutput",
+  "definitions": {
+    "BridgeNetworkOutput": {
+      "type": "object",
+      "description": "The output of the bridge. A network output is delivered to your premises.",
+      "properties": {
+        "Protocol": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "rtp-fec",
+                "rtp",
+                "udp"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The network output protocol."
+        },
+        "IpAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The network output IP Address."
+        },
+        "Port": {
+          "type": "integer",
+          "description": "The network output port."
+        },
+        "NetworkName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The network output's gateway network name."
+        },
+        "Ttl": {
+          "type": "integer",
+          "description": "The network output TTL."
+        }
+      },
+      "required": [
+        "Protocol",
+        "IpAddress",
+        "Port",
+        "NetworkName",
+        "Ttl"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "BridgeArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Number (ARN) of the bridge."
+    },
+    "NetworkOutput": {
+      "description": "The output of the bridge.",
+      "$ref": "#/definitions/BridgeNetworkOutput"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The network output name."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "BridgeArn",
+    "Name",
+    "NetworkOutput"
+  ],
+  "propertyTransform": {
+    "/properties/Name": "$join([\"Output:\",Name])"
+  }
+}

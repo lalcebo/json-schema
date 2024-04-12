@@ -1,0 +1,303 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Represents a monitor, which defines the monitoring boundaries for measurements that Internet Monitor publishes information about for an application",
+  "definitions": {
+    "MonitorConfigState": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "ACTIVE",
+            "INACTIVE",
+            "ERROR"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MonitorProcessingStatusCode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OK",
+            "INACTIVE",
+            "COLLECTING_DATA",
+            "INSUFFICIENT_DATA",
+            "FAULT_SERVICE",
+            "FAULT_ACCESS_CLOUDWATCH"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tag": {
+      "description": "The metadata that you apply to the cluster to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "iso8601UTC": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)"
+    },
+    "InternetMeasurementsLogDelivery": {
+      "type": "object",
+      "properties": {
+        "S3Config": {
+          "$ref": "#/definitions/S3Config"
+        }
+      },
+      "additionalProperties": false
+    },
+    "S3Config": {
+      "type": "object",
+      "properties": {
+        "BucketName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "BucketPrefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "LogDeliveryStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "HealthEventsConfig": {
+      "type": "object",
+      "properties": {
+        "AvailabilityScoreThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "PerformanceScoreThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "AvailabilityLocalHealthEventsConfig": {
+          "$ref": "#/definitions/LocalHealthEventsConfig"
+        },
+        "PerformanceLocalHealthEventsConfig": {
+          "$ref": "#/definitions/LocalHealthEventsConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "LocalHealthEventsConfig": {
+      "type": "object",
+      "properties": {
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "HealthScoreThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "MinTrafficImpact": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "CreatedAt": {
+      "$ref": "#/definitions/iso8601UTC"
+    },
+    "ModifiedAt": {
+      "$ref": "#/definitions/iso8601UTC"
+    },
+    "MonitorArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 20,
+          "pattern": "^arn:.*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MonitorName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "LinkedAccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 12,
+          "minLength": 12,
+          "pattern": "^(\\d{12})$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "IncludeLinkedAccounts": {
+      "type": "boolean"
+    },
+    "ProcessingStatus": {
+      "$ref": "#/definitions/MonitorProcessingStatusCode"
+    },
+    "ProcessingStatusInfo": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Resources": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "type": "string",
+        "maxLength": 2048,
+        "minLength": 20,
+        "pattern": "^arn:.*"
+      }
+    },
+    "ResourcesToAdd": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "type": "string",
+        "maxLength": 2048,
+        "minLength": 20
+      }
+    },
+    "ResourcesToRemove": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "type": "string",
+        "maxLength": 2048,
+        "minLength": 20
+      }
+    },
+    "Status": {
+      "$ref": "#/definitions/MonitorConfigState"
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "MaxCityNetworksToMonitor": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 500000
+    },
+    "TrafficPercentageToMonitor": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "InternetMeasurementsLogDelivery": {
+      "$ref": "#/definitions/InternetMeasurementsLogDelivery"
+    },
+    "HealthEventsConfig": {
+      "$ref": "#/definitions/HealthEventsConfig"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "MonitorName"
+  ]
+}

@@ -1,0 +1,317 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::ImageBuilder::ImageRecipe",
+  "properties": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the image recipe."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the image recipe."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The description of the image recipe."
+    },
+    "Version": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The version of the image recipe."
+    },
+    "Components": {
+      "description": "The components of the image recipe.",
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/ComponentConfiguration"
+      }
+    },
+    "BlockDeviceMappings": {
+      "description": "The block device mappings to apply when creating images from this recipe.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/InstanceBlockDeviceMapping"
+      }
+    },
+    "ParentImage": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The parent image of the image recipe."
+    },
+    "WorkingDirectory": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The working directory to be used during build and test workflows."
+    },
+    "AdditionalInstanceConfiguration": {
+      "description": "Specify additional settings and launch scripts for your build instances.",
+      "$ref": "#/definitions/AdditionalInstanceConfiguration"
+    },
+    "Tags": {
+      "description": "The tags of the image recipe.",
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        ".{1,}": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ComponentConfiguration": {
+      "description": "Configuration details of the component.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ComponentArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the component."
+        },
+        "Parameters": {
+          "description": "A group of parameter settings that are used to configure the component for a specific recipe.",
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ComponentParameter"
+          }
+        }
+      }
+    },
+    "InstanceBlockDeviceMapping": {
+      "description": "Defines block device mappings for the instance used to configure your image. ",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DeviceName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The device to which these mappings apply."
+        },
+        "VirtualName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Use to manage instance ephemeral devices."
+        },
+        "NoDevice": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Use to remove a mapping from the parent image."
+        },
+        "Ebs": {
+          "description": "Use to manage Amazon EBS-specific configuration for this mapping.",
+          "$ref": "#/definitions/EbsInstanceBlockDeviceSpecification"
+        }
+      }
+    },
+    "EbsInstanceBlockDeviceSpecification": {
+      "description": "Amazon EBS-specific block device mapping specifications. ",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Encrypted": {
+          "description": "Use to configure device encryption.",
+          "type": "boolean"
+        },
+        "DeleteOnTermination": {
+          "description": "Use to configure delete on termination of the associated device.",
+          "type": "boolean"
+        },
+        "Iops": {
+          "description": "Use to configure device IOPS.",
+          "type": "integer"
+        },
+        "KmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Use to configure the KMS key to use when encrypting the device."
+        },
+        "SnapshotId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The snapshot that defines the device contents."
+        },
+        "Throughput": {
+          "description": "For GP3 volumes only - The throughput in MiB/s that the volume supports.",
+          "type": "integer"
+        },
+        "VolumeSize": {
+          "description": "Use to override the device's volume size.",
+          "type": "integer"
+        },
+        "VolumeType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "standard",
+                "io1",
+                "io2",
+                "gp2",
+                "gp3",
+                "sc1",
+                "st1"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Use to override the device's volume type."
+        }
+      }
+    },
+    "AdditionalInstanceConfiguration": {
+      "additionalProperties": false,
+      "description": "Specify additional settings and launch scripts for your build instances.",
+      "type": "object",
+      "properties": {
+        "SystemsManagerAgent": {
+          "description": "Contains settings for the SSM agent on your build instance.",
+          "$ref": "#/definitions/SystemsManagerAgent"
+        },
+        "UserDataOverride": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Use this property to provide commands or a command script to run when you launch your build instance."
+        }
+      }
+    },
+    "SystemsManagerAgent": {
+      "additionalProperties": false,
+      "description": "Contains settings for the SSM agent on your build instance.",
+      "type": "object",
+      "properties": {
+        "UninstallAfterBuild": {
+          "description": "Controls whether the SSM agent is removed from your final build image, prior to creating the new AMI. If this is set to true, then the agent is removed from the final image. If it's set to false, then the agent is left in, so that it is included in the new AMI. The default value is false.",
+          "type": "boolean"
+        }
+      }
+    },
+    "ComponentParameter": {
+      "additionalProperties": false,
+      "description": "Contains a key/value pair that sets the named component parameter.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the component parameter to set."
+        },
+        "Value": {
+          "description": "Sets the value for the named component parameter.",
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "Value"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "Version",
+    "Components",
+    "ParentImage"
+  ],
+  "propertyTransform": {
+    "/properties/BlockDeviceMappings/*/Ebs/VolumeType": "$uppercase(VolumeType)"
+  }
+}

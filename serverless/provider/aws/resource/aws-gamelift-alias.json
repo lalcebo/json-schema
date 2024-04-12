@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::GameLift::Alias resource creates an alias for an Amazon GameLift (GameLift) fleet destination.",
+  "definitions": {
+    "RoutingStrategy": {
+      "type": "object",
+      "properties": {
+        "Message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The message text to be used with a terminal routing strategy. If you specify TERMINAL for the Type property, you must specify this property."
+        },
+        "FleetId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^fleet-\\S+"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "A unique identifier for a fleet that the alias points to. If you specify SIMPLE for the Type property, you must specify this property."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SIMPLE",
+                "TERMINAL"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Simple routing strategy. The alias resolves to one specific fleet. Use this type when routing to active fleets."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Type"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "FleetId"
+          ]
+        },
+        {
+          "required": [
+            "Message"
+          ]
+        }
+      ]
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A human-readable description of the alias."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": ".*\\S.*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A descriptive label that is associated with an alias. Alias names do not need to be unique."
+    },
+    "RoutingStrategy": {
+      "description": "A routing configuration that specifies where traffic is directed for this alias, such as to a fleet or to a message.",
+      "$ref": "#/definitions/RoutingStrategy"
+    },
+    "AliasId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Unique alias ID"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "RoutingStrategy"
+  ],
+  "taggable": true
+}

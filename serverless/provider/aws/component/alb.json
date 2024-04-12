@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Collection of Schemas for alb(Application Load Balancer) related configurations",
+  "additionalProperties": false,
+  "AwsAlb": {
+    "title": "AwsAlb",
+    "properties": {
+      "authorizers": {
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "$ref": "#/AwsAlbCognitoAuthorizer"
+            },
+            {
+              "$ref": "#/AwsAlbOIDCAuthorizer"
+            }
+          ]
+        }
+      },
+      "targetGroupPrefix": {
+        "type": "string",
+        "description": "Prefix to prepend when generating names for target groups"
+      }
+    },
+    "type": "object"
+  },
+  "AwsAlbCognitoAuthorizer": {
+    "type": "object",
+    "title": "AwsAlbCognitoAuthorizer",
+    "properties": {
+      "type": {
+        "type": "string",
+        "enum": [
+          "cognito"
+        ]
+      },
+      "userPoolArn": {
+        "type": "string"
+      },
+      "userPoolClientId": {
+        "type": "string"
+      },
+      "userPoolDomain": {
+        "type": "string"
+      },
+      "onUnauthenticatedRequest": {
+        "type": "string",
+        "description": "If set to 'allow' this allows the request to be forwarded to the target when user is not authenticated. When omitted it defaults 'deny' which makes a HTTP 401 Unauthorized error be returned. Alternatively configure to 'authenticate' to redirect request to IdP authorization endpoint.",
+        "default": "deny",
+        "enum": [
+          "allow",
+          "deny",
+          "authenticate"
+        ]
+      },
+      "requestExtraParams": {
+        "description": "The query parameters (up to 10) to include in the redirect request to the authorization endpoint",
+        "properties": {
+          "prompt": {
+            "type": "string"
+          },
+          "redirect": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "scope": {
+        "type": "string",
+        "description": "Can be a combination of any system-reserved scopes or custom scopes associated with the client. The default is openid",
+        "default": "openid"
+      },
+      "sessionCookieName": {
+        "type": "string",
+        "description": "The name of the cookie used to maintain session information. The default is AWSELBAuthSessionCookie",
+        "default": "AWSELBAuthSessionCookie"
+      },
+      "sessionTimeout": {
+        "type": "number",
+        "description": "The maximum duration of the authentication session, in seconds. The default is 604800 seconds (7 days).",
+        "default": 604800
+      }
+    },
+    "required": [
+      "type",
+      "userPoolArn",
+      "userPoolClientId",
+      "userPoolDomain"
+    ]
+  },
+  "AwsAlbOIDCAuthorizer": {
+    "type": "object",
+    "title": "AwsAlbOIDCAuthorizer",
+    "properties": {
+      "type": {
+        "type": "string",
+        "enum": [
+          "oidc"
+        ]
+      },
+      "authorizationEndpoint": {
+        "type": "string",
+        "description": "The authorization endpoint of the IdP. Must be a full URL, including the HTTPS protocol, the domain, and the path"
+      },
+      "clientId": {
+        "type": "string"
+      },
+      "clientSecret": {
+        "type": "string"
+      },
+      "useExistingClientSecret": {
+        "type": "boolean"
+      },
+      "issuer": {
+        "type": "string",
+        "description": "The OIDC issuer identifier of the IdP. This must be a full URL, including the HTTPS protocol, the domain, and the path"
+      },
+      "tokenEndpoint": {
+        "type": "string"
+      },
+      "userInfoEndpoint": {
+        "type": "string"
+      },
+      "onUnauthenticatedRequest": {
+        "type": "string",
+        "description": "If set to 'allow' this allows the request to be forwarded to the target when user is not authenticated. When omitted it defaults 'deny' which makes a HTTP 401 Unauthorized error be returned. Alternatively configure to 'authenticate' to redirect request to IdP authorization endpoint.",
+        "default": "deny",
+        "enum": [
+          "allow",
+          "deny",
+          "authenticate"
+        ]
+      },
+      "requestExtraParams": {
+        "description": "The query parameters (up to 10) to include in the redirect request to the authorization endpoint",
+        "properties": {
+          "prompt": {
+            "type": "string"
+          },
+          "redirect": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "scope": {
+        "type": "string",
+        "description": "Can be a combination of any system-reserved scopes or custom scopes associated with the client. The default is openid",
+        "default": "openid"
+      },
+      "sessionCookieName": {
+        "type": "string",
+        "description": "The name of the cookie used to maintain session information. The default is AWSELBAuthSessionCookie",
+        "default": "AWSELBAuthSessionCookie"
+      },
+      "sessionTimeout": {
+        "type": "number",
+        "description": "The maximum duration of the authentication session, in seconds. The default is 604800 seconds (7 days).",
+        "default": 604800
+      }
+    },
+    "required": [
+      "type",
+      "authorizationEndpoint",
+      "clientId",
+      "issuer",
+      "tokenEndpoint",
+      "userInfoEndpoint"
+    ]
+  },
+  "required": [
+    "AwsAlb",
+    "AwsAlbCognitoAuthorizer",
+    "AwsAlbOIDCAuthorizer"
+  ]
+}

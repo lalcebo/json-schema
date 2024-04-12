@@ -1,0 +1,203 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::SageMaker::Pipeline",
+  "additionalProperties": false,
+  "properties": {
+    "PipelineName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the Pipeline."
+    },
+    "PipelineDisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The display name of the Pipeline."
+    },
+    "PipelineDescription": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 3072
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The description of the Pipeline."
+    },
+    "PipelineDefinition": {
+      "type": "object",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "PipelineDefinitionBody": {
+              "type": "string",
+              "description": "A specification that defines the pipeline in JSON format."
+            }
+          },
+          "required": [
+            "PipelineDefinitionBody"
+          ]
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "PipelineDefinitionS3Location": {
+              "$ref": "#/definitions/S3Location"
+            }
+          },
+          "required": [
+            "PipelineDefinitionS3Location"
+          ]
+        }
+      ]
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Role Arn"
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "ParallelismConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaxParallelExecutionSteps": {
+          "description": "Maximum parallel execution steps",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "MaxParallelExecutionSteps"
+      ]
+    }
+  },
+  "definitions": {
+    "S3Location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the S3 bucket where the PipelineDefinition file is stored."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The file name of the PipelineDefinition file (Amazon S3 object name)."
+        },
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "For versioning-enabled buckets, a specific version of the PipelineDefinition file."
+        },
+        "ETag": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Amazon S3 ETag (a file checksum) of the PipelineDefinition file. If you don't specify a value, SageMaker skips ETag validation of your PipelineDefinition file."
+        }
+      },
+      "required": [
+        "Bucket",
+        "Key"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ]
+    }
+  },
+  "required": [
+    "PipelineName",
+    "PipelineDefinition",
+    "RoleArn"
+  ]
+}

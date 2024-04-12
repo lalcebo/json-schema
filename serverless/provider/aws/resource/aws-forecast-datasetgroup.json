@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Represents a dataset group that holds a collection of related datasets",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9\\-\\_\\.\\/\\:]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "MaxResults": {
+      "description": "The number of items to return in the response.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "NextToken": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "If the result of the previous request was truncated, the response includes a NextToken. To retrieve the next set of results, use the token in the next request. Tokens expire after 24 hours."
+    }
+  },
+  "properties": {
+    "DatasetArns": {
+      "description": "An array of Amazon Resource Names (ARNs) of the datasets that you want to include in the dataset group.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Arn"
+      },
+      "insertionOrder": true
+    },
+    "DatasetGroupName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_]*",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A name for the dataset group."
+    },
+    "Domain": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "RETAIL",
+            "CUSTOM",
+            "INVENTORY_PLANNING",
+            "EC2_CAPACITY",
+            "WORK_FORCE",
+            "WEB_TRAFFIC",
+            "METRICS"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The domain associated with the dataset group. When you add a dataset to a dataset group, this value and the value specified for the Domain parameter of the CreateDataset operation must match."
+    },
+    "Tags": {
+      "description": "The tags of Application Insights application.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 200,
+      "insertionOrder": true
+    },
+    "DatasetGroupArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9\\-\\_\\.\\/\\:]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the dataset group to delete."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "DatasetGroupName",
+    "Domain"
+  ],
+  "taggable": true
+}

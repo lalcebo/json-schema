@@ -1,0 +1,208 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "The AWS::AccessAnalyzer::Analyzer type specifies an analyzer of the user's account",
+  "resourceLink": {
+    "templateUri": "/access-analyzer/home?region=${awsRegion}#/analyzer/${AnalyzerName}",
+    "mappings": {
+      "AnalyzerName": "/AnalyzerName"
+    }
+  },
+  "definitions": {
+    "ArchiveRule": {
+      "description": "An Access Analyzer archive rule. Archive rules automatically archive new findings that meet the criteria you define when you create the rule.",
+      "type": "object",
+      "properties": {
+        "Filter": {
+          "type": "array",
+          "insertionOrder": false,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/Filter"
+          }
+        },
+        "RuleName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The archive rule name"
+        }
+      },
+      "required": [
+        "Filter",
+        "RuleName"
+      ],
+      "additionalProperties": false
+    },
+    "Filter": {
+      "type": "object",
+      "properties": {
+        "Contains": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "Eq": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "type": "string"
+          }
+        },
+        "Exists": {
+          "type": "boolean"
+        },
+        "Property": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Neq": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "Property"
+      ],
+      "additionalProperties": false
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "UnusedAccessConfiguration": {
+      "description": "The Configuration for Unused Access Analyzer",
+      "type": "object",
+      "properties": {
+        "UnusedAccessAge": {
+          "description": "The specified access age in days for which to generate findings for unused access. For example, if you specify 90 days, the analyzer will generate findings for IAM entities within the accounts of the selected organization for any access that hasn't been used in 90 or more days since the analyzer's last scan. You can choose a value between 1 and 180 days.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "AnalyzerName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Analyzer name"
+    },
+    "ArchiveRules": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/ArchiveRule"
+      }
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1600
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Amazon Resource Name (ARN) of the analyzer"
+    },
+    "Tags": {
+      "type": "array",
+      "maxItems": 50,
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of the analyzer, must be one of ACCOUNT, ORGANIZATION, ACCOUNT_UNUSED_ACCESS or ORGANIZATION_UNUSED_ACCESS"
+    },
+    "AnalyzerConfiguration": {
+      "description": "The configuration for the analyzer",
+      "type": "object",
+      "properties": {
+        "UnusedAccessConfiguration": {
+          "$ref": "#/definitions/UnusedAccessConfiguration"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "Type"
+  ],
+  "additionalProperties": false
+}

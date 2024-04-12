@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource schema for AWS::AppFlow::Connector",
+  "additionalProperties": false,
+  "properties": {
+    "ConnectorLabel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9][\\w!@#.-]+",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": " The name of the connector. The name is unique for each ConnectorRegistration in your AWS account."
+    },
+    "ConnectorArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:*:appflow:.*:[0-9]+:.*",
+          "maxLength": 512
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": " The arn of the connector. The arn is unique for each ConnectorRegistration in your AWS account."
+    },
+    "ConnectorProvisioningType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-zA-Z0-9][\\w!@#.-]+",
+          "maxLength": 256,
+          "minLength": 1
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The provisioning type of the connector. Currently the only supported value is LAMBDA. "
+    },
+    "ConnectorProvisioningConfig": {
+      "description": "Contains information about the configuration of the connector being registered.",
+      "$ref": "#/definitions/ConnectorProvisioningConfig"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\s\\w/!@#+=.-]*",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description about the connector that's being registered."
+    }
+  },
+  "definitions": {
+    "ConnectorProvisioningConfig": {
+      "description": "Contains information about the configuration of the connector being registered.",
+      "type": "object",
+      "properties": {
+        "Lambda": {
+          "description": "Contains information about the configuration of the lambda which is being registered as the connector.",
+          "$ref": "#/definitions/LambdaConnectorProvisioningConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "LambdaConnectorProvisioningConfig": {
+      "description": "Contains information about the configuration of the lambda which is being registered as the connector.",
+      "type": "object",
+      "properties": {
+        "LambdaArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:*:.*:.*:[0-9]+:.*",
+              "maxLength": 512
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "Lambda ARN of the connector being registered."
+        }
+      },
+      "required": [
+        "LambdaArn"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "ConnectorProvisioningType",
+    "ConnectorProvisioningConfig"
+  ]
+}

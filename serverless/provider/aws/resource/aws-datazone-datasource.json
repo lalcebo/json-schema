@@ -1,0 +1,682 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::DataZone::DataSource Resource Type",
+  "definitions": {
+    "AccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 12,
+          "minLength": 12,
+          "pattern": "^\\d{12}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DataAccessRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]{1,128}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The data access role included in the configuration details of the AWS Glue data source."
+    },
+    "DataSourceConfigurationInput": {
+      "description": "Specifies the configuration of the data source. It can be set to either glueRunConfiguration or redshiftRunConfiguration.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "GlueRunConfiguration",
+          "properties": {
+            "GlueRunConfiguration": {
+              "$ref": "#/definitions/GlueRunConfigurationInput"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "RedshiftRunConfiguration",
+          "properties": {
+            "RedshiftRunConfiguration": {
+              "$ref": "#/definitions/RedshiftRunConfigurationInput"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "DataSourceStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "FAILED_CREATION",
+            "READY",
+            "UPDATING",
+            "FAILED_UPDATE",
+            "RUNNING",
+            "DELETING",
+            "FAILED_DELETION"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the data source."
+    },
+    "EnableSetting": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Specifies whether the data source is enabled."
+    },
+    "FilterExpression": {
+      "type": "object",
+      "description": "The search filter expression.",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/FilterExpressionType"
+        },
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Expression",
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "FilterExpressionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "INCLUDE",
+            "EXCLUDE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The search filter expression type."
+    },
+    "FormName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the metadata form."
+    },
+    "FormInput": {
+      "type": "object",
+      "description": "The details of a metadata form.",
+      "properties": {
+        "FormName": {
+          "description": "The name of the metadata form.",
+          "$ref": "#/definitions/FormName"
+        },
+        "TypeIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 385,
+              "minLength": 1,
+              "pattern": "^(?!\\.)[\\w\\.]*\\w$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ID of the metadata form type."
+        },
+        "TypeRevision": {
+          "description": "The revision of the metadata form type.",
+          "$ref": "#/definitions/TypeRevision"
+        },
+        "Content": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 75000
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The content of the metadata form."
+        }
+      },
+      "required": [
+        "FormName"
+      ],
+      "additionalProperties": false
+    },
+    "GlueRunConfigurationInput": {
+      "type": "object",
+      "properties": {
+        "DataAccessRole": {
+          "description": "The data access role included in the configuration details of the AWS Glue data source.",
+          "$ref": "#/definitions/DataAccessRole"
+        },
+        "RelationalFilterConfigurations": {
+          "type": "array",
+          "description": "The relational filter configurations included in the configuration details of the AWS Glue data source.",
+          "items": {
+            "$ref": "#/definitions/RelationalFilterConfiguration"
+          },
+          "insertionOrder": false
+        }
+      },
+      "required": [
+        "RelationalFilterConfigurations"
+      ],
+      "additionalProperties": false
+    },
+    "RecommendationConfiguration": {
+      "type": "object",
+      "description": "The recommendation to be updated as part of the UpdateDataSource action.",
+      "properties": {
+        "EnableBusinessNameGeneration": {
+          "type": "boolean",
+          "description": "Specifies whether automatic business name generation is to be enabled or not as part of the recommendation configuration."
+        }
+      },
+      "additionalProperties": false
+    },
+    "RedshiftClusterStorage": {
+      "type": "object",
+      "description": "The name of an Amazon Redshift cluster.",
+      "properties": {
+        "ClusterName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "minLength": 1,
+              "pattern": "^[0-9a-z].[a-z0-9\\-]*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of an Amazon Redshift cluster."
+        }
+      },
+      "required": [
+        "ClusterName"
+      ],
+      "additionalProperties": false
+    },
+    "RedshiftCredentialConfiguration": {
+      "type": "object",
+      "description": "The ARN of a secret manager for an Amazon Redshift cluster.",
+      "properties": {
+        "SecretManagerArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^arn:aws[^:]*:secretsmanager:[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]:\\d{12}:secret:.*$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of a secret manager for an Amazon Redshift cluster."
+        }
+      },
+      "required": [
+        "SecretManagerArn"
+      ],
+      "additionalProperties": false
+    },
+    "RedshiftRunConfigurationInput": {
+      "type": "object",
+      "description": "The configuration details of the Amazon Redshift data source.",
+      "properties": {
+        "DataAccessRole": {
+          "description": "The data access role included in the configuration details of the Amazon Redshift data source.",
+          "$ref": "#/definitions/DataAccessRole"
+        },
+        "RelationalFilterConfigurations": {
+          "$ref": "#/definitions/RelationalFilterConfigurations"
+        },
+        "RedshiftCredentialConfiguration": {
+          "description": "The details of the credentials required to access an Amazon Redshift cluster.",
+          "$ref": "#/definitions/RedshiftCredentialConfiguration"
+        },
+        "RedshiftStorage": {
+          "description": "The details of the Amazon Redshift storage as part of the configuration of an Amazon Redshift data source run.",
+          "$ref": "#/definitions/RedshiftStorage"
+        }
+      },
+      "required": [
+        "RedshiftCredentialConfiguration",
+        "RedshiftStorage",
+        "RelationalFilterConfigurations"
+      ],
+      "additionalProperties": false
+    },
+    "RedshiftServerlessStorage": {
+      "type": "object",
+      "description": "The details of the Amazon Redshift Serverless workgroup storage.",
+      "properties": {
+        "WorkgroupName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 3,
+              "pattern": "^[a-z0-9-]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The name of the Amazon Redshift Serverless workgroup."
+        }
+      },
+      "required": [
+        "WorkgroupName"
+      ],
+      "additionalProperties": false
+    },
+    "RedshiftStorage": {
+      "description": "The details of the Amazon Redshift storage as part of the configuration of an Amazon Redshift data source run.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "RedshiftClusterSource",
+          "description": "The details of the Amazon Redshift cluster source.",
+          "properties": {
+            "RedshiftClusterSource": {
+              "$ref": "#/definitions/RedshiftClusterStorage"
+            }
+          },
+          "required": [
+            "RedshiftClusterSource"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "RedshiftServerlessSource",
+          "description": "The details of the Amazon Redshift Serverless workgroup source.",
+          "properties": {
+            "RedshiftServerlessSource": {
+              "$ref": "#/definitions/RedshiftServerlessStorage"
+            }
+          },
+          "required": [
+            "RedshiftServerlessSource"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Region": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 16,
+          "minLength": 4,
+          "pattern": "[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "RelationalFilterConfiguration": {
+      "type": "object",
+      "description": "The relational filter configuration for the data source.",
+      "properties": {
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The database name specified in the relational filter configuration for the data source."
+        },
+        "SchemaName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The schema name specified in the relational filter configuration for the data source."
+        },
+        "FilterExpressions": {
+          "type": "array",
+          "description": "The filter expressions specified in the relational filter configuration for the data source.",
+          "items": {
+            "$ref": "#/definitions/FilterExpression"
+          },
+          "insertionOrder": false
+        }
+      },
+      "required": [
+        "DatabaseName"
+      ],
+      "additionalProperties": false
+    },
+    "RelationalFilterConfigurations": {
+      "type": "array",
+      "description": "The relational filter configurations included in the configuration details of the Amazon Redshift data source.",
+      "items": {
+        "$ref": "#/definitions/RelationalFilterConfiguration"
+      },
+      "insertionOrder": false
+    },
+    "ScheduleConfiguration": {
+      "type": "object",
+      "description": "The schedule of the data source runs.",
+      "properties": {
+        "Timezone": {
+          "description": "The timezone of the data source run.",
+          "$ref": "#/definitions/Timezone"
+        },
+        "Schedule": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) (.*){1,5} (.*){1,5} (.*){1,5} (.*){1,5}\\)"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The schedule of the data source runs."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Timezone": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "TypeRevision": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The revision of the metadata form type."
+    }
+  },
+  "properties": {
+    "AssetFormsInput": {
+      "type": "array",
+      "description": "The metadata forms that are to be attached to the assets that this data source works with.",
+      "items": {
+        "$ref": "#/definitions/FormInput"
+      },
+      "maxItems": 10,
+      "minItems": 0,
+      "insertionOrder": false
+    },
+    "CreatedAt": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The timestamp of when the data source was created."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The description of the data source."
+    },
+    "DomainId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^dzd[-_][a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon DataZone domain where the data source is created."
+    },
+    "DomainIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^dzd[-_][a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon DataZone domain where the data source is created."
+    },
+    "EnableSetting": {
+      "description": "Specifies whether the data source is enabled.",
+      "$ref": "#/definitions/EnableSetting"
+    },
+    "EnvironmentId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The unique identifier of the Amazon DataZone environment to which the data source publishes assets."
+    },
+    "EnvironmentIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The unique identifier of the Amazon DataZone environment to which the data source publishes assets."
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The unique identifier of the data source."
+    },
+    "Configuration": {
+      "description": "Configuration of the data source. It can be set to either glueRunConfiguration or redshiftRunConfiguration.",
+      "$ref": "#/definitions/DataSourceConfigurationInput"
+    },
+    "LastRunAssetCount": {
+      "description": "The number of assets created by the data source during its last run.",
+      "type": "number"
+    },
+    "LastRunAt": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The timestamp that specifies when the data source was last run."
+    },
+    "LastRunStatus": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The status of the last run of this data source."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the data source."
+    },
+    "ProjectId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon DataZone project to which the data source is added."
+    },
+    "ProjectIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The identifier of the Amazon DataZone project in which you want to add the data source."
+    },
+    "PublishOnImport": {
+      "type": "boolean",
+      "description": "Specifies whether the assets that this data source creates in the inventory are to be also automatically published to the catalog."
+    },
+    "Recommendation": {
+      "$ref": "#/definitions/RecommendationConfiguration",
+      "description": "Specifies whether the business name generation is to be enabled for this data source."
+    },
+    "Schedule": {
+      "description": "The schedule of the data source runs.",
+      "$ref": "#/definitions/ScheduleConfiguration"
+    },
+    "Status": {
+      "description": "The status of the data source.",
+      "$ref": "#/definitions/DataSourceStatus"
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The type of the data source."
+    },
+    "UpdatedAt": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The timestamp of when this data source was updated."
+    }
+  },
+  "required": [
+    "Name",
+    "DomainIdentifier",
+    "ProjectIdentifier",
+    "EnvironmentIdentifier",
+    "Type"
+  ],
+  "additionalProperties": false
+}

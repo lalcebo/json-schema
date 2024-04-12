@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource Type definition for AWS::Lambda::Version",
+  "additionalProperties": false,
+  "properties": {
+    "FunctionArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ARN of the version."
+    },
+    "Version": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The version number."
+    },
+    "CodeSha256": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Only publish a version if the hash value matches the value that's specified. Use this option to avoid publishing a version if the function code has changed since you last updated it. Updates are not supported for this property."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A description for the version to override the description in the function configuration. Updates are not supported for this property."
+    },
+    "FunctionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 140,
+          "pattern": "^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the Lambda function."
+    },
+    "ProvisionedConcurrencyConfig": {
+      "description": "Specifies a provisioned concurrency configuration for a function's version. Updates are not supported for this property.",
+      "$ref": "#/definitions/ProvisionedConcurrencyConfiguration"
+    },
+    "RuntimePolicy": {
+      "description": "Specifies the runtime management configuration of a function. Displays runtimeVersionArn only for Manual.",
+      "$ref": "#/definitions/RuntimePolicy"
+    }
+  },
+  "definitions": {
+    "ProvisionedConcurrencyConfiguration": {
+      "type": "object",
+      "description": "A provisioned concurrency configuration for a function's version.",
+      "additionalProperties": false,
+      "properties": {
+        "ProvisionedConcurrentExecutions": {
+          "type": "integer",
+          "description": "The amount of provisioned concurrency to allocate for the version."
+        }
+      },
+      "required": [
+        "ProvisionedConcurrentExecutions"
+      ]
+    },
+    "RuntimePolicy": {
+      "type": "object",
+      "description": "Runtime Management Config of a function.",
+      "additionalProperties": false,
+      "properties": {
+        "RuntimeVersionArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 26,
+              "maxLength": 2048,
+              "pattern": "^arn:(aws[a-zA-Z-]*):lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}::runtime:.+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The ARN of the runtime the function is configured to use. If the runtime update mode is manual, the ARN is returned, otherwise null is returned."
+        },
+        "UpdateRuntimeOn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The runtime update mode."
+        }
+      },
+      "required": [
+        "UpdateRuntimeOn"
+      ]
+    }
+  },
+  "required": [
+    "FunctionName"
+  ],
+  "propertyTransform": {
+    "/properties/FunctionName": "$split(FunctionName, \":\")[-1] $OR FunctionName"
+  }
+}

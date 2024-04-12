@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Definition of AWS::RolesAnywhere::TrustAnchor Resource Type.",
+  "definitions": {
+    "NotificationChannel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ALL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "NotificationEvent": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CA_CERTIFICATE_EXPIRY",
+            "END_ENTITY_CERTIFICATE_EXPIRY"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "NotificationSetting": {
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "Event": {
+          "$ref": "#/definitions/NotificationEvent"
+        },
+        "Threshold": {
+          "type": "number",
+          "maximum": 360,
+          "minimum": 1
+        },
+        "Channel": {
+          "$ref": "#/definitions/NotificationChannel"
+        }
+      },
+      "required": [
+        "Enabled",
+        "Event"
+      ],
+      "additionalProperties": false
+    },
+    "Source": {
+      "type": "object",
+      "properties": {
+        "SourceType": {
+          "$ref": "#/definitions/TrustAnchorType"
+        },
+        "SourceData": {
+          "$ref": "#/definitions/SourceData"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SourceData": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "X509CertificateData",
+          "properties": {
+            "X509CertificateData": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "X509CertificateData"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "AcmPcaArn",
+          "properties": {
+            "AcmPcaArn": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "AcmPcaArn"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false
+    },
+    "TrustAnchorType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS_ACM_PCA",
+            "CERTIFICATE_BUNDLE",
+            "SELF_SIGNED_REPOSITORY"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "Enabled": {
+      "type": "boolean"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "NotificationSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/NotificationSetting"
+      },
+      "maxItems": 50,
+      "minItems": 0
+    },
+    "Source": {
+      "$ref": "#/definitions/Source"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0
+    },
+    "TrustAnchorId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "TrustAnchorArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "Name",
+    "Source"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,203 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "AWS Cost Anomaly Detection leverages advanced Machine Learning technologies to identify anomalous spend and root causes, so you can quickly take action. Create subscription to be notified",
+  "definitions": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:[-a-zA-Z0-9/:_]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Subscription ARN"
+    },
+    "Subscriber": {
+      "type": "object",
+      "properties": {
+        "Address": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(^[a-zA-Z0-9.!#$%&'*+=?^_‘{|}~-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$)|(^arn:(aws[a-zA-Z-]*):sns:[a-zA-Z0-9-]+:[0-9]{12}:[a-zA-Z0-9_-]+(\\.fifo)?$)"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CONFIRMED",
+                "DECLINED"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "EMAIL",
+                "SNS"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Address",
+        "Type"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceTag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:).*$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The key name for the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ]
+    }
+  },
+  "properties": {
+    "SubscriptionArn": {
+      "$ref": "#/definitions/Arn"
+    },
+    "SubscriptionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\S\\s]*",
+          "minLength": 0,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the subscription."
+    },
+    "AccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The accountId"
+    },
+    "MonitorArnList": {
+      "description": "A list of cost anomaly monitors.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Arn"
+      }
+    },
+    "Subscribers": {
+      "description": "A list of subscriber",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Subscriber"
+      }
+    },
+    "Threshold": {
+      "description": "The dollar value that triggers a notification if the threshold is exceeded. ",
+      "type": "number",
+      "minimum": 0
+    },
+    "ThresholdExpression": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "An Expression object in JSON String format used to specify the anomalies that you want to generate alerts for."
+    },
+    "Frequency": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DAILY",
+            "IMMEDIATE",
+            "WEEKLY"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The frequency at which anomaly reports are sent over email. "
+    },
+    "ResourceTags": {
+      "type": "array",
+      "description": "Tags to assign to subscription.",
+      "items": {
+        "$ref": "#/definitions/ResourceTag"
+      },
+      "minItems": 0,
+      "maxItems": 200,
+      "insertionOrder": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "MonitorArnList",
+    "Subscribers",
+    "Frequency",
+    "SubscriptionName"
+  ]
+}

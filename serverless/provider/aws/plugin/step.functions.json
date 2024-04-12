@@ -1,0 +1,2125 @@
+{
+  "schema": "https://json-schema.org/draft-07/schema#",
+  "description": " AWS Step Functions.",
+  "type": "object",
+  "additionalProperties": false,
+  "AwsStepFunctions": {
+    "type": "object",
+    "properties": {
+      "stateMachines": {
+        "$ref": "#/AwsStateMachines"
+      }
+    }
+  },
+  "AwsStateMachines": {
+    "type": "object",
+    "additionalProperties": {
+      "type": "object",
+      "title": "AwsStateMachine",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "id": {
+          "type": "string"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "retain": {
+          "description": "Whether you would like to prevent state machine from deletion on stack delete or update.",
+          "type": "boolean"
+        },
+        "definition": {
+          "$ref": "#/AwsStateMachineDefinition"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "schedule": {
+                "oneOf": [
+                  {
+                    "$ref": "#/AwsStateMachineScheduleEvent"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "http": {
+                "$ref": "#/AwsStateMachineHttpEvent"
+              },
+              "cloudwatchEvent": {
+                "$ref": "#/AwsStateMachineEventBridgeEvent"
+              },
+              "eventBridge": {
+                "$ref": "#/AwsStateMachineEventBridgeEvent"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "definition"
+      ]
+    }
+  },
+  "AwsStateMachineScheduleEvent": {
+    "type": "object",
+    "title": "AwsStateMachineScheduleEvent",
+    "properties": {
+      "description": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "input": {
+        "type": "object"
+      },
+      "inputPath": {
+        "type": "string"
+      },
+      "inputTransformer": {
+        "properties": {
+          "inputPathsMap": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "inputTemplate": {
+            "type": "string"
+          }
+        }
+      },
+      "name": {
+        "type": "string"
+      },
+      "rate": {
+        "type": "string"
+      }
+    }
+  },
+  "AwsStateMachineHttpEvent": {
+    "type": "object",
+    "properties": {
+      "path": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "path"
+    ],
+    "additionalProperties": false
+  },
+  "AwsStateMachineEventBridgeEvent": {
+    "type": "object",
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "input": {
+        "type": "object"
+      },
+      "deadLetterConfig": {
+        "type": "string"
+      },
+      "event": {
+        "type": "object",
+        "description": "EventBridge event pattern see:- https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events.html",
+        "properties": {
+          "source": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "detail": {
+            "type": "object"
+          },
+          "detail-type": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "event"
+    ],
+    "additionalProperties": false
+  },
+  "AwsStateMachineDefinition": {
+    "type": "object",
+    "properties": {
+      "Comment": {
+        "type": "string"
+      },
+      "StartAt": {
+        "type": "string",
+        "description": "The starting step in the state machine. Must be one of the states"
+      },
+      "States": {
+        "type": "object",
+        "description": "https://states-language.net/#states-fields",
+        "additionalProperties": {
+          "type": "object",
+          "oneOf": [
+            {
+              "$ref": "#/AwsStateMachineStatesChoice"
+            },
+            {
+              "$ref": "#/AwsStateMachineStatesFail"
+            },
+            {
+              "$ref": "#/AwsStateMachineStatesParallel"
+            },
+            {
+              "$ref": "#/AwsStateMachineStatesPass"
+            },
+            {
+              "$ref": "#/AwsStateMachineStatesSucceed"
+            },
+            {
+              "$ref": "#/AwsStateMachineStatesTask"
+            },
+            {
+              "$ref": "#/AwsStateMachineStatesWait"
+            },
+            {
+              "$ref": "#/AwsStateMachineStatesMapIterator"
+            },
+            {
+              "$ref": "#/AwsStateMachineStatesMapItemProcessor"
+            }
+          ]
+        }
+      },
+      "Version": {
+        "type": "string"
+      },
+      "TimeoutSeconds": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "required": [
+      "StartAt",
+      "States"
+    ]
+  },
+  "AwsStateMachineErrors": {
+    "anyOf": [
+      {
+        "type": "string"
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_ALL"
+        ],
+        "description": "A wildcard which matches any Error Name."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_HeartbeatTimeout"
+        ],
+        "description": "A Task State failed to heartbeat for a time longer than the \"HeartbeatSeconds\" value."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_Timeout"
+        ],
+        "description": "A Task State either ran longer than the \"TimeoutSeconds\" value, or failed to heartbeat for a time longer than the \"HeartbeatSeconds\" value."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_TaskFailed"
+        ],
+        "description": "A Task State failed during the execution."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_Permissions"
+        ],
+        "description": "A Task State failed because it had insufficient privileges to execute the specified code."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_ResultPathMatchFailure"
+        ],
+        "description": "A state's \"ResultPath\" field cannot be applied to the input the state received."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_ParameterPathFailure"
+        ],
+        "description": "Within a state's \"Parameters\" field, the attempt to replace a field whose name ends in \".$\" using a Path failed."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_BranchFailed"
+        ],
+        "description": "A branch of a Parallel State failed."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_NoChoiceMatched"
+        ],
+        "description": "A Choice State failed to find a match for the condition field extracted from its input."
+      },
+      {
+        "type": "string",
+        "enum": [
+          "States_IntrinsicFailure"
+        ],
+        "description": "Within a Payload Template, the attempt to invoke an Intrinsic Function failed."
+      }
+    ]
+  },
+  "AwsStateMachineStatesOperator": {
+    "type": "object",
+    "properties": {
+      "Variable": {
+        "type": "string"
+      },
+      "Next": {
+        "type": "string"
+      },
+      "And": {
+        "type": "array",
+        "items": {
+          "$ref": "#/AwsStateMachineStatesOperator"
+        }
+      },
+      "Or": {
+        "type": "array",
+        "items": {
+          "$ref": "#/AwsStateMachineStatesOperator"
+        }
+      },
+      "Not": {
+        "$ref": "#/AwsStateMachineStatesOperator"
+      },
+      "IsNull": {
+        "type": "boolean"
+      },
+      "IsPresent": {
+        "type": "boolean"
+      },
+      "BooleanEquals": {
+        "type": "boolean"
+      },
+      "BooleanEqualsPath": {
+        "type": "string"
+      },
+      "IsBoolean": {
+        "type": "boolean"
+      },
+      "NumericEquals": {
+        "type": "number"
+      },
+      "NumericEqualsPath": {
+        "type": "string"
+      },
+      "NumericGreaterThan": {
+        "type": "number"
+      },
+      "NumericGreaterThanPath": {
+        "type": "string"
+      },
+      "NumericGreaterThanEquals": {
+        "type": "number"
+      },
+      "NumericGreaterThanEqualsPath": {
+        "type": "string"
+      },
+      "NumericLessThan": {
+        "type": "number"
+      },
+      "NumericLessThanPath": {
+        "type": "string"
+      },
+      "NumericLessThanEquals": {
+        "type": "number"
+      },
+      "NumericLessThanEqualsPath": {
+        "type": "string"
+      },
+      "IsNumeric": {
+        "type": "boolean"
+      },
+      "StringEquals": {
+        "type": "string"
+      },
+      "StringEqualsPath": {
+        "type": "string"
+      },
+      "StringGreaterThan": {
+        "type": "string"
+      },
+      "StringGreaterThanPath": {
+        "type": "string"
+      },
+      "StringGreaterThanEquals": {
+        "type": "string"
+      },
+      "StringGreaterThanEqualsPath": {
+        "type": "string"
+      },
+      "StringLessThan": {
+        "type": "string"
+      },
+      "StringLessThanPath": {
+        "type": "string"
+      },
+      "StringLessThanEquals": {
+        "type": "string"
+      },
+      "StringLessThanEqualsPath": {
+        "type": "string"
+      },
+      "StringMatches": {
+        "type": "string"
+      },
+      "IsString": {
+        "type": "boolean"
+      },
+      "TimestampEquals": {
+        "type": "string"
+      },
+      "TimestampEqualsPath": {
+        "type": "string"
+      },
+      "TimestampGreaterThan": {
+        "type": "string"
+      },
+      "TimestampGreaterThanPath": {
+        "type": "string"
+      },
+      "TimestampGreaterThanEquals": {
+        "type": "string"
+      },
+      "TimestampGreaterThanEqualsPath": {
+        "type": "string"
+      },
+      "TimestampLessThan": {
+        "type": "string"
+      },
+      "TimestampLessThanPath": {
+        "type": "string"
+      },
+      "TimestampLessThanEquals": {
+        "type": "string"
+      },
+      "TimestampLessThanEqualsPath": {
+        "type": "string"
+      },
+      "IsTimestamp": {
+        "type": "boolean"
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "And"
+        ]
+      },
+      {
+        "required": [
+          "BooleanEquals"
+        ]
+      },
+      {
+        "required": [
+          "BooleanEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "IsBoolean"
+        ]
+      },
+      {
+        "required": [
+          "Not"
+        ]
+      },
+      {
+        "required": [
+          "IsNull"
+        ]
+      },
+      {
+        "required": [
+          "IsPresent"
+        ]
+      },
+      {
+        "required": [
+          "NumericEquals"
+        ]
+      },
+      {
+        "required": [
+          "NumericEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "NumericGreaterThan"
+        ]
+      },
+      {
+        "required": [
+          "NumericGreaterThanPath"
+        ]
+      },
+      {
+        "required": [
+          "NumericGreaterThanEquals"
+        ]
+      },
+      {
+        "required": [
+          "NumericGreaterThanEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "NumericLessThan"
+        ]
+      },
+      {
+        "required": [
+          "NumericLessThanPath"
+        ]
+      },
+      {
+        "required": [
+          "NumericLessThanEquals"
+        ]
+      },
+      {
+        "required": [
+          "NumericLessThanEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "IsNumeric"
+        ]
+      },
+      {
+        "required": [
+          "Or"
+        ]
+      },
+      {
+        "required": [
+          "StringEquals"
+        ]
+      },
+      {
+        "required": [
+          "StringEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "StringGreaterThan"
+        ]
+      },
+      {
+        "required": [
+          "StringGreaterThanPath"
+        ]
+      },
+      {
+        "required": [
+          "StringGreaterThanEquals"
+        ]
+      },
+      {
+        "required": [
+          "StringGreaterThanEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "StringLessThan"
+        ]
+      },
+      {
+        "required": [
+          "StringLessThanPath"
+        ]
+      },
+      {
+        "required": [
+          "StringLessThanEquals"
+        ]
+      },
+      {
+        "required": [
+          "StringLessThanEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "StringMatches"
+        ]
+      },
+      {
+        "required": [
+          "IsString"
+        ]
+      },
+      {
+        "required": [
+          "TimestampEquals"
+        ]
+      },
+      {
+        "required": [
+          "TimestampEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "TimestampGreaterThan"
+        ]
+      },
+      {
+        "required": [
+          "TimestampGreaterThanPath"
+        ]
+      },
+      {
+        "required": [
+          "TimestampGreaterThanEquals"
+        ]
+      },
+      {
+        "required": [
+          "TimestampGreaterThanEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "TimestampLessThan"
+        ]
+      },
+      {
+        "required": [
+          "TimestampLessThanPath"
+        ]
+      },
+      {
+        "required": [
+          "TimestampLessThanEquals"
+        ]
+      },
+      {
+        "required": [
+          "TimestampLessThanEqualsPath"
+        ]
+      },
+      {
+        "required": [
+          "IsTimestamp"
+        ]
+      }
+    ]
+  },
+  "AwsStateMachineStatesChoice": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Choice"
+        ]
+      },
+      "Next": {
+        "type": "string"
+      },
+      "End": {
+        "enum": [
+          true
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "Choices": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Variable": {
+              "type": "string"
+            },
+            "Next": {
+              "type": "string"
+            },
+            "And": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineStatesOperator"
+              }
+            },
+            "Or": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineStatesOperator"
+              }
+            },
+            "Not": {
+              "$ref": "#/AwsStateMachineStatesOperator"
+            },
+            "IsNull": {
+              "type": "boolean"
+            },
+            "IsPresent": {
+              "type": "boolean"
+            },
+            "BooleanEquals": {
+              "type": "boolean"
+            },
+            "BooleanEqualsPath": {
+              "type": "string"
+            },
+            "IsBoolean": {
+              "type": "boolean"
+            },
+            "NumericEquals": {
+              "type": "number"
+            },
+            "NumericEqualsPath": {
+              "type": "string"
+            },
+            "NumericGreaterThan": {
+              "type": "number"
+            },
+            "NumericGreaterThanPath": {
+              "type": "string"
+            },
+            "NumericGreaterThanEquals": {
+              "type": "number"
+            },
+            "NumericGreaterThanEqualsPath": {
+              "type": "string"
+            },
+            "NumericLessThan": {
+              "type": "number"
+            },
+            "NumericLessThanPath": {
+              "type": "string"
+            },
+            "NumericLessThanEquals": {
+              "type": "number"
+            },
+            "NumericLessThanEqualsPath": {
+              "type": "string"
+            },
+            "IsNumeric": {
+              "type": "boolean"
+            },
+            "StringEquals": {
+              "type": "string"
+            },
+            "StringEqualsPath": {
+              "type": "string"
+            },
+            "StringGreaterThan": {
+              "type": "string"
+            },
+            "StringGreaterThanPath": {
+              "type": "string"
+            },
+            "StringGreaterThanEquals": {
+              "type": "string"
+            },
+            "StringGreaterThanEqualsPath": {
+              "type": "string"
+            },
+            "StringLessThan": {
+              "type": "string"
+            },
+            "StringLessThanPath": {
+              "type": "string"
+            },
+            "StringLessThanEquals": {
+              "type": "string"
+            },
+            "StringLessThanEqualsPath": {
+              "type": "string"
+            },
+            "StringMatches": {
+              "type": "string"
+            },
+            "IsString": {
+              "type": "boolean"
+            },
+            "TimestampEquals": {
+              "type": "string"
+            },
+            "TimestampEqualsPath": {
+              "type": "string"
+            },
+            "TimestampGreaterThan": {
+              "type": "string"
+            },
+            "TimestampGreaterThanPath": {
+              "type": "string"
+            },
+            "TimestampGreaterThanEquals": {
+              "type": "string"
+            },
+            "TimestampGreaterThanEqualsPath": {
+              "type": "string"
+            },
+            "TimestampLessThan": {
+              "type": "string"
+            },
+            "TimestampLessThanPath": {
+              "type": "string"
+            },
+            "TimestampLessThanEquals": {
+              "type": "string"
+            },
+            "TimestampLessThanEqualsPath": {
+              "type": "string"
+            },
+            "IsTimestamp": {
+              "type": "boolean"
+            }
+          },
+          "oneOf": [
+            {
+              "required": [
+                "And"
+              ]
+            },
+            {
+              "required": [
+                "BooleanEquals"
+              ]
+            },
+            {
+              "required": [
+                "BooleanEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "IsBoolean"
+              ]
+            },
+            {
+              "required": [
+                "Not"
+              ]
+            },
+            {
+              "required": [
+                "IsNull"
+              ]
+            },
+            {
+              "required": [
+                "IsPresent"
+              ]
+            },
+            {
+              "required": [
+                "NumericEquals"
+              ]
+            },
+            {
+              "required": [
+                "NumericEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "NumericGreaterThan"
+              ]
+            },
+            {
+              "required": [
+                "NumericGreaterThanPath"
+              ]
+            },
+            {
+              "required": [
+                "NumericGreaterThanEquals"
+              ]
+            },
+            {
+              "required": [
+                "NumericGreaterThanEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "NumericLessThan"
+              ]
+            },
+            {
+              "required": [
+                "NumericLessThanPath"
+              ]
+            },
+            {
+              "required": [
+                "NumericLessThanEquals"
+              ]
+            },
+            {
+              "required": [
+                "NumericLessThanEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "IsNumeric"
+              ]
+            },
+            {
+              "required": [
+                "Or"
+              ]
+            },
+            {
+              "required": [
+                "StringEquals"
+              ]
+            },
+            {
+              "required": [
+                "StringEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "StringGreaterThan"
+              ]
+            },
+            {
+              "required": [
+                "StringGreaterThanPath"
+              ]
+            },
+            {
+              "required": [
+                "StringGreaterThanEquals"
+              ]
+            },
+            {
+              "required": [
+                "StringGreaterThanEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "StringLessThan"
+              ]
+            },
+            {
+              "required": [
+                "StringLessThanPath"
+              ]
+            },
+            {
+              "required": [
+                "StringLessThanEquals"
+              ]
+            },
+            {
+              "required": [
+                "StringLessThanEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "StringMatches"
+              ]
+            },
+            {
+              "required": [
+                "IsString"
+              ]
+            },
+            {
+              "required": [
+                "TimestampEquals"
+              ]
+            },
+            {
+              "required": [
+                "TimestampEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "TimestampGreaterThan"
+              ]
+            },
+            {
+              "required": [
+                "TimestampGreaterThanPath"
+              ]
+            },
+            {
+              "required": [
+                "TimestampGreaterThanEquals"
+              ]
+            },
+            {
+              "required": [
+                "TimestampGreaterThanEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "TimestampLessThan"
+              ]
+            },
+            {
+              "required": [
+                "TimestampLessThanPath"
+              ]
+            },
+            {
+              "required": [
+                "TimestampLessThanEquals"
+              ]
+            },
+            {
+              "required": [
+                "TimestampLessThanEqualsPath"
+              ]
+            },
+            {
+              "required": [
+                "IsTimestamp"
+              ]
+            }
+          ]
+        }
+      },
+      "Default": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "Type",
+      "Choices"
+    ]
+  },
+  "AwsStateMachineStatesFail": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Fail"
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "Cause": {
+        "type": "string"
+      },
+      "Error": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "Type"
+    ]
+  },
+  "AwsStateMachineStatesParallel": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Parallel"
+        ]
+      },
+      "Parameters": {
+        "type": [
+          "object",
+          "array"
+        ],
+        "items": {
+          "type": "object"
+        }
+      },
+      "ResultSelector": {
+        "type": "object"
+      },
+      "Next": {
+        "type": "string"
+      },
+      "End": {
+        "enum": [
+          true
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "ResultPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "Branches": {
+        "type": "array",
+        "items": {
+          "$ref": "#/AwsStateMachineDefinition"
+        }
+      },
+      "Retry": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ErrorEquals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineErrors"
+              }
+            },
+            "IntervalSeconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "MaxAttempts": {
+              "type": "number",
+              "minimum": 0
+            },
+            "BackoffRate": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "ErrorEquals"
+          ]
+        }
+      },
+      "Catch": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ErrorEquals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineErrors"
+              }
+            },
+            "Next": {
+              "type": "string"
+            },
+            "ResultPath": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "ErrorEquals",
+            "Next"
+          ]
+        }
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "Next"
+        ]
+      },
+      {
+        "required": [
+          "End"
+        ]
+      }
+    ],
+    "required": [
+      "Type",
+      "Branches"
+    ]
+  },
+  "AwsStateMachineStatesPass": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Pass"
+        ]
+      },
+      "Next": {
+        "type": "string"
+      },
+      "End": {
+        "enum": [
+          true
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "ResultPath": {
+        "type": "string"
+      },
+      "Parameters": {
+        "type": [
+          "object",
+          "array"
+        ],
+        "items": {
+          "type": "object"
+        }
+      },
+      "Result": {}
+    },
+    "oneOf": [
+      {
+        "required": [
+          "Next"
+        ]
+      },
+      {
+        "required": [
+          "End"
+        ]
+      }
+    ],
+    "required": [
+      "Type"
+    ]
+  },
+  "AwsStateMachineStatesSucceed": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Succeed"
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "required": [
+      "Type"
+    ]
+  },
+  "AwsStateMachineStatesTask": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Task"
+        ]
+      },
+      "Next": {
+        "type": "string"
+      },
+      "End": {
+        "enum": [
+          true
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "Resource": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^(arn:aws:([a-z]|-)+:([a-z]|[0-9]|-)*:[0-9]*:([a-z]|-)+:[a-zA-Z0-9-_.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$)|(\\${.*\\})"
+          },
+          {
+            "$ref": "../components/cf.functions.json#/Aws_CF_Function"
+          }
+        ]
+      },
+      "ResultPath": {
+        "description": "This path tells step functions where to append the return payload of this step",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "Retry": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ErrorEquals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineErrors"
+              }
+            },
+            "IntervalSeconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "MaxAttempts": {
+              "type": "number",
+              "minimum": 0
+            },
+            "BackoffRate": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "ErrorEquals"
+          ]
+        }
+      },
+      "Catch": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ErrorEquals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineErrors"
+              }
+            },
+            "Next": {
+              "type": "string"
+            },
+            "ResultPath": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "ErrorEquals",
+            "Next"
+          ]
+        }
+      },
+      "TimeoutSeconds": {
+        "type": "number",
+        "minimum": 1
+      },
+      "TimeoutSecondsPath": {
+        "type": "string"
+      },
+      "HeartbeatSeconds": {
+        "type": "number",
+        "minimum": 1
+      },
+      "HeartbeatSecondsPath": {
+        "type": "string"
+      },
+      "ResultSelector": {
+        "type": "object"
+      },
+      "Parameters": {
+        "type": [
+          "object",
+          "array"
+        ],
+        "items": {
+          "type": "object"
+        }
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "Next"
+        ]
+      },
+      {
+        "required": [
+          "End"
+        ]
+      }
+    ],
+    "required": [
+      "Type",
+      "Resource"
+    ]
+  },
+  "AwsStateMachineStatesWait": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Wait"
+        ]
+      },
+      "Next": {
+        "type": "string"
+      },
+      "End": {
+        "enum": [
+          true
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "Seconds": {
+        "type": "number",
+        "minimum": 0
+      },
+      "Timestamp": {
+        "type": "string"
+      },
+      "SecondsPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "TimestampPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "Next"
+        ]
+      },
+      {
+        "required": [
+          "End"
+        ]
+      }
+    ],
+    "required": [
+      "Type"
+    ]
+  },
+  "AwsStateMachineMapItemBatcherBatchInput": {
+    "type": "string",
+    "description": "The ItemBatcher Configuration MAY have a **BatchInput** field, whose value MUST be a Payload Template. This will allow you to select the input of the batch"
+  },
+  "AwsStateMachineMapItemBatcherMaxItemsPerBatch": {
+    "description": "The maximum number of items in a batch",
+    "type": "integer",
+    "minimum": 1
+  },
+  "AwsStateMachineMapItemBatcherMaxItemsPerBatchPath": {
+    "description": "The maximum number of items in a batch parsed from the state",
+    "type": "string"
+  },
+  "AwsStateMachineMapItemBatcherMaxBytesPerBatch": {
+    "description": "The maximum number of bytes in a batch",
+    "type": "integer",
+    "minimum": 1
+  },
+  "AwsStateMachineMapItemBatcherMaxBytesPerBatchPath": {
+    "description": "The maximum number of bytes in a batch parsed from the state",
+    "type": "string"
+  },
+  "AwsStateMachineMapItemBatcher": {
+    "description": "Configuration to batch selected items into sub-arrays before passing them to each invocation :- https://states-language.net/#map-input-output-batching-items",
+    "allOf": [
+      {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatch"
+              },
+              "MaxInputBytesPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatch"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": [
+              "MaxItemsPerBatch"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatch"
+              },
+              "MaxInputBytesPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatch"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": [
+              "MaxInputBytesPerBatch"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatch"
+              },
+              "MaxInputBytesPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatchPath"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": [
+              "MaxItemsPerBatch"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatch"
+              },
+              "MaxInputBytesPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatchPath"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": [
+              "MaxInputBytesPerBatchPath"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatchPath"
+              },
+              "MaxInputBytesPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatch"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": [
+              "MaxItemsPerBatchPath"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatchPath"
+              },
+              "MaxInputBytesPerBatch": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatch"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": [
+              "MaxInputBytesPerBatch"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatchPath"
+              },
+              "MaxInputBytesPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatchPath"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": [
+              "MaxItemsPerBatchPath"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "MaxItemsPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxItemsPerBatchPath"
+              },
+              "MaxInputBytesPerBatchPath": {
+                "$ref": "#/AwsStateMachineMapItemBatcherMaxBytesPerBatchPath"
+              },
+              "BatchInput": {
+                "$ref": "#/AwsStateMachineMapItemBatcherBatchInput"
+              }
+            },
+            "required": [
+              "MaxInputBytesPerBatchPath"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "AwsStateMachineMapItemReader": {
+    "type": "object",
+    "properties": {
+      "Resource": {
+        "type": "string",
+        "enum": [
+          "arn:aws:states:::s3:getObject",
+          "arn:aws:states:::s3:listObjectsV2"
+        ]
+      },
+      "ReaderConfig": {
+        "type": "object",
+        "properties": {
+          "InputType": {
+            "type": "string",
+            "enum": [
+              "MANIFEST",
+              "JSON",
+              "CSV"
+            ]
+          },
+          "MaxItems": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000000
+          },
+          "CSVHeaderLocation": {
+            "type": "string",
+            "enum": [
+              "FIRST_ROW",
+              "GIVEN"
+            ]
+          },
+          "CSVHeaders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Parameters": {
+        "oneOf": [
+          {
+            "title": "AwsStateMachineMapItemReaderS3ParamsFromState",
+            "type": "object",
+            "properties": {
+              "Bucket.$": {
+                "type": "string"
+              },
+              "Prefix.$": {
+                "type": "string"
+              },
+              "Key.$": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "title": "AwsStateMachineMapItemReaderS3Params",
+            "type": "object",
+            "properties": {
+              "Bucket": {
+                "type": "string"
+              },
+              "Prefix": {
+                "type": "string"
+              },
+              "Key": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "AwsStateMachineStatesMapItemProcessor": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Map"
+        ]
+      },
+      "Next": {
+        "type": "string"
+      },
+      "End": {
+        "enum": [
+          true
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "ResultPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "ItemsPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "MaxConcurrency": {
+        "description": "The maximum number of concurrent executions of Iterator. 0 puts no limit, 1 makes it run in sequence, there is a max limit of 40 for Inline Map and 10,000 for Distributed Map",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 10000,
+        "default": 0
+      },
+      "Parameters": {
+        "type": [
+          "object",
+          "array"
+        ],
+        "items": {
+          "type": "object"
+        }
+      },
+      "ResultSelector": {
+        "type": "object"
+      },
+      "Retry": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ErrorEquals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineErrors"
+              }
+            },
+            "IntervalSeconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "MaxAttempts": {
+              "type": "number",
+              "minimum": 0
+            },
+            "BackoffRate": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "ErrorEquals"
+          ]
+        }
+      },
+      "Catch": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ErrorEquals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineErrors"
+              }
+            },
+            "Next": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ErrorEquals",
+            "Next"
+          ]
+        }
+      },
+      "ItemBatcher": {
+        "$ref": "#/AwsStateMachineMapItemBatcher"
+      },
+      "ItemReader": {
+        "$ref": "#/AwsStateMachineMapItemReader"
+      },
+      "ItemProcessor": {
+        "allOf": [
+          {
+            "$ref": "#/AwsStateMachineDefinition"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "ProcessorConfig": {
+                "type": [
+                  "object"
+                ],
+                "properties": {
+                  "Mode": {
+                    "type": "string",
+                    "enum": [
+                      "DISTRIBUTED",
+                      "INLINE"
+                    ]
+                  },
+                  "ExecutionType": {
+                    "type": "string",
+                    "enum": [
+                      "STANDARD",
+                      "EXPRESS"
+                    ],
+                    "default": "STANDARD"
+                  }
+                },
+                "anyOf": [
+                  {
+                    "properties": {
+                      "Mode": {
+                        "const": "DISTRIBUTED"
+                      }
+                    },
+                    "required": [
+                      "Mode",
+                      "ExecutionType"
+                    ]
+                  },
+                  {
+                    "properties": {
+                      "Mode": {
+                        "const": "INLINE"
+                      }
+                    },
+                    "required": [
+                      "Mode"
+                    ],
+                    "dependencies": {
+                      "Mode": {
+                        "not": {
+                          "required": [
+                            "ExecutionType"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "Next"
+        ]
+      },
+      {
+        "required": [
+          "End"
+        ]
+      }
+    ],
+    "required": [
+      "Type",
+      "ItemProcessor"
+    ]
+  },
+  "AwsStateMachineStatesMapIterator": {
+    "type": "object",
+    "properties": {
+      "Type": {
+        "type": "string",
+        "enum": [
+          "Map"
+        ]
+      },
+      "Next": {
+        "type": "string"
+      },
+      "End": {
+        "enum": [
+          true
+        ]
+      },
+      "Comment": {
+        "type": "string"
+      },
+      "OutputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "InputPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "ResultPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "ItemsPath": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "MaxConcurrency": {
+        "description": "The maximum number of concurrent executions of Iterator. 0 puts no limit, 1 makes it run in sequence, there is a max limit of 40 for Inline Map.",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 40,
+        "default": 0
+      },
+      "Parameters": {
+        "type": [
+          "object",
+          "array"
+        ],
+        "items": {
+          "type": "object"
+        }
+      },
+      "ResultSelector": {
+        "type": "object"
+      },
+      "Retry": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ErrorEquals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineErrors"
+              }
+            },
+            "IntervalSeconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "MaxAttempts": {
+              "type": "number",
+              "minimum": 0
+            },
+            "BackoffRate": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "ErrorEquals"
+          ]
+        }
+      },
+      "Catch": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "ErrorEquals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/AwsStateMachineErrors"
+              }
+            },
+            "Next": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ErrorEquals",
+            "Next"
+          ]
+        }
+      },
+      "ItemBatcher": {
+        "$ref": "#/AwsStateMachineMapItemBatcher"
+      },
+      "ItemReader": {
+        "$ref": "#/AwsStateMachineMapItemReader"
+      },
+      "Iterator": {
+        "description": "@deprecated, Please use ItemProcessor instead",
+        "$ref": "#/AwsStateMachineDefinition"
+      }
+    },
+    "oneOf": [
+      {
+        "required": [
+          "Next"
+        ]
+      },
+      {
+        "required": [
+          "End"
+        ]
+      }
+    ],
+    "required": [
+      "Type",
+      "Iterator"
+    ]
+  }
+}

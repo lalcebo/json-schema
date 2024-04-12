@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "A signing profile is a signing template that can be used to carry out a pre-defined signing job.",
+  "definitions": {
+    "PlatformId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWSLambda-SHA384-ECDSA",
+            "Notation-OCI-SHA384-ECDSA"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws(-(cn|us-gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ProfileVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-zA-Z]{10}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "SignatureValidityPeriod": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "type": "integer"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DAYS",
+                "MONTHS",
+                "YEARS"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127,
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "ProfileName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "A name for the signing profile. AWS CloudFormation generates a unique physical ID and uses that ID for the signing profile name. "
+    },
+    "ProfileVersion": {
+      "description": "A version for the signing profile. AWS Signer generates a unique version for each profile of the same profile name.",
+      "$ref": "#/definitions/ProfileVersion"
+    },
+    "Arn": {
+      "description": "The Amazon Resource Name (ARN) of the specified signing profile.",
+      "$ref": "#/definitions/Arn"
+    },
+    "ProfileVersionArn": {
+      "description": "The Amazon Resource Name (ARN) of the specified signing profile version.",
+      "$ref": "#/definitions/Arn"
+    },
+    "SignatureValidityPeriod": {
+      "description": "Signature validity period of the profile.",
+      "$ref": "#/definitions/SignatureValidityPeriod"
+    },
+    "PlatformId": {
+      "description": "The ID of the target signing platform.",
+      "$ref": "#/definitions/PlatformId"
+    },
+    "Tags": {
+      "type": "array",
+      "description": "A list of tags associated with the signing profile.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "PlatformId"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/ProfileName"
+    ],
+    [
+      "/properties/ProfileVersionArn"
+    ]
+  ]
+}

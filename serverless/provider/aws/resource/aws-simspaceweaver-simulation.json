@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "AWS::SimSpaceWeaver::Simulation resource creates an AWS Simulation.",
+  "definitions": {
+    "S3Location": {
+      "type": "object",
+      "properties": {
+        "BucketName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63,
+              "pattern": "[a-zA-Z0-9_\\-]{3,63}$"
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "The Schema S3 bucket name."
+        },
+        "ObjectKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ],
+          "description": "This is the schema S3 object key, which includes the full path of \"folders\" from the bucket root to the schema."
+        }
+      },
+      "required": [
+        "BucketName",
+        "ObjectKey"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "[a-zA-Z0-9_\\-]{1,2048}$"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The name of the simulation."
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Role ARN."
+    },
+    "SchemaS3Location": {
+      "$ref": "#/definitions/S3Location"
+    },
+    "DescribePayload": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Json object with all simulation details"
+    },
+    "MaximumDuration": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 6
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The maximum running time of the simulation."
+    },
+    "SnapshotS3Location": {
+      "$ref": "#/definitions/S3Location"
+    }
+  },
+  "required": [
+    "Name",
+    "RoleArn"
+  ],
+  "oneOf": [
+    {
+      "required": [
+        "SchemaS3Location"
+      ]
+    },
+    {
+      "required": [
+        "SnapshotS3Location"
+      ]
+    }
+  ],
+  "additionalProperties": false,
+  "propertyTransform": {
+    "properties/MaximumDuration": "$uppercase(MaximumDuration)"
+  }
+}

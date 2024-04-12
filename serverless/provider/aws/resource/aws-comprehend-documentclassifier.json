@@ -1,0 +1,415 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Document Classifier enables training document classifier models.",
+  "additionalProperties": false,
+  "properties": {
+    "DataAccessRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "InputDataConfig": {
+      "$ref": "#/definitions/DocumentClassifierInputDataConfig"
+    },
+    "OutputDataConfig": {
+      "$ref": "#/definitions/DocumentClassifierOutputDataConfig"
+    },
+    "LanguageCode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "en",
+            "es",
+            "fr",
+            "it",
+            "de",
+            "pt"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "ModelKmsKeyId": {
+      "$ref": "#/definitions/KmsKeyId"
+    },
+    "ModelPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "DocumentClassifierName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Mode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MULTI_CLASS",
+            "MULTI_LABEL"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "insertionOrder": false,
+      "uniqueItems": true
+    },
+    "VersionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "VolumeKmsKeyId": {
+      "$ref": "#/definitions/KmsKeyId"
+    },
+    "VpcConfig": {
+      "$ref": "#/definitions/VpcConfig"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[^:]+)?:comprehend:[a-zA-Z0-9-]*:[0-9]{12}:document-classifier/[a-zA-Z0-9](-*[a-zA-Z0-9])*(/version/[a-zA-Z0-9](-*[a-zA-Z0-9])*)?",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "DocumentClassifierName",
+    "DataAccessRoleArn",
+    "InputDataConfig",
+    "LanguageCode"
+  ],
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ]
+    },
+    "DocumentClassifierInputDataConfig": {
+      "type": "object",
+      "properties": {
+        "AugmentedManifests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AugmentedManifestsListItem"
+          },
+          "insertionOrder": false,
+          "uniqueItems": true
+        },
+        "DataFormat": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "COMPREHEND_CSV",
+                "AUGMENTED_MANIFEST"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "LabelDelimiter": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ ~!@#$%^*\\-_+=|\\\\:;\\t>?/]$",
+              "minLength": 1,
+              "maxLength": 1
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DocumentType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PLAIN_TEXT_DOCUMENT",
+                "SEMI_STRUCTURED_DOCUMENT"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "Documents": {
+          "$ref": "#/definitions/DocumentClassifierDocuments"
+        },
+        "DocumentReaderConfig": {
+          "$ref": "#/definitions/DocumentReaderConfig"
+        },
+        "S3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        },
+        "TestS3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "AugmentedManifestsListItem": {
+      "type": "object",
+      "properties": {
+        "AttributeNames": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 63
+        },
+        "S3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        },
+        "Split": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "TRAIN",
+                "TEST"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AttributeNames",
+        "S3Uri"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentClassifierDocuments": {
+      "type": "object",
+      "properties": {
+        "S3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        },
+        "TestS3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        }
+      },
+      "required": [
+        "S3Uri"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentReaderConfig": {
+      "type": "object",
+      "properties": {
+        "DocumentReadAction": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "TEXTRACT_DETECT_DOCUMENT_TEXT",
+                "TEXTRACT_ANALYZE_DOCUMENT"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "DocumentReadMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SERVICE_DEFAULT",
+                "FORCE_DOCUMENT_READ_ACTION"
+              ]
+            },
+            {
+              "$ref": "../component/functions.json#/AwsFunctionString"
+            }
+          ]
+        },
+        "FeatureTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "TABLES",
+              "FORMS"
+            ]
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "DocumentReadAction"
+      ],
+      "additionalProperties": false
+    },
+    "DocumentClassifierOutputDataConfig": {
+      "type": "object",
+      "properties": {
+        "KmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        },
+        "S3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "VpcConfig": {
+      "type": "object",
+      "properties": {
+        "SecurityGroupIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "[-0-9a-zA-Z]+",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "Subnets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "[-0-9a-zA-Z]+",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 16
+        }
+      },
+      "required": [
+        "SecurityGroupIds",
+        "Subnets"
+      ],
+      "additionalProperties": false
+    },
+    "S3Uri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Resource-specific logging allows you to specify a logging level for a specific thing group.",
+  "documentationUrl": "https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html",
+  "definitions": {},
+  "properties": {
+    "TargetType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "THING_GROUP",
+            "CLIENT_ID",
+            "SOURCE_IP",
+            "PRINCIPAL_ID",
+            "EVENT_TYPE"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The target type. Value must be THING_GROUP, CLIENT_ID, SOURCE_IP, PRINCIPAL_ID, or EVENT_TYPE."
+    },
+    "TargetName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "[a-zA-Z0-9.:\\s_\\-]+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The target name."
+    },
+    "LogLevel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ERROR",
+            "WARN",
+            "INFO",
+            "DEBUG",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The log level for a specific target. Valid values are: ERROR, WARN, INFO, DEBUG, or DISABLED."
+    },
+    "TargetId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 13,
+          "maxLength": 140,
+          "pattern": "[a-zA-Z0-9.:\\s_\\-]+"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Unique Id for a Target (TargetType:TargetName), this will be internally built to serve as primary identifier for a log target."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "TargetName",
+    "TargetType",
+    "LogLevel"
+  ],
+  "taggable": false
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schema.cloudformation.us-east-1.amazonaws.com/provider.definition.schema.v1.json",
+  "type": "object",
+  "description": "The AWS::EC2::SubnetCidrBlock resource creates association between subnet and IPv6 CIDR",
+  "additionalProperties": false,
+  "properties": {
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "Information about the IPv6 association."
+    },
+    "Ipv6CidrBlock": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 42
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length"
+    },
+    "Ipv6IpamPoolId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of an IPv6 Amazon VPC IP Address Manager (IPAM) pool from which to allocate, to get the subnet's CIDR"
+    },
+    "Ipv6NetmaskLength": {
+      "description": "The netmask length of the IPv6 CIDR to allocate to the subnet from an IPAM pool",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 128
+    },
+    "SubnetId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../component/functions.json#/AwsFunctionString"
+        }
+      ],
+      "description": "The ID of the subnet"
+    }
+  },
+  "required": [
+    "SubnetId"
+  ],
+  "propertyTransform": {
+    "/properties/Ipv6CidrBlock": "$join([$match($replace(Ipv6CidrBlock, /(^|:)(0{1,4})([0-9a-fA-F]{1,4})/, \"$1$3\"), /^([0-9a-fA-F]{1,4}:){4}/).match, \":/64\"])"
+  }
+}
