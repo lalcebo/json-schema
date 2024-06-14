@@ -45,7 +45,7 @@ function applyCFStringFunctions(obj) {
 }
 
 /**
- * 
+ *
  * @param {string} dirName directory path full
  * @param {string} fileName name of the file
  * @param {string} schemaFileName name of the file
@@ -74,21 +74,21 @@ function readAndMoveResourceFile(dirName, fileName, schemaFileName) {
  * This function will pull the schemas and populate into the cloudformation Directory
  * Currently Supported Items:-
  * 1. MongoDB
- * 2. DataDog
+ * 2. Datadog
  */
 function getThirdPartySchemas() {
   const mongoDir = path.join(
-    __dirname, 
-    "serverless/resources/third-party-resources", 
-    "mongodbatlas-cloudformation-resources", "cfn-resources"
+    __dirname,
+    "serverless/resources/third-party-resources",
+    "mongodbatlas-cloudformation-resources"
   )
   fs.readdirSync(mongoDir).forEach(r => {
     const schemaFileName = `mongodb-atlas-${r.replaceAll('-', '')}.json`
     readAndMoveResourceFile(mongoDir, r, schemaFileName)
   })
   const datadogDir = path.join(
-    __dirname, 
-    "serverless/resources/third-party-resources", 
+    __dirname,
+    "serverless/resources/third-party-resources",
     "datadog-cloudformation-resources"
   )
   fs.readdirSync(datadogDir).forEach(r => {
@@ -98,7 +98,7 @@ function getThirdPartySchemas() {
 }
 
 (async () => {
-    await getThirdPartySchemas()
+    getThirdPartySchemas()
     const sharedAttributes = {
         "DeletionPolicy": {
           "description": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html",
