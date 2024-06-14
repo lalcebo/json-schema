@@ -168,6 +168,9 @@ function getThirdPartySchemas() {
                         schema.typeName
                     ],
                 },
+                Condition: {
+                    type: "string"
+                },
                 Properties: {
                   $ref: `cloudformation-modified/${resource}`
                 },
