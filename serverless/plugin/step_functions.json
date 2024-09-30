@@ -106,17 +106,60 @@
       }
     }
   },
+  "AwsStateMachineHttpRequestParametersValidation": {
+    "properties": {
+      "headers": {
+        "additionalProperties": {
+          "type": "boolean"
+        },
+        "type": "object"
+      },
+      "paths": {
+        "additionalProperties": {
+          "type": "boolean"
+        },
+        "type": "object"
+      },
+      "querystrings": {
+        "additionalProperties": {
+          "type": "boolean"
+        },
+        "type": "object"
+      }
+    },
+    "type": "object"
+  },
+  "AwsStateMachineHttpRequestValidation": {
+    "type": "object",
+    "properties": {
+      "parameters": {
+        "$ref": "#/definitions/AwsStateMachineHttpRequestParametersValidation"
+      },
+      "schemas": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object"
+      }
+    }
+  },
   "AwsStateMachineHttpEvent": {
     "type": "object",
     "properties": {
       "path": {
         "type": "string"
+      },
+      "method": {
+        "type": "string"
+      },
+      "private": {
+        "type": "boolean"
+      },
+      "request": {
+        "$ref": "#/AwsStateMachineHttpRequestValidation"
       }
     },
-    "required": [
-      "path"
-    ],
-    "additionalProperties": false
+    "required": ["path"]
   },
   "AwsStateMachineEventBridgeEvent": {
     "type": "object",
@@ -158,15 +201,11 @@
             ]
           }
         },
-        "required": [
-          "source"
-        ],
+        "required": ["source"],
         "additionalProperties": false
       }
     },
-    "required": [
-      "event"
-    ],
+    "required": ["event"],
     "additionalProperties": false
   },
   "AwsStateMachineDefinition": {
@@ -1535,7 +1574,7 @@
             "$ref": "#/AwsStateMachineDefinition"
           },
           {
-           "type": "object",
+            "type": "object",
             "properties": {
               "ProcessorConfig": {
                 "type": ["object"],
@@ -1559,11 +1598,11 @@
                   },
                   {
                     "properties": {
-                    	"Mode": { "const": "INLINE" }
+                      "Mode": { "const": "INLINE" }
                     },
                     "required": ["Mode"],
                     "dependencies": {
-			"Mode": { "not": { "required": ["ExecutionType"] } }
+                      "Mode": { "not": { "required": ["ExecutionType"] } }
                     }
                   }
                 ]
