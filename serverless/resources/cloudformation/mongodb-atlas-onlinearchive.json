@@ -1,6 +1,6 @@
 {
   "typeName": "MongoDB::Atlas::OnlineArchive",
-  "description": "Returns, adds, edits, or removes an online archive.",
+  "description": "Returns, adds, edits, or removes an online archive.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "additionalProperties": false,
   "definitions": {
@@ -8,12 +8,19 @@
       "type": "object",
       "properties": {
         "Type": {
-          "type": "string",
-          "enum": [
-            "DAILY",
-            "MONTHLY",
-            "DEFAULT",
-            "WEEKLY"
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DAILY",
+                "MONTHLY",
+                "DEFAULT",
+                "WEEKLY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
           ]
         },
         "EndHour": {
@@ -53,103 +60,169 @@
           "minimum": 1
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MongoDBAtlasOnlineArchiveScheduleViewDefinition"
     },
     "CriteriaView": {
       "type": "object",
       "properties": {
         "Type": {
-          "type": "string",
-          "description": "Means by which MongoDB Cloud selects data to archive. Data can be chosen using the age of the data or a MongoDB query.\n**DATE** selects documents to archive based on a date.\n**CUSTOM** selects documents to archive based on a custom JSON query. MongoDB Cloud doesn't support **CUSTOM** when `\"collectionType\": \"TIMESERIES\"`.",
-          "enum": [
-            "DATE",
-            "CUSTOM"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DATE",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Means by which MongoDB Cloud selects data to archive. Data can be chosen using the age of the data or a MongoDB query.\n**DATE** selects documents to archive based on a date.\n**CUSTOM** selects documents to archive based on a custom JSON query. MongoDB Cloud doesn't support **CUSTOM** when `\"collectionType\": \"TIMESERIES\"`."
         },
         "DateField": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "Indexed database parameter that stores the date that determines when data moves to the online archive. MongoDB Cloud archives the data when the current date exceeds the date in this database parameter plus the number of days specified through the expireAfterDays parameter. Set this parameter when you set \"criteria.type\" : \"DATE\"."
         },
         "DateFormat": {
-          "type": "string",
-          "description": "Syntax used to write the date after which data moves to the online archive. Date can be expressed as ISO 8601 or Epoch timestamps. The Epoch timestamp can be expressed as nanoseconds, milliseconds, or seconds. Set this parameter when \"criteria.type\" : \"DATE\". You must set \"criteria.type\" : \"DATE\" if \"collectionType\": \"TIMESERIES\".",
-          "enum": [
-            "ISODATE",
-            "EPOCH_SECONDS",
-            "EPOCH_MILLIS",
-            "EPOCH_NANOSECONDS"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ISODATE",
+                "EPOCH_SECONDS",
+                "EPOCH_MILLIS",
+                "EPOCH_NANOSECONDS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Syntax used to write the date after which data moves to the online archive. Date can be expressed as ISO 8601 or Epoch timestamps. The Epoch timestamp can be expressed as nanoseconds, milliseconds, or seconds. Set this parameter when \"criteria.type\" : \"DATE\". You must set \"criteria.type\" : \"DATE\" if \"collectionType\": \"TIMESERIES\"."
         },
         "ExpireAfterDays": {
           "type": "integer",
           "description": "Number of days after the value in the criteria.dateField when MongoDB Cloud archives data in the specified cluster. Set this parameter when you set \"criteria.type\" : \"DATE\"."
         },
         "Query": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "MongoDB find query that selects documents to archive. The specified query follows the syntax of the db.collection.find(query) command. This query can't use the empty document ({}) to return all documents. Set this parameter when \"criteria.type\" : \"CUSTOM\"."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MongoDBAtlasOnlineArchiveCriteriaViewDefinition"
     },
     "PartitionFieldView": {
       "type": "object",
       "properties": {
         "FieldName": {
-          "type": "string",
-          "description": "Human-readable label that identifies the parameter that MongoDB Cloud uses to partition data. To specify a nested parameter, use the dot notation.",
-          "maxLength": 700
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 700
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Human-readable label that identifies the parameter that MongoDB Cloud uses to partition data. To specify a nested parameter, use the dot notation."
         },
         "FieldType": {
-          "type": "string",
-          "description": "Data type of the parameter that that MongoDB Cloud uses to partition data. Partition parameters of type [UUID](http://bsonspec.org/spec.html) must be of binary subtype 4. MongoDB Cloud skips partition parameters of type UUID with subtype 3.",
-          "enum": [
-            "date",
-            "int",
-            "long",
-            "objectId",
-            "string",
-            "uuid"
-          ]
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "date",
+                "int",
+                "long",
+                "objectId",
+                "string",
+                "uuid"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Data type of the parameter that that MongoDB Cloud uses to partition data. Partition parameters of type [UUID](http://bsonspec.org/spec.html) must be of binary subtype 4. MongoDB Cloud skips partition parameters of type UUID with subtype 3."
         },
         "Order": {
           "type": "integer",
           "description": "Sequence in which MongoDB Cloud slices the collection data to create partitions. The resource expresses this sequence starting with zero. The value of the **criteria.dateField** parameter defaults as the first item in the partition sequence."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MongoDBAtlasOnlineArchivePartitionFieldViewDefinition"
     }
   },
   "properties": {
     "Profile": {
-      "type": "string",
-      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml).",
-      "default": "default"
-    },
-    "ArchiveId": {
-      "type": "string",
-      "description": "Unique 24-hexadecimal digit string that identifies the online archive to delete.",
-      "maxLength": 24,
-      "minLength": 24,
-      "pattern": "^([a-f0-9]{24})$"
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml)."
     },
     "ClusterName": {
-      "type": "string",
-      "description": "Human-readable label that identifies the cluster that contains the collection from which you want to remove an online archive.",
-      "maxLength": 64,
-      "minLength": 1,
-      "pattern": "^([a-zA-Z0-9]([a-zA-Z0-9-]){0,21}(?<!-)([\\w]{0,42}))$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^([a-zA-Z0-9]([a-zA-Z0-9-]){0,21}(?<!-)([\\w]{0,42}))$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Human-readable label that identifies the cluster that contains the collection from which you want to remove an online archive."
     },
     "CollName": {
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "Human-readable label that identifies the collection for which you created the online archive."
     },
     "CollectionType": {
-      "type": "string",
-      "description": "Classification of MongoDB database collection that you want to return.\n\nIf you set this parameter to `TIMESERIES`, set `\"criteria.type\" : \"date\"` and `\"criteria.dateFormat\" : \"ISODATE\"`.",
-      "enum": [
-        "STANDARD",
-        "TIMESERIES"
-      ]
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "TIMESERIES"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Classification of MongoDB database collection that you want to return.\n\nIf you set this parameter to `TIMESERIES`, set `\"criteria.type\" : \"date\"` and `\"criteria.dateFormat\" : \"ISODATE\"`."
     },
     "Criteria": {
       "type": "object",
@@ -157,15 +230,29 @@
       "$ref": "#/definitions/CriteriaView"
     },
     "DbName": {
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "Human-readable label of the database that contains the collection that contains the online archive."
     },
     "ProjectId": {
-      "type": "string",
-      "description": "Unique 24-hexadecimal digit string that identifies your project.",
-      "maxLength": 24,
-      "minLength": 24,
-      "pattern": "^([a-f0-9]{24})$"
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 24,
+          "minLength": 24,
+          "pattern": "^([a-f0-9]{24})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique 24-hexadecimal digit string that identifies your project."
     },
     "IncludeCount": {
       "type": "boolean",
@@ -192,23 +279,6 @@
       "type": "object",
       "description": "Regular frequency and duration when archiving process occurs.",
       "$ref": "#/definitions/ScheduleView"
-    },
-    "State": {
-      "type": "string",
-      "description": "Phase of the process to create this online archive when you made this request.\n\n| State       | Indication |\n|-------------|------------|\n| `PENDING`   | MongoDB Cloud has queued documents for archive. Archiving hasn't started. |\n| `ARCHIVING` | MongoDB Cloud started archiving documents that meet the archival criteria. |\n| `IDLE`      | MongoDB Cloud waits to start the next archival job. |\n| `PAUSING`   | Someone chose to stop archiving. MongoDB Cloud finishes the running archival job then changes the state to `PAUSED` when that job completes. |\n| `PAUSED`    | MongoDB Cloud has stopped archiving. Archived documents can be queried. The specified archiving operation on the active cluster cannot archive additional documents. You can resume archiving for paused archives at any time. |\n| `ORPHANED`  | Someone has deleted the collection associated with an active or paused archive. MongoDB Cloud doesn't delete the archived data. You must manually delete the online archives associated with the deleted collection. |\n| `DELETED`   | Someone has deleted the archive was deleted. When someone deletes an online archive, MongoDB Cloud removes all associated archived documents from the cloud object storage. |",
-      "enum": [
-        "PENDING",
-        "ARCHIVING",
-        "IDLE",
-        "PAUSING",
-        "PAUSED",
-        "ORPHANED",
-        "DELETED"
-      ]
-    },
-    "TotalCount": {
-      "type": "number",
-      "description": "Number of documents returned in this response."
     }
   },
   "required": [
@@ -230,26 +300,6 @@
     "/properties/Profile",
     "/properties/ProjectId"
   ],
-  "handlers": {
-    "create": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "read": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "update": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    }
-  }
+  "type": "object",
+  "title": "MongoDBAtlasOnlineArchiveProperties"
 }

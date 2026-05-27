@@ -1,29 +1,7 @@
 {
   "additionalProperties": false,
   "definitions": {},
-  "description": "Returns, adds, and edits collections of clusters and users in MongoDB Cloud.",
-  "handlers": {
-    "create": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "read": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "update": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    }
-  },
+  "description": "Returns, adds, and edits collections of clusters and users in MongoDB Cloud.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "primaryIdentifier": [
     "/properties/Id",
     "/properties/ProjectId",
@@ -31,25 +9,27 @@
   ],
   "properties": {
     "Profile": {
-      "type": "string",
-      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml).",
-      "default": "default"
-    },
-    "CreatedAt": {
-      "type": "string",
-      "description": "Date and time when MongoDB Cloud sent the invitation. This parameter expresses its value in ISO 8601 format in UTC."
-    },
-    "ExpiresAt": {
-      "type": "string",
-      "description": "Date and time when MongoDB Cloud expires the invitation. This parameter expresses its value in ISO 8601 format in UTC."
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml)."
     },
     "ProjectId": {
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "Unique 24-hexadecimal digit string that identifies your project."
-    },
-    "Id": {
-      "type": "string",
-      "description": "Unique 24-hexadecimal character string that identifies the invitation."
     },
     "TotalCount": {
       "type": "number",
@@ -60,31 +40,48 @@
       "description": "Number of the page that displays the current set of the total objects that the response returns."
     },
     "InvitationId": {
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "Unique 24-hexadecimal digit string that identifies the invitation."
-    },
-    "InviterUsername": {
-      "type": "string",
-      "description": "Email address of the MongoDB Cloud user who sent the invitation."
     },
     "Roles": {
       "type": "array",
       "insertionOrder": false,
       "description": "One or more organization or project level roles to assign to the MongoDB Cloud user.",
       "items": {
-        "type": "string",
-        "enum": [
-          "GROUP_CLUSTER_MANAGER",
-          "GROUP_DATA_ACCESS_ADMIN",
-          "GROUP_DATA_ACCESS_READ_ONLY",
-          "GROUP_DATA_ACCESS_READ_WRITE",
-          "GROUP_OWNER",
-          "GROUP_READ_ONLY"
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "GROUP_CLUSTER_MANAGER",
+              "GROUP_DATA_ACCESS_ADMIN",
+              "GROUP_DATA_ACCESS_READ_ONLY",
+              "GROUP_DATA_ACCESS_READ_WRITE",
+              "GROUP_OWNER",
+              "GROUP_READ_ONLY"
+            ]
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
         ]
       }
     },
     "Username": {
-      "type": "string",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
       "description": "Email address of the user account invited to this project."
     }
   },
@@ -100,5 +97,7 @@
     "/properties/Profile"
   ],
   "typeName": "MongoDB::Atlas::ProjectInvitation",
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git"
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "type": "object",
+  "title": "MongoDBAtlasProjectInvitationProperties"
 }

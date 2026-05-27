@@ -1,535 +1,1343 @@
 {
-  "typeName" : "AWS::DataBrew::Recipe",
-  "description" : "Resource schema for AWS::DataBrew::Recipe.",
-  "sourceUrl" : "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-databrew.git",
-  "taggable" : true,
-  "properties" : {
-    "Description" : {
-      "description" : "Description of the recipe",
-      "minLength" : 0,
-      "maxLength" : 1024,
-      "type" : "string"
+  "typeName": "AWS::DataBrew::Recipe",
+  "description": "Resource schema for AWS::DataBrew::Recipe.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-databrew.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-databrew.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-databrew.git",
+  "taggable": true,
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "minLength": 0,
+          "maxLength": 1024,
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Description of the recipe"
     },
-    "Name" : {
-      "description" : "Recipe name",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 255
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Recipe name"
     },
-    "Steps" : {
-      "type" : "array",
-      "insertionOrder" : true,
-      "items" : {
-        "type" : "object",
-        "$ref" : "#/definitions/RecipeStep"
+    "Steps": {
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "type": "object",
+        "$ref": "#/definitions/RecipeStep"
       }
     },
-    "Tags" : {
-      "type" : "array",
-      "insertionOrder" : false,
-      "uniqueItems" : false,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "definitions" : {
-    "SecondaryInput" : {
-      "description" : "Secondary input",
-      "type" : "object",
-      "properties" : {
-        "S3InputDefinition" : {
-          "$ref" : "#/definitions/S3Location"
+  "definitions": {
+    "SecondaryInput": {
+      "description": "Secondary input",
+      "type": "object",
+      "properties": {
+        "S3InputDefinition": {
+          "$ref": "#/definitions/S3Location"
         },
-        "DataCatalogInputDefinition" : {
-          "$ref" : "#/definitions/DataCatalogInputDefinition"
+        "DataCatalogInputDefinition": {
+          "$ref": "#/definitions/DataCatalogInputDefinition"
         }
       },
-      "oneOf" : [ {
-        "required" : [ "S3InputDefinition" ]
-      }, {
-        "required" : [ "DataCatalogInputDefinition" ]
-      } ],
-      "additionalProperties" : false
-    },
-    "S3Location" : {
-      "description" : "Input location",
-      "type" : "object",
-      "properties" : {
-        "Bucket" : {
-          "type" : "string"
+      "oneOf": [
+        {
+          "required": [
+            "S3InputDefinition"
+          ]
         },
-        "Key" : {
-          "type" : "string"
+        {
+          "required": [
+            "DataCatalogInputDefinition"
+          ]
         }
-      },
-      "additionalProperties" : false,
-      "required" : [ "Bucket" ]
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataBrewRecipeSecondaryInputDefinition"
     },
-    "DataCatalogInputDefinition" : {
-      "type" : "object",
-      "properties" : {
-        "CatalogId" : {
-          "description" : "Catalog id",
-          "type" : "string"
-        },
-        "DatabaseName" : {
-          "description" : "Database name",
-          "type" : "string"
-        },
-        "TableName" : {
-          "description" : "Table name",
-          "type" : "string"
-        },
-        "TempDirectory" : {
-          "$ref" : "#/definitions/S3Location"
-        }
-      },
-      "additionalProperties" : false
-    },
-    "RecipeStep" : {
-      "type" : "object",
-      "properties" : {
-        "Action" : {
-          "$ref" : "#/definitions/Action"
-        },
-        "ConditionExpressions" : {
-          "description" : "Condition expressions applied to the step action",
-          "type" : "array",
-          "insertionOrder" : true,
-          "items" : {
-            "$ref" : "#/definitions/ConditionExpression"
-          }
-        }
-      },
-      "additionalProperties" : false,
-      "required" : [ "Action" ]
-    },
-    "Action" : {
-      "type" : "object",
-      "properties" : {
-        "Operation" : {
-          "description" : "Step action operation",
-          "type" : "string"
-        },
-        "Parameters" : {
-          "anyOf" : [ {
-            "$ref" : "#/definitions/RecipeParameters"
-          }, {
-            "$ref" : "#/definitions/ParameterMap"
-          } ]
-        }
-      },
-      "additionalProperties" : false,
-      "required" : [ "Operation" ]
-    },
-    "ConditionExpression" : {
-      "description" : "Condition expressions applied to the step action",
-      "type" : "object",
-      "properties" : {
-        "Condition" : {
-          "description" : "Input condition to be applied to the target column",
-          "type" : "string"
-        },
-        "Value" : {
-          "description" : "Value of the condition",
-          "type" : "string"
-        },
-        "TargetColumn" : {
-          "description" : "Name of the target column",
-          "type" : "string"
-        }
-      },
-      "additionalProperties" : false,
-      "required" : [ "Condition", "TargetColumn" ]
-    },
-    "RecipeParameters" : {
-      "additionalProperties" : false,
-      "properties" : {
-        "AggregateFunction" : {
-          "type" : "string"
-        },
-        "Base" : {
-          "type" : "string"
-        },
-        "CaseStatement" : {
-          "type" : "string"
-        },
-        "CategoryMap" : {
-          "type" : "string"
-        },
-        "CharsToRemove" : {
-          "type" : "string"
-        },
-        "CollapseConsecutiveWhitespace" : {
-          "type" : "string"
-        },
-        "ColumnDataType" : {
-          "type" : "string"
-        },
-        "ColumnRange" : {
-          "type" : "string"
-        },
-        "Count" : {
-          "type" : "string"
-        },
-        "CustomCharacters" : {
-          "type" : "string"
-        },
-        "CustomStopWords" : {
-          "type" : "string"
-        },
-        "CustomValue" : {
-          "type" : "string"
-        },
-        "DatasetsColumns" : {
-          "type" : "string"
-        },
-        "DateAddValue" : {
-          "type" : "string"
-        },
-        "DateTimeFormat" : {
-          "type" : "string"
-        },
-        "DateTimeParameters" : {
-          "type" : "string"
-        },
-        "DeleteOtherRows" : {
-          "type" : "string"
-        },
-        "Delimiter" : {
-          "type" : "string"
-        },
-        "EndPattern" : {
-          "type" : "string"
-        },
-        "EndPosition" : {
-          "type" : "string"
-        },
-        "EndValue" : {
-          "type" : "string"
-        },
-        "ExpandContractions" : {
-          "type" : "string"
-        },
-        "Exponent" : {
-          "type" : "string"
-        },
-        "FalseString" : {
-          "type" : "string"
-        },
-        "GroupByAggFunctionOptions" : {
-          "type" : "string"
-        },
-        "GroupByColumns" : {
-          "type" : "string"
-        },
-        "HiddenColumns" : {
-          "type" : "string"
-        },
-        "IgnoreCase" : {
-          "type" : "string"
-        },
-        "IncludeInSplit" : {
-          "type" : "string"
-        },
-        "Interval" : {
-          "type" : "string"
-        },
-        "IsText" : {
-          "type" : "string"
-        },
-        "JoinKeys" : {
-          "type" : "string"
-        },
-        "JoinType" : {
-          "type" : "string"
-        },
-        "LeftColumns" : {
-          "type" : "string"
-        },
-        "Limit" : {
-          "type" : "string"
-        },
-        "LowerBound" : {
-          "type" : "string"
-        },
-        "MapType" : {
-          "type" : "string"
-        },
-        "ModeType" : {
-          "type" : "string"
-        },
-        "MultiLine" : {
-          "type" : "boolean"
-        },
-        "NumRows" : {
-          "type" : "string"
-        },
-        "NumRowsAfter" : {
-          "type" : "string"
-        },
-        "NumRowsBefore" : {
-          "type" : "string"
-        },
-        "OrderByColumn" : {
-          "type" : "string"
-        },
-        "OrderByColumns" : {
-          "type" : "string"
-        },
-        "Other" : {
-          "type" : "string"
-        },
-        "Pattern" : {
-          "type" : "string"
-        },
-        "PatternOption1" : {
-          "type" : "string"
-        },
-        "PatternOption2" : {
-          "type" : "string"
-        },
-        "PatternOptions" : {
-          "type" : "string"
-        },
-        "Period" : {
-          "type" : "string"
-        },
-        "Position" : {
-          "type" : "string"
-        },
-        "RemoveAllPunctuation" : {
-          "type" : "string"
-        },
-        "RemoveAllQuotes" : {
-          "type" : "string"
-        },
-        "RemoveAllWhitespace" : {
-          "type" : "string"
-        },
-        "RemoveCustomCharacters" : {
-          "type" : "string"
-        },
-        "RemoveCustomValue" : {
-          "type" : "string"
-        },
-        "RemoveLeadingAndTrailingPunctuation" : {
-          "type" : "string"
-        },
-        "RemoveLeadingAndTrailingQuotes" : {
-          "type" : "string"
-        },
-        "RemoveLeadingAndTrailingWhitespace" : {
-          "type" : "string"
-        },
-        "RemoveLetters" : {
-          "type" : "string"
-        },
-        "RemoveNumbers" : {
-          "type" : "string"
-        },
-        "RemoveSourceColumn" : {
-          "type" : "string"
-        },
-        "RemoveSpecialCharacters" : {
-          "type" : "string"
-        },
-        "RightColumns" : {
-          "type" : "string"
-        },
-        "SampleSize" : {
-          "type" : "string"
-        },
-        "SampleType" : {
-          "type" : "string"
-        },
-        "SecondInput" : {
-          "type" : "string"
-        },
-        "SecondaryInputs" : {
-          "type" : "array",
-          "insertionOrder" : true,
-          "uniqueItems" : false,
-          "items" : {
-            "$ref" : "#/definitions/SecondaryInput"
-          }
-        },
-        "SourceColumn" : {
-          "type" : "string"
-        },
-        "SourceColumn1" : {
-          "type" : "string"
-        },
-        "SourceColumn2" : {
-          "type" : "string"
-        },
-        "SourceColumns" : {
-          "type" : "string"
-        },
-        "StartColumnIndex" : {
-          "type" : "string"
-        },
-        "StartPattern" : {
-          "type" : "string"
-        },
-        "StartPosition" : {
-          "type" : "string"
-        },
-        "StartValue" : {
-          "type" : "string"
-        },
-        "StemmingMode" : {
-          "type" : "string"
-        },
-        "StepCount" : {
-          "type" : "string"
-        },
-        "StepIndex" : {
-          "type" : "string"
-        },
-        "StopWordsMode" : {
-          "type" : "string"
-        },
-        "Strategy" : {
-          "type" : "string"
-        },
-        "SheetNames" : {
-          "type" : "array",
-          "insertionOrder" : true,
-          "items" : {
-            "type" : "string"
-          },
-          "minItems" : 1,
-          "maxItems" : 1
-        },
-        "SheetIndexes" : {
-          "type" : "array",
-          "insertionOrder" : true,
-          "items" : {
-            "type" : "integer"
-          },
-          "minItems" : 1,
-          "maxItems" : 1
-        },
-        "TargetColumn" : {
-          "type" : "string"
-        },
-        "TargetColumnNames" : {
-          "type" : "string"
-        },
-        "TargetDateFormat" : {
-          "type" : "string"
-        },
-        "TargetIndex" : {
-          "type" : "string"
-        },
-        "TimeZone" : {
-          "type" : "string"
-        },
-        "TokenizerPattern" : {
-          "type" : "string"
-        },
-        "TrueString" : {
-          "type" : "string"
-        },
-        "UdfLang" : {
-          "type" : "string"
-        },
-        "Units" : {
-          "type" : "string"
-        },
-        "UnpivotColumn" : {
-          "type" : "string"
-        },
-        "UpperBound" : {
-          "type" : "string"
-        },
-        "UseNewDataFrame" : {
-          "type" : "string"
-        },
-        "Value" : {
-          "type" : "string"
-        },
-        "Value1" : {
-          "type" : "string"
-        },
-        "Value2" : {
-          "type" : "string"
-        },
-        "ValueColumn" : {
-          "type" : "string"
-        },
-        "ViewFrame" : {
-          "type" : "string"
-        },
-        "Input" : {
-          "description" : "Input",
-          "type" : "object",
-          "properties" : {
-            "S3InputDefinition" : {
-              "$ref" : "#/definitions/S3Location"
+    "S3Location": {
+      "description": "Input location",
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string"
             },
-            "DataCatalogInputDefinition" : {
-              "$ref" : "#/definitions/DataCatalogInputDefinition"
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Bucket"
+      ],
+      "title": "AWSDataBrewRecipeS3LocationDefinition"
+    },
+    "DataCatalogInputDefinition": {
+      "type": "object",
+      "properties": {
+        "CatalogId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Catalog id"
+        },
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Database name"
+        },
+        "TableName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Table name"
+        },
+        "TempDirectory": {
+          "$ref": "#/definitions/S3Location"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataBrewRecipeDataCatalogInputDefinition"
+    },
+    "RecipeStep": {
+      "type": "object",
+      "properties": {
+        "Action": {
+          "$ref": "#/definitions/Action"
+        },
+        "ConditionExpressions": {
+          "description": "Condition expressions applied to the step action",
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "$ref": "#/definitions/ConditionExpression"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Action"
+      ],
+      "title": "AWSDataBrewRecipeRecipeStepDefinition"
+    },
+    "Action": {
+      "type": "object",
+      "properties": {
+        "Operation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Step action operation"
+        },
+        "Parameters": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RecipeParameters"
+            },
+            {
+              "$ref": "#/definitions/ParameterMap"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Operation"
+      ],
+      "title": "AWSDataBrewRecipeActionDefinition"
+    },
+    "ConditionExpression": {
+      "description": "Condition expressions applied to the step action",
+      "type": "object",
+      "properties": {
+        "Condition": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Input condition to be applied to the target column"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Value of the condition"
+        },
+        "TargetColumn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the target column"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Condition",
+        "TargetColumn"
+      ],
+      "title": "AWSDataBrewRecipeConditionExpressionDefinition"
+    },
+    "RecipeParameters": {
+      "additionalProperties": false,
+      "properties": {
+        "AggregateFunction": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Base": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CaseStatement": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CategoryMap": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CharsToRemove": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CollapseConsecutiveWhitespace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ColumnDataType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ColumnRange": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Count": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomCharacters": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomStopWords": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DatasetsColumns": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DateAddValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DateTimeFormat": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DateTimeParameters": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DeleteOtherRows": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Delimiter": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EndPattern": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EndPosition": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EndValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExpandContractions": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Exponent": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "FalseString": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GroupByAggFunctionOptions": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GroupByColumns": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HiddenColumns": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IgnoreCase": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IncludeInSplit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Interval": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IsText": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "JoinKeys": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "JoinType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LeftColumns": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Limit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LowerBound": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MapType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ModeType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MultiLine": {
+          "type": "boolean"
+        },
+        "NumRows": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "NumRowsAfter": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "NumRowsBefore": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OrderByColumn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OrderByColumns": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Other": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Pattern": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PatternOption1": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PatternOption2": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PatternOptions": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Period": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Position": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveAllPunctuation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveAllQuotes": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveAllWhitespace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveCustomCharacters": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveCustomValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveLeadingAndTrailingPunctuation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveLeadingAndTrailingQuotes": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveLeadingAndTrailingWhitespace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveLetters": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveNumbers": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveSourceColumn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RemoveSpecialCharacters": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RightColumns": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SampleSize": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SampleType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SecondInput": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SecondaryInputs": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/SecondaryInput"
+          }
+        },
+        "SourceColumn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SourceColumn1": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SourceColumn2": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SourceColumns": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StartColumnIndex": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StartPattern": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StartPosition": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StartValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StemmingMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StepCount": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StepIndex": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StopWordsMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Strategy": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SheetNames": {
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "SheetIndexes": {
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "TargetColumn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetColumnNames": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetDateFormat": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetIndex": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TimeZone": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TokenizerPattern": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TrueString": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UdfLang": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Units": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UnpivotColumn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UpperBound": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UseNewDataFrame": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value1": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value2": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ValueColumn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ViewFrame": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Input": {
+          "description": "Input",
+          "type": "object",
+          "properties": {
+            "S3InputDefinition": {
+              "$ref": "#/definitions/S3Location"
+            },
+            "DataCatalogInputDefinition": {
+              "$ref": "#/definitions/DataCatalogInputDefinition"
             }
           },
-          "oneOf" : [ {
-            "required" : [ "S3InputDefinition" ]
-          }, {
-            "required" : [ "DataCatalogInputDefinition" ]
-          } ],
-          "additionalProperties" : false
-        }
-      }
-    },
-    "ParameterMap" : {
-      "type" : "object",
-      "additionalProperties" : false,
-      "patternProperties" : {
-        "^[A-Za-z0-9]{1,128}$" : {
-          "type" : "string"
-        }
-      }
-    },
-    "Tag" : {
-      "description" : "A key-value pair to associate with a resource.",
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128
-        },
-        "Value" : {
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 256
+          "oneOf": [
+            {
+              "required": [
+                "S3InputDefinition"
+              ]
+            },
+            {
+              "required": [
+                "DataCatalogInputDefinition"
+              ]
+            }
+          ],
+          "additionalProperties": false
         }
       },
-      "additionalProperties" : false,
-      "required" : [ "Value", "Key" ]
+      "title": "AWSDataBrewRecipeRecipeParametersDefinition"
+    },
+    "ParameterMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[A-Za-z0-9]{1,128}$": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSDataBrewRecipeParameterMapDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSDataBrewRecipeTagDefinition"
     }
   },
-  "additionalProperties" : false,
-  "required" : [ "Name", "Steps" ],
-  "primaryIdentifier" : [ "/properties/Name" ],
-  "createOnlyProperties" : [ "/properties/Name", "/properties/Tags" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "databrew:CreateRecipe", "databrew:TagResource", "databrew:UntagResource", "iam:PassRole" ]
-    },
-    "read" : {
-      "permissions" : [ "databrew:DescribeRecipe", "databrew:ListTagsForResource", "iam:ListRoles" ]
-    },
-    "delete" : {
-      "permissions" : [ "databrew:DeleteRecipeVersion" ]
-    },
-    "list" : {
-      "permissions" : [ "databrew:ListRecipes", "databrew:ListTagsForResource", "iam:ListRoles" ]
-    },
-    "update" : {
-      "permissions" : [ "databrew:UpdateRecipe" ]
-    }
-  }
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "Steps"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Tags"
+  ],
+  "type": "object",
+  "title": "AWSDataBrewRecipeProperties"
 }

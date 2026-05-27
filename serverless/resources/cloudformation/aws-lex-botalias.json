@@ -1,345 +1,512 @@
 {
-  "typeName" : "AWS::Lex::BotAlias",
-  "description" : "A Bot Alias enables you to change the version of a bot without updating applications that use the bot",
-  "sourceUrl" : "https://docs.aws.amazon.com/lexv2/latest/dg/API_CreateBotAlias.html",
-  "definitions" : {
-    "LocaleId" : {
-      "description" : "The identifier of the language and locale that the bot alias will be configured in.",
-      "type" : "string"
-    },
-    "BotAliasLocaleSettingsList" : {
-      "description" : "A list of bot alias locale settings to add to the bot alias.",
-      "type" : "array",
-      "uniqueItems" : true,
-      "maxItems" : 50,
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/BotAliasLocaleSettingsItem"
-      }
-    },
-    "BotAliasStatus" : {
-      "type" : "string",
-      "enum" : [ "Creating", "Available", "Deleting", "Failed" ]
-    },
-    "BotAliasLocaleSettingsItem" : {
-      "description" : "A locale setting in alias",
-      "type" : "object",
-      "properties" : {
-        "LocaleId" : {
-          "description" : "A string used to identify the locale",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128
+  "typeName": "AWS::Lex::BotAlias",
+  "description": "A Bot Alias enables you to change the version of a bot without updating applications that use the bot. Source:- https://docs.aws.amazon.com/lexv2/latest/dg/API_CreateBotAlias.html. Source:- https://docs.aws.amazon.com/lexv2/latest/dg/API_CreateBotAlias.html",
+  "sourceUrl": "https://docs.aws.amazon.com/lexv2/latest/dg/API_CreateBotAlias.html",
+  "definitions": {
+    "LocaleId": {
+      "oneOf": [
+        {
+          "type": "string"
         },
-        "BotAliasLocaleSetting" : {
-          "$ref" : "#/definitions/BotAliasLocaleSettings"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      },
-      "required" : [ "LocaleId", "BotAliasLocaleSetting" ],
-      "additionalProperties" : false
+      ],
+      "description": "The identifier of the language and locale that the bot alias will be configured in.",
+      "title": "AWSLexBotAliasLocaleIdDefinition"
     },
-    "BotAliasLocaleSettings" : {
-      "description" : "You can use this parameter to specify a specific Lambda function to run different functions in different locales.",
-      "type" : "object",
-      "properties" : {
-        "CodeHookSpecification" : {
-          "$ref" : "#/definitions/CodeHookSpecification"
+    "BotAliasLocaleSettingsList": {
+      "description": "A list of bot alias locale settings to add to the bot alias.",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 50,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/BotAliasLocaleSettingsItem"
+      },
+      "title": "AWSLexBotAliasBotAliasLocaleSettingsListDefinition"
+    },
+    "BotAliasStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Creating",
+            "Available",
+            "Deleting",
+            "Failed"
+          ]
         },
-        "Enabled" : {
-          "type" : "boolean",
-          "description" : "Whether the Lambda code hook is enabled"
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      },
-      "required" : [ "Enabled" ],
-      "additionalProperties" : false
+      ],
+      "title": "AWSLexBotAliasBotAliasStatusDefinition"
     },
-    "CodeHookSpecification" : {
-      "description" : "Contains information about code hooks that Amazon Lex calls during a conversation.",
-      "type" : "object",
-      "properties" : {
-        "LambdaCodeHook" : {
-          "$ref" : "#/definitions/LambdaCodeHook"
-        }
-      },
-      "required" : [ "LambdaCodeHook" ],
-      "additionalProperties" : false
-    },
-    "LambdaCodeHook" : {
-      "description" : "Contains information about code hooks that Amazon Lex calls during a conversation.",
-      "type" : "object",
-      "properties" : {
-        "CodeHookInterfaceVersion" : {
-          "description" : "The version of the request-response that you want Amazon Lex to use to invoke your Lambda function.",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 5
+    "BotAliasLocaleSettingsItem": {
+      "description": "A locale setting in alias",
+      "type": "object",
+      "properties": {
+        "LocaleId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify the locale"
         },
-        "LambdaArn" : {
-          "description" : "The Amazon Resource Name (ARN) of the Lambda function.",
-          "type" : "string",
-          "minLength" : 20,
-          "maxLength" : 2048
+        "BotAliasLocaleSetting": {
+          "$ref": "#/definitions/BotAliasLocaleSettings"
         }
       },
-      "required" : [ "CodeHookInterfaceVersion", "LambdaArn" ],
-      "additionalProperties" : false
+      "required": [
+        "LocaleId",
+        "BotAliasLocaleSetting"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasBotAliasLocaleSettingsItemDefinition"
     },
-    "ConversationLogSettings" : {
-      "description" : "Contains information about code hooks that Amazon Lex calls during a conversation.",
-      "type" : "object",
-      "properties" : {
-        "AudioLogSettings" : {
-          "$ref" : "#/definitions/AudioLogSettings"
+    "BotAliasLocaleSettings": {
+      "description": "You can use this parameter to specify a specific Lambda function to run different functions in different locales.",
+      "type": "object",
+      "properties": {
+        "CodeHookSpecification": {
+          "$ref": "#/definitions/CodeHookSpecification"
         },
-        "TextLogSettings" : {
-          "$ref" : "#/definitions/TextLogSettings"
+        "Enabled": {
+          "type": "boolean",
+          "description": "Whether the Lambda code hook is enabled"
         }
       },
-      "additionalProperties" : false
+      "required": [
+        "Enabled"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasBotAliasLocaleSettingsDefinition"
     },
-    "AudioLogSettings" : {
-      "description" : "List of audio log settings",
-      "type" : "array",
-      "maxItems" : 1,
-      "uniqueItems" : true,
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/AudioLogSetting"
-      }
+    "CodeHookSpecification": {
+      "description": "Contains information about code hooks that Amazon Lex calls during a conversation.",
+      "type": "object",
+      "properties": {
+        "LambdaCodeHook": {
+          "$ref": "#/definitions/LambdaCodeHook"
+        }
+      },
+      "required": [
+        "LambdaCodeHook"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasCodeHookSpecificationDefinition"
     },
-    "TextLogSettings" : {
-      "description" : "List of text log settings",
-      "type" : "array",
-      "maxItems" : 1,
-      "uniqueItems" : true,
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/TextLogSetting"
-      }
-    },
-    "AudioLogSetting" : {
-      "description" : "Settings for logging audio of conversations between Amazon Lex and a user. You specify whether to log audio and the Amazon S3 bucket where the audio file is stored.",
-      "type" : "object",
-      "properties" : {
-        "Destination" : {
-          "$ref" : "#/definitions/AudioLogDestination"
+    "LambdaCodeHook": {
+      "description": "Contains information about code hooks that Amazon Lex calls during a conversation.",
+      "type": "object",
+      "properties": {
+        "CodeHookInterfaceVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 5
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the request-response that you want Amazon Lex to use to invoke your Lambda function."
         },
-        "Enabled" : {
-          "type" : "boolean",
-          "description" : ""
+        "LambdaArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the Lambda function."
         }
       },
-      "required" : [ "Destination", "Enabled" ],
-      "additionalProperties" : false
+      "required": [
+        "CodeHookInterfaceVersion",
+        "LambdaArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasLambdaCodeHookDefinition"
     },
-    "TextLogSetting" : {
-      "description" : "Contains information about code hooks that Amazon Lex calls during a conversation.",
-      "type" : "object",
-      "properties" : {
-        "Destination" : {
-          "$ref" : "#/definitions/TextLogDestination"
+    "ConversationLogSettings": {
+      "description": "Contains information about code hooks that Amazon Lex calls during a conversation.",
+      "type": "object",
+      "properties": {
+        "AudioLogSettings": {
+          "$ref": "#/definitions/AudioLogSettings"
         },
-        "Enabled" : {
-          "type" : "boolean",
-          "description" : ""
+        "TextLogSettings": {
+          "$ref": "#/definitions/TextLogSettings"
         }
       },
-      "required" : [ "Destination", "Enabled" ],
-      "additionalProperties" : false
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasConversationLogSettingsDefinition"
     },
-    "AudioLogDestination" : {
-      "description" : "The location of audio log files collected when conversation logging is enabled for a bot.",
-      "type" : "object",
-      "properties" : {
-        "S3Bucket" : {
-          "$ref" : "#/definitions/S3BucketLogDestination"
-        }
+    "AudioLogSettings": {
+      "description": "List of audio log settings",
+      "type": "array",
+      "maxItems": 1,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AudioLogSetting"
       },
-      "required" : [ "S3Bucket" ],
-      "additionalProperties" : false
+      "title": "AWSLexBotAliasAudioLogSettingsDefinition"
     },
-    "TextLogDestination" : {
-      "description" : "Defines the Amazon CloudWatch Logs destination log group for conversation text logs.",
-      "type" : "object",
-      "properties" : {
-        "CloudWatch" : {
-          "$ref" : "#/definitions/CloudWatchLogGroupLogDestination"
-        }
+    "TextLogSettings": {
+      "description": "List of text log settings",
+      "type": "array",
+      "maxItems": 1,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/TextLogSetting"
       },
-      "required" : [ "CloudWatch" ],
-      "additionalProperties" : false
+      "title": "AWSLexBotAliasTextLogSettingsDefinition"
     },
-    "CloudWatchLogGroupLogDestination" : {
-      "type" : "object",
-      "properties" : {
-        "CloudWatchLogGroupArn" : {
-          "description" : "A string used to identify the groupArn for the Cloudwatch Log Group",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 2048
+    "AudioLogSetting": {
+      "description": "Settings for logging audio of conversations between Amazon Lex and a user. You specify whether to log audio and the Amazon S3 bucket where the audio file is stored.",
+      "type": "object",
+      "properties": {
+        "Destination": {
+          "$ref": "#/definitions/AudioLogDestination"
         },
-        "LogPrefix" : {
-          "description" : "A string containing the value for the Log Prefix",
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 1024
+        "Enabled": {
+          "type": "boolean",
+          "description": ""
         }
       },
-      "required" : [ "CloudWatchLogGroupArn", "LogPrefix" ],
-      "additionalProperties" : false
+      "required": [
+        "Destination",
+        "Enabled"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasAudioLogSettingDefinition"
     },
-    "S3BucketLogDestination" : {
-      "description" : "Specifies an Amazon S3 bucket for logging audio conversations",
-      "type" : "object",
-      "properties" : {
-        "S3BucketArn" : {
-          "type" : "string",
-          "description" : "The Amazon Resource Name (ARN) of an Amazon S3 bucket where audio log files are stored.",
-          "minLength" : 1,
-          "maxLength" : 2048,
-          "pattern" : "^arn:[\\w\\-]+:s3:::[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"
+    "TextLogSetting": {
+      "description": "Contains information about code hooks that Amazon Lex calls during a conversation.",
+      "type": "object",
+      "properties": {
+        "Destination": {
+          "$ref": "#/definitions/TextLogDestination"
         },
-        "LogPrefix" : {
-          "type" : "string",
-          "description" : "The Amazon S3 key of the deployment package.",
-          "minLength" : 0,
-          "maxLength" : 1024
-        },
-        "KmsKeyArn" : {
-          "type" : "string",
-          "description" : "The Amazon Resource Name (ARN) of an AWS Key Management Service (KMS) key for encrypting audio log files stored in an S3 bucket.",
-          "minLength" : 20,
-          "maxLength" : 2048,
-          "pattern" : "^arn:[\\w\\-]+:kms:[\\w\\-]+:[\\d]{12}:(?:key\\/[\\w\\-]+|alias\\/[a-zA-Z0-9:\\/_\\-]{1,256})$"
+        "Enabled": {
+          "type": "boolean",
+          "description": ""
         }
       },
-      "required" : [ "LogPrefix", "S3BucketArn" ],
-      "additionalProperties" : false
+      "required": [
+        "Destination",
+        "Enabled"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasTextLogSettingDefinition"
     },
-    "Id" : {
-      "description" : "Unique ID of resource",
-      "type" : "string",
-      "minLength" : 10,
-      "maxLength" : 10,
-      "pattern" : "^[0-9a-zA-Z]+$"
-    },
-    "Name" : {
-      "description" : "A unique identifier for a resource.",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 100,
-      "pattern" : "^([0-9a-zA-Z][_-]?)+$"
-    },
-    "BotVersion" : {
-      "description" : "The version of a bot.",
-      "type" : "string",
-      "minLength" : 1,
-      "maxLength" : 5,
-      "pattern" : "^(DRAFT|[0-9]+)$"
-    },
-    "Description" : {
-      "description" : "A description of the bot alias. Use the description to help identify the bot alias in lists.",
-      "type" : "string",
-      "maxLength" : 200
-    },
-    "Arn" : {
-      "type" : "string",
-      "maxLength" : 1000
-    },
-    "Tag" : {
-      "description" : "A label for tagging Lex resources",
-      "type" : "object",
-      "properties" : {
-        "Key" : {
-          "description" : "A string used to identify this tag",
-          "type" : "string",
-          "minLength" : 1,
-          "maxLength" : 128
-        },
-        "Value" : {
-          "description" : "A string containing the value for the tag",
-          "type" : "string",
-          "minLength" : 0,
-          "maxLength" : 256
+    "AudioLogDestination": {
+      "description": "The location of audio log files collected when conversation logging is enabled for a bot.",
+      "type": "object",
+      "properties": {
+        "S3Bucket": {
+          "$ref": "#/definitions/S3BucketLogDestination"
         }
       },
-      "required" : [ "Key", "Value" ],
-      "additionalProperties" : false
+      "required": [
+        "S3Bucket"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasAudioLogDestinationDefinition"
+    },
+    "TextLogDestination": {
+      "description": "Defines the Amazon CloudWatch Logs destination log group for conversation text logs.",
+      "type": "object",
+      "properties": {
+        "CloudWatch": {
+          "$ref": "#/definitions/CloudWatchLogGroupLogDestination"
+        }
+      },
+      "required": [
+        "CloudWatch"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasTextLogDestinationDefinition"
+    },
+    "CloudWatchLogGroupLogDestination": {
+      "type": "object",
+      "properties": {
+        "CloudWatchLogGroupArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify the groupArn for the Cloudwatch Log Group"
+        },
+        "LogPrefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for the Log Prefix"
+        }
+      },
+      "required": [
+        "CloudWatchLogGroupArn",
+        "LogPrefix"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasCloudWatchLogGroupLogDestinationDefinition"
+    },
+    "S3BucketLogDestination": {
+      "description": "Specifies an Amazon S3 bucket for logging audio conversations",
+      "type": "object",
+      "properties": {
+        "S3BucketArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^arn:[\\w\\-]+:s3:::[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of an Amazon S3 bucket where audio log files are stored."
+        },
+        "LogPrefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 key of the deployment package."
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 2048,
+              "pattern": "^arn:[\\w\\-]+:kms:[\\w\\-]+:[\\d]{12}:(?:key\\/[\\w\\-]+|alias\\/[a-zA-Z0-9:\\/_\\-]{1,256})$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of an AWS Key Management Service (KMS) key for encrypting audio log files stored in an S3 bucket."
+        }
+      },
+      "required": [
+        "LogPrefix",
+        "S3BucketArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasS3BucketLogDestinationDefinition"
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9a-zA-Z]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique ID of resource",
+      "title": "AWSLexBotAliasIdDefinition"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^([0-9a-zA-Z][_-]?)+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique identifier for a resource.",
+      "title": "AWSLexBotAliasNameDefinition"
+    },
+    "BotVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5,
+          "pattern": "^(DRAFT|[0-9]+)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The version of a bot.",
+      "title": "AWSLexBotAliasBotVersionDefinition"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the bot alias. Use the description to help identify the bot alias in lists.",
+      "title": "AWSLexBotAliasDescriptionDefinition"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLexBotAliasArnDefinition"
+    },
+    "Tag": {
+      "description": "A label for tagging Lex resources",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for the tag"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLexBotAliasTagDefinition"
     }
   },
-  "properties" : {
-    "BotAliasId" : {
-      "$ref" : "#/definitions/Id"
+  "properties": {
+    "BotId": {
+      "$ref": "#/definitions/Id"
     },
-    "BotId" : {
-      "$ref" : "#/definitions/Id"
+    "BotAliasLocaleSettings": {
+      "$ref": "#/definitions/BotAliasLocaleSettingsList"
     },
-    "Arn" : {
-      "$ref" : "#/definitions/Arn"
+    "BotAliasName": {
+      "$ref": "#/definitions/Name"
     },
-    "BotAliasStatus" : {
-      "$ref" : "#/definitions/BotAliasStatus"
+    "BotVersion": {
+      "$ref": "#/definitions/BotVersion"
     },
-    "BotAliasLocaleSettings" : {
-      "$ref" : "#/definitions/BotAliasLocaleSettingsList"
+    "ConversationLogSettings": {
+      "$ref": "#/definitions/ConversationLogSettings"
     },
-    "BotAliasName" : {
-      "$ref" : "#/definitions/Name"
+    "Description": {
+      "$ref": "#/definitions/Description"
     },
-    "BotVersion" : {
-      "$ref" : "#/definitions/BotVersion"
-    },
-    "ConversationLogSettings" : {
-      "$ref" : "#/definitions/ConversationLogSettings"
-    },
-    "Description" : {
-      "$ref" : "#/definitions/Description"
-    },
-    "SentimentAnalysisSettings" : {
-      "description" : "Determines whether Amazon Lex will use Amazon Comprehend to detect the sentiment of user utterances.",
-      "type" : "object",
-      "properties" : {
-        "DetectSentiment" : {
-          "type" : "boolean",
-          "description" : "Enable to call Amazon Comprehend for Sentiment natively within Lex"
+    "SentimentAnalysisSettings": {
+      "description": "Determines whether Amazon Lex will use Amazon Comprehend to detect the sentiment of user utterances.",
+      "type": "object",
+      "properties": {
+        "DetectSentiment": {
+          "type": "boolean",
+          "description": "Enable to call Amazon Comprehend for Sentiment natively within Lex"
         }
       },
-      "required" : [ "DetectSentiment" ],
-      "additionalProperties" : false
+      "required": [
+        "DetectSentiment"
+      ],
+      "additionalProperties": false
     },
-    "BotAliasTags" : {
-      "description" : "A list of tags to add to the bot alias.",
-      "type" : "array",
-      "uniqueItems" : true,
-      "maxItems" : 200,
-      "insertionOrder" : false,
-      "items" : {
-        "$ref" : "#/definitions/Tag"
+    "BotAliasTags": {
+      "description": "A list of tags to add to the bot alias.",
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 200,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
       }
     }
   },
-  "taggable" : false,
-  "additionalProperties" : false,
-  "required" : [ "BotId", "BotAliasName" ],
-  "readOnlyProperties" : [ "/properties/BotAliasId", "/properties/Arn", "/properties/BotAliasStatus" ],
-  "primaryIdentifier" : [ "/properties/BotAliasId", "/properties/BotId" ],
-  "createOnlyProperties" : [ "/properties/BotId" ],
-  "writeOnlyProperties" : [ "/properties/BotAliasTags" ],
-  "handlers" : {
-    "create" : {
-      "permissions" : [ "lex:CreateBotAlias", "lex:DescribeBot" ]
-    },
-    "update" : {
-      "permissions" : [ "lex:UpdateBotAlias", "lex:DescribeBotAlias", "lex:ListTagsForResource", "lex:TagResource", "lex:UntagResource" ]
-    },
-    "read" : {
-      "permissions" : [ "lex:DescribeBotAlias" ]
-    },
-    "delete" : {
-      "permissions" : [ "lex:DeleteBotAlias" ]
-    },
-    "list" : {
-      "permissions" : [ "lex:ListBotAliases" ]
-    }
-  }
+  "taggable": false,
+  "additionalProperties": false,
+  "required": [
+    "BotId",
+    "BotAliasName"
+  ],
+  "readOnlyProperties": [
+    "/properties/BotAliasId",
+    "/properties/Arn",
+    "/properties/BotAliasStatus"
+  ],
+  "primaryIdentifier": [
+    "/properties/BotAliasId",
+    "/properties/BotId"
+  ],
+  "createOnlyProperties": [
+    "/properties/BotId"
+  ],
+  "writeOnlyProperties": [
+    "/properties/BotAliasTags"
+  ],
+  "type": "object",
+  "title": "AWSLexBotAliasProperties"
 }
