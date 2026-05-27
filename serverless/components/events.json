@@ -373,6 +373,391 @@
     },
     "type": "object"
   },
+  "AwsDetail": {
+    "additionalProperties": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "type": "object"
+  },
+  "AwsPatternExisting": {
+    "properties": {
+      "source": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    "type": "object"
+  },
+  "AwsPatternInput": {
+    "properties": {
+      "detail": {
+        "$ref": "#/AwsDetail"
+      },
+      "detail-type": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "source": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      }
+    },
+    "type": "object"
+  },
+  "AwsCloudwatchLog": {
+    "properties": {
+      "filter": {
+        "type": "string"
+      },
+      "logGroup": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsCognitoUserPool": {
+    "properties": {
+      "existing": {
+        "type": "boolean"
+      },
+      "pool": {
+        "type": "string"
+      },
+      "trigger": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsAlexaSmartHome": {
+    "properties": {
+      "appId": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      }
+    },
+    "type": "object"
+  },
+  "AwsOrigin": {
+    "properties": {
+      "CustomOriginConfig": {
+        "properties": {
+          "OriginProtocolPolicy": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DomainName": {
+        "type": "string"
+      },
+      "OriginPath": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsCloudFront": {
+    "properties": {
+      "eventType": {
+        "type": "string"
+      },
+      "includeBody": {
+        "type": "boolean"
+      },
+      "origin": {
+        "$ref": "#/AwsOrigin"
+      },
+      "pathPattern": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsIot": {
+    "properties": {
+      "description": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "name": {
+        "type": "string"
+      },
+      "sql": {
+        "type": "string"
+      },
+      "sqlVersion": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsS3Rule": {
+    "properties": {
+      "prefix": {
+        "type": "string"
+      },
+      "suffix": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsS3": {
+    "oneOf": [
+      {
+        "properties": {
+          "bucket": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "existing": {
+            "type": "boolean"
+          },
+          "rules": {
+            "items": {
+              "$ref": "#/AwsS3Rule"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      {
+        "type": "string",
+        "description": "This will create a new bucket and trigger the lambda when an object is added or modified inside the bucket. More details :- https://www.serverless.com/framework/docs/providers/aws/events/s3#simple-event-definition",
+        "minLength": 3,
+        "maxLength": 63,
+        "pattern": "(?!(^((2(5[0-5]|[0-4][0-9])|[01]?[0-9]{1,2})\\.){3}(2(5[0-5]|[0-4][0-9])|[01]?[0-9]{1,2})$|^xn--|-s3alias$))^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$"
+      }
+    ]
+  },
+  "AwsStream": {
+    "properties": {
+      "arn": {
+        "$ref": "cf.functions.json#/Aws_CF_Function"
+      },
+      "batchSize": {
+        "type": ["string", "number"]
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "startingPosition": {
+        "type": ["string", "number"]
+      }
+    },
+    "type": "object"
+  },
+  "AwsWebsocketAuthorizer": {
+    "properties": {
+      "arn": {
+        "type": "string"
+      },
+      "identitySource": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "name": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsWebsocket": {
+    "properties": {
+      "authorizer": {
+        "$ref": "#/AwsWebsocketAuthorizer"
+      },
+      "route": {
+        "type": "string"
+      },
+      "routeResponseSelectionExpression": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsWebsocketLogs": {
+    "properties": {
+      "level": {
+        "type": "string",
+        "enum": ["INFO", "ERROR"]
+      },
+      "format": {
+        "type": "string",
+        "description": "Log format to use for access logs. Ref:- https://docs.aws.amazon.com/apigateway/latest/developerguide/websocket-api-logging.html"
+      },
+      "accessLogging": {
+        "type": "boolean",
+        "description": "Enables HTTP access logs (default: true)"
+      },
+      "executionLogging": {
+        "type": "boolean",
+        "description": "Enable execution logging (default: true)"
+      },
+      "fullExecutionData": {
+        "type": "boolean",
+        "description": "Log full requests/responses for execution logging (default: true)"
+      }
+    },
+    "type": "object"
+  },
+  "AwsEventBridge": {
+    "title": "AwsEventBridge",
+    "description": "Aws Lambda function Eventbridge event source",
+    "properties": {
+      "eventBus": {
+        "type": "string",
+        "minLength": 1
+      },
+      "schedule": {
+        "type": "string",
+        "pattern": "^(?:cron|rate)\\(.+\\)$"
+      },
+      "name": {
+        "type": "string",
+        "pattern": "[a-zA-Z0-9-_.]+",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "pattern": {
+        "anyOf": [
+          {
+            "$ref": "#/AwsPatternExisting"
+          },
+          {
+            "$ref": "#/AwsPatternInput"
+          }
+        ]
+      },
+      "input": {
+        "type": "object"
+      },
+      "inputPath": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "inputTransformer": {
+        "$ref": "common.json#/AwsInputTransformer"
+      },
+      "retryPolicy": {
+        "type": "object",
+        "properties": {
+          "maximumEventAge": {
+            "type": "number",
+            "minimum": 60,
+            "maximum": 86400
+          },
+          "maximumRetryAttempts": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 185
+          }
+        }
+      }
+    },
+    "type": "object",
+    "anyOf": [
+      { "required": ["pattern"] },
+      { "required": ["schedule"] }
+    ]
+  },
+  "AwsEvent": {
+    "properties": {
+      "activemq": {
+        "$ref": "#/AwsActiveMq"
+      },
+      "alb": {
+        "$ref": "#/AwsAlbEvent"
+      },
+      "alexaSkill": {
+        "$ref": "#/AwsAlexaSkill"
+      },
+      "alexaSmartHome": {
+        "$ref": "#/AwsAlexaSmartHome"
+      },
+      "cloudFront": {
+        "$ref": "#/AwsCloudFront"
+      },
+      "cloudwatchEvent": {
+        "$ref": "#/AwsCloudwatchEvent"
+      },
+      "cloudwatchLog": {
+        "$ref": "#/AwsCloudwatchLog"
+      },
+      "cognitoUserPool": {
+        "$ref": "#/AwsCognitoUserPool"
+      },
+      "eventBridge": {
+        "$ref": "#/AwsEventBridge"
+      },
+      "http": {
+        "$ref": "api.gateway.v1.json#/AwsHttp"
+      },
+      "httpApi": {
+        "$ref": "api.gateway.v2.json#/AwsHttpApiEvent"
+      },
+      "iot": {
+        "$ref": "#/AwsIot"
+      },
+      "s3": {
+        "$ref": "#/AwsS3"
+      },
+      "schedule": {
+        "anyOf": [
+          {
+            "$ref": "#/AwsScheduleEvent"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "sns": {
+        "$ref": "#/AwsSns"
+      },
+      "sqs": {
+        "anyOf": [
+          {
+            "$ref": "#/AwsSqs"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "stream": {
+        "$ref": "#/AwsStream"
+      },
+      "websocket": {
+        "$ref": "#/AwsWebsocket"
+      }
+    },
+    "type": "object"
+  },
   "required": [
     "AwsActiveMq",
     "AwsSns",
@@ -380,6 +765,23 @@
     "AwsSnsRedrivePolicy",
     "AwsSqs",
     "AwsCloudwatchEvent",
-    "AwsScheduleEvent"
+    "AwsScheduleEvent",
+    "AwsDetail",
+    "AwsPatternExisting",
+    "AwsPatternInput",
+    "AwsCloudwatchLog",
+    "AwsCognitoUserPool",
+    "AwsAlexaSmartHome",
+    "AwsOrigin",
+    "AwsCloudFront",
+    "AwsIot",
+    "AwsS3Rule",
+    "AwsS3",
+    "AwsStream",
+    "AwsWebsocketAuthorizer",
+    "AwsWebsocket",
+    "AwsWebsocketLogs",
+    "AwsEventBridge",
+    "AwsEvent"
   ]
 }

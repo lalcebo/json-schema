@@ -89,8 +89,426 @@
       }
     ]
   },
+  "AwsEnvironment": {
+    "additionalProperties": {},
+    "type": "object"
+  },
+  "AwsDestinations": {
+    "properties": {
+      "onFailure": {
+        "type": "string"
+      },
+      "onSuccess": {
+        "type": "string"
+      }
+    },
+    "type": "object"
+  },
+  "AwsCapacityProviders": {
+    "title": "AwsCapacityProviders",
+    "description": "Lambda Managed Instances capacity providers (v4). Each key is a provider name. https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml",
+    "type": "object",
+    "additionalProperties": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "AwsFunctionTenancy": {
+    "title": "AwsFunctionTenancy",
+    "description": "Lambda tenancy configuration (v4).",
+    "type": "object",
+    "properties": {
+      "mode": { "type": "string", "enum": ["per_tenant", "shared"] }
+    },
+    "additionalProperties": true
+  },
+  "AwsFunctionDurableConfig": {
+    "title": "AwsFunctionDurableConfig",
+    "description": "Durable Lambda function configuration (v4).",
+    "type": "object",
+    "properties": {
+      "executionTimeout": { "type": ["string", "number"] },
+      "retentionPeriodInDays": { "type": ["string", "number"] }
+    },
+    "additionalProperties": true
+  },
+  "AwsFunctionCapacityProvider": {
+    "title": "AwsFunctionCapacityProvider",
+    "description": "Per-function Capacity Provider assignment (v4).",
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" },
+      "maxConcurrency": { "type": ["string", "number"] },
+      "memoryPerVCpu": { "type": ["string", "number"] },
+      "scaling": {
+        "type": "object",
+        "properties": {
+          "min": { "type": ["string", "number"] },
+          "max": { "type": ["string", "number"] }
+        },
+        "additionalProperties": true
+      }
+    },
+    "additionalProperties": true
+  },
+  "AwsFileSystemConfig": {
+    "title": "AwsFileSystemConfig",
+    "description": "EFS file system attachment for a Lambda function.",
+    "type": "object",
+    "properties": {
+      "arn": { "type": "string" },
+      "localMountPath": { "type": "string" },
+      "type": { "type": "string", "enum": ["efs"] }
+    },
+    "required": ["arn", "localMountPath"],
+    "additionalProperties": false
+  },
+  "AwsProvisionedConcurrency": {
+    "title": "AwsProvisionedConcurrency",
+    "oneOf": [
+      { "type": "integer", "minimum": 0 },
+      {
+        "type": "object",
+        "properties": {
+          "alias": { "type": "string" },
+          "executions": { "type": "integer", "minimum": 0 }
+        },
+        "required": ["executions"],
+        "additionalProperties": false
+      },
+      { "$ref": "cf.functions.json#/Aws_CF_FunctionString" },
+      { "$ref": "cf.functions.json#/FnIf" }
+    ]
+  },
+  "AwsLambdaLogs": {
+    "title": "AwsLambdaLogs",
+    "description": "Lambda-level log configuration (v4). https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html",
+    "type": "object",
+    "properties": {
+      "logFormat": { "type": "string", "enum": ["JSON", "Text"] },
+      "applicationLogLevel": { "type": "string", "enum": ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"] },
+      "systemLogLevel": { "type": "string", "enum": ["DEBUG", "INFO", "WARN"] },
+      "logGroup": { "type": "string" }
+    },
+    "additionalProperties": false
+  },
+  "AwsFunctionUrl": {
+    "title": "AwsFunctionUrl",
+    "description": "Lambda Function URL configuration. Provide `true` to enable with defaults, or an object for full control. https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html",
+    "oneOf": [
+      { "type": "boolean" },
+      {
+        "type": "object",
+        "properties": {
+          "authorizer": {
+            "oneOf": [
+              { "type": "string", "enum": ["aws_iam", "none", "AWS_IAM", "NONE"] },
+              { "type": "object", "additionalProperties": true }
+            ]
+          },
+          "invokeMode": { "type": "string", "enum": ["BUFFERED", "RESPONSE_STREAM"] },
+          "cors": {
+            "oneOf": [
+              { "type": "boolean" },
+              {
+                "type": "object",
+                "properties": {
+                  "allowedOrigins": { "type": "array", "items": { "type": "string" } },
+                  "allowedHeaders": { "type": "array", "items": { "type": "string" } },
+                  "allowedMethods": { "type": "array", "items": { "type": "string" } },
+                  "allowCredentials": { "type": "boolean" },
+                  "exposedResponseHeaders": { "type": "array", "items": { "type": "string" } },
+                  "maxAge": { "type": "number", "minimum": 0 }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  },
+  "AwsFunction": {
+    "properties": {
+      "awsKmsKeyArn": {
+        "type": "string"
+      },
+      "condition": {
+        "type": "string"
+      },
+      "dependsOn": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "description": {
+        "type": "string"
+      },
+      "destinations": {
+        "$ref": "#/AwsDestinations"
+      },
+      "environment": {
+        "$ref": "#/AwsEnvironment"
+      },
+      "events": {
+        "items": {
+          "$ref": "events.json#/AwsEvent"
+        },
+        "type": "array"
+      },
+      "handler": {
+        "type": "string"
+      },
+      "layers": {
+        "description": "Collection of Lambda layers to make it available for this lambda. Can use Cloudformation here as well. Usage on:- https://www.serverless.com/framework/docs/providers/aws/guide/layers#using-your-layers",
+        "items": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "cf.functions.json#/FnRef"
+            },
+            {
+              "$ref": "cf.functions.json#/FnGetAtt"
+            },
+            {
+              "$ref": "cf.functions.json#/FnJoin"
+            },
+            {
+              "$ref": "cf.functions.json#/FnTransform"
+            },
+            {
+              "$ref": "cf.functions.json#/FnFindInMap"
+            }
+          ]
+        },
+        "type": "array"
+      },
+      "memorySize": {
+        "type": ["string", "number"]
+      },
+      "name": {
+        "type": "string"
+      },
+      "onError": {
+        "type": "string"
+      },
+      "package": {
+        "$ref": "common.json#/AwsPackage"
+      },
+      "provisionedConcurrency": {
+        "$ref": "#/AwsProvisionedConcurrency"
+      },
+      "reservedConcurrency": {
+        "anyOf": [
+          {
+            "type": "integer",
+            "minimum": 0
+          },
+          {
+            "$ref": "cf.functions.json#/Aws_CF_FunctionString"
+          },
+          {
+            "$ref": "cf.functions.json#/FnIf"
+          }
+        ]
+      },
+      "role": {
+        "type": "string"
+      },
+      "runtime": {
+        "$ref": "#/AwsRuntime"
+      },
+      "tags": {
+        "$ref": "common.json#/AwsTags"
+      },
+      "timeout": {
+        "type": ["string", "number"]
+      },
+      "tracing": {
+        "type": "string"
+      },
+      "vpc": {
+        "description": "VPC configuration for this function. Pass `~` (null) to disable VPC for a single function when the provider has one configured.",
+        "oneOf": [
+          { "$ref": "provider.json#/AwsVpc" },
+          { "type": "null" }
+        ]
+      },
+      "image": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "uri": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "workingDirectory": {
+                "type": "string"
+              },
+              "command": {
+                "description": "Sometimes it appears that command from the dockerfile is not read and we have to overwrite it manually to make it work. One of my clients faced this recently",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "entryPoint": {
+                "description": "Sometimes it appears that { from the dockerfile is not read and we have to overwrite it manually to make it work",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "snapStart": {
+        "description": "https://www.serverless.com/framework/docs/providers/aws/guide/functions#snapstart",
+        "oneOf": [
+          { "type": "boolean" },
+          {
+            "type": "object",
+            "properties": {
+              "applyOn": { "type": "string", "enum": ["PublishedVersions", "None"] }
+            },
+            "additionalProperties": true
+          }
+        ]
+      },
+      "logDataProtectionPolicy": {
+        "$ref": "cloudwatch.json#/LogDataProtectionPolicy"
+      },
+      "runtimeManagement": {
+        "$ref": "#/AwsLambdaRuntimeManagement"
+      },
+      "architecture": {
+        "$ref": "common.json#/AwsSupportedArchitecture"
+      },
+      "ephemeralStorageSize": {
+        "description": "Size of the function's /tmp directory in MB. Defaults to 512; max 10240.",
+        "type": ["string", "number"],
+        "minimum": 512,
+        "maximum": 10240
+      },
+      "kmsKeyArn": {
+        "description": "KMS key ARN used to encrypt this function's environment variables.",
+        "type": "string"
+      },
+      "iam": {
+        "type": "object",
+        "properties": {
+          "inheritStatements": {
+            "description": "Inherit provider-level IAM statements (default: true).",
+            "type": "boolean"
+          },
+          "role": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "path": { "type": "string" },
+                  "statements": {
+                    "type": "array",
+                    "items": { "$ref": "iam.json#/AwsIamRoleStatement" }
+                  },
+                  "managedPolicies": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "permissionsBoundary": { "type": "string" },
+                  "tags": { "$ref": "common.json#/AwsTags" }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "url": {
+        "$ref": "#/AwsFunctionUrl"
+      },
+      "logs": {
+        "$ref": "#/AwsLambdaLogs"
+      },
+      "disableLogs": {
+        "type": "boolean"
+      },
+      "logRetentionInDays": {
+        "type": ["string", "number"]
+      },
+      "tenancy": {
+        "$ref": "#/AwsFunctionTenancy"
+      },
+      "durableConfig": {
+        "$ref": "#/AwsFunctionDurableConfig"
+      },
+      "capacityProvider": {
+        "$ref": "#/AwsFunctionCapacityProvider"
+      },
+      "fileSystemConfig": {
+        "$ref": "#/AwsFileSystemConfig"
+      },
+      "maximumRetryAttempts": {
+        "type": ["string", "number"],
+        "minimum": 0,
+        "maximum": 2
+      },
+      "maximumEventAge": {
+        "type": ["string", "number"],
+        "minimum": 60,
+        "maximum": 21600
+      }
+    },
+    "type": "object"
+  },
+  "AwsFunctions": {
+    "oneOf": [
+      {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/AwsFunction"
+        }
+      },
+      {
+        "type": "string",
+        "minLength": 1
+      },
+      {
+        "type": "array",
+        "items": {
+          "$ref": "common.json#/ServerlessFilePath"
+        }
+      }
+    ]
+  },
   "required": [
     "AwsRuntime",
-    "AwsLambdaRuntimeManagement"
+    "AwsLambdaRuntimeManagement",
+    "AwsEnvironment",
+    "AwsDestinations",
+    "AwsCapacityProviders",
+    "AwsFunctionTenancy",
+    "AwsFunctionDurableConfig",
+    "AwsFunctionCapacityProvider",
+    "AwsFileSystemConfig",
+    "AwsProvisionedConcurrency",
+    "AwsLambdaLogs",
+    "AwsFunctionUrl",
+    "AwsFunction",
+    "AwsFunctions"
   ]
 }

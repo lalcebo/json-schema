@@ -1,0 +1,73 @@
+{
+  "id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/components/stages.json",
+  "schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Stage-aware parameters and stage configuration for Serverless Framework v4. https://www.serverless.com/framework/docs/guides/stages",
+  "additionalProperties": false,
+  "ServerlessParamValue": {
+    "description": "A parameter value resolvable via ${param:key}. Strings, numbers, booleans and structured objects/arrays are all allowed.",
+    "type": ["string", "number", "boolean", "object", "array", "null"]
+  },
+  "ServerlessParamsMap": {
+    "type": "object",
+    "additionalProperties": {
+      "$ref": "#/ServerlessParamValue"
+    }
+  },
+  "ServerlessParams": {
+    "title": "ServerlessParams",
+    "description": "Stage-aware parameters resolvable via ${param:key}. Reserve `default` for fallbacks; other keys are stage names. https://www.serverless.com/framework/docs/guides/parameters",
+    "type": "object",
+    "properties": {
+      "default": {
+        "$ref": "#/ServerlessParamsMap"
+      }
+    },
+    "additionalProperties": {
+      "$ref": "#/ServerlessParamsMap"
+    }
+  },
+  "ServerlessStage": {
+    "title": "ServerlessStage",
+    "description": "Stage-specific configuration. https://www.serverless.com/framework/docs/guides/stages",
+    "type": "object",
+    "properties": {
+      "params": {
+        "$ref": "#/ServerlessParamsMap"
+      },
+      "observability": {
+        "description": "Enable Serverless Observability for this stage. Accepts a boolean or an object with provider-specific configuration.",
+        "oneOf": [
+          { "type": "boolean" },
+          { "type": "object", "additionalProperties": true }
+        ]
+      },
+      "resolvers": {
+        "description": "Stage-scoped variable resolver configuration.",
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "additionalProperties": true
+  },
+  "ServerlessStages": {
+    "title": "ServerlessStages",
+    "description": "Stage-keyed configuration. Reserve `default` for the fallback stage; other keys are stage names. Preferred over top-level `params` in v4. https://www.serverless.com/framework/docs/guides/stages",
+    "type": "object",
+    "properties": {
+      "default": {
+        "$ref": "#/ServerlessStage"
+      }
+    },
+    "additionalProperties": {
+      "$ref": "#/ServerlessStage"
+    }
+  },
+  "required": [
+    "ServerlessParamValue",
+    "ServerlessParamsMap",
+    "ServerlessParams",
+    "ServerlessStage",
+    "ServerlessStages"
+  ]
+}
