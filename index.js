@@ -159,17 +159,39 @@ function transformSchema(schema) {
   return result;
 }
 
+// Walk every `$ref` value in the document and return the set of `#/properties/X`
+// pointers found. Used to avoid stripping read-only properties that the schema
+// itself references (e.g. `primaryIdentifier` pointing at `#/properties/Arn`).
+function collectInternalPropertyRefs(node, out = new Set()) {
+  if (!node || typeof node !== "object") return out;
+  if (Array.isArray(node)) {
+    for (const v of node) collectInternalPropertyRefs(v, out);
+    return out;
+  }
+  for (const [k, v] of Object.entries(node)) {
+    if (k === "$ref" && typeof v === "string") {
+      const m = v.match(/^#\/properties\/([^/]+)/);
+      if (m) out.add(m[1]);
+    } else {
+      collectInternalPropertyRefs(v, out);
+    }
+  }
+  return out;
+}
+
 // CloudFormation readOnlyProperties are JSON pointers like /properties/Foo or
 // /properties/Foo/Bar. Only strip exact top-level entries — descending into
 // nested paths would require resolving $refs, and matching by leaf name (the
 // previous behavior) silently deletes unrelated top-level properties that
-// share a name with a nested leaf.
+// share a name with a nested leaf. Also keep properties that the schema
+// internally `$ref`s, or those refs would dangle.
 function stripTopLevelReadOnlyProperties(schema) {
   if (!Array.isArray(schema.readOnlyProperties) || !schema.properties) return schema;
+  const referenced = collectInternalPropertyRefs(schema);
   const properties = { ...schema.properties };
   for (const pointer of schema.readOnlyProperties) {
     const parts = pointer.trim().split("/").filter(Boolean);
-    if (parts.length === 2 && parts[0] === "properties") {
+    if (parts.length === 2 && parts[0] === "properties" && !referenced.has(parts[1])) {
       delete properties[parts[1]];
     }
   }
