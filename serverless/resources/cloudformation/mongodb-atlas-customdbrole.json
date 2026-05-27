@@ -1,29 +1,58 @@
 {
   "typeName": "MongoDB::Atlas::CustomDBRole",
-  "description": "Returns, adds, edits, and removes custom database user privilege roles.",
+  "description": "Returns, adds, edits, and removes custom database user privilege roles.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
   "definitions": {
     "InheritedRole": {
       "type": "object",
       "properties": {
         "Db": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Role": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MongoDBAtlasCustomDBRoleInheritedRoleDefinition"
     },
     "Resource": {
       "type": "object",
       "description": "List of resources on which you grant the action.",
       "properties": {
         "Collection": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "Human-readable label that identifies the collection on which you grant the action to one MongoDB user. If you don't set this parameter, you grant the action to all collections in the database specified in the actions.resources.db parameter. If you set \"actions.resources.cluster\" : true, MongoDB Cloud ignores this parameter."
         },
         "DB": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "Human-readable label that identifies the database on which you grant the action to one MongoDB user. If you set \"actions.resources.cluster\" : true, MongoDB Cloud ignores this parameter."
         },
         "Cluster": {
@@ -31,13 +60,21 @@
           "description": "Flag that indicates whether to grant the action on the cluster resource. If true, MongoDB Cloud ignores the actions.resources.collection and actions.resources.db parameters."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MongoDBAtlasCustomDBRoleResourceDefinition"
     },
     "Action": {
       "type": "object",
       "properties": {
         "Action": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "Human-readable label that identifies the privilege action."
         },
         "Resources": {
@@ -49,14 +86,22 @@
           "insertionOrder": false
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MongoDBAtlasCustomDBRoleActionDefinition"
     }
   },
   "properties": {
     "ProjectId": {
-      "description": "Unique 24-hexadecimal digit string that identifies your project.",
-      "type": "string",
-      "pattern": "^([a-f0-9]{24})$"
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([a-f0-9]{24})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique 24-hexadecimal digit string that identifies your project."
     },
     "Actions": {
       "description": "List of the individual privilege actions that the role grants.",
@@ -75,13 +120,27 @@
       "insertionOrder": false
     },
     "RoleName": {
-      "description": "Human-readable label that identifies the role for the request. This name must be unique for this custom role in this project.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Human-readable label that identifies the role for the request. This name must be unique for this custom role in this project."
     },
     "Profile": {
-      "type": "string",
-      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml).",
-      "default": "default"
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml)."
     }
   },
   "additionalProperties": false,
@@ -99,31 +158,6 @@
     "/properties/RoleName",
     "/properties/Profile"
   ],
-  "handlers": {
-    "create": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "read": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "update": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "list": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    }
-  }
+  "type": "object",
+  "title": "MongoDBAtlasCustomDBRoleProperties"
 }

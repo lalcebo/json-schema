@@ -1,17 +1,31 @@
 {
   "typeName": "MongoDB::Atlas::EncryptionAtRest",
-  "description": "Returns and edits the Encryption at Rest using Customer Key Management configuration.",
+  "description": "Returns and edits the Encryption at Rest using Customer Key Management configuration.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
   "definitions": {
     "AwsKms": {
       "description": "Specifies AWS KMS configuration details and whether Encryption at Rest is enabled for an Atlas project.",
       "type": "object",
       "properties": {
         "RoleID": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "ID of an AWS IAM role authorized to manage an AWS customer master key."
         },
         "CustomerMasterKeyID": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "The AWS customer master key used to encrypt and decrypt the MongoDB master keys."
         },
         "Enabled": {
@@ -19,11 +33,19 @@
           "description": "Specifies whether Encryption at Rest is enabled for an Atlas project. To disable Encryption at Rest, pass only this parameter with a value of false. When you disable Encryption at Rest, Atlas also removes the configuration details."
         },
         "Region": {
-          "type": "string",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
           "description": "The AWS region in which the AWS customer master key exists."
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "title": "MongoDBAtlasEncryptionAtRestAwsKmsDefinition"
     }
   },
   "properties": {
@@ -31,17 +53,27 @@
       "$ref": "#/definitions/AwsKms"
     },
     "Profile": {
-      "type": "string",
-      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml).",
-      "default": "default"
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml)."
     },
     "ProjectId": {
-      "description": "Unique identifier of the Atlas project to which the user belongs.",
-      "type": "string"
-    },
-    "Id": {
-      "description": "Unique identifier.",
-      "type": "string"
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique identifier of the Atlas project to which the user belongs."
     }
   },
   "additionalProperties": false,
@@ -61,26 +93,6 @@
     "/properties/ProjectId",
     "/properties/Profile"
   ],
-  "handlers": {
-    "create": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "read": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "update": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    },
-    "delete": {
-      "permissions": [
-        "secretsmanager:GetSecretValue"
-      ]
-    }
-  }
+  "type": "object",
+  "title": "MongoDBAtlasEncryptionAtRestProperties"
 }
