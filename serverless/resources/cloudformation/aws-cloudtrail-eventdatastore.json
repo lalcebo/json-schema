@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::CloudTrail::EventDataStore",
-  "description": "A storage lake of event data against which you can run complex SQL-based queries. An event data store can include events that you have logged on your account from the last 90 to 2555 days (about three months to up to seven years).. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudtrail.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudtrail.git",
+  "description": "A storage lake of event data against which you can run complex SQL-based queries. An event data store can include events that you have logged on your account from the last 7 to 2557 or 3653 days (about seven or ten years) depending on the selected BillingMode.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudtrail.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudtrail.git",
   "definitions": {
     "AdvancedFieldSelector": {
@@ -216,6 +216,73 @@
       ],
       "title": "AWSCloudTrailEventDataStoreTagDefinition"
     },
+    "InsightSelector": {
+      "description": "A string that contains Insights types that are logged on an event data store.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InsightType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of Insights to log on an event data store."
+        }
+      },
+      "title": "AWSCloudTrailEventDataStoreInsightSelectorDefinition"
+    },
+    "ContextKeySelector": {
+      "description": "An object that contains information types to be included in CloudTrail enriched events.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "RequestContext",
+                "TagContext"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the type of the event record field in ContextKeySelector. Valid values include RequestContext, TagContext."
+        },
+        "Equals": {
+          "description": "An operator that includes events that match the exact value of the event record field specified in Type.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "(.+)",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "Type",
+        "Equals"
+      ],
+      "title": "AWSCloudTrailEventDataStoreContextKeySelectorDefinition"
+    },
     "Timestamp": {
       "oneOf": [
         {
@@ -238,6 +305,21 @@
       "uniqueItems": true,
       "insertionOrder": false
     },
+    "FederationEnabled": {
+      "description": "Indicates whether federation is enabled on an event data store.",
+      "type": "boolean"
+    },
+    "FederationRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the role used for event data store federation."
+    },
     "MultiRegionEnabled": {
       "description": "Indicates whether the event data store includes events from all regions, or only from the region in which it was created.",
       "type": "boolean"
@@ -256,6 +338,17 @@
     "OrganizationEnabled": {
       "description": "Indicates that an event data store is collecting logged events for an organization.",
       "type": "boolean"
+    },
+    "BillingMode": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The mode that the event data store will use to charge for event storage."
     },
     "RetentionPeriod": {
       "description": "The retention period, in days.",
@@ -284,6 +377,51 @@
         "$ref": "#/definitions/Tag"
       }
     },
+    "InsightSelectors": {
+      "description": "Lets you enable Insights event logging by specifying the Insights selectors that you want to enable on an existing event data store. Both InsightSelectors and InsightsDestination need to have a value in order to enable Insights events on an event data store.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InsightSelector"
+      },
+      "uniqueItems": true,
+      "insertionOrder": false
+    },
+    "InsightsDestination": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the ARN of the event data store that will collect Insights events. Both InsightSelectors and InsightsDestination need to have a value in order to enable Insights events on an event data store"
+    },
+    "MaxEventSize": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Standard",
+            "Large"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the maximum size allowed for the event. Valid values are Standard and Large. If you add ContextKeySelectors, this value must be set to Large."
+    },
+    "ContextKeySelectors": {
+      "description": "An array that enriches event records in an existing event data store by including additional information specified in individual ContexKeySelector entries. If you add ContextKeySelectors, you must set MaxEventSize to Large.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ContextKeySelector"
+      },
+      "maxItems": 2,
+      "uniqueItems": true,
+      "insertionOrder": false
+    },
     "IngestionEnabled": {
       "description": "Indicates whether the event data store is ingesting events.",
       "type": "boolean"
@@ -303,6 +441,18 @@
     "/properties/KmsKeyId": "$join([\"arn:(aws)[-]{0,1}[a-z]{0,2}[-]{0,1}[a-z]{0,3}:kms:[a-z]{2}[-]{1}[a-z]{3,10}[-]{0,1}[a-z]{0,10}[-]{1}[1-3]{1}:[0-9]{12}[:]{1}key\\/\", KmsKeyId])"
   },
   "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "CloudTrail:AddTags",
+      "CloudTrail:RemoveTags",
+      "CloudTrail:ListTags"
+    ]
+  },
   "type": "object",
   "title": "AWSCloudTrailEventDataStoreProperties"
 }

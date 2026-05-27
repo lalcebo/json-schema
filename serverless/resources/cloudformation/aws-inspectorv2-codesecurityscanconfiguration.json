@@ -1,0 +1,232 @@
+{
+  "typeName": "AWS::InspectorV2::CodeSecurityScanConfiguration",
+  "description": "Inspector CodeSecurityScanConfiguration resource schema. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-inspector.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-inspector.git",
+  "definitions": {
+    "TagMap": {
+      "type": "object",
+      "patternProperties": {
+        "^.{2,127}$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^.{1,255}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationTagMapDefinition"
+    },
+    "ConfigurationLevel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ORGANIZATION",
+            "ACCOUNT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationConfigurationLevelDefinition"
+    },
+    "PeriodicScanFrequency": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "WEEKLY",
+            "MONTHLY",
+            "NEVER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationPeriodicScanFrequencyDefinition"
+    },
+    "ContinuousIntegrationScanEvent": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PULL_REQUEST",
+            "PUSH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationContinuousIntegrationScanEventDefinition"
+    },
+    "RuleSetCategory": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SAST",
+            "IAC",
+            "SCA"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationRuleSetCategoryDefinition"
+    },
+    "ProjectSelectionScope": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ALL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationProjectSelectionScopeDefinition"
+    },
+    "PeriodicScanConfiguration": {
+      "type": "object",
+      "properties": {
+        "frequency": {
+          "$ref": "#/definitions/PeriodicScanFrequency"
+        },
+        "frequencyExpression": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationPeriodicScanConfigurationDefinition"
+    },
+    "ContinuousIntegrationScanConfiguration": {
+      "type": "object",
+      "required": [
+        "supportedEvents"
+      ],
+      "properties": {
+        "supportedEvents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContinuousIntegrationScanEvent"
+          },
+          "minItems": 1,
+          "maxItems": 2
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationContinuousIntegrationScanConfigurationDefinition"
+    },
+    "ScopeSettings": {
+      "type": "object",
+      "properties": {
+        "projectSelectionScope": {
+          "$ref": "#/definitions/ProjectSelectionScope"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationScopeSettingsDefinition"
+    },
+    "CodeSecurityScanConfiguration": {
+      "type": "object",
+      "required": [
+        "ruleSetCategories"
+      ],
+      "properties": {
+        "periodicScanConfiguration": {
+          "$ref": "#/definitions/PeriodicScanConfiguration"
+        },
+        "continuousIntegrationScanConfiguration": {
+          "$ref": "#/definitions/ContinuousIntegrationScanConfiguration"
+        },
+        "ruleSetCategories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleSetCategory"
+          },
+          "minItems": 1,
+          "maxItems": 3
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityScanConfigurationCodeSecurityScanConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 60,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-_$:.]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Code Security Scan Configuration name"
+    },
+    "Level": {
+      "description": "Configuration Level",
+      "$ref": "#/definitions/ConfigurationLevel"
+    },
+    "Configuration": {
+      "description": "Code Security Scan Configuration",
+      "$ref": "#/definitions/CodeSecurityScanConfiguration"
+    },
+    "ScopeSettings": {
+      "description": "Scope Settings",
+      "$ref": "#/definitions/ScopeSettings"
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "inspector2:TagResource",
+      "inspector2:UntagResource"
+    ]
+  },
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/ScopeSettings",
+    "/properties/Level",
+    "/properties/Tags"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "type": "object",
+  "title": "AWSInspectorV2CodeSecurityScanConfigurationProperties"
+}

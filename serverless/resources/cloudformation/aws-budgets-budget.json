@@ -1,8 +1,11 @@
 {
   "typeName": "AWS::Budgets::Budget",
-  "description": "Resource Type definition for AWS::Budgets::Budget. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Budgets::Budget. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
+    "Budget": {
+      "$ref": "#/definitions/BudgetData"
+    },
     "NotificationsWithSubscribers": {
       "type": "array",
       "uniqueItems": false,
@@ -10,8 +13,12 @@
         "$ref": "#/definitions/NotificationWithSubscribers"
       }
     },
-    "Budget": {
-      "$ref": "#/definitions/BudgetData"
+    "ResourceTags": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/ResourceTag"
+      }
     }
   },
   "definitions": {
@@ -28,11 +35,25 @@
       ],
       "title": "AWSBudgetsBudgetHistoricalOptionsDefinition"
     },
-    "Subscriber": {
+    "CostCategoryValues": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Address": {
+        "Values": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Key": {
           "oneOf": [
             {
               "type": "string"
@@ -42,32 +63,75 @@
             }
           ]
         },
-        "SubscriptionType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "MatchOptions": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         }
       },
-      "required": [
-        "SubscriptionType",
-        "Address"
-      ],
-      "title": "AWSBudgetsBudgetSubscriberDefinition"
+      "title": "AWSBudgetsBudgetCostCategoryValuesDefinition"
     },
     "BudgetData": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "TimePeriod": {
+          "$ref": "#/definitions/TimePeriod"
+        },
+        "PlannedBudgetLimits": {
+          "type": "object"
+        },
+        "CostFilters": {
+          "type": "object"
+        },
+        "CostTypes": {
+          "$ref": "#/definitions/CostTypes"
+        },
+        "BudgetType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Metrics": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
         "BudgetLimit": {
           "$ref": "#/definitions/Spend"
         },
-        "TimePeriod": {
-          "$ref": "#/definitions/TimePeriod"
+        "BillingViewArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "AutoAdjustData": {
           "$ref": "#/definitions/AutoAdjustData"
@@ -82,26 +146,10 @@
             }
           ]
         },
-        "PlannedBudgetLimits": {
-          "type": "object"
-        },
-        "CostFilters": {
-          "type": "object"
+        "FilterExpression": {
+          "$ref": "#/definitions/Expression"
         },
         "BudgetName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "CostTypes": {
-          "$ref": "#/definitions/CostTypes"
-        },
-        "BudgetType": {
           "oneOf": [
             {
               "type": "string"
@@ -145,30 +193,6 @@
       },
       "title": "AWSBudgetsBudgetTimePeriodDefinition"
     },
-    "Spend": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Unit": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Amount": {
-          "type": "number"
-        }
-      },
-      "required": [
-        "Amount",
-        "Unit"
-      ],
-      "title": "AWSBudgetsBudgetSpendDefinition"
-    },
     "NotificationWithSubscribers": {
       "type": "object",
       "additionalProperties": false,
@@ -189,29 +213,6 @@
         "Notification"
       ],
       "title": "AWSBudgetsBudgetNotificationWithSubscribersDefinition"
-    },
-    "AutoAdjustData": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "AutoAdjustType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "HistoricalOptions": {
-          "$ref": "#/definitions/HistoricalOptions"
-        }
-      },
-      "required": [
-        "AutoAdjustType"
-      ],
-      "title": "AWSBudgetsBudgetAutoAdjustDataDefinition"
     },
     "Notification": {
       "type": "object",
@@ -297,6 +298,237 @@
         }
       },
       "title": "AWSBudgetsBudgetCostTypesDefinition"
+    },
+    "TagValues": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Values": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MatchOptions": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSBudgetsBudgetTagValuesDefinition"
+    },
+    "ResourceTag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "title": "AWSBudgetsBudgetResourceTagDefinition"
+    },
+    "Subscriber": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Address": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SubscriptionType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "SubscriptionType",
+        "Address"
+      ],
+      "title": "AWSBudgetsBudgetSubscriberDefinition"
+    },
+    "Expression": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Not": {
+          "$ref": "#/definitions/Expression"
+        },
+        "Or": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/Expression"
+          }
+        },
+        "And": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/Expression"
+          }
+        },
+        "Dimensions": {
+          "$ref": "#/definitions/ExpressionDimensionValues"
+        },
+        "CostCategories": {
+          "$ref": "#/definitions/CostCategoryValues"
+        },
+        "Tags": {
+          "$ref": "#/definitions/TagValues"
+        }
+      },
+      "title": "AWSBudgetsBudgetExpressionDefinition"
+    },
+    "Spend": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Unit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Amount": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "Amount",
+        "Unit"
+      ],
+      "title": "AWSBudgetsBudgetSpendDefinition"
+    },
+    "AutoAdjustData": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AutoAdjustType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HistoricalOptions": {
+          "$ref": "#/definitions/HistoricalOptions"
+        }
+      },
+      "required": [
+        "AutoAdjustType"
+      ],
+      "title": "AWSBudgetsBudgetAutoAdjustDataDefinition"
+    },
+    "ExpressionDimensionValues": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Values": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MatchOptions": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSBudgetsBudgetExpressionDimensionValuesDefinition"
     }
   },
   "required": [

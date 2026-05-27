@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EC2::FlowLog",
-  "description": "Specifies a VPC flow log, which enables you to capture IP traffic for a specific network interface, subnet, or VPC.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-flowlog.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-flowlog.git",
+  "description": "Specifies a VPC flow log, which enables you to capture IP traffic for a specific network interface, subnet, or VPC.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-flowlog.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-flowlog.git",
   "definitions": {
     "Tag": {
@@ -36,6 +36,17 @@
     }
   },
   "properties": {
+    "DeliverCrossAccountRole": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the IAM role that allows Amazon EC2 to publish flow logs across accounts."
+    },
     "DeliverLogsPermissionArn": {
       "oneOf": [
         {
@@ -120,7 +131,8 @@
             "Subnet",
             "VPC",
             "TransitGateway",
-            "TransitGatewayAttachment"
+            "TransitGatewayAttachment",
+            "RegionalNatGateway"
           ]
         },
         {
@@ -190,6 +202,7 @@
     "ResourceId"
   ],
   "createOnlyProperties": [
+    "/properties/DeliverCrossAccountRole",
     "/properties/DeliverLogsPermissionArn",
     "/properties/LogGroupName",
     "/properties/LogDestination",
@@ -209,7 +222,11 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
   },
   "primaryIdentifier": [
     "/properties/Id"

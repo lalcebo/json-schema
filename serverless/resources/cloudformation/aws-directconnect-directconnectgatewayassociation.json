@@ -1,0 +1,124 @@
+{
+  "tagging": {
+    "taggable": false
+  },
+  "typeName": "AWS::DirectConnect::DirectConnectGatewayAssociation",
+  "readOnlyProperties": [
+    "/properties/AssociationId"
+  ],
+  "description": "Resource Type definition for AWS::DirectConnect::DirectConnectGatewayAssociation. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-directconnect",
+  "createOnlyProperties": [
+    "/properties/AcceptDirectConnectGatewayAssociationProposalRoleArn",
+    "/properties/AssociatedGatewayId",
+    "/properties/DirectConnectGatewayId"
+  ],
+  "primaryIdentifier": [
+    "/properties/AssociationId"
+  ],
+  "required": [
+    "DirectConnectGatewayId",
+    "AssociatedGatewayId"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-directconnect",
+  "propertyTransform": {
+    "/properties/AssociatedGatewayId": "$lowercase($substringAfter(AssociatedGatewayId, \"/\"))",
+    "/properties/DirectConnectGatewayId": "$substringAfter(DirectConnectGatewayId, \"/\")"
+  },
+  "writeOnlyProperties": [
+    "/properties/AcceptDirectConnectGatewayAssociationProposalRoleArn"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "AcceptDirectConnectGatewayAssociationProposalRoleArn": {
+      "oneOf": [
+        {
+          "pattern": "^arn:aws[a-z-]*:iam::[0-9]{12}:role/.+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the role to accept the Direct Connect Gateway association proposal. Needs directconnect:AcceptDirectConnectGatewayAssociationProposal permissions."
+    },
+    "DirectConnectGatewayId": {
+      "oneOf": [
+        {
+          "pattern": "^(arn:aws[a-z-]*:directconnect::[0-9]{12}:dx-gateway/)?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "anyOf": [
+            {
+              "relationshipRef": {
+                "typeName": "AWS::DirectConnect::DirectConnectGateway",
+                "propertyPath": "/properties/DirectConnectGatewayId"
+              }
+            },
+            {
+              "relationshipRef": {
+                "typeName": "AWS::DirectConnect::DirectConnectGateway",
+                "propertyPath": "/properties/DirectConnectGatewayArn"
+              }
+            }
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID or ARN of the Direct Connect gateway."
+    },
+    "AssociatedGatewayId": {
+      "oneOf": [
+        {
+          "pattern": "^((arn:aws[a-z-]*:ec2:[a-z0-9-]+:[0-9]{12}:(vpn-gateway/vgw|transit-gateway/tgw))|(vgw|tgw))-[a-zA-Z0-9]{8,32}$",
+          "anyOf": [
+            {
+              "relationshipRef": {
+                "typeName": "AWS::EC2::VPNGateway",
+                "propertyPath": "/properties/VPNGatewayId"
+              }
+            },
+            {
+              "relationshipRef": {
+                "typeName": "AWS::EC2::TransitGateway",
+                "propertyPath": "/properties/Id"
+              }
+            },
+            {
+              "relationshipRef": {
+                "typeName": "AWS::EC2::TransitGateway",
+                "propertyPath": "/properties/TransitGatewayArn"
+              }
+            }
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID or ARN of the virtual private gateway or transit gateway."
+    },
+    "AllowedPrefixesToDirectConnectGateway": {
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "The Amazon VPC prefixes to advertise to the Direct Connect gateway. This parameter is required when you create an association to a transit gateway.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "pattern": "^[0-9a-fA-F:.]+/[0-9]+$",
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ],
+        "description": "A CIDR block for the advertised route. An IPv6 CIDR must use /64 or shorter."
+      }
+    }
+  },
+  "type": "object",
+  "title": "AWSDirectConnectDirectConnectGatewayAssociationProperties"
+}

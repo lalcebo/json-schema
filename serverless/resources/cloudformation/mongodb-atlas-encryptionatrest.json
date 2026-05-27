@@ -1,21 +1,14 @@
 {
   "typeName": "MongoDB::Atlas::EncryptionAtRest",
-  "description": "Returns and edits the Encryption at Rest using Customer Key Management configuration.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Returns and edits the Encryption at Rest using Customer Key Management configuration.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/encryption-at-rest",
   "definitions": {
-    "AwsKms": {
+    "AwsKmsConfig": {
       "description": "Specifies AWS KMS configuration details and whether Encryption at Rest is enabled for an Atlas project.",
       "type": "object",
       "properties": {
-        "RoleID": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "ID of an AWS IAM role authorized to manage an AWS customer master key."
+        "Enabled": {
+          "type": "boolean",
+          "description": "Specifies whether Encryption at Rest is enabled for an Atlas project. To disable Encryption at Rest, pass only this parameter with a value of false. When you disable Encryption at Rest, Atlas also removes the configuration details."
         },
         "CustomerMasterKeyID": {
           "oneOf": [
@@ -26,11 +19,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The AWS customer master key used to encrypt and decrypt the MongoDB master keys."
-        },
-        "Enabled": {
-          "type": "boolean",
-          "description": "Specifies whether Encryption at Rest is enabled for an Atlas project. To disable Encryption at Rest, pass only this parameter with a value of false. When you disable Encryption at Rest, Atlas also removes the configuration details."
+          "description": "Unique alphanumeric string that identifies the Amazon Web Services (AWS) Customer Master Key (CMK) you used to encrypt and decrypt the MongoDB master keys."
         },
         "Region": {
           "oneOf": [
@@ -41,16 +30,40 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The AWS region in which the AWS customer master key exists."
+          "description": "Physical location where MongoDB Atlas deploys your AWS-hosted MongoDB cluster nodes. The region you choose can affect network latency for clients accessing your databases."
+        },
+        "RoleID": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Unique 24-hexadecimal digit string that identifies an Amazon Web Services (AWS) Identity and Access Management (IAM) role. This IAM role has the permissions required to manage your AWS customer master key."
+        },
+        "Valid": {
+          "type": "boolean",
+          "description": "Flag that indicates whether the Amazon Web Services (AWS) Key Management Service (KMS) encryption key can encrypt and decrypt data."
+        },
+        "RequirePrivateNetworking": {
+          "type": "boolean",
+          "description": "Enable connection to your Amazon Web Services (AWS) Key Management Service (KMS) over private networking."
         }
       },
       "additionalProperties": false,
-      "title": "MongoDBAtlasEncryptionAtRestAwsKmsDefinition"
+      "title": "MongoDBAtlasEncryptionAtRestAwsKmsConfigDefinition"
     }
   },
   "properties": {
-    "AwsKms": {
-      "$ref": "#/definitions/AwsKms"
+    "AwsKmsConfig": {
+      "$ref": "#/definitions/AwsKmsConfig"
+    },
+    "EnabledForSearchNodes": {
+      "type": "boolean",
+      "description": "Flag that indicates whether Encryption at Rest for Dedicated Search Nodes is enabled in the specified project.",
+      "default": false
     },
     "Profile": {
       "oneOf": [
@@ -78,7 +91,7 @@
   },
   "additionalProperties": false,
   "required": [
-    "AwsKms",
+    "AwsKmsConfig",
     "ProjectId"
   ],
   "createOnlyProperties": [
@@ -86,13 +99,19 @@
     "/properties/Profile"
   ],
   "readOnlyProperties": [
-    "/properties/Id"
+    "/properties/Id",
+    "/properties/AwsKmsConfig/Valid"
   ],
   "primaryIdentifier": [
     "/properties/Id",
     "/properties/ProjectId",
     "/properties/Profile"
   ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/encryption-at-rest/README.md",
+  "tagging": {
+    "taggable": false
+  },
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/encryption-at-rest",
   "type": "object",
   "title": "MongoDBAtlasEncryptionAtRestProperties"
 }

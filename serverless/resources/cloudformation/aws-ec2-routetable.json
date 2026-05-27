@@ -1,22 +1,34 @@
 {
-  "typeName": "AWS::EC2::RouteTable",
-  "description": "Resource Type definition for AWS::EC2::RouteTable. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2",
+  "tagging": {
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "typeName": "AWS::EC2::RouteTable",
+  "readOnlyProperties": [
+    "/properties/RouteTableId"
+  ],
+  "description": "Specifies a route table for the specified VPC. After you create a route table, you can add routes and associate the table with a subnet.\n For more information, see [Route tables](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html) in the *Amazon VPC User Guide*.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2",
+  "createOnlyProperties": [
+    "/properties/VpcId"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/RouteTableId"
+  ],
   "definitions": {
     "Tag": {
-      "type": "object",
+      "description": "Specifies a tag. For more information, see [Resource tags](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html).",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
         "Value": {
           "oneOf": [
             {
@@ -25,7 +37,19 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The tag value."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The tag key."
         }
       },
       "required": [
@@ -36,15 +60,6 @@
     }
   },
   "properties": {
-    "Tags": {
-      "description": "Any tags assigned to the route table.",
-      "type": "array",
-      "uniqueItems": false,
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    },
     "VpcId": {
       "oneOf": [
         {
@@ -55,28 +70,20 @@
         }
       ],
       "description": "The ID of the VPC."
+    },
+    "Tags": {
+      "uniqueItems": false,
+      "description": "Any tags assigned to the route table.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
-  "additionalProperties": false,
   "required": [
     "VpcId"
   ],
-  "createOnlyProperties": [
-    "/properties/VpcId"
-  ],
-  "readOnlyProperties": [
-    "/properties/RouteTableId"
-  ],
-  "primaryIdentifier": [
-    "/properties/RouteTableId"
-  ],
-  "tagging": {
-    "taggable": true,
-    "tagOnCreate": true,
-    "tagUpdatable": true,
-    "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
-  },
   "type": "object",
   "title": "AWSEC2RouteTableProperties"
 }

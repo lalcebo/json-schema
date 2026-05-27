@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::ImageBuilder::ContainerRecipe",
-  "description": "Resource schema for AWS::ImageBuilder::ContainerRecipe. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git",
+  "description": "Resource schema for AWS::ImageBuilder::ContainerRecipe. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git",
   "properties": {
     "Name": {
@@ -406,27 +406,66 @@
         "Value"
       ],
       "title": "AWSImageBuilderContainerRecipeComponentParameterDefinition"
+    },
+    "LatestVersion": {
+      "description": "The latest version references of the container recipe.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created container recipe."
+        },
+        "Major": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created container recipe, with the same major version."
+        },
+        "Minor": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created container recipe, with the same minor version."
+        },
+        "Patch": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created container recipe, with the same patch version."
+        }
+      },
+      "title": "AWSImageBuilderContainerRecipeLatestVersionDefinition"
     }
   },
   "additionalProperties": false,
   "oneOf": [
     {
       "required": [
-        "DockerfileTemplateData",
         "Name",
         "Version",
-        "Components",
-        "ParentImage",
-        "TargetRepository",
-        "ContainerType"
-      ]
-    },
-    {
-      "required": [
-        "DockerfileTemplateUri",
-        "Name",
-        "Version",
-        "Components",
         "ParentImage",
         "TargetRepository",
         "ContainerType"
@@ -434,7 +473,12 @@
     }
   ],
   "readOnlyProperties": [
-    "/properties/Arn"
+    "/properties/Arn",
+    "/properties/LatestVersion",
+    "/properties/LatestVersion/Arn",
+    "/properties/LatestVersion/Major",
+    "/properties/LatestVersion/Minor",
+    "/properties/LatestVersion/Patch"
   ],
   "primaryIdentifier": [
     "/properties/Arn"
@@ -453,15 +497,24 @@
     "/properties/KmsKeyId",
     "/properties/PlatformOverride",
     "/properties/WorkingDirectory",
-    "/properties/Components",
-    "/properties/Tags"
+    "/properties/Components"
   ],
   "writeOnlyProperties": [
     "/properties/DockerfileTemplateData",
-    "/properties/DockerfileTemplateUri"
+    "/properties/DockerfileTemplateUri",
+    "/properties/ImageOsVersionOverride",
+    "/properties/PlatformOverride"
   ],
   "tagging": {
-    "taggable": false
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "imagebuilder:TagResource",
+      "imagebuilder:UntagResource"
+    ]
   },
   "type": "object",
   "title": "AWSImageBuilderContainerRecipeProperties"

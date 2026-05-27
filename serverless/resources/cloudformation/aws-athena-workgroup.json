@@ -1,7 +1,7 @@
 {
   "$comment": "Resource Schema for AWS::Athena::WorkGroup. Any changes made to SDK model for WorkGroup should be reflected here.",
   "typeName": "AWS::Athena::WorkGroup",
-  "description": "Resource schema for AWS::Athena::WorkGroup. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-athena.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-athena.git",
+  "description": "Resource schema for AWS::Athena::WorkGroup. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-athena.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-athena.git",
   "definitions": {
     "Tags": {
@@ -170,6 +170,17 @@
       "additionalProperties": false,
       "title": "AWSAthenaWorkGroupEncryptionConfigurationDefinition"
     },
+    "ManagedStorageEncryptionConfiguration": {
+      "description": "Indicates the encryption configuration for Athena Managed Storage. If not setting this field, Managed Storage will encrypt the query results with Athena's encryption key",
+      "type": "object",
+      "properties": {
+        "KmsKey": {
+          "$ref": "#/definitions/KmsKey"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupManagedStorageEncryptionConfigurationDefinition"
+    },
     "RemoveEncryptionConfiguration": {
       "type": "boolean",
       "title": "AWSAthenaWorkGroupRemoveEncryptionConfigurationDefinition"
@@ -195,7 +206,7 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "Execution Role ARN required to run Athena Spark Calculations",
+      "description": "The ARN of the execution role used to access user resources for Spark sessions and Identity Center enabled workgroups. This property applies only to Spark enabled workgroups and Identity Center enabled workgroups.",
       "title": "AWSAthenaWorkGroupExecutionRoleDefinition"
     },
     "RemoveOutputLocation": {
@@ -321,6 +332,245 @@
       "additionalProperties": false,
       "title": "AWSAthenaWorkGroupResultConfigurationUpdatesDefinition"
     },
+    "ManagedQueryResultsConfiguration": {
+      "description": "The configuration for the managed query results and encryption option. ResultConfiguration and ManagedQueryResultsConfiguration cannot be set at the same time",
+      "type": "object",
+      "properties": {
+        "EncryptionConfiguration": {
+          "$ref": "#/definitions/ManagedStorageEncryptionConfiguration"
+        },
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupManagedQueryResultsConfigurationDefinition"
+    },
+    "Classification": {
+      "description": "A classification refers to a set of specific configurations.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the configuration classification."
+        },
+        "Properties": {
+          "type": "object",
+          "description": "A set of properties specified within a configuration classification.",
+          "patternProperties": {
+            "^.+$": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupClassificationDefinition"
+    },
+    "EngineConfiguration": {
+      "description": "The engine configuration for running queries.",
+      "type": "object",
+      "properties": {
+        "CoordinatorDpuSize": {
+          "type": "integer",
+          "description": "The number of DPUs to use for the coordinator. A coordinator is a special executor that orchestrates processing work and manages other executors in a notebook session. The default is 1."
+        },
+        "MaxConcurrentDpus": {
+          "type": "integer",
+          "description": "The maximum number of DPUs that can run concurrently."
+        },
+        "DefaultExecutorDpuSize": {
+          "type": "integer",
+          "description": "The default number of DPUs to use for executors. An executor is the smallest unit of compute that a notebook session can request from Athena. The default is 1."
+        },
+        "AdditionalConfigs": {
+          "type": "object",
+          "description": "Contains additional notebook engine MAP<string, string> parameter mappings in the form of key-value pairs. To specify an Athena notebook that the Jupyter server will download and serve, specify a value for the StartSessionRequest$NotebookVersion field, and then add a key named NotebookId to AdditionalConfigs that has the value of the Athena notebook ID.",
+          "patternProperties": {
+            "^.+$": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "SparkProperties": {
+          "type": "object",
+          "description": "Specifies custom jar files and Spark properties for use cases like cluster encryption, table formats, and general Spark tuning.",
+          "patternProperties": {
+            "^.+$": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "Classifications": {
+          "type": "array",
+          "description": "The configuration classifications that can be specified for the engine.",
+          "items": {
+            "$ref": "#/definitions/Classification"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupEngineConfigurationDefinition"
+    },
+    "CloudWatchLoggingConfiguration": {
+      "description": "Configuration settings for delivering logs to Amazon CloudWatch log groups.",
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean",
+          "description": "Enables CloudWatch logging."
+        },
+        "LogGroup": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the log group in Amazon CloudWatch Logs where you want to publish your logs."
+        },
+        "LogStreamNamePrefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Prefix for the CloudWatch log stream name."
+        },
+        "LogTypes": {
+          "type": "object",
+          "description": "The types of logs that you want to publish to CloudWatch.",
+          "patternProperties": {
+            "^.+$": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupCloudWatchLoggingConfigurationDefinition"
+    },
+    "ManagedLoggingConfiguration": {
+      "description": "Configuration settings for managed log persistence.",
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean",
+          "description": "Enables managed log persistence."
+        },
+        "KmsKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The KMS key ARN to encrypt the logs stored in managed log persistence."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupManagedLoggingConfigurationDefinition"
+    },
+    "S3LoggingConfiguration": {
+      "description": "Configuration settings for delivering logs to Amazon S3 buckets.",
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean",
+          "description": "Enables S3 log delivery."
+        },
+        "LogLocation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 destination URI for log publishing."
+        },
+        "KmsKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The KMS key ARN to encrypt the logs published to the given Amazon S3 destination."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupS3LoggingConfigurationDefinition"
+    },
+    "MonitoringConfiguration": {
+      "description": "Contains the configuration settings for managed log persistence, delivering logs to Amazon S3 buckets, Amazon CloudWatch log groups etc.",
+      "type": "object",
+      "properties": {
+        "CloudWatchLoggingConfiguration": {
+          "$ref": "#/definitions/CloudWatchLoggingConfiguration"
+        },
+        "ManagedLoggingConfiguration": {
+          "$ref": "#/definitions/ManagedLoggingConfiguration"
+        },
+        "S3LoggingConfiguration": {
+          "$ref": "#/definitions/S3LoggingConfiguration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAthenaWorkGroupMonitoringConfigurationDefinition"
+    },
     "WorkGroupConfiguration": {
       "type": "object",
       "properties": {
@@ -350,6 +600,15 @@
         },
         "CustomerContentEncryptionConfiguration": {
           "$ref": "#/definitions/CustomerContentEncryptionConfiguration"
+        },
+        "ManagedQueryResultsConfiguration": {
+          "$ref": "#/definitions/ManagedQueryResultsConfiguration"
+        },
+        "EngineConfiguration": {
+          "$ref": "#/definitions/EngineConfiguration"
+        },
+        "MonitoringConfiguration": {
+          "$ref": "#/definitions/MonitoringConfiguration"
         }
       },
       "additionalProperties": false,
@@ -391,6 +650,15 @@
         },
         "RemoveCustomerContentEncryptionConfiguration": {
           "$ref": "#/definitions/RemoveCustomerContentEncryptionConfiguration"
+        },
+        "ManagedQueryResultsConfiguration": {
+          "$ref": "#/definitions/ManagedQueryResultsConfiguration"
+        },
+        "EngineConfiguration": {
+          "$ref": "#/definitions/EngineConfiguration"
+        },
+        "MonitoringConfiguration": {
+          "$ref": "#/definitions/MonitoringConfiguration"
         }
       },
       "additionalProperties": false,
@@ -478,7 +746,18 @@
     "/properties/Name"
   ],
   "additionalProperties": false,
-  "taggable": true,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "athena:UntagResource",
+      "athena:TagResource",
+      "athena:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSAthenaWorkGroupProperties"
 }

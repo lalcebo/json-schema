@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Glue::Connection",
-  "description": "Resource Type definition for AWS::Glue::Connection. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Glue::Connection. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "ConnectionInput": {
@@ -18,10 +18,55 @@
     }
   },
   "definitions": {
+    "OAuth2PropertiesInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuthorizationCodeProperties": {
+          "$ref": "#/definitions/AuthorizationCodeProperties"
+        },
+        "OAuth2ClientApplication": {
+          "$ref": "#/definitions/OAuth2ClientApplication"
+        },
+        "TokenUrl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OAuth2Credentials": {
+          "$ref": "#/definitions/OAuth2Credentials"
+        },
+        "OAuth2GrantType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TokenUrlParametersMap": {
+          "type": "object"
+        }
+      },
+      "title": "AWSGlueConnectionOAuth2PropertiesInputDefinition"
+    },
     "ConnectionInput": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "AuthenticationConfiguration": {
+          "$ref": "#/definitions/AuthenticationConfigurationInput"
+        },
+        "PythonProperties": {
+          "type": "object"
+        },
         "Description": {
           "oneOf": [
             {
@@ -56,11 +101,25 @@
             ]
           }
         },
-        "PhysicalConnectionRequirements": {
-          "$ref": "#/definitions/PhysicalConnectionRequirements"
-        },
         "ConnectionProperties": {
           "type": "object"
+        },
+        "AthenaProperties": {
+          "type": "object"
+        },
+        "ValidateForComputeEnvironments": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         },
         "Name": {
           "oneOf": [
@@ -71,6 +130,15 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "SparkProperties": {
+          "type": "object"
+        },
+        "PhysicalConnectionRequirements": {
+          "$ref": "#/definitions/PhysicalConnectionRequirements"
+        },
+        "ValidateCredentials": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -118,6 +186,183 @@
         }
       },
       "title": "AWSGlueConnectionPhysicalConnectionRequirementsDefinition"
+    },
+    "BasicAuthenticationCredentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Username": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Password": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSGlueConnectionBasicAuthenticationCredentialsDefinition"
+    },
+    "AuthorizationCodeProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuthorizationCode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RedirectUri": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSGlueConnectionAuthorizationCodePropertiesDefinition"
+    },
+    "OAuth2ClientApplication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AWSManagedClientApplicationReference": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UserManagedClientApplicationClientId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSGlueConnectionOAuth2ClientApplicationDefinition"
+    },
+    "OAuth2Credentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "UserManagedClientApplicationClientSecret": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "JwtToken": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RefreshToken": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AccessToken": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSGlueConnectionOAuth2CredentialsDefinition"
+    },
+    "AuthenticationConfigurationInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OAuth2Properties": {
+          "$ref": "#/definitions/OAuth2PropertiesInput"
+        },
+        "CustomAuthenticationCredentials": {
+          "type": "object"
+        },
+        "BasicAuthenticationCredentials": {
+          "$ref": "#/definitions/BasicAuthenticationCredentials"
+        },
+        "AuthenticationType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AuthenticationType"
+      ],
+      "title": "AWSGlueConnectionAuthenticationConfigurationInputDefinition"
     }
   },
   "required": [

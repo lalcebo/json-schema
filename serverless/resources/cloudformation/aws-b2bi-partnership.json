@@ -1,0 +1,570 @@
+{
+  "typeName": "AWS::B2BI::Partnership",
+  "description": "Definition of AWS::B2BI::Partnership Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "CapabilityOptions": {
+      "type": "object",
+      "properties": {
+        "OutboundEdi": {
+          "$ref": "#/definitions/OutboundEdiOptions"
+        },
+        "InboundEdi": {
+          "$ref": "#/definitions/InboundEdiOptions"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipCapabilityOptionsDefinition"
+    },
+    "InboundEdiOptions": {
+      "type": "object",
+      "properties": {
+        "X12": {
+          "$ref": "#/definitions/X12InboundEdiOptions"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipInboundEdiOptionsDefinition"
+    },
+    "LineTerminator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CRLF",
+            "LF",
+            "CR"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSB2BIPartnershipLineTerminatorDefinition"
+    },
+    "OutboundEdiOptions": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "X12",
+          "properties": {
+            "X12": {
+              "$ref": "#/definitions/X12Envelope"
+            }
+          },
+          "required": [
+            "X12"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSB2BIPartnershipOutboundEdiOptionsDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipTagDefinition"
+    },
+    "WrapFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SEGMENT",
+            "ONE_LINE",
+            "LINE_LENGTH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSB2BIPartnershipWrapFormatDefinition"
+    },
+    "WrapOptions": {
+      "type": "object",
+      "properties": {
+        "WrapBy": {
+          "$ref": "#/definitions/WrapFormat"
+        },
+        "LineTerminator": {
+          "$ref": "#/definitions/LineTerminator"
+        },
+        "LineLength": {
+          "type": "number",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipWrapOptionsDefinition"
+    },
+    "X12AcknowledgmentOptions": {
+      "type": "object",
+      "properties": {
+        "FunctionalAcknowledgment": {
+          "$ref": "#/definitions/X12FunctionalAcknowledgment"
+        },
+        "TechnicalAcknowledgment": {
+          "$ref": "#/definitions/X12TechnicalAcknowledgment"
+        }
+      },
+      "required": [
+        "FunctionalAcknowledgment",
+        "TechnicalAcknowledgment"
+      ],
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipX12AcknowledgmentOptionsDefinition"
+    },
+    "X12ControlNumbers": {
+      "type": "object",
+      "properties": {
+        "StartingInterchangeControlNumber": {
+          "type": "number",
+          "maximum": 999999999,
+          "minimum": 1
+        },
+        "StartingFunctionalGroupControlNumber": {
+          "type": "number",
+          "maximum": 999999999,
+          "minimum": 1
+        },
+        "StartingTransactionSetControlNumber": {
+          "type": "number",
+          "maximum": 999999999,
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipX12ControlNumbersDefinition"
+    },
+    "X12Delimiters": {
+      "type": "object",
+      "properties": {
+        "ComponentSeparator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1,
+              "minLength": 1,
+              "pattern": "^[!&'()*+,\\-./:;?=%@\\[\\]_{}|<>~^`\"]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DataElementSeparator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1,
+              "minLength": 1,
+              "pattern": "^[!&'()*+,\\-./:;?=%@\\[\\]_{}|<>~^`\"]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SegmentTerminator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1,
+              "minLength": 1,
+              "pattern": "^[!&'()*+,\\-./:;?=%@\\[\\]_{}|<>~^`\"]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipX12DelimitersDefinition"
+    },
+    "X12Envelope": {
+      "type": "object",
+      "properties": {
+        "Common": {
+          "$ref": "#/definitions/X12OutboundEdiHeaders"
+        },
+        "WrapOptions": {
+          "$ref": "#/definitions/WrapOptions"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipX12EnvelopeDefinition"
+    },
+    "X12FunctionalAcknowledgment": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DO_NOT_GENERATE",
+            "GENERATE_ALL_SEGMENTS",
+            "GENERATE_WITHOUT_TRANSACTION_SET_RESPONSE_LOOP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSB2BIPartnershipX12FunctionalAcknowledgmentDefinition"
+    },
+    "X12FunctionalGroupHeaders": {
+      "type": "object",
+      "properties": {
+        "ApplicationSenderCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 15,
+              "minLength": 2,
+              "pattern": "^[a-zA-Z0-9 ]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ApplicationReceiverCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 15,
+              "minLength": 2,
+              "pattern": "^[a-zA-Z0-9 ]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResponsibleAgencyCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipX12FunctionalGroupHeadersDefinition"
+    },
+    "X12GS05TimeFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "HHMM",
+            "HHMMSS",
+            "HHMMSSDD"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSB2BIPartnershipX12GS05TimeFormatDefinition"
+    },
+    "X12InboundEdiOptions": {
+      "type": "object",
+      "properties": {
+        "AcknowledgmentOptions": {
+          "$ref": "#/definitions/X12AcknowledgmentOptions"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipX12InboundEdiOptionsDefinition"
+    },
+    "X12InterchangeControlHeaders": {
+      "type": "object",
+      "properties": {
+        "SenderIdQualifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2,
+              "minLength": 2,
+              "pattern": "^[a-zA-Z0-9]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SenderId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 15,
+              "minLength": 15,
+              "pattern": "^[a-zA-Z0-9 ]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ReceiverIdQualifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2,
+              "minLength": 2,
+              "pattern": "^[a-zA-Z0-9]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ReceiverId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 15,
+              "minLength": 15,
+              "pattern": "^[a-zA-Z0-9 ]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RepetitionSeparator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AcknowledgmentRequestedCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UsageIndicatorCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipX12InterchangeControlHeadersDefinition"
+    },
+    "X12OutboundEdiHeaders": {
+      "type": "object",
+      "properties": {
+        "InterchangeControlHeaders": {
+          "$ref": "#/definitions/X12InterchangeControlHeaders"
+        },
+        "FunctionalGroupHeaders": {
+          "$ref": "#/definitions/X12FunctionalGroupHeaders"
+        },
+        "Delimiters": {
+          "$ref": "#/definitions/X12Delimiters"
+        },
+        "ValidateEdi": {
+          "type": "boolean"
+        },
+        "ControlNumbers": {
+          "$ref": "#/definitions/X12ControlNumbers"
+        },
+        "Gs05TimeFormat": {
+          "$ref": "#/definitions/X12GS05TimeFormat"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSB2BIPartnershipX12OutboundEdiHeadersDefinition"
+    },
+    "X12TechnicalAcknowledgment": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DO_NOT_GENERATE",
+            "GENERATE_ALL_SEGMENTS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSB2BIPartnershipX12TechnicalAcknowledgmentDefinition"
+    }
+  },
+  "properties": {
+    "Capabilities": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_-]+$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "CapabilityOptions": {
+      "$ref": "#/definitions/CapabilityOptions"
+    },
+    "Email": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 254,
+          "minLength": 5,
+          "pattern": "^[\\w\\.\\-]+@[\\w\\.\\-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 254,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Phone": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 22,
+          "minLength": 7,
+          "pattern": "^\\+?([0-9 \\t\\-()\\/]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension) \\t*(\\d+))?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProfileId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0
+    }
+  },
+  "required": [
+    "Capabilities",
+    "Email",
+    "Name",
+    "ProfileId"
+  ],
+  "readOnlyProperties": [
+    "/properties/CreatedAt",
+    "/properties/ModifiedAt",
+    "/properties/PartnershipArn",
+    "/properties/PartnershipId",
+    "/properties/TradingPartnerId"
+  ],
+  "createOnlyProperties": [
+    "/properties/Email",
+    "/properties/Phone",
+    "/properties/ProfileId"
+  ],
+  "primaryIdentifier": [
+    "/properties/PartnershipId"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": true,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "b2bi:ListTagsForResource",
+      "b2bi:TagResource",
+      "b2bi:UntagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSB2BIPartnershipProperties"
+}

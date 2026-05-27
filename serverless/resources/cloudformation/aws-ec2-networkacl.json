@@ -1,23 +1,34 @@
 {
-  "typeName": "AWS::EC2::NetworkAcl",
-  "description": "Resource Type definition for AWS::EC2::NetworkAcl. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2.git",
+  "tagging": {
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "typeName": "AWS::EC2::NetworkAcl",
+  "readOnlyProperties": [
+    "/properties/Id"
+  ],
+  "description": "Specifies a network ACL for your VPC.\n To add a network ACL entry, see [AWS::EC2::NetworkAclEntry](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-networkaclentry.html).. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2.git",
+  "createOnlyProperties": [
+    "/properties/VpcId"
+  ],
   "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
   "definitions": {
     "Tag": {
-      "type": "object",
+      "description": "Specifies a tag. For more information, see [Resource tags](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html).",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
         "Value": {
           "oneOf": [
             {
@@ -26,7 +37,19 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The tag value."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The tag key."
         }
       },
       "required": [
@@ -37,15 +60,6 @@
     }
   },
   "properties": {
-    "Tags": {
-      "description": "The tags to assign to the network ACL.",
-      "type": "array",
-      "uniqueItems": false,
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    },
     "VpcId": {
       "oneOf": [
         {
@@ -55,28 +69,21 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The ID of the VPC."
+      "description": "The ID of the VPC for the network ACL."
+    },
+    "Tags": {
+      "uniqueItems": false,
+      "description": "The tags for the network ACL.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "required": [
     "VpcId"
   ],
-  "createOnlyProperties": [
-    "/properties/VpcId"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id"
-  ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "tagging": {
-    "taggable": true,
-    "tagOnCreate": true,
-    "tagUpdatable": true,
-    "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
-  },
   "type": "object",
   "title": "AWSEC2NetworkAclProperties"
 }

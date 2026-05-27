@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::SES::Template",
-  "description": "Resource Type definition for AWS::SES::Template. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
+  "description": "Resource Type definition for AWS::SES::Template. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
   "definitions": {
     "Template": {
@@ -60,11 +60,56 @@
         "SubjectPart"
       ],
       "title": "AWSSESTemplateTemplateDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESTemplateTagDefinition"
     }
   },
   "properties": {
     "Template": {
       "$ref": "#/definitions/Template"
+    },
+    "Tags": {
+      "description": "The tags (keys and values) associated with the email template.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 50
     }
   },
   "additionalProperties": false,
@@ -77,6 +122,18 @@
   "createOnlyProperties": [
     "/properties/Template/TemplateName"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ses:TagResource",
+      "ses:UntagResource",
+      "ses:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSSESTemplateProperties"
 }

@@ -1,8 +1,11 @@
 {
   "typeName": "AWS::MediaTailor::PlaybackConfiguration",
-  "description": "Resource schema for AWS::MediaTailor::PlaybackConfiguration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediatailor.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediatailor.git",
+  "description": "Resource schema for AWS::MediaTailor::PlaybackConfiguration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediatailor.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediatailor.git",
   "properties": {
+    "AdConditioningConfiguration": {
+      "$ref": "#/definitions/AdConditioningConfiguration"
+    },
     "AdDecisionServerUrl": {
       "oneOf": [
         {
@@ -34,6 +37,10 @@
       "description": "The configuration for DASH content.",
       "$ref": "#/definitions/DashConfiguration"
     },
+    "InsertionMode": {
+      "description": "The setting that controls whether players can use stitched or guided ad insertion. The default, STITCHED_ONLY, forces all player sessions to use stitched (server-side) ad insertion. Choosing PLAYER_SELECT allows players to select either stitched or guided ad insertion at session-initialization time. The default for players that do not specify an insertion mode is stitched.",
+      "$ref": "#/definitions/InsertionMode"
+    },
     "LivePreRollConfiguration": {
       "description": "The configuration for pre-roll ad insertion.",
       "$ref": "#/definitions/LivePreRollConfiguration"
@@ -63,6 +70,10 @@
     "HlsConfiguration": {
       "description": "The configuration for HLS content.",
       "$ref": "#/definitions/HlsConfiguration"
+    },
+    "LogConfiguration": {
+      "description": "The configuration that defines where AWS Elemental MediaTailor sends logs for the playback configuration.",
+      "$ref": "#/definitions/LogConfiguration"
     },
     "SlateAdUrl": {
       "oneOf": [
@@ -105,9 +116,26 @@
         }
       ],
       "description": "The URL prefix for the parent manifest for the stream, minus the asset ID. The maximum length is 512 characters."
+    },
+    "AdDecisionServerConfiguration": {
+      "$ref": "#/definitions/AdDecisionServerConfiguration"
     }
   },
   "definitions": {
+    "AdConditioningConfiguration": {
+      "type": "object",
+      "description": "<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>",
+      "properties": {
+        "StreamingMediaFileConditioning": {
+          "$ref": "#/definitions/StreamingMediaFileConditioning"
+        }
+      },
+      "required": [
+        "StreamingMediaFileConditioning"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaTailorPlaybackConfigurationAdConditioningConfigurationDefinition"
+    },
     "AvailSuppression": {
       "description": "The configuration for avail suppression, also known as ad suppression. For more information about ad suppression, see Ad Suppression (https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html).",
       "type": "object",
@@ -119,14 +147,15 @@
               "type": "string",
               "enum": [
                 "OFF",
-                "BEHIND_LIVE_EDGE"
+                "BEHIND_LIVE_EDGE",
+                "AFTER_LIVE_EDGE"
               ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Sets the ad suppression mode. By default, ad suppression is set to OFF and all ad breaks are filled with ads or slate. When Mode is set to BEHIND_LIVE_EDGE, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window."
+          "description": "Sets the ad suppression mode. By default, ad suppression is off and all ad breaks are filled with ads or slate. When Mode is set to BEHIND_LIVE_EDGE, ad suppression is active and MediaTailor won't fill ad breaks on or behind the ad suppression Value time in the manifest lookback window. When Mode is set to AFTER_LIVE_EDGE, ad suppression is active and MediaTailor won't fill ad breaks that are within the live edge plus the avail suppression value."
         },
         "Value": {
           "oneOf": [
@@ -138,6 +167,21 @@
             }
           ],
           "description": "A live edge offset time in HH:MM:SS. MediaTailor won't fill ad breaks on or behind this time in the manifest lookback window. If Value is set to 00:00:00, it is in sync with the live edge, and MediaTailor won't fill any ad breaks on or behind the live edge. If you set a Value time, MediaTailor won't fill any ad breaks on or behind this time in the manifest lookback window. For example, if you set 00:45:00, then MediaTailor will fill ad breaks that occur within 45 minutes behind the live edge, but won't fill ad breaks on or behind 45 minutes behind the live edge."
+        },
+        "FillPolicy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PARTIAL_AVAIL",
+                "FULL_AVAIL_ONLY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Defines the policy to apply to the avail suppression mode. BEHIND_LIVE_EDGE will always use the full avail suppression policy. AFTER_LIVE_EDGE mode can be used to invoke partial ad break fills when a session starts mid-break. Valid values are FULL_AVAIL_ONLY and PARTIAL_AVAIL"
         }
       },
       "title": "AWSMediaTailorPlaybackConfigurationAvailSuppressionDefinition"
@@ -257,6 +301,36 @@
       },
       "title": "AWSMediaTailorPlaybackConfigurationDashConfigurationDefinition"
     },
+    "StreamingMediaFileConditioning": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "TRANSCODE",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSMediaTailorPlaybackConfigurationStreamingMediaFileConditioningDefinition"
+    },
+    "InsertionMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STITCHED_ONLY",
+            "PLAYER_SELECT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSMediaTailorPlaybackConfigurationInsertionModeDefinition"
+    },
     "LivePreRollConfiguration": {
       "description": "The configuration for pre-roll ad insertion.",
       "type": "object",
@@ -352,11 +426,196 @@
         }
       },
       "title": "AWSMediaTailorPlaybackConfigurationHlsConfigurationDefinition"
+    },
+    "LogConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AdsInteractionLog": {
+          "description": "The event types that MediaTailor emits in logs for interactions with the ADS.",
+          "$ref": "#/definitions/AdsInteractionLog"
+        },
+        "EnabledLoggingStrategies": {
+          "description": "The method used for collecting logs from AWS Elemental MediaTailor. To configure MediaTailor to send logs directly to Amazon CloudWatch Logs, choose LEGACY_CLOUDWATCH. To configure MediaTailor to send logs to CloudWatch, which then vends the logs to your destination of choice, choose VENDED_LOGS. Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data Firehose stream. To use vended logs, you must configure the delivery destination in Amazon CloudWatch",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "ManifestServiceInteractionLog": {
+          "description": "The event types that MediaTailor emits in logs for interactions with the origin server.",
+          "$ref": "#/definitions/ManifestServiceInteractionLog"
+        },
+        "PercentEnabled": {
+          "description": "The percentage of session logs that MediaTailor sends to your CloudWatch Logs account. For example, if your playback configuration has 1000 sessions and percentEnabled is set to 60, MediaTailor sends logs for 600 of the sessions to CloudWatch Logs. MediaTailor decides at random which of the playback configuration sessions to send logs for. If you want to view logs for a specific session, you can use the debug log mode.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "PercentEnabled"
+      ],
+      "title": "AWSMediaTailorPlaybackConfigurationLogConfigurationDefinition"
+    },
+    "AdsInteractionLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ExcludeEventTypes": {
+          "type": "array",
+          "description": "Indicates that MediaTailor won't emit the selected events in the logs for playback sessions that are initialized with this configuration.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "PublishOptInEventTypes": {
+          "type": "array",
+          "description": "Indicates that MediaTailor emits RAW_ADS_RESPONSE logs for playback sessions that are initialized with this configuration.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSMediaTailorPlaybackConfigurationAdsInteractionLogDefinition"
+    },
+    "ManifestServiceInteractionLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ExcludeEventTypes": {
+          "type": "array",
+          "description": "Indicates that MediaTailor won't emit the selected events in the logs for playback sessions that are initialized with this configuration.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSMediaTailorPlaybackConfigurationManifestServiceInteractionLogDefinition"
+    },
+    "AdDecisionServerConfiguration": {
+      "description": "The configuration for the request to the specified Ad Decision Server URL.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HttpRequest": {
+          "$ref": "#/definitions/HttpRequest"
+        }
+      },
+      "required": [
+        "HttpRequest"
+      ],
+      "title": "AWSMediaTailorPlaybackConfigurationAdDecisionServerConfigurationDefinition"
+    },
+    "HttpRequest": {
+      "description": "The configuration for the request to the Ad Decision Server URL.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HttpMethod": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "GET",
+                "POST"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Supported HTTP Methods for the request to the Ad Decision Server URL."
+        },
+        "Body": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The body of the request to the Ad Decision Server URL. The maximum length is 100,000 characters."
+        },
+        "Headers": {
+          "$ref": "#/definitions/AdDecisionServerConfigurationHttpHeaders"
+        },
+        "CompressRequest": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "GZIP"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The compression type of the request sent to the Ad Decision Server URL. Only the POST HTTP Method permits compression other than NONE."
+        }
+      },
+      "title": "AWSMediaTailorPlaybackConfigurationHttpRequestDefinition"
+    },
+    "AdDecisionServerConfigurationHttpHeaders": {
+      "description": "The headers in the request sent to the Ad Decision Server URL. The max length is 10,000 characters.",
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        ".*": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaTailorPlaybackConfigurationAdDecisionServerConfigurationHttpHeadersDefinition"
     }
   },
   "tagging": {
     "taggable": true,
-    "cloudFormationSystemTags": false
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "mediatailor:TagResource",
+      "mediatailor:UntagResource"
+    ]
   },
   "additionalProperties": false,
   "required": [

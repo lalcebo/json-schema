@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoTWireless::WirelessDevice",
-  "description": "Create and manage wireless gateways, including LoRa gateways.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Create and manage wireless gateways, including LoRa gateways.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "OtaaV10x": {
@@ -221,6 +221,22 @@
       ],
       "title": "AWSIoTWirelessWirelessDeviceAbpV10xDefinition"
     },
+    "FPorts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Applications": {
+          "description": "A list of optional LoRaWAN application information, which can be used for geolocation.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/Application"
+          }
+        }
+      },
+      "title": "AWSIoTWirelessWirelessDeviceFPortsDefinition"
+    },
     "LoRaWANDevice": {
       "type": "object",
       "additionalProperties": false,
@@ -269,6 +285,9 @@
         },
         "AbpV10x": {
           "$ref": "#/definitions/AbpV10x"
+        },
+        "FPorts": {
+          "$ref": "#/definitions/FPorts"
         }
       },
       "oneOf": [
@@ -325,6 +344,50 @@
       },
       "additionalProperties": false,
       "title": "AWSIoTWirelessWirelessDeviceTagDefinition"
+    },
+    "Application": {
+      "description": "LoRaWAN application configuration, which can be used to perform geolocation.",
+      "type": "object",
+      "properties": {
+        "DestinationName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-zA-Z0-9-_]+",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the position data destination that describes the AWS IoT rule that processes the device's position data for use by AWS IoT Core for LoRaWAN."
+        },
+        "FPort": {
+          "description": "The Fport value.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 223
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SemtechGeolocation",
+                "SemtechGNSS",
+                "SemtechGNSSNG",
+                "SemtechWiFi"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Application type, which can be specified to obtain real-time position information of your LoRaWAN device."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTWirelessWirelessDeviceApplicationDefinition"
     }
   },
   "properties": {
@@ -414,6 +477,21 @@
         }
       ],
       "description": "The date and time when the most recent uplink was received."
+    },
+    "Positioning": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "FPort values for the GNSS, stream, and ClockSync functions of the positioning information."
     }
   },
   "additionalProperties": false,
@@ -429,7 +507,18 @@
   "primaryIdentifier": [
     "/properties/Id"
   ],
-  "taggable": true,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iotwireless:TagResource",
+      "iotwireless:UntagResource",
+      "iotwireless:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSIoTWirelessWirelessDeviceProperties"
 }

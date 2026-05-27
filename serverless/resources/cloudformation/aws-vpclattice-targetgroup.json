@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::VpcLattice::TargetGroup",
-  "description": "A target group is a collection of targets, or compute resources, that run your application or service. A target group can only be used by a single service.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "A target group is a collection of targets, or compute resources, that run your application or service. A target group can only be used by a single service.. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "definitions": {
     "HealthCheckConfig": {
@@ -120,7 +120,8 @@
               "type": "string",
               "enum": [
                 "HTTP",
-                "HTTPS"
+                "HTTPS",
+                "TCP"
               ]
             },
             {
@@ -159,6 +160,20 @@
             }
           ]
         },
+        "LambdaEventStructureVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "V1",
+                "V2"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "VpcIdentifier": {
           "oneOf": [
             {
@@ -176,11 +191,7 @@
           "$ref": "#/definitions/HealthCheckConfig"
         }
       },
-      "required": [
-        "Port",
-        "Protocol",
-        "VpcIdentifier"
-      ],
+      "required": [],
       "title": "AWSVpcLatticeTargetGroupTargetGroupConfigDefinition"
     },
     "Target": {
@@ -315,7 +326,8 @@
     "/properties/Config/IpAddressType",
     "/properties/Config/Protocol",
     "/properties/Config/ProtocolVersion",
-    "/properties/Config/VpcIdentifier"
+    "/properties/Config/VpcIdentifier",
+    "/properties/Config/LambdaEventStructureVersion"
   ],
   "primaryIdentifier": [
     "/properties/Arn"
@@ -333,7 +345,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "vpc-lattice:UntagResource",
+      "vpc-lattice:TagResource",
+      "vpc-lattice:ListTagsForResource"
+    ]
   },
   "type": "object",
   "title": "AWSVpcLatticeTargetGroupProperties"

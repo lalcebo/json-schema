@@ -1,0 +1,380 @@
+{
+  "typeName": "AWS::EntityResolution::IdNamespace",
+  "description": "IdNamespace defined in AWS Entity Resolution service. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-entity-resolution.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-entity-resolution.git",
+  "definitions": {
+    "EntityName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9-]*$",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEntityResolutionIdNamespaceEntityNameDefinition"
+    },
+    "AttributeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z_0-9- \\t]*$",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEntityResolutionIdNamespaceAttributeNameDefinition"
+    },
+    "IdNamespaceInputSource": {
+      "type": "object",
+      "properties": {
+        "InputSourceARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(matchingworkflow/[a-zA-Z_0-9-]{1,255})$|^arn:(aws|aws-us-gov|aws-cn):glue:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(table/[a-zA-Z_0-9-]{1,255}/[a-zA-Z_0-9-]{1,255})$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SchemaName": {
+          "$ref": "#/definitions/EntityName"
+        }
+      },
+      "required": [
+        "InputSourceARN"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEntityResolutionIdNamespaceIdNamespaceInputSourceDefinition"
+    },
+    "IdNamespaceIdMappingWorkflowProperties": {
+      "type": "object",
+      "properties": {
+        "IdMappingType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PROVIDER",
+                "RULE_BASED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RuleBasedProperties": {
+          "$ref": "#/definitions/NamespaceRuleBasedProperties"
+        },
+        "ProviderProperties": {
+          "$ref": "#/definitions/NamespaceProviderProperties"
+        }
+      },
+      "required": [
+        "IdMappingType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEntityResolutionIdNamespaceIdNamespaceIdMappingWorkflowPropertiesDefinition"
+    },
+    "NamespaceRuleBasedProperties": {
+      "type": "object",
+      "properties": {
+        "Rules": {
+          "type": "array",
+          "insertionOrder": false,
+          "minItems": 1,
+          "maxItems": 25,
+          "items": {
+            "$ref": "#/definitions/Rule"
+          }
+        },
+        "RuleDefinitionTypes": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/RuleDefinitionType"
+          }
+        },
+        "AttributeMatchingModel": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ONE_TO_ONE",
+                "MANY_TO_MANY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RecordMatchingModels": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/RecordMatchingModel"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSEntityResolutionIdNamespaceNamespaceRuleBasedPropertiesDefinition"
+    },
+    "RecordMatchingModel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ONE_SOURCE_TO_ONE_TARGET",
+            "MANY_SOURCE_TO_ONE_TARGET"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEntityResolutionIdNamespaceRecordMatchingModelDefinition"
+    },
+    "RuleDefinitionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SOURCE",
+            "TARGET"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEntityResolutionIdNamespaceRuleDefinitionTypeDefinition"
+    },
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "RuleName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z_0-9- \\t]*$",
+              "minLength": 0,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MatchingKeys": {
+          "type": "array",
+          "insertionOrder": false,
+          "minItems": 1,
+          "maxItems": 25,
+          "items": {
+            "$ref": "#/definitions/AttributeName"
+          }
+        }
+      },
+      "required": [
+        "RuleName",
+        "MatchingKeys"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEntityResolutionIdNamespaceRuleDefinition"
+    },
+    "NamespaceProviderProperties": {
+      "type": "object",
+      "properties": {
+        "ProviderServiceArn": {
+          "$ref": "#/definitions/ProviderServiceArn"
+        },
+        "ProviderConfiguration": {
+          "type": "object",
+          "description": "Additional Provider configuration that would be required for the provider service. The Configuration must be in JSON string format.",
+          "patternProperties": {
+            "^.+$": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "ProviderServiceArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEntityResolutionIdNamespaceNamespaceProviderPropertiesDefinition"
+    },
+    "ProviderServiceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn):(entityresolution):([a-z]{2}-[a-z]{1,10}-[0-9])::providerservice/([a-zA-Z0-9_-]{1,255})/([a-zA-Z0-9_-]{1,255})$",
+          "minLength": 20,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEntityResolutionIdNamespaceProviderServiceArnDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEntityResolutionIdNamespaceTagDefinition"
+    }
+  },
+  "properties": {
+    "IdNamespaceName": {
+      "$ref": "#/definitions/EntityName"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "InputSourceConfig": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/definitions/IdNamespaceInputSource"
+      }
+    },
+    "IdMappingWorkflowProperties": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/definitions/IdNamespaceIdMappingWorkflowProperties"
+      }
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SOURCE",
+            "TARGET"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws|aws-us-gov|aws-cn):iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
+          "minLength": 32,
+          "maxLength": 512
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "createOnlyProperties": [
+    "/properties/IdNamespaceName"
+  ],
+  "readOnlyProperties": [
+    "/properties/IdNamespaceArn",
+    "/properties/CreatedAt",
+    "/properties/UpdatedAt"
+  ],
+  "primaryIdentifier": [
+    "/properties/IdNamespaceName"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "entityresolution:TagResource",
+      "entityresolution:UntagResource",
+      "entityresolution:ListTagsForResource"
+    ]
+  },
+  "required": [
+    "IdNamespaceName",
+    "Type"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSEntityResolutionIdNamespaceProperties"
+}

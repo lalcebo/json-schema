@@ -1,6 +1,6 @@
 {
   "typeName": "MongoDB::Atlas::CloudBackupSnapshot",
-  "description": "Returns, takes, and removes Cloud Backup snapshots.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Returns, takes, and removes Cloud Backup snapshots.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/cloud-backup-snapshot",
   "additionalProperties": false,
   "definitions": {
     "ApiAtlasDiskBackupReplicaSetView": {
@@ -481,32 +481,30 @@
       ],
       "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml)."
     },
-    "ClusterName": {
+    "InstanceType": {
       "oneOf": [
         {
           "type": "string",
-          "maxLength": 64,
-          "minLength": 1
+          "enum": [
+            "cluster"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of instance specified on the Instance Name."
+    },
+    "InstanceName": {
+      "oneOf": [
+        {
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
       "description": "Human-readable label that identifies the cluster."
-    },
-    "InstanceName": {
-      "oneOf": [
-        {
-          "type": "string",
-          "maxLength": 64,
-          "minLength": 1,
-          "pattern": "^([a-zA-Z0-9]([a-zA-Z0-9-]){0,21}(?<!-)([\\w]{0,42}))$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "Human-readable label that identifies the serverless instance."
     },
     "Description": {
       "oneOf": [
@@ -635,20 +633,27 @@
   ],
   "createOnlyProperties": [
     "/properties/ProjectId",
-    "/properties/ClusterName",
+    "/properties/InstanceName",
+    "/properties/InstanceType",
     "/properties/Profile"
   ],
   "required": [
     "ProjectId",
-    "ClusterName"
+    "InstanceName",
+    "InstanceType"
   ],
   "primaryIdentifier": [
     "/properties/ProjectId",
-    "/properties/ClusterName",
+    "/properties/InstanceName",
+    "/properties/InstanceType",
     "/properties/SnapshotId",
     "/properties/Profile"
   ],
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/cloud-backup-snapshot",
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/cloud-backup-snapshot/README.md",
+  "tagging": {
+    "taggable": false
+  },
   "type": "object",
   "title": "MongoDBAtlasCloudBackupSnapshotProperties"
 }

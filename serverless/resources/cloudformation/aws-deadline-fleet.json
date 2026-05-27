@@ -1,0 +1,879 @@
+{
+  "typeName": "AWS::Deadline::Fleet",
+  "description": "Resource Type definition for AWS::Deadline::Fleet. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-deadline",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-deadline",
+  "definitions": {
+    "AcceleratorCountRange": {
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        },
+        "Max": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        }
+      },
+      "required": [
+        "Min"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetAcceleratorCountRangeDefinition"
+    },
+    "AcceleratorTotalMemoryMiBRange": {
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        },
+        "Max": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        }
+      },
+      "required": [
+        "Min"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetAcceleratorTotalMemoryMiBRangeDefinition"
+    },
+    "AcceleratorType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "gpu"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineFleetAcceleratorTypeDefinition"
+    },
+    "AutoScalingMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NO_SCALING",
+            "EVENT_BASED_AUTO_SCALING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineFleetAutoScalingModeDefinition"
+    },
+    "CpuArchitectureType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "x86_64",
+            "arm64"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineFleetCpuArchitectureTypeDefinition"
+    },
+    "CustomerManagedAutoScalingConfiguration": {
+      "type": "object",
+      "properties": {
+        "StandbyWorkerCount": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        },
+        "WorkerIdleDurationSeconds": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        },
+        "ScaleOutWorkersPerMinute": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetCustomerManagedAutoScalingConfigurationDefinition"
+    },
+    "CustomerManagedFleetConfiguration": {
+      "type": "object",
+      "properties": {
+        "Mode": {
+          "$ref": "#/definitions/AutoScalingMode"
+        },
+        "AutoScalingConfiguration": {
+          "$ref": "#/definitions/CustomerManagedAutoScalingConfiguration"
+        },
+        "WorkerCapabilities": {
+          "$ref": "#/definitions/CustomerManagedWorkerCapabilities"
+        },
+        "StorageProfileId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^sp-[0-9a-f]{32}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TagPropagationMode": {
+          "$ref": "#/definitions/TagPropagationMode"
+        }
+      },
+      "required": [
+        "Mode",
+        "WorkerCapabilities"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetCustomerManagedFleetConfigurationDefinition"
+    },
+    "CustomerManagedFleetOperatingSystemFamily": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "WINDOWS",
+            "LINUX",
+            "MACOS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineFleetCustomerManagedFleetOperatingSystemFamilyDefinition"
+    },
+    "CustomerManagedWorkerCapabilities": {
+      "type": "object",
+      "properties": {
+        "VCpuCount": {
+          "$ref": "#/definitions/VCpuCountRange"
+        },
+        "MemoryMiB": {
+          "$ref": "#/definitions/MemoryMiBRange"
+        },
+        "AcceleratorTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AcceleratorType"
+          }
+        },
+        "AcceleratorCount": {
+          "$ref": "#/definitions/AcceleratorCountRange"
+        },
+        "AcceleratorTotalMemoryMiB": {
+          "$ref": "#/definitions/AcceleratorTotalMemoryMiBRange"
+        },
+        "OsFamily": {
+          "$ref": "#/definitions/CustomerManagedFleetOperatingSystemFamily"
+        },
+        "CpuArchitectureType": {
+          "$ref": "#/definitions/CpuArchitectureType"
+        },
+        "CustomAmounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FleetAmountCapability"
+          },
+          "maxItems": 15,
+          "minItems": 1
+        },
+        "CustomAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FleetAttributeCapability"
+          },
+          "maxItems": 15,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "CpuArchitectureType",
+        "MemoryMiB",
+        "OsFamily",
+        "VCpuCount"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetCustomerManagedWorkerCapabilitiesDefinition"
+    },
+    "Ec2EbsVolume": {
+      "type": "object",
+      "properties": {
+        "SizeGiB": {
+          "type": "integer",
+          "default": 250
+        },
+        "Iops": {
+          "type": "integer",
+          "default": 3000,
+          "maximum": 16000,
+          "minimum": 3000
+        },
+        "ThroughputMiB": {
+          "type": "integer",
+          "default": 125,
+          "maximum": 1000,
+          "minimum": 125
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetEc2EbsVolumeDefinition"
+    },
+    "AcceleratorSelection": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "t4",
+                "a10g",
+                "l4",
+                "l40s",
+                "rtx-pro-server-6000"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Runtime": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetAcceleratorSelectionDefinition"
+    },
+    "AcceleratorCapabilities": {
+      "type": "object",
+      "properties": {
+        "Selections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AcceleratorSelection"
+          },
+          "minItems": 1
+        },
+        "Count": {
+          "$ref": "#/definitions/AcceleratorCountRange"
+        }
+      },
+      "required": [
+        "Selections"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetAcceleratorCapabilitiesDefinition"
+    },
+    "Ec2MarketType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "on-demand",
+            "spot",
+            "wait-and-save"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineFleetEc2MarketTypeDefinition"
+    },
+    "FleetAmountCapability": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^([a-zA-Z][a-zA-Z0-9]{0,63}:)?amount(\\.[a-zA-Z][a-zA-Z0-9]{0,63})+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Min": {
+          "type": "number"
+        },
+        "Max": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "Min",
+        "Name"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetFleetAmountCapabilityDefinition"
+    },
+    "FleetAttributeCapability": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^([a-zA-Z][a-zA-Z0-9]{0,63}:)?attr(\\.[a-zA-Z][a-zA-Z0-9]{0,63})+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z_]([a-zA-Z0-9_\\-]{0,99})$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 10,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "Name",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetFleetAttributeCapabilityDefinition"
+    },
+    "FleetCapabilities": {
+      "type": "object",
+      "properties": {
+        "Amounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FleetAmountCapability"
+          },
+          "maxItems": 15,
+          "minItems": 1
+        },
+        "Attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FleetAttributeCapability"
+          },
+          "maxItems": 15,
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetFleetCapabilitiesDefinition"
+    },
+    "FleetConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "CustomerManaged",
+          "properties": {
+            "CustomerManaged": {
+              "$ref": "#/definitions/CustomerManagedFleetConfiguration"
+            }
+          },
+          "required": [
+            "CustomerManaged"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "ServiceManagedEc2",
+          "properties": {
+            "ServiceManagedEc2": {
+              "$ref": "#/definitions/ServiceManagedEc2FleetConfiguration"
+            }
+          },
+          "required": [
+            "ServiceManagedEc2"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDeadlineFleetFleetConfigurationDefinition"
+    },
+    "FleetStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "CREATE_IN_PROGRESS",
+            "UPDATE_IN_PROGRESS",
+            "CREATE_FAILED",
+            "UPDATE_FAILED",
+            "SUSPENDED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineFleetFleetStatusDefinition"
+    },
+    "HostConfiguration": {
+      "type": "object",
+      "properties": {
+        "ScriptBody": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 15000,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ScriptTimeoutSeconds": {
+          "type": "integer",
+          "default": 300,
+          "maximum": 3600,
+          "minimum": 300
+        }
+      },
+      "required": [
+        "ScriptBody"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetHostConfigurationDefinition"
+    },
+    "MemoryMiBRange": {
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 512
+        },
+        "Max": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 512
+        }
+      },
+      "required": [
+        "Min"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetMemoryMiBRangeDefinition"
+    },
+    "ServiceManagedEc2AutoScalingConfiguration": {
+      "type": "object",
+      "properties": {
+        "StandbyWorkerCount": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+        },
+        "WorkerIdleDurationSeconds": {
+          "type": "integer",
+          "maximum": 86400,
+          "minimum": 0
+        },
+        "ScaleOutWorkersPerMinute": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetServiceManagedEc2AutoScalingConfigurationDefinition"
+    },
+    "ServiceManagedEc2FleetConfiguration": {
+      "type": "object",
+      "properties": {
+        "InstanceCapabilities": {
+          "$ref": "#/definitions/ServiceManagedEc2InstanceCapabilities"
+        },
+        "InstanceMarketOptions": {
+          "$ref": "#/definitions/ServiceManagedEc2InstanceMarketOptions"
+        },
+        "VpcConfiguration": {
+          "$ref": "#/definitions/VpcConfiguration"
+        },
+        "StorageProfileId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^sp-[0-9a-f]{32}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AutoScalingConfiguration": {
+          "$ref": "#/definitions/ServiceManagedEc2AutoScalingConfiguration"
+        }
+      },
+      "required": [
+        "InstanceCapabilities",
+        "InstanceMarketOptions"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetServiceManagedEc2FleetConfigurationDefinition"
+    },
+    "ServiceManagedEc2InstanceMarketOptions": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/Ec2MarketType"
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetServiceManagedEc2InstanceMarketOptionsDefinition"
+    },
+    "ServiceManagedEc2InstanceCapabilities": {
+      "type": "object",
+      "properties": {
+        "VCpuCount": {
+          "$ref": "#/definitions/VCpuCountRange"
+        },
+        "MemoryMiB": {
+          "$ref": "#/definitions/MemoryMiBRange"
+        },
+        "OsFamily": {
+          "$ref": "#/definitions/ServiceManagedFleetOperatingSystemFamily"
+        },
+        "CpuArchitectureType": {
+          "$ref": "#/definitions/CpuArchitectureType"
+        },
+        "RootEbsVolume": {
+          "$ref": "#/definitions/Ec2EbsVolume"
+        },
+        "AcceleratorCapabilities": {
+          "$ref": "#/definitions/AcceleratorCapabilities"
+        },
+        "AllowedInstanceTypes": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 100,
+          "minItems": 1
+        },
+        "ExcludedInstanceTypes": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 100,
+          "minItems": 1
+        },
+        "CustomAmounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FleetAmountCapability"
+          },
+          "maxItems": 15,
+          "minItems": 1
+        },
+        "CustomAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FleetAttributeCapability"
+          },
+          "maxItems": 15,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "CpuArchitectureType",
+        "MemoryMiB",
+        "OsFamily",
+        "VCpuCount"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetServiceManagedEc2InstanceCapabilitiesDefinition"
+    },
+    "ServiceManagedFleetOperatingSystemFamily": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LINUX",
+            "WINDOWS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineFleetServiceManagedFleetOperatingSystemFamilyDefinition"
+    },
+    "TagPropagationMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NO_PROPAGATION",
+            "PROPAGATE_TAGS_TO_WORKERS_AT_LAUNCH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineFleetTagPropagationModeDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetTagDefinition"
+    },
+    "VCpuCountRange": {
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer",
+          "maximum": 10000,
+          "minimum": 1
+        },
+        "Max": {
+          "type": "integer",
+          "maximum": 10000,
+          "minimum": 1
+        }
+      },
+      "required": [
+        "Min"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetVCpuCountRangeDefinition"
+    },
+    "VpcConfiguration": {
+      "type": "object",
+      "properties": {
+        "ResourceConfigurationArns": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "minLength": 1
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDeadlineFleetVpcConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "Configuration": {
+      "$ref": "#/definitions/FleetConfiguration"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "",
+          "maxLength": 100,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "FarmId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^farm-[0-9a-f]{32}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "HostConfiguration": {
+      "$ref": "#/definitions/HostConfiguration"
+    },
+    "MaxWorkerCount": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": 0
+    },
+    "MinWorkerCount": {
+      "type": "integer",
+      "default": 0,
+      "maximum": 2147483647,
+      "minimum": 0
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws[a-zA-Z-]*):iam::\\d{12}:role(/[!-.0-~]+)*/[\\w+=,.@-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "maxItems": 50,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "insertionOrder": false,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "Configuration",
+    "DisplayName",
+    "FarmId",
+    "MaxWorkerCount",
+    "RoleArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Capabilities",
+    "/properties/FleetId",
+    "/properties/Status",
+    "/properties/StatusMessage",
+    "/properties/WorkerCount",
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/FarmId"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "deadline:TagResource",
+      "deadline:UntagResource",
+      "deadline:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDeadlineFleetProperties"
+}

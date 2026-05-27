@@ -4,16 +4,6 @@
     "OriginAccessControlConfig": {
       "additionalProperties": false,
       "properties": {
-        "Name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
         "Description": {
           "oneOf": [
             {
@@ -22,18 +12,31 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "A description of the origin access control."
         },
-        "SigningProtocol": {
+        "Name": {
           "oneOf": [
             {
-              "pattern": "^(sigv4)$",
               "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "A name to identify the origin access control. You can specify up to 64 characters."
+        },
+        "OriginAccessControlOriginType": {
+          "oneOf": [
+            {
+              "pattern": "^(s3|mediastore|lambda|mediapackagev2)$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of origin that this origin access control is for."
         },
         "SigningBehavior": {
           "oneOf": [
@@ -44,18 +47,20 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Specifies which requests CloudFront signs (adds authentication information to). Specify ``always`` for the most common use case. For more information, see [origin access control advanced settings](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html#oac-advanced-settings) in the *Amazon CloudFront Developer Guide*.\n This field can have one of the following values:\n  +  ``always`` – CloudFront signs all origin requests, overwriting the ``Authorization`` header from the viewer request if one exists.\n  +  ``never`` – CloudFront doesn't sign any origin requests. This value turns off origin access control for all origins in all distributions that use this origin access control.\n  +  ``no-override`` – If the viewer request doesn't contain the ``Authorization`` header, then CloudFront signs the origin request. If the viewer request contains the ``Authorization`` header, then CloudFront doesn't sign the origin request and instead passes along the ``Authorization`` header from the viewer request. *WARNING: To pass along the Authorization header from the viewer request, you must add the Authorization header to a cache policy for all cache behaviors that use origins associated with this origin access control.*"
         },
-        "OriginAccessControlOriginType": {
+        "SigningProtocol": {
           "oneOf": [
             {
-              "pattern": "^(s3|mediastore)$",
+              "pattern": "^(sigv4)$",
               "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The signing protocol of the origin access control, which determines how CloudFront signs (authenticates) requests. The only valid value is ``sigv4``."
         }
       },
       "required": [
@@ -65,16 +70,18 @@
         "OriginAccessControlOriginType"
       ],
       "type": "object",
+      "description": "Creates a new origin access control in CloudFront. After you create an origin access control, you can add it to an origin in a CloudFront distribution so that CloudFront sends authenticated (signed) requests to the origin.\n This makes it possible to block public access to the origin, allowing viewers (users) to access the origin's content only through CloudFront.\n For more information about using a CloudFront origin access control, see [Restricting access to an origin](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-origin.html) in the *Amazon CloudFront Developer Guide*.",
       "title": "AWSCloudFrontOriginAccessControlOriginAccessControlConfigDefinition"
     }
   },
-  "description": "Resource Type definition for AWS::CloudFront::OriginAccessControl. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Creates a new origin access control in CloudFront. After you create an origin access control, you can add it to an origin in a CloudFront distribution so that CloudFront sends authenticated (signed) requests to the origin.\n This makes it possible to block public access to the origin, allowing viewers (users) to access the origin's content only through CloudFront.\n For more information about using a CloudFront origin access control, see [Restricting access to an origin](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-origin.html) in the *Amazon CloudFront Developer Guide*.. Source:- No source definition found, add manually please",
   "primaryIdentifier": [
     "/properties/Id"
   ],
   "properties": {
     "OriginAccessControlConfig": {
-      "$ref": "#/definitions/OriginAccessControlConfig"
+      "$ref": "#/definitions/OriginAccessControlConfig",
+      "description": "The origin access control."
     }
   },
   "readOnlyProperties": [
@@ -83,7 +90,12 @@
   "required": [
     "OriginAccessControlConfig"
   ],
-  "taggable": false,
+  "tagging": {
+    "cloudFormationSystemTags": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "taggable": false
+  },
   "typeName": "AWS::CloudFront::OriginAccessControl",
   "type": "object",
   "title": "AWSCloudFrontOriginAccessControlProperties"

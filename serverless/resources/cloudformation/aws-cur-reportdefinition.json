@@ -1,7 +1,44 @@
 {
   "typeName": "AWS::CUR::ReportDefinition",
-  "description": "The AWS::CUR::ReportDefinition resource creates a Cost & Usage Report with user-defined settings. You can use this resource to define settings like time granularity (hourly, daily, monthly), file format (Parquet, CSV), and S3 bucket for delivery of these reports.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cur.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cur.git",
+  "description": "The AWS::CUR::ReportDefinition resource creates a Cost & Usage Report with user-defined settings. You can use this resource to define settings like time granularity (hourly, daily, monthly), file format (Parquet, CSV), and S3 bucket for delivery of these reports.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cur.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cur.git",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCURReportDefinitionTagDefinition"
+    }
+  },
   "properties": {
     "ReportName": {
       "oneOf": [
@@ -73,7 +110,9 @@
           {
             "type": "string",
             "enum": [
-              "RESOURCES"
+              "RESOURCES",
+              "SPLIT_COST_ALLOCATION_DATA",
+              "MANUAL_DISCOUNT_COMPATIBILITY"
             ]
           },
           {
@@ -176,6 +215,14 @@
         }
       ],
       "description": "The Amazon resource name of the billing view. You can get this value by using the billing view service public APIs."
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 100,
+      "minItems": 0
     }
   },
   "additionalProperties": false,
@@ -200,6 +247,18 @@
   "primaryIdentifier": [
     "/properties/ReportName"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cur:ListTagsForResource",
+      "cur:TagResource",
+      "cur:UntagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSCURReportDefinitionProperties"
 }

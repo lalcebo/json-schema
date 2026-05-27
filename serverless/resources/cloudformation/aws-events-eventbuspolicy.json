@@ -1,58 +1,11 @@
 {
   "typeName": "AWS::Events::EventBusPolicy",
-  "description": "Resource Type definition for AWS::Events::EventBusPolicy. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "EventBusName": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Condition": {
-      "$ref": "#/definitions/Condition"
-    },
-    "Action": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "StatementId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Statement": {
-      "type": "object"
-    },
-    "Principal": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    }
-  },
+  "description": "Resource Type definition for AWS::Events::EventBusPolicy. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-events-eventbuspolicy",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-events-eventbuspolicy",
   "definitions": {
     "Condition": {
       "type": "object",
+      "description": "This parameter enables you to limit the permission to accounts that fulfill a certain condition, such as being a member of a certain AWS organization.",
       "additionalProperties": false,
       "properties": {
         "Value": {
@@ -63,7 +16,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Specifies the key for the condition. Currently the only supported key is aws:PrincipalOrgID."
         },
         "Type": {
           "oneOf": [
@@ -73,7 +27,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Specifies the type of condition. Currently the only supported value is StringEquals."
         },
         "Key": {
           "oneOf": [
@@ -83,11 +38,81 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Specifies the value for the key. Currently, this must be the ID of the organization."
         }
       },
       "title": "AWSEventsEventBusPolicyConditionDefinition"
     }
+  },
+  "properties": {
+    "EventBusName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "[\\.\\-_A-Za-z0-9]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the event bus associated with the rule. If you omit this, the default event bus is used."
+    },
+    "Condition": {
+      "$ref": "#/definitions/Condition"
+    },
+    "Action": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "events:[a-zA-Z]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The action that you are enabling the other account to perform."
+    },
+    "StatementId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "[a-zA-Z0-9-_]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An identifier string for the external account that you are granting permissions to"
+    },
+    "Statement": {
+      "description": "A JSON string that describes the permission policy statement. You can include a Policy parameter in the request instead of using the StatementId, Action, Principal, or Condition parameters.",
+      "type": "object"
+    },
+    "Principal": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 12,
+          "pattern": "(\\d{12}|\\*)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The 12-digit AWS account ID that you are permitting to put events to your default event bus. Specify \"*\" to permit any account to put events to your default event bus."
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": false
   },
   "required": [
     "StatementId"
@@ -97,11 +122,22 @@
     "/properties/StatementId"
   ],
   "primaryIdentifier": [
-    "/properties/Id"
+    "/properties/EventBusName",
+    "/properties/StatementId"
   ],
-  "readOnlyProperties": [
-    "/properties/Id"
+  "writeOnlyProperties": [
+    "/properties/Principal",
+    "/properties/Condition",
+    "/properties/Action"
   ],
+  "deprecatedProperties": [
+    "/properties/Principal",
+    "/properties/Condition",
+    "/properties/Action"
+  ],
+  "propertyTransform": {
+    "/properties/Statement": "$merge([{\"Sid\": StatementId}, Statement])"
+  },
   "type": "object",
   "title": "AWSEventsEventBusPolicyProperties"
 }

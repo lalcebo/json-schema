@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::GroundStation::Config",
-  "description": "AWS Ground Station config resource type for CloudFormation.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ground-station.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ground-station.git",
+  "description": "AWS Ground Station config resource type for CloudFormation.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ground-station.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ground-station.git",
   "definitions": {
     "JsonString": {
@@ -40,6 +40,9 @@
         },
         "S3RecordingConfig": {
           "$ref": "#/definitions/S3RecordingConfig"
+        },
+        "TelemetrySinkConfig": {
+          "$ref": "#/definitions/TelemetrySinkConfig"
         }
       },
       "additionalProperties": false,
@@ -161,7 +164,8 @@
     "BucketArn": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "pattern": "^arn:aws[A-Za-z0-9-]{0,64}:s3:::[A-Za-z0-9-]{1,64}$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -172,13 +176,26 @@
     "RoleArn": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "pattern": "^arn:[^:\\n]+:iam::[^:\\n]+:role\\/.+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
       "title": "AWSGroundStationConfigRoleArnDefinition"
+    },
+    "KinesisDataStreamArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:[a-z0-9-.]{1,63}:kinesis:[-a-z0-9]{1,50}:[0-9]{12}:stream/[a-zA-Z0-9_.-]{1,128}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSGroundStationConfigKinesisDataStreamArnDefinition"
     },
     "UplinkSpectrumConfig": {
       "type": "object",
@@ -329,7 +346,8 @@
         "AntennaUplinkConfigArn": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -355,6 +373,71 @@
       },
       "additionalProperties": false,
       "title": "AWSGroundStationConfigS3RecordingConfigDefinition"
+    },
+    "TelemetrySinkType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "KINESIS_DATA_STREAM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSGroundStationConfigTelemetrySinkTypeDefinition"
+    },
+    "KinesisDataStreamData": {
+      "type": "object",
+      "properties": {
+        "KinesisRoleArn": {
+          "$ref": "#/definitions/RoleArn"
+        },
+        "KinesisDataStreamArn": {
+          "$ref": "#/definitions/KinesisDataStreamArn"
+        }
+      },
+      "required": [
+        "KinesisRoleArn",
+        "KinesisDataStreamArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSGroundStationConfigKinesisDataStreamDataDefinition"
+    },
+    "TelemetrySinkData": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": [
+            "KinesisDataStreamData"
+          ]
+        }
+      ],
+      "properties": {
+        "KinesisDataStreamData": {
+          "$ref": "#/definitions/KinesisDataStreamData"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGroundStationConfigTelemetrySinkDataDefinition"
+    },
+    "TelemetrySinkConfig": {
+      "type": "object",
+      "properties": {
+        "TelemetrySinkType": {
+          "$ref": "#/definitions/TelemetrySinkType"
+        },
+        "TelemetrySinkData": {
+          "$ref": "#/definitions/TelemetrySinkData"
+        }
+      },
+      "required": [
+        "TelemetrySinkType",
+        "TelemetrySinkData"
+      ],
+      "additionalProperties": false,
+      "title": "AWSGroundStationConfigTelemetrySinkConfigDefinition"
     },
     "Tag": {
       "type": "object",
@@ -420,6 +503,18 @@
   "primaryIdentifier": [
     "/properties/Arn"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "groundstation:TagResource",
+      "groundstation:UntagResource",
+      "groundstation:ListTagsForResource"
+    ]
+  },
   "additionalProperties": false,
   "type": "object",
   "title": "AWSGroundStationConfigProperties"

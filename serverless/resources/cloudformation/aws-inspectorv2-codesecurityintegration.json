@@ -1,0 +1,249 @@
+{
+  "typeName": "AWS::InspectorV2::CodeSecurityIntegration",
+  "description": "Inspector CodeSecurityIntegration resource schema. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-inspector.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-inspector.git",
+  "definitions": {
+    "TagMap": {
+      "type": "object",
+      "patternProperties": {
+        "^.{2,127}$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^.{1,255}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityIntegrationTagMapDefinition"
+    },
+    "IntegrationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GITLAB_SELF_MANAGED",
+            "GITHUB"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSInspectorV2CodeSecurityIntegrationIntegrationTypeDefinition"
+    },
+    "IntegrationStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "IN_PROGRESS",
+            "ACTIVE",
+            "INACTIVE",
+            "DISABLING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSInspectorV2CodeSecurityIntegrationIntegrationStatusDefinition"
+    },
+    "CreateGitLabSelfManagedIntegrationDetail": {
+      "type": "object",
+      "required": [
+        "instanceUrl",
+        "accessToken"
+      ],
+      "properties": {
+        "instanceUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https://[-a-zA-Z0-9()@:%_+.~#?&//=]{1,1024}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "accessToken": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityIntegrationCreateGitLabSelfManagedIntegrationDetailDefinition"
+    },
+    "CreateDetails": {
+      "type": "object",
+      "properties": {
+        "gitlabSelfManaged": {
+          "$ref": "#/definitions/CreateGitLabSelfManagedIntegrationDetail"
+        }
+      },
+      "required": [
+        "gitlabSelfManaged"
+      ],
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityIntegrationCreateDetailsDefinition"
+    },
+    "UpdateGitLabSelfManagedIntegrationDetail": {
+      "type": "object",
+      "required": [
+        "authCode"
+      ],
+      "properties": {
+        "authCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityIntegrationUpdateGitLabSelfManagedIntegrationDetailDefinition"
+    },
+    "UpdateGitHubIntegrationDetail": {
+      "type": "object",
+      "required": [
+        "code",
+        "installationId"
+      ],
+      "properties": {
+        "code": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "installationId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2CodeSecurityIntegrationUpdateGitHubIntegrationDetailDefinition"
+    },
+    "UpdateDetails": {
+      "type": "object",
+      "properties": {
+        "gitlabSelfManaged": {
+          "$ref": "#/definitions/UpdateGitLabSelfManagedIntegrationDetail"
+        },
+        "github": {
+          "$ref": "#/definitions/UpdateGitHubIntegrationDetail"
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "gitlabSelfManaged"
+          ]
+        },
+        {
+          "required": [
+            "github"
+          ]
+        }
+      ],
+      "title": "AWSInspectorV2CodeSecurityIntegrationUpdateDetailsDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 60,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-_$:.]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Code Security Integration name"
+    },
+    "Type": {
+      "description": "Integration Type",
+      "$ref": "#/definitions/IntegrationType"
+    },
+    "CreateIntegrationDetails": {
+      "description": "Create Integration Details",
+      "$ref": "#/definitions/CreateDetails"
+    },
+    "UpdateIntegrationDetails": {
+      "description": "Update Integration Details",
+      "$ref": "#/definitions/UpdateDetails"
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "inspector2:TagResource",
+      "inspector2:UntagResource"
+    ]
+  },
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/Status",
+    "/properties/StatusReason",
+    "/properties/AuthorizationUrl",
+    "/properties/CreatedAt",
+    "/properties/LastUpdatedAt"
+  ],
+  "writeOnlyProperties": [
+    "/properties/CreateIntegrationDetails",
+    "/properties/UpdateIntegrationDetails"
+  ],
+  "createOnlyProperties": [
+    "/properties/CreateIntegrationDetails",
+    "/properties/Tags"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "type": "object",
+  "title": "AWSInspectorV2CodeSecurityIntegrationProperties"
+}

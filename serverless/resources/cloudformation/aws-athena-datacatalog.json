@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Athena::DataCatalog",
-  "description": "Resource schema for AWS::Athena::DataCatalog. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-athena.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-athena.git",
+  "description": "Resource schema for AWS::Athena::DataCatalog. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-athena.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-athena.git",
   "definitions": {
     "Tags": {
@@ -103,14 +103,59 @@
           "enum": [
             "LAMBDA",
             "GLUE",
-            "HIVE"
+            "HIVE",
+            "FEDERATED"
           ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The type of data catalog to create: LAMBDA for a federated catalog, GLUE for AWS Glue Catalog, or HIVE for an external hive metastore. "
+      "description": "The type of data catalog to create: LAMBDA for a federated catalog, GLUE for AWS Glue Catalog, or HIVE for an external hive metastore. FEDERATED is a federated catalog for which Athena creates the connection and the Lambda function for you based on the parameters that you pass."
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATE_IN_PROGRESS",
+            "CREATE_COMPLETE",
+            "CREATE_FAILED",
+            "CREATE_FAILED_CLEANUP_IN_PROGRESS",
+            "CREATE_FAILED_CLEANUP_COMPLETE",
+            "CREATE_FAILED_CLEANUP_FAILED",
+            "DELETE_IN_PROGRESS",
+            "DELETE_COMPLETE",
+            "DELETE_FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the creation or deletion of the data catalog. LAMBDA, GLUE, and HIVE data catalog types are created synchronously. Their status is either CREATE_COMPLETE or CREATE_FAILED. The FEDERATED data catalog type is created asynchronously."
+    },
+    "ConnectionType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of connection for a FEDERATED data catalog"
+    },
+    "Error": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Text of the error that occurred during data catalog creation or deletion."
     }
   },
   "required": [
@@ -124,7 +169,18 @@
     "/properties/Name"
   ],
   "additionalProperties": false,
-  "taggable": true,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "athena:UntagResource",
+      "athena:TagResource",
+      "athena:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSAthenaDataCatalogProperties"
 }

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::CustomerProfiles::CalculatedAttributeDefinition",
-  "description": "A calculated attribute definition for Customer Profiles. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles",
+  "description": "A calculated attribute definition for Customer Profiles. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles",
   "definitions": {
     "DomainName": {
@@ -154,8 +154,32 @@
       "description": "The amount of time of the specified unit.",
       "type": "integer",
       "minimum": 1,
-      "maximum": 366,
+      "maximum": 2147483647,
       "title": "AWSCustomerProfilesCalculatedAttributeDefinitionRangeValueDefinition"
+    },
+    "ValueRange": {
+      "description": "A structure specifying the endpoints of the relative time period over which data is included in the aggregation.",
+      "type": "object",
+      "properties": {
+        "Start": {
+          "description": "The starting point for this range. Positive numbers indicate how many days in the past data should be included, and negative numbers indicate how many days in the future.",
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "End": {
+          "description": "The ending point for this range. Positive numbers indicate how many days in the past data should be included, and negative numbers indicate how many days in the future.",
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "Start",
+        "End"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCustomerProfilesCalculatedAttributeDefinitionValueRangeDefinition"
     },
     "Range": {
       "description": "The relative time period over which data is included in the aggregation.",
@@ -166,10 +190,38 @@
         },
         "Unit": {
           "$ref": "#/definitions/RangeUnit"
+        },
+        "ValueRange": {
+          "$ref": "#/definitions/ValueRange"
+        },
+        "TimestampSource": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An expression specifying the field in your JSON object from which the date should be parsed. The expression should follow the structure of \\\"{ObjectTypeName.<Location of timestamp field in JSON pointer format>}\\\". E.g. if your object type is MyType and source JSON is {\"generatedAt\": {\"timestamp\": \"1737587945945\"}}, then TimestampSource should be \"{MyType.generatedAt.timestamp}\"."
+        },
+        "TimestampFormat": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The format the timestamp field in your JSON object is specified. This value should be one of EPOCHMILLI or ISO_8601. E.g. if your object type is MyType and source JSON is {\"generatedAt\": {\"timestamp\": \"2001-07-04T12:08:56.235Z\"}}, then TimestampFormat should be \"ISO_8601\"."
         }
       },
       "required": [
-        "Value",
         "Unit"
       ],
       "additionalProperties": false,
@@ -179,7 +231,7 @@
       "description": "The number of profile objects used for the calculated attribute.",
       "type": "integer",
       "minimum": 1,
-      "maximum": 100,
+      "maximum": 300,
       "title": "AWSCustomerProfilesCalculatedAttributeDefinitionObjectCountDefinition"
     },
     "ThresholdValue": {
@@ -271,6 +323,31 @@
       "description": "The aggregation operation to perform for the calculated attribute.",
       "title": "AWSCustomerProfilesCalculatedAttributeDefinitionStatisticDefinition"
     },
+    "Readiness": {
+      "description": "The readiness status of the calculated attribute.",
+      "type": "object",
+      "properties": {
+        "ProgressPercentage": {
+          "description": "The progress percentage for including historical data in your calculated attribute.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "Message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Any information pertaining to the status of the calculated attribute if required."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSCustomerProfilesCalculatedAttributeDefinitionReadinessDefinition"
+    },
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
       "type": "object",
@@ -344,6 +421,10 @@
     "Statistic": {
       "$ref": "#/definitions/Statistic"
     },
+    "UseHistoricalData": {
+      "description": "Whether to use historical data for the calculated attribute.",
+      "type": "boolean"
+    },
     "Tags": {
       "$ref": "#/definitions/Tags"
     }
@@ -360,15 +441,25 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "profile:TagResource",
+      "profile:UntagResource",
+      "profile:ListTagsForResource"
+    ]
   },
   "createOnlyProperties": [
     "/properties/DomainName",
-    "/properties/CalculatedAttributeName"
+    "/properties/CalculatedAttributeName",
+    "/properties/UseHistoricalData",
+    "/properties/Conditions/Range/TimestampSource",
+    "/properties/Conditions/Range/TimestampFormat"
   ],
   "readOnlyProperties": [
     "/properties/CreatedAt",
-    "/properties/LastUpdatedAt"
+    "/properties/LastUpdatedAt",
+    "/properties/Status",
+    "/properties/Readiness"
   ],
   "primaryIdentifier": [
     "/properties/DomainName",

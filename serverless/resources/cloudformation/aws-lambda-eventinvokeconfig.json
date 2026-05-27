@@ -1,106 +1,132 @@
 {
   "typeName": "AWS::Lambda::EventInvokeConfig",
-  "description": "Resource Type definition for AWS::Lambda::EventInvokeConfig. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
+  "description": "The AWS::Lambda::EventInvokeConfig resource configures options for asynchronous invocation on a version or an alias.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "DestinationConfig": {
+      "description": "A destination for events after they have been sent to a function for processing.",
+      "type": "object",
+      "properties": {
+        "OnFailure": {
+          "$ref": "#/definitions/OnFailure"
+        },
+        "OnSuccess": {
+          "$ref": "#/definitions/OnSuccess"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLambdaEventInvokeConfigDestinationConfigDefinition"
+    },
+    "OnFailure": {
+      "description": "The destination configuration for failed invocations.",
+      "type": "object",
+      "properties": {
+        "Destination": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]+(-[a-z]+)+-\\d{1})?:(\\d{12})?:(.*)",
+              "minLength": 0,
+              "maxLength": 350
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the destination resource."
+        }
+      },
+      "required": [
+        "Destination"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLambdaEventInvokeConfigOnFailureDefinition"
+    },
+    "OnSuccess": {
+      "description": "The destination configuration for successful invocations.",
+      "type": "object",
+      "properties": {
+        "Destination": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]+(-[a-z]+)+-\\d{1})?:(\\d{12})?:(.*)",
+              "minLength": 0,
+              "maxLength": 350
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the destination resource."
+        }
+      },
+      "required": [
+        "Destination"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLambdaEventInvokeConfigOnSuccessDefinition"
+    }
+  },
   "properties": {
+    "DestinationConfig": {
+      "$ref": "#/definitions/DestinationConfig"
+    },
     "FunctionName": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]+(-[a-z]+)+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The name of the Lambda function."
+    },
+    "MaximumEventAgeInSeconds": {
+      "description": "The maximum age of a request that Lambda sends to a function for processing.",
+      "type": "integer",
+      "minimum": 60,
+      "maximum": 21600
     },
     "MaximumRetryAttempts": {
-      "type": "integer"
+      "description": "The maximum number of times to retry when the function returns an error.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
     },
     "Qualifier": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "pattern": "^\\$(LATEST(\\.PUBLISHED)?)|[a-zA-Z0-9$_-]{1,129}$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
-    },
-    "DestinationConfig": {
-      "$ref": "#/definitions/DestinationConfig"
-    },
-    "MaximumEventAgeInSeconds": {
-      "type": "integer"
+      ],
+      "description": "The identifier of a version or alias."
     }
   },
-  "definitions": {
-    "DestinationConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "OnSuccess": {
-          "$ref": "#/definitions/OnSuccess"
-        },
-        "OnFailure": {
-          "$ref": "#/definitions/OnFailure"
-        }
-      },
-      "title": "AWSLambdaEventInvokeConfigDestinationConfigDefinition"
-    },
-    "OnSuccess": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Destination": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Destination"
-      ],
-      "title": "AWSLambdaEventInvokeConfigOnSuccessDefinition"
-    },
-    "OnFailure": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Destination": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Destination"
-      ],
-      "title": "AWSLambdaEventInvokeConfigOnFailureDefinition"
-    }
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
   },
+  "additionalProperties": false,
   "required": [
     "FunctionName",
     "Qualifier"
   ],
-  "createOnlyProperties": [
+  "primaryIdentifier": [
     "/properties/FunctionName",
     "/properties/Qualifier"
   ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id"
+  "createOnlyProperties": [
+    "/properties/FunctionName",
+    "/properties/Qualifier"
   ],
   "type": "object",
   "title": "AWSLambdaEventInvokeConfigProperties"

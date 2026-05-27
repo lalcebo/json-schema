@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Connect::User",
-  "description": "Resource Type definition for AWS::Connect::User. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "description": "Resource Type definition for AWS::Connect::User. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "definitions": {
     "FirstName": {
@@ -117,6 +117,28 @@
       "description": "The phone type.",
       "title": "AWSConnectUserPhoneTypeDefinition"
     },
+    "PersistentConnection": {
+      "description": "The Persistent Connection setting.",
+      "type": "boolean",
+      "title": "AWSConnectUserPersistentConnectionDefinition"
+    },
+    "VoiceEnhancementMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "VOICE_ISOLATION",
+            "NOISE_SUPPRESSION"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Voice Enhancement Mode setting.",
+      "title": "AWSConnectUserVoiceEnhancementModeDefinition"
+    },
     "UserIdentityInfo": {
       "description": "Contains information about the identity of a user.",
       "type": "object",
@@ -156,11 +178,11 @@
         },
         "PhoneType": {
           "$ref": "#/definitions/PhoneType"
+        },
+        "PersistentConnection": {
+          "$ref": "#/definitions/PersistentConnection"
         }
       },
-      "required": [
-        "PhoneType"
-      ],
       "title": "AWSConnectUserUserPhoneConfigDefinition"
     },
     "Tag": {
@@ -200,6 +222,196 @@
         "Value"
       ],
       "title": "AWSConnectUserTagDefinition"
+    },
+    "UserProficiency": {
+      "description": "Proficiency of a user.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AttributeName": {
+          "$ref": "#/definitions/AttributeName"
+        },
+        "AttributeValue": {
+          "$ref": "#/definitions/AttributeValue"
+        },
+        "Level": {
+          "$ref": "#/definitions/Level"
+        }
+      },
+      "required": [
+        "AttributeName",
+        "AttributeValue",
+        "Level"
+      ],
+      "title": "AWSConnectUserUserProficiencyDefinition"
+    },
+    "AttributeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of user's proficiency. You must use name of predefined attribute present in the Amazon Connect instance.",
+      "title": "AWSConnectUserAttributeNameDefinition"
+    },
+    "AttributeValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The value of user's proficiency. You must use value of predefined attribute present in the Amazon Connect instance.",
+      "title": "AWSConnectUserAttributeValueDefinition"
+    },
+    "Level": {
+      "description": "The level of the proficiency. The valid values are 1, 2, 3, 4 and 5.",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "title": "AWSConnectUserLevelDefinition"
+    },
+    "AutoAcceptConfig": {
+      "description": "Auto-accept configuration per channel.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "AutoAccept": {
+          "$ref": "#/definitions/AutoAccept"
+        },
+        "AgentFirstCallbackAutoAccept": {
+          "$ref": "#/definitions/AgentFirstCallbackAutoAccept"
+        }
+      },
+      "required": [
+        "Channel",
+        "AutoAccept"
+      ],
+      "title": "AWSConnectUserAutoAcceptConfigDefinition"
+    },
+    "Channel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "VOICE",
+            "CHAT",
+            "TASK",
+            "EMAIL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The channels that agents can handle in the Contact Control Panel (CCP).",
+      "title": "AWSConnectUserChannelDefinition"
+    },
+    "AgentFirstCallbackAutoAccept": {
+      "description": "The agent first callback auto accept setting.",
+      "type": "boolean",
+      "title": "AWSConnectUserAgentFirstCallbackAutoAcceptDefinition"
+    },
+    "AfterContactWorkConfigPerChannel": {
+      "description": "After Contact Work configuration per channel.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "AfterContactWorkConfig": {
+          "$ref": "#/definitions/AfterContactWorkConfig"
+        },
+        "AgentFirstCallbackAfterContactWorkConfig": {
+          "$ref": "#/definitions/AfterContactWorkConfig"
+        }
+      },
+      "required": [
+        "Channel",
+        "AfterContactWorkConfig"
+      ],
+      "title": "AWSConnectUserAfterContactWorkConfigPerChannelDefinition"
+    },
+    "AfterContactWorkConfig": {
+      "description": "After Contact Work configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AfterContactWorkTimeLimit": {
+          "$ref": "#/definitions/AfterContactWorkTimeLimit"
+        }
+      },
+      "title": "AWSConnectUserAfterContactWorkConfigDefinition"
+    },
+    "PhoneNumberConfig": {
+      "description": "Phone Number configuration per channel.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "PhoneType": {
+          "$ref": "#/definitions/PhoneType"
+        },
+        "PhoneNumber": {
+          "$ref": "#/definitions/DeskPhoneNumber"
+        }
+      },
+      "required": [
+        "Channel",
+        "PhoneType"
+      ],
+      "title": "AWSConnectUserPhoneNumberConfigDefinition"
+    },
+    "PersistentConnectionConfig": {
+      "description": "Persistent Connection configuration per channel.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "PersistentConnection": {
+          "$ref": "#/definitions/PersistentConnection"
+        }
+      },
+      "required": [
+        "Channel",
+        "PersistentConnection"
+      ],
+      "title": "AWSConnectUserPersistentConnectionConfigDefinition"
+    },
+    "VoiceEnhancementConfig": {
+      "description": "Voice Enhancement configuration per channel.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "VoiceEnhancementMode": {
+          "$ref": "#/definitions/VoiceEnhancementMode"
+        }
+      },
+      "required": [
+        "Channel",
+        "VoiceEnhancementMode"
+      ],
+      "title": "AWSConnectUserVoiceEnhancementConfigDefinition"
     }
   },
   "properties": {
@@ -304,11 +516,58 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "UserProficiencies": {
+      "description": "One or more predefined attributes assigned to a user, with a level that indicates how skilled they are.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/UserProficiency"
+      }
+    },
+    "AutoAcceptConfigs": {
+      "description": "Auto-accept configurations of a user.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AutoAcceptConfig"
+      }
+    },
+    "AfterContactWorkConfigs": {
+      "description": "After Contact Work configurations of a user.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AfterContactWorkConfigPerChannel"
+      }
+    },
+    "PhoneNumberConfigs": {
+      "description": "Phone Number configurations of a user.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/PhoneNumberConfig"
+      }
+    },
+    "PersistentConnectionConfigs": {
+      "description": "Persistent Connection configurations of a user.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/PersistentConnectionConfig"
+      }
+    },
+    "VoiceEnhancementConfigs": {
+      "description": "Voice Enhancement configurations of a user.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/VoiceEnhancementConfig"
+      }
     }
   },
   "required": [
     "InstanceArn",
-    "PhoneConfig",
     "RoutingProfileArn",
     "SecurityProfileArns",
     "Username"
@@ -323,6 +582,17 @@
   "writeOnlyProperties": [
     "/properties/Password"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "connect:TagResource",
+      "connect:UntagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSConnectUserProperties"
 }

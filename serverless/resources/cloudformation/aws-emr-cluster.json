@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EMR::Cluster",
-  "description": "Resource Type definition for AWS::EMR::Cluster. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::EMR::Cluster. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "Steps": {
@@ -8,6 +8,13 @@
       "uniqueItems": true,
       "items": {
         "$ref": "#/definitions/StepConfig"
+      }
+    },
+    "PlacementGroupConfigs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/PlacementGroupConfig"
       }
     },
     "StepConcurrencyLevel": {
@@ -136,6 +143,9 @@
         }
       ]
     },
+    "EbsRootVolumeIops": {
+      "type": "integer"
+    },
     "Instances": {
       "$ref": "#/definitions/JobFlowInstancesConfig"
     },
@@ -148,6 +158,9 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
+    },
+    "EbsRootVolumeThroughput": {
+      "type": "integer"
     },
     "JobFlowRole": {
       "oneOf": [
@@ -257,6 +270,29 @@
       },
       "title": "AWSEMRClusterConfigurationDefinition"
     },
+    "OnDemandResizingSpecification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CapacityReservationOptions": {
+          "$ref": "#/definitions/OnDemandCapacityReservationOptions"
+        },
+        "AllocationStrategy": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TimeoutDurationMinutes": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSEMRClusterOnDemandResizingSpecificationDefinition"
+    },
     "StepConfig": {
       "type": "object",
       "additionalProperties": false,
@@ -301,15 +337,18 @@
         "TargetSpotCapacity": {
           "type": "integer"
         },
+        "LaunchSpecifications": {
+          "$ref": "#/definitions/InstanceFleetProvisioningSpecifications"
+        },
+        "ResizeSpecifications": {
+          "$ref": "#/definitions/InstanceFleetResizingSpecifications"
+        },
         "InstanceTypeConfigs": {
           "type": "array",
           "uniqueItems": true,
           "items": {
             "$ref": "#/definitions/InstanceTypeConfig"
           }
-        },
-        "LaunchSpecifications": {
-          "$ref": "#/definitions/InstanceFleetProvisioningSpecifications"
         },
         "Name": {
           "oneOf": [
@@ -343,6 +382,9 @@
         },
         "EbsConfiguration": {
           "$ref": "#/definitions/EbsConfiguration"
+        },
+        "Priority": {
+          "type": "number"
         },
         "BidPriceAsPercentageOfOnDemandPrice": {
           "type": "number"
@@ -451,6 +493,19 @@
       ],
       "title": "AWSEMRClusterScriptBootstrapActionConfigDefinition"
     },
+    "InstanceFleetResizingSpecifications": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "OnDemandResizeSpecification": {
+          "$ref": "#/definitions/OnDemandResizingSpecification"
+        },
+        "SpotResizeSpecification": {
+          "$ref": "#/definitions/SpotResizingSpecification"
+        }
+      },
+      "title": "AWSEMRClusterInstanceFleetResizingSpecificationsDefinition"
+    },
     "InstanceFleetProvisioningSpecifications": {
       "type": "object",
       "additionalProperties": false,
@@ -490,10 +545,43 @@
       ],
       "title": "AWSEMRClusterSimpleScalingPolicyConfigurationDefinition"
     },
+    "PlacementGroupConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InstanceRole": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PlacementStrategy": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "InstanceRole"
+      ],
+      "title": "AWSEMRClusterPlacementGroupConfigDefinition"
+    },
     "OnDemandProvisioningSpecification": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "CapacityReservationOptions": {
+          "$ref": "#/definitions/OnDemandCapacityReservationOptions"
+        },
         "AllocationStrategy": {
           "oneOf": [
             {
@@ -527,6 +615,19 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "UtilizationPerformanceIndex": {
+          "type": "integer"
+        },
+        "ScalingStrategy": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "ComputeLimits": {
           "$ref": "#/definitions/ComputeLimits"
         }
@@ -666,6 +767,9 @@
       "additionalProperties": false,
       "properties": {
         "SizeInGB": {
+          "type": "integer"
+        },
+        "Throughput": {
           "type": "integer"
         },
         "VolumeType": {
@@ -890,6 +994,9 @@
           ]
         },
         "TerminationProtected": {
+          "type": "boolean"
+        },
+        "UnhealthyNodeReplacement": {
           "type": "boolean"
         },
         "KeepJobFlowAliveWhenNoSteps": {
@@ -1148,6 +1255,26 @@
       ],
       "title": "AWSEMRClusterBootstrapActionConfigDefinition"
     },
+    "SpotResizingSpecification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AllocationStrategy": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TimeoutDurationMinutes": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSEMRClusterSpotResizingSpecificationDefinition"
+    },
     "AutoScalingPolicy": {
       "type": "object",
       "additionalProperties": false,
@@ -1168,6 +1295,43 @@
         "Rules"
       ],
       "title": "AWSEMRClusterAutoScalingPolicyDefinition"
+    },
+    "OnDemandCapacityReservationOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "UsageStrategy": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CapacityReservationResourceGroupArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CapacityReservationPreference": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEMRClusterOnDemandCapacityReservationOptionsDefinition"
     },
     "PlacementType": {
       "type": "object",
@@ -1308,14 +1472,17 @@
     "/properties/Configurations",
     "/properties/ReleaseLabel",
     "/properties/BootstrapActions",
+    "/properties/EbsRootVolumeIops",
     "/properties/KerberosAttributes",
     "/properties/ServiceRole",
     "/properties/LogEncryptionKmsKeyId",
     "/properties/Name",
+    "/properties/EbsRootVolumeThroughput",
     "/properties/JobFlowRole",
     "/properties/AdditionalInfo",
     "/properties/LogUri",
     "/properties/CustomAmiId",
+    "/properties/PlacementGroupConfigs",
     "/properties/OSReleaseLabel",
     "/properties/AutoScalingRole",
     "/properties/Applications"

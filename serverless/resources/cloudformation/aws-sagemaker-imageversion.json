@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::SageMaker::ImageVersion",
-  "description": "Resource Type definition for AWS::SageMaker::ImageVersion. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::SageMaker::ImageVersion. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-sagemaker",
   "additionalProperties": false,
   "properties": {
     "ImageName": {
@@ -8,6 +8,33 @@
     },
     "BaseImage": {
       "$ref": "#/definitions/BaseImage"
+    },
+    "Alias": {
+      "$ref": "#/definitions/Alias"
+    },
+    "Aliases": {
+      "$ref": "#/definitions/Aliases"
+    },
+    "VendorGuidance": {
+      "$ref": "#/definitions/VendorGuidance"
+    },
+    "JobType": {
+      "$ref": "#/definitions/JobType"
+    },
+    "MLFramework": {
+      "$ref": "#/definitions/MLFramework"
+    },
+    "ProgrammingLang": {
+      "$ref": "#/definitions/ProgrammingLang"
+    },
+    "Processor": {
+      "$ref": "#/definitions/Processor"
+    },
+    "Horovod": {
+      "$ref": "#/definitions/Horovod"
+    },
+    "ReleaseNotes": {
+      "$ref": "#/definitions/ReleaseNotes"
     }
   },
   "definitions": {
@@ -32,7 +59,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 256,
-          "pattern": "^arn:aws(-[\\w]+)*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:image\\/[a-z0-9]([-.]?[a-z0-9])*$"
+          "pattern": "^arn:aws(-[\\w]+)*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:image\\/[a-zA-Z0-9]([-.]?[a-zA-Z0-9])*$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -47,7 +74,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 256,
-          "pattern": "^arn:aws(-[\\w]+)*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:image-version\\/[a-z0-9]([-.]?[a-z0-9])*\\/[0-9]+$"
+          "pattern": "^arn:aws(-[\\w]+)*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:image-version\\/[a-zA-Z0-9]([-.]?[a-zA-Z0-9])*\\/[0-9]+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -86,11 +113,135 @@
       "description": "The registry path of the container image that contains this image version.",
       "title": "AWSSageMakerImageVersionContainerImageDefinition"
     },
+    "Alias": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "(?!^[.-])^([a-zA-Z0-9-_.]+)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The alias of the image version.",
+      "title": "AWSSageMakerImageVersionAliasDefinition"
+    },
+    "Aliases": {
+      "type": "array",
+      "description": "List of aliases for the image version.",
+      "items": {
+        "$ref": "#/definitions/Alias"
+      },
+      "title": "AWSSageMakerImageVersionAliasesDefinition"
+    },
     "Version": {
       "type": "integer",
       "description": "The version number of the image version.",
       "minimum": 1,
       "title": "AWSSageMakerImageVersionVersionDefinition"
+    },
+    "VendorGuidance": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NOT_PROVIDED",
+            "STABLE",
+            "TO_BE_ARCHIVED",
+            "ARCHIVED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The availability of the image version specified by the maintainer.",
+      "title": "AWSSageMakerImageVersionVendorGuidanceDefinition"
+    },
+    "JobType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "TRAINING",
+            "INFERENCE",
+            "NOTEBOOK_KERNEL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Indicates SageMaker job type compatibility.",
+      "title": "AWSSageMakerImageVersionJobTypeDefinition"
+    },
+    "MLFramework": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The machine learning framework vended in the image version.",
+      "title": "AWSSageMakerImageVersionMLFrameworkDefinition"
+    },
+    "ProgrammingLang": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The supported programming language and its version.",
+      "title": "AWSSageMakerImageVersionProgrammingLangDefinition"
+    },
+    "Processor": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CPU",
+            "GPU"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Indicates CPU or GPU compatibility.",
+      "title": "AWSSageMakerImageVersionProcessorDefinition"
+    },
+    "Horovod": {
+      "type": "boolean",
+      "description": "Indicates Horovod compatibility.",
+      "title": "AWSSageMakerImageVersionHorovodDefinition"
+    },
+    "ReleaseNotes": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": ".*",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The maintainer description of the image version.",
+      "title": "AWSSageMakerImageVersionReleaseNotesDefinition"
     }
   },
   "required": [
@@ -110,6 +261,17 @@
     "/properties/ImageName",
     "/properties/BaseImage"
   ],
+  "writeOnlyProperties": [
+    "/properties/Aliases",
+    "/properties/Alias"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-sagemaker",
   "type": "object",
   "title": "AWSSageMakerImageVersionProperties"
 }

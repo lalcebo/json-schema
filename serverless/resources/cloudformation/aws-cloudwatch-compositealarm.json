@@ -1,7 +1,19 @@
 {
   "typeName": "AWS::CloudWatch::CompositeAlarm",
-  "description": "The AWS::CloudWatch::CompositeAlarm type specifies an alarm which aggregates the states of other Alarms (Metric or Composite Alarms) as defined by the AlarmRule expression. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
+  "description": "The AWS::CloudWatch::CompositeAlarm type specifies an alarm which aggregates the states of other Alarms (Metric or Composite Alarms) as defined by the AlarmRule expression. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cloudwatch:TagResource",
+      "cloudwatch:UntagResource",
+      "cloudwatch:ListTagsForResource"
+    ]
+  },
   "properties": {
     "AlarmName": {
       "oneOf": [
@@ -122,6 +134,69 @@
       "description": "Actions will be suppressed if WaitPeriod is active. The length of time that actions are suppressed is in seconds.",
       "type": "integer",
       "minimum": 0
+    },
+    "Tags": {
+      "description": "A list of key-value pairs to associate with the composite alarm. You can associate as many as 50 tags with an alarm.",
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "AlarmActionARN": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Amazon Resource Name (ARN) of the action",
+      "title": "AWSCloudWatchCompositeAlarmAlarmActionARNDefinition"
+    },
+    "Tag": {
+      "description": "Metadata that you can assign to a composite alarm, Tags can help you organize and categorize your resources.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A unique identifier for the tag. The combination of tag keys and values can help you organize and categorize your resources."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the specified tag key."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSCloudWatchCompositeAlarmTagDefinition"
     }
   },
   "required": [
@@ -137,9 +212,6 @@
     "/properties/AlarmName"
   ],
   "additionalProperties": false,
-  "tagging": {
-    "taggable": false
-  },
   "type": "object",
   "title": "AWSCloudWatchCompositeAlarmProperties"
 }

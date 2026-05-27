@@ -1,65 +1,286 @@
 {
   "typeName": "AWS::CodePipeline::Pipeline",
-  "description": "Resource Type definition for AWS::CodePipeline::Pipeline. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "ArtifactStores": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/ArtifactStoreMap"
-      }
-    },
-    "ArtifactStore": {
-      "$ref": "#/definitions/ArtifactStore"
-    },
-    "DisableInboundStageTransitions": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/StageTransition"
-      }
-    },
-    "Stages": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/StageDeclaration"
-      }
-    },
-    "RestartExecutionOnUpdate": {
-      "type": "boolean"
-    },
-    "RoleArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    },
-    "Name": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    }
-  },
+  "description": "The AWS::CodePipeline::Pipeline resource creates a CodePipeline pipeline that describes how software changes go through a release process.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-codepipeline",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-codepipeline",
   "definitions": {
+    "BlockerDeclaration": {
+      "description": "Reserved for future use.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Reserved for future use."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Schedule"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Reserved for future use."
+        }
+      },
+      "required": [
+        "Type",
+        "Name"
+      ],
+      "title": "AWSCodePipelinePipelineBlockerDeclarationDefinition"
+    },
+    "GitConfiguration": {
+      "description": "A type of trigger configuration for Git-based source actions.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Push": {
+          "description": "The field where the repository event that will start the pipeline, such as pushing Git tags, is specified with details.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/GitPushFilter"
+          }
+        },
+        "SourceActionName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the pipeline source action where the trigger configuration, such as Git tags, is specified. The trigger configuration will start the pipeline upon the specified change only."
+        },
+        "PullRequest": {
+          "description": "The field where the repository event that will start the pipeline is specified as pull requests.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/GitPullRequestFilter"
+          }
+        }
+      },
+      "required": [
+        "SourceActionName"
+      ],
+      "title": "AWSCodePipelinePipelineGitConfigurationDefinition"
+    },
+    "ActionTypeId": {
+      "description": "Represents information about an action type.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Owner": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The creator of the action being called. There are three valid values for the Owner field in the action category section within your pipeline structure: AWS, ThirdParty, and Custom."
+        },
+        "Category": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Source",
+                "Build",
+                "Test",
+                "Deploy",
+                "Invoke",
+                "Approval",
+                "Compute"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A category defines what kind of action can be taken in the stage, and constrains the provider type for the action. Valid categories are limited to one of the values below."
+        },
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string that describes the action version."
+        },
+        "Provider": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The provider of the service being called by the action. Valid providers are determined by the action category. For example, an action in the Deploy category type might have a provider of CodeDeploy, which would be specified as CodeDeploy."
+        }
+      },
+      "required": [
+        "Owner",
+        "Category",
+        "Version",
+        "Provider"
+      ],
+      "title": "AWSCodePipelinePipelineActionTypeIdDefinition"
+    },
+    "ArtifactStoreMap": {
+      "description": "A mapping of artifactStore objects and their corresponding AWS Regions. There must be an artifact store for the pipeline Region and for each cross-region action in the pipeline.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ArtifactStore": {
+          "$ref": "#/definitions/ArtifactStore"
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The action declaration's AWS Region, such as us-east-1."
+        }
+      },
+      "required": [
+        "ArtifactStore",
+        "Region"
+      ],
+      "title": "AWSCodePipelinePipelineArtifactStoreMapDefinition"
+    },
+    "PipelineTriggerDeclaration": {
+      "description": "Represents information about the specified trigger configuration, such as the filter criteria and the source stage for the action that contains the trigger.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "GitConfiguration": {
+          "$ref": "#/definitions/GitConfiguration"
+        },
+        "ProviderType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CodeStarSourceConnection"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The source provider for the event, such as connections configured for a repository with Git tags, for the specified trigger configuration."
+        }
+      },
+      "required": [
+        "ProviderType"
+      ],
+      "title": "AWSCodePipelinePipelinePipelineTriggerDeclarationDefinition"
+    },
+    "EncryptionKey": {
+      "description": "Represents information about the key used to encrypt data in the artifact store, such as an AWS Key Management Service (AWS KMS) key",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of encryption key, such as an AWS KMS key. When creating or updating a pipeline, the value must be set to 'KMS'."
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID used to identify the key. For an AWS KMS key, you can use the key ID, the key ARN, or the alias ARN."
+        }
+      },
+      "required": [
+        "Type",
+        "Id"
+      ],
+      "title": "AWSCodePipelinePipelineEncryptionKeyDefinition"
+    },
+    "GitPullRequestFilter": {
+      "description": "The event criteria for the pull request trigger configuration, such as the lists of branches or file paths to include and exclude.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FilePaths": {
+          "$ref": "#/definitions/GitFilePathFilterCriteria"
+        },
+        "Events": {
+          "description": "The field that specifies which pull request events to filter on (opened, updated, closed) for the trigger configuration.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Branches": {
+          "$ref": "#/definitions/GitBranchFilterCriteria"
+        }
+      },
+      "title": "AWSCodePipelinePipelineGitPullRequestFilterDefinition"
+    },
+    "GitPushFilter": {
+      "description": "The event criteria that specify when a specified repository event will start the pipeline for the specified trigger configuration, such as the lists of Git tags to include and exclude.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FilePaths": {
+          "$ref": "#/definitions/GitFilePathFilterCriteria"
+        },
+        "Branches": {
+          "$ref": "#/definitions/GitBranchFilterCriteria"
+        },
+        "Tags": {
+          "$ref": "#/definitions/GitTagFilterCriteria"
+        }
+      },
+      "title": "AWSCodePipelinePipelineGitPushFilterDefinition"
+    },
     "ActionDeclaration": {
+      "description": "Represents information about an action declaration.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -67,6 +288,7 @@
           "$ref": "#/definitions/ActionTypeId"
         },
         "Configuration": {
+          "description": "The action's configuration. These are key-value pairs that specify input values for an action.",
           "type": "object"
         },
         "InputArtifacts": {
@@ -83,6 +305,44 @@
             "$ref": "#/definitions/OutputArtifact"
           }
         },
+        "Commands": {
+          "description": "The shell commands to run with your compute action in CodePipeline.",
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "OutputVariables": {
+          "description": "The list of variables that are to be exported from the compute action.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "EnvironmentVariables": {
+          "description": "The list of environment variables that are input to a compute based action.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/EnvironmentVariable"
+          }
+        },
         "Region": {
           "oneOf": [
             {
@@ -91,7 +351,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The action declaration's AWS Region, such as us-east-1."
         },
         "Namespace": {
           "oneOf": [
@@ -101,19 +362,23 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The variable namespace associated with the action. All variables produced as output by this action fall under this namespace."
         },
         "RoleArn": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "arn:aws(-[\\w]+)*:iam::[0-9]{12}:role/.*"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The ARN of the IAM service role that performs the declared action. This is assumed through the roleArn for the pipeline."
         },
         "RunOrder": {
+          "description": "The order in which actions are run.",
           "type": "integer"
         },
         "Name": {
@@ -124,7 +389,12 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The action declaration's name."
+        },
+        "TimeoutInMinutes": {
+          "description": "A timeout duration in minutes that can be applied against the ActionType’s default timeout value specified in Quotas for AWS CodePipeline. This attribute is available only to the manual approval ActionType.",
+          "type": "integer"
         }
       },
       "required": [
@@ -133,91 +403,46 @@
       ],
       "title": "AWSCodePipelinePipelineActionDeclarationDefinition"
     },
-    "BlockerDeclaration": {
+    "GitFilePathFilterCriteria": {
+      "description": "The Git repository file paths specified as filter criteria to start the pipeline.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Type": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "Includes": {
+          "description": "The list of patterns of Git repository file paths that, when a commit is pushed, are to be included as criteria that starts the pipeline.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         },
-        "Name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "Excludes": {
+          "description": "The list of patterns of Git repository file paths that, when a commit is pushed, are to be excluded from starting the pipeline.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         }
       },
-      "required": [
-        "Type",
-        "Name"
-      ],
-      "title": "AWSCodePipelinePipelineBlockerDeclarationDefinition"
-    },
-    "ActionTypeId": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Owner": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Category": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Version": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Provider": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Owner",
-        "Category",
-        "Version",
-        "Provider"
-      ],
-      "title": "AWSCodePipelinePipelineActionTypeIdDefinition"
+      "title": "AWSCodePipelinePipelineGitFilePathFilterCriteriaDefinition"
     },
     "StageDeclaration": {
+      "description": "Represents information about a stage and its definition.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -243,7 +468,23 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the stage."
+        },
+        "OnFailure": {
+          "type": "object",
+          "description": "The method to use when a stage has not completed successfully",
+          "$ref": "#/definitions/FailureConditions"
+        },
+        "OnSuccess": {
+          "type": "object",
+          "description": "The method to use when a stage has completed successfully",
+          "$ref": "#/definitions/SuccessConditions"
+        },
+        "BeforeEntry": {
+          "type": "object",
+          "description": "The method to use before stage runs.",
+          "$ref": "#/definitions/BeforeEntryConditions"
         }
       },
       "required": [
@@ -253,6 +494,7 @@
       "title": "AWSCodePipelinePipelineStageDeclarationDefinition"
     },
     "InputArtifact": {
+      "description": "Represents information about an artifact to be worked on, such as a test or build artifact.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -264,7 +506,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the artifact to be worked on (for example, \"My App\")."
         }
       },
       "required": [
@@ -273,18 +516,23 @@
       "title": "AWSCodePipelinePipelineInputArtifactDefinition"
     },
     "ArtifactStore": {
+      "description": "The S3 bucket where artifacts for the pipeline are stored.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "Type": {
           "oneOf": [
             {
+              "enum": [
+                "S3"
+              ],
               "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The type of the artifact store, such as S3."
         },
         "EncryptionKey": {
           "$ref": "#/definitions/EncryptionKey"
@@ -297,7 +545,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The S3 bucket used for storing the artifacts for a pipeline. You can specify the name of an S3 bucket but not a folder in the bucket. A folder to contain the pipeline artifacts is created for you based on the name of the pipeline. You can use any S3 bucket in the same AWS Region as the pipeline to store your pipeline artifacts."
         }
       },
       "required": [
@@ -306,14 +555,12 @@
       ],
       "title": "AWSCodePipelinePipelineArtifactStoreDefinition"
     },
-    "ArtifactStoreMap": {
+    "VariableDeclaration": {
+      "description": "A variable declared at the pipeline level.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "ArtifactStore": {
-          "$ref": "#/definitions/ArtifactStore"
-        },
-        "Region": {
+        "DefaultValue": {
           "oneOf": [
             {
               "type": "string"
@@ -321,16 +568,39 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The value of a pipeline-level variable."
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The description of a pipeline-level variable. It's used to add additional context about the variable, and not being used at time when pipeline executes."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of a pipeline-level variable."
         }
       },
       "required": [
-        "ArtifactStore",
-        "Region"
+        "Name"
       ],
-      "title": "AWSCodePipelinePipelineArtifactStoreMapDefinition"
+      "title": "AWSCodePipelinePipelineVariableDeclarationDefinition"
     },
     "StageTransition": {
+      "description": "The name of the pipeline in which you want to disable the flow of artifacts from one stage to another.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -342,7 +612,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the stage where you want to disable the inbound or outbound transition of artifacts."
         },
         "Reason": {
           "oneOf": [
@@ -352,7 +623,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The reason given to the user that a stage is disabled, such as waiting for manual approval or manual tests. This message is displayed in the pipeline console UI."
         }
       },
       "required": [
@@ -361,38 +633,46 @@
       ],
       "title": "AWSCodePipelinePipelineStageTransitionDefinition"
     },
-    "EncryptionKey": {
+    "GitTagFilterCriteria": {
+      "description": "The Git tags specified as filter criteria for whether a Git tag repository event will start the pipeline.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Type": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "Includes": {
+          "description": "The list of patterns of Git tags that, when pushed, are to be included as criteria that starts the pipeline.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         },
-        "Id": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "Excludes": {
+          "description": "The list of patterns of Git tags that, when pushed, are to be excluded from starting the pipeline.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         }
       },
-      "required": [
-        "Type",
-        "Id"
-      ],
-      "title": "AWSCodePipelinePipelineEncryptionKeyDefinition"
+      "title": "AWSCodePipelinePipelineGitTagFilterCriteriaDefinition"
     },
     "Tag": {
+      "description": "A tag is a key-value pair that is used to manage the resource.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -404,7 +684,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The tag's value."
         },
         "Key": {
           "oneOf": [
@@ -414,7 +695,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The tag's key."
         }
       },
       "required": [
@@ -423,7 +705,46 @@
       ],
       "title": "AWSCodePipelinePipelineTagDefinition"
     },
+    "GitBranchFilterCriteria": {
+      "description": "The Git repository branches specified as filter criteria to start the pipeline.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Includes": {
+          "description": "The list of patterns of Git branches that, when a commit is pushed, are to be included as criteria that starts the pipeline.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Excludes": {
+          "description": "The list of patterns of Git branches that, when a commit is pushed, are to be excluded from starting the pipeline.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSCodePipelinePipelineGitBranchFilterCriteriaDefinition"
+    },
     "OutputArtifact": {
+      "description": "Represents information about the output of an action.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -435,28 +756,451 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the output of an artifact, such as \"My App\"."
+        },
+        "Files": {
+          "description": "The files that you want to associate with the output artifact that will be exported from the compute action.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         }
       },
       "required": [
         "Name"
       ],
       "title": "AWSCodePipelinePipelineOutputArtifactDefinition"
+    },
+    "EnvironmentVariable": {
+      "description": "Represents information about the environment variable of an action.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the environment variable."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value of the environment variable."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "enum": [
+                "PLAINTEXT",
+                "SECRETS_MANAGER"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of the environment variable."
+        }
+      },
+      "required": [
+        "Name",
+        "Value"
+      ],
+      "title": "AWSCodePipelinePipelineEnvironmentVariableDefinition"
+    },
+    "FailureConditions": {
+      "description": "The configuration that specifies the result, such as rollback, to occur upon stage failure",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Result": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ROLLBACK",
+                "RETRY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The specified result for when the failure conditions are met, such as rolling back the stage"
+        },
+        "RetryConfiguration": {
+          "description": "The configuration that specifies the retry configuration for a stage",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "RetryMode": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "ALL_ACTIONS",
+                    "FAILED_ACTIONS"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The specified retry mode type for the given stage. FAILED_ACTIONS will retry only the failed actions. ALL_ACTIONS will retry both failed and successful"
+            }
+          }
+        },
+        "Conditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/Condition"
+          }
+        }
+      },
+      "title": "AWSCodePipelinePipelineFailureConditionsDefinition"
+    },
+    "SuccessConditions": {
+      "description": "The configuration that specifies the result, such as rollback, to occur upon stage failure",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Conditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/Condition"
+          }
+        }
+      },
+      "title": "AWSCodePipelinePipelineSuccessConditionsDefinition"
+    },
+    "BeforeEntryConditions": {
+      "description": "The configuration that specifies the rules to run before stage starts.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Conditions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/Condition"
+          }
+        }
+      },
+      "title": "AWSCodePipelinePipelineBeforeEntryConditionsDefinition"
+    },
+    "Condition": {
+      "description": "Represents information about condition.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Result": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The specified result for when the failure conditions are met, such as rolling back the stage"
+        },
+        "Rules": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/RuleDeclaration"
+          }
+        }
+      },
+      "title": "AWSCodePipelinePipelineConditionDefinition"
+    },
+    "RuleDeclaration": {
+      "description": "Represents information about condition.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RuleTypeId": {
+          "$ref": "#/definitions/RuleTypeId"
+        },
+        "Configuration": {
+          "description": "The rule's configuration. These are key-value pairs that specify input values for a rule.",
+          "type": "object"
+        },
+        "Commands": {
+          "description": "The shell commands to run with your compute action in CodePipeline.",
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "InputArtifacts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/InputArtifact"
+          }
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The rule declaration's AWS Region, such as us-east-1."
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:aws(-[\\w]+)*:iam::[0-9]{12}:role/.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the IAM service role that performs the declared rule. This is assumed through the roleArn for the pipeline."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The rule declaration's name."
+        }
+      },
+      "title": "AWSCodePipelinePipelineRuleDeclarationDefinition"
+    },
+    "RuleTypeId": {
+      "description": "Represents information about a rule type.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Owner": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The creator of the rule being called. Only AWS is supported."
+        },
+        "Category": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A category for the provider type for the rule."
+        },
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string that describes the rule version."
+        },
+        "Provider": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The provider of the service being called by the rule."
+        }
+      },
+      "title": "AWSCodePipelinePipelineRuleTypeIdDefinition"
     }
+  },
+  "properties": {
+    "ArtifactStores": {
+      "description": "A mapping of artifactStore objects and their corresponding AWS Regions. There must be an artifact store for the pipeline Region and for each cross-region action in the pipeline.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/ArtifactStoreMap"
+      }
+    },
+    "DisableInboundStageTransitions": {
+      "description": "Represents the input of a DisableStageTransition action.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/StageTransition"
+      }
+    },
+    "Stages": {
+      "description": "Represents information about a stage and its definition.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/StageDeclaration"
+      }
+    },
+    "ExecutionMode": {
+      "oneOf": [
+        {
+          "enum": [
+            "QUEUED",
+            "SUPERSEDED",
+            "PARALLEL"
+          ],
+          "default": "SUPERSEDED",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The method that the pipeline will use to handle multiple executions. The default mode is SUPERSEDED."
+    },
+    "RestartExecutionOnUpdate": {
+      "description": "Indicates whether to rerun the CodePipeline pipeline after you update it.",
+      "type": "boolean"
+    },
+    "Triggers": {
+      "description": "The trigger configuration specifying a type of event, such as Git tags, that starts the pipeline.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/PipelineTriggerDeclaration"
+      }
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[\\w]+)*:iam::[0-9]{12}:role/.*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for CodePipeline to use to either perform actions with no actionRoleArn, or to use to assume roles for actions with an actionRoleArn"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the pipeline."
+    },
+    "Variables": {
+      "description": "A list that defines the pipeline variables for a pipeline resource. Variable names can have alphanumeric and underscore characters, and the values must match [A-Za-z0-9@\\-_]+.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/VariableDeclaration"
+      }
+    },
+    "ArtifactStore": {
+      "description": "The S3 bucket where artifacts for the pipeline are stored.",
+      "$ref": "#/definitions/ArtifactStore"
+    },
+    "PipelineType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "V1",
+            "V2"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "CodePipeline provides the following pipeline types, which differ in characteristics and price, so that you can tailor your pipeline features and cost to the needs of your applications."
+    },
+    "Tags": {
+      "description": "Specifies the tags applied to the pipeline.",
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "codepipeline:TagResource",
+      "codepipeline:UntagResource"
+    ]
   },
   "required": [
     "Stages",
     "RoleArn"
   ],
+  "readOnlyProperties": [
+    "/properties/Version"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
   "createOnlyProperties": [
     "/properties/Name"
   ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id",
-    "/properties/Version"
+  "writeOnlyProperties": [
+    "/properties/RestartExecutionOnUpdate"
   ],
   "type": "object",
   "title": "AWSCodePipelinePipelineProperties"

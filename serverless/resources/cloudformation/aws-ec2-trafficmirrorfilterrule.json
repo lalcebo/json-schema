@@ -1,9 +1,86 @@
 {
   "typeName": "AWS::EC2::TrafficMirrorFilterRule",
-  "description": "Resource Type definition for AWS::EC2::TrafficMirrorFilterRule. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
+  "description": "Resource Type definition for for AWS::EC2::TrafficMirrorFilterRule. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSEC2TrafficMirrorFilterRuleTagDefinition"
+    },
+    "TrafficMirrorPortRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FromPort": {
+          "description": "The first port in the Traffic Mirror port range.",
+          "type": "integer"
+        },
+        "ToPort": {
+          "description": "The last port in the Traffic Mirror port range.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "FromPort",
+        "ToPort"
+      ],
+      "title": "AWSEC2TrafficMirrorFilterRuleTrafficMirrorPortRangeDefinition"
+    },
+    "TrafficMirrorRuleAction": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The action to take on the filtered traffic.",
+      "title": "AWSEC2TrafficMirrorFilterRuleTrafficMirrorRuleActionDefinition"
+    },
+    "TrafficDirection": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of traffic.",
+      "title": "AWSEC2TrafficMirrorFilterRuleTrafficDirectionDefinition"
+    }
+  },
   "properties": {
     "DestinationPortRange": {
+      "description": "The destination port range.",
       "$ref": "#/definitions/TrafficMirrorPortRange"
     },
     "Description": {
@@ -14,20 +91,16 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The description of the Traffic Mirror Filter rule."
     },
     "SourcePortRange": {
+      "description": "The source port range.",
       "$ref": "#/definitions/TrafficMirrorPortRange"
     },
     "RuleAction": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
+      "description": "The action to take on the filtered traffic (accept/reject).",
+      "$ref": "#/definitions/TrafficMirrorRuleAction"
     },
     "SourceCidrBlock": {
       "oneOf": [
@@ -37,9 +110,11 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The source CIDR block to assign to the Traffic Mirror Filter rule."
     },
     "RuleNumber": {
+      "description": "The number of the Traffic Mirror rule.",
       "type": "integer"
     },
     "DestinationCidrBlock": {
@@ -50,7 +125,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The destination CIDR block to assign to the Traffic Mirror rule."
     },
     "TrafficMirrorFilterId": {
       "oneOf": [
@@ -60,41 +136,39 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The ID of the filter that this rule is associated with."
     },
     "TrafficDirection": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
+      "description": "The direction of traffic (ingress/egress).",
+      "$ref": "#/definitions/TrafficDirection"
     },
     "Protocol": {
+      "description": "The number of protocol, for example 17 (UDP), to assign to the Traffic Mirror rule.",
       "type": "integer"
+    },
+    "Tags": {
+      "description": "Any tags assigned to the Traffic Mirror Filter rule.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
-  "definitions": {
-    "TrafficMirrorPortRange": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "FromPort": {
-          "type": "integer"
-        },
-        "ToPort": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "ToPort",
-        "FromPort"
-      ],
-      "title": "AWSEC2TrafficMirrorFilterRuleTrafficMirrorPortRangeDefinition"
-    }
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
   },
+  "additionalProperties": false,
   "required": [
     "RuleAction",
     "SourceCidrBlock",
@@ -106,11 +180,11 @@
   "createOnlyProperties": [
     "/properties/TrafficMirrorFilterId"
   ],
-  "readOnlyProperties": [
-    "/properties/Id"
-  ],
   "primaryIdentifier": [
-    "/properties/Id"
+    "/properties/TrafficMirrorFilterRuleId"
+  ],
+  "readOnlyProperties": [
+    "/properties/TrafficMirrorFilterRuleId"
   ],
   "type": "object",
   "title": "AWSEC2TrafficMirrorFilterRuleProperties"

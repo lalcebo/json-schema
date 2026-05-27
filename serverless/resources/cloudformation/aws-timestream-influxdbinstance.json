@@ -1,0 +1,386 @@
+{
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-timestream.git",
+  "tagging": {
+    "permissions": [
+      "timestream-influxdb:TagResource",
+      "timestream-influxdb:ListTagsForResource",
+      "timestream-influxdb:UntagResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "typeName": "AWS::Timestream::InfluxDBInstance",
+  "readOnlyProperties": [
+    "/properties/Status",
+    "/properties/Arn",
+    "/properties/Id",
+    "/properties/AvailabilityZone",
+    "/properties/Endpoint",
+    "/properties/SecondaryAvailabilityZone",
+    "/properties/InfluxAuthParametersSecretArn",
+    "/properties/NextMaintenanceTime"
+  ],
+  "description": "The AWS::Timestream::InfluxDBInstance resource creates an InfluxDB instance.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-timestream.git",
+  "writeOnlyProperties": [
+    "/properties/Username",
+    "/properties/Password",
+    "/properties/Organization",
+    "/properties/Bucket"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Username",
+    "/properties/Password",
+    "/properties/Organization",
+    "/properties/Bucket",
+    "/properties/VpcSubnetIds",
+    "/properties/VpcSecurityGroupIds",
+    "/properties/PubliclyAccessible",
+    "/properties/NetworkType"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "title": "AWSTimestreamInfluxDBInstanceTagDefinition"
+    },
+    "MaintenanceSchedule": {
+      "description": "The maintenance schedule for the InfluxDB instance.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Timezone": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "pattern": "^(UTC|[A-Za-z_]+/[A-Za-z0-9_]+(/[A-Za-z0-9_]+)?)$",
+              "type": "string",
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IANA timezone identifier for the maintenance schedule."
+        },
+        "PreferredMaintenanceWindow": {
+          "oneOf": [
+            {
+              "minLength": 0,
+              "pattern": "^$|^(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):[0-5]\\d-(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):[0-5]\\d$",
+              "type": "string",
+              "maxLength": 19
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The preferred maintenance window in format ddd:HH:MM-ddd:HH:MM."
+        }
+      },
+      "required": [
+        "Timezone",
+        "PreferredMaintenanceWindow"
+      ],
+      "title": "AWSTimestreamInfluxDBInstanceMaintenanceScheduleDefinition"
+    }
+  },
+  "properties": {
+    "Organization": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The organization for the InfluxDB instance."
+    },
+    "Port": {
+      "maximum": 65535,
+      "description": "The port number on which InfluxDB accepts connections.",
+      "type": "integer",
+      "minimum": 1024
+    },
+    "DbInstanceType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "db.influx.medium",
+            "db.influx.large",
+            "db.influx.xlarge",
+            "db.influx.2xlarge",
+            "db.influx.4xlarge",
+            "db.influx.8xlarge",
+            "db.influx.12xlarge",
+            "db.influx.16xlarge",
+            "db.influx.24xlarge"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The compute instance of the InfluxDB instance."
+    },
+    "VpcSubnetIds": {
+      "minItems": 1,
+      "maxItems": 3,
+      "description": "A list of EC2 subnet IDs for this InfluxDB instance.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "DeploymentType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SINGLE_AZ",
+            "WITH_MULTIAZ_STANDBY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Deployment type of the InfluxDB Instance."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "minLength": 3,
+          "pattern": "^[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*$",
+          "type": "string",
+          "maxLength": 40
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The unique name that is associated with the InfluxDB instance."
+    },
+    "VpcSecurityGroupIds": {
+      "minItems": 1,
+      "maxItems": 5,
+      "description": "A list of Amazon EC2 VPC security groups to associate with this InfluxDB instance.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "NetworkType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "DUAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Network type of the InfluxDB Instance."
+    },
+    "Tags": {
+      "minItems": 1,
+      "maxItems": 200,
+      "uniqueItems": true,
+      "description": "An arbitrary set of tags (key-value pairs) for this DB instance.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Password": {
+      "oneOf": [
+        {
+          "minLength": 8,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The password for the InfluxDB instance."
+    },
+    "DbParameterGroupIdentifier": {
+      "oneOf": [
+        {
+          "minLength": 3,
+          "pattern": "^[a-zA-Z0-9]+$",
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of an existing InfluxDB parameter group."
+    },
+    "AllocatedStorage": {
+      "maximum": 16384,
+      "description": "The allocated storage for the InfluxDB instance.",
+      "type": "integer",
+      "minimum": 20
+    },
+    "DbStorageType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "InfluxIOIncludedT1",
+            "InfluxIOIncludedT2",
+            "InfluxIOIncludedT3"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The storage type of the InfluxDB instance."
+    },
+    "LogDeliveryConfiguration": {
+      "description": "Configuration for sending logs to customer account from the InfluxDB instance.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "S3Configuration": {
+          "description": "S3 configuration for sending logs to customer account from the InfluxDB instance.",
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "BucketName": {
+              "oneOf": [
+                {
+                  "minLength": 3,
+                  "pattern": "^[0-9a-z]+[0-9a-z\\.\\-]*[0-9a-z]+$",
+                  "type": "string",
+                  "maxLength": 63
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The bucket name for logs to be sent from the InfluxDB instance"
+            },
+            "Enabled": {
+              "description": "Specifies whether logging to customer specified bucket is enabled.",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "Enabled",
+            "BucketName"
+          ]
+        }
+      },
+      "required": [
+        "S3Configuration"
+      ]
+    },
+    "Username": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The username for the InfluxDB instance."
+    },
+    "Bucket": {
+      "oneOf": [
+        {
+          "minLength": 2,
+          "pattern": "^[^_][^\"]*$",
+          "type": "string",
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The bucket for the InfluxDB instance."
+    },
+    "PubliclyAccessible": {
+      "default": false,
+      "description": "Attach a public IP to the customer ENI.",
+      "type": "boolean"
+    },
+    "MaintenanceSchedule": {
+      "description": "The maintenance schedule for the InfluxDB instance.",
+      "$ref": "#/definitions/MaintenanceSchedule"
+    }
+  },
+  "type": "object",
+  "title": "AWSTimestreamInfluxDBInstanceProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::ConnectCampaigns::Campaign",
-  "description": "Definition of AWS::ConnectCampaigns::Campaign Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::ConnectCampaigns::Campaign Resource Type. Source:- No source definition found, add manually please",
   "definitions": {
     "DialerConfig": {
       "type": "object",
@@ -11,6 +11,9 @@
         },
         "PredictiveDialerConfig": {
           "$ref": "#/definitions/PredictiveDialerConfig"
+        },
+        "AgentlessDialerConfig": {
+          "$ref": "#/definitions/AgentlessDialerConfig"
         }
       },
       "additionalProperties": false,
@@ -23,6 +26,11 @@
         {
           "required": [
             "PredictiveDialerConfig"
+          ]
+        },
+        {
+          "required": [
+            "AgentlessDialerConfig"
           ]
         }
       ],
@@ -75,8 +83,7 @@
         }
       },
       "required": [
-        "ConnectContactFlowArn",
-        "ConnectQueueArn"
+        "ConnectContactFlowArn"
       ],
       "additionalProperties": false,
       "title": "AWSConnectCampaignsCampaignOutboundCallConfigDefinition"
@@ -90,6 +97,12 @@
           "maximum": 1,
           "minimum": 0,
           "description": "The bandwidth allocation of a queue resource."
+        },
+        "DialingCapacity": {
+          "type": "number",
+          "maximum": 1,
+          "minimum": 0.01,
+          "description": "Allocates dialing capacity for this campaign between multiple active campaigns."
         }
       },
       "required": [
@@ -107,6 +120,12 @@
           "maximum": 1,
           "minimum": 0,
           "description": "The bandwidth allocation of a queue resource."
+        },
+        "DialingCapacity": {
+          "type": "number",
+          "maximum": 1,
+          "minimum": 0.01,
+          "description": "Allocates dialing capacity for this campaign between multiple active campaigns."
         }
       },
       "required": [
@@ -115,6 +134,21 @@
       "additionalProperties": false,
       "title": "AWSConnectCampaignsCampaignProgressiveDialerConfigDefinition"
     },
+    "AgentlessDialerConfig": {
+      "type": "object",
+      "description": "Agentless Dialer config",
+      "properties": {
+        "DialingCapacity": {
+          "type": "number",
+          "maximum": 1,
+          "minimum": 0.01,
+          "description": "Allocates dialing capacity for this campaign between multiple active campaigns."
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "AWSConnectCampaignsCampaignAgentlessDialerConfigDefinition"
+    },
     "AnswerMachineDetectionConfig": {
       "type": "object",
       "description": "The configuration used for answering machine detection during outbound calls",
@@ -122,6 +156,10 @@
         "EnableAnswerMachineDetection": {
           "type": "boolean",
           "description": "Flag to decided whether outbound calls should have answering machine detection enabled or not"
+        },
+        "AwaitAnswerMachinePrompt": {
+          "type": "boolean",
+          "description": "Enables detection of prompts (e.g., beep after after a voicemail greeting)"
         }
       },
       "required": [
@@ -219,8 +257,12 @@
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "connect-campaigns:UntagResource",
+      "connect-campaigns:TagResource"
+    ]
   },
   "required": [
     "ConnectInstanceArn",

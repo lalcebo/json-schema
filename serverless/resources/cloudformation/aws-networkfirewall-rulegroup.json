@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::NetworkFirewall::RuleGroup",
-  "description": "Resource type definition for AWS::NetworkFirewall::RuleGroup. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkfirewall.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkfirewall.git",
+  "description": "Resource type definition for AWS::NetworkFirewall::RuleGroup. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkfirewall.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkfirewall.git",
   "additionalProperties": false,
   "definitions": {
@@ -262,13 +262,31 @@
       ],
       "title": "AWSNetworkFirewallRuleGroupTargetTypeDefinition"
     },
+    "SummaryRuleOption": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SID",
+            "MSG",
+            "METADATA"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSNetworkFirewallRuleGroupSummaryRuleOptionDefinition"
+    },
     "GeneratedRulesType": {
       "oneOf": [
         {
           "type": "string",
           "enum": [
             "ALLOWLIST",
-            "DENYLIST"
+            "DENYLIST",
+            "ALERTLIST",
+            "REJECTLIST"
           ]
         },
         {
@@ -833,6 +851,20 @@
     "Capacity": {
       "type": "integer"
     },
+    "SummaryConfiguration": {
+      "type": "object",
+      "properties": {
+        "RuleOptions": {
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/SummaryRuleOption"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "Description": {
       "oneOf": [
         {
@@ -854,6 +886,18 @@
         "$ref": "#/definitions/Tag"
       }
     }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "network-firewall:TagResource",
+      "network-firewall:UntagResource",
+      "network-firewall:ListTagsForResource"
+    ]
   },
   "required": [
     "Type",

@@ -1,0 +1,379 @@
+{
+  "typeName": "Datadog::Integrations::AWSAccount",
+  "description": "Datadog AWS Account Integration 1.0.0. Source:- No source definition found, add manually please",
+  "typeConfiguration": {
+    "properties": {
+      "DatadogCredentials": {
+        "$ref": "#/definitions/DatadogCredentials"
+      }
+    },
+    "additionalProperties": false
+  },
+  "definitions": {
+    "DatadogCredentials": {
+      "description": "Credentials for the Datadog API",
+      "properties": {
+        "ApiKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Datadog API key"
+        },
+        "ApplicationKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Datadog application key"
+        },
+        "ApiURL": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Datadog API URL (defaults to https://api.datadoghq.com)"
+        }
+      },
+      "required": [
+        "ApiKey",
+        "ApplicationKey"
+      ],
+      "type": "object",
+      "additionalProperties": false,
+      "title": "DatadogIntegrationsAWSAccountDatadogCredentialsDefinition"
+    }
+  },
+  "properties": {
+    "AccountID": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Your AWS Account ID without dashes."
+    },
+    "AWSPartition": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "aws",
+            "aws-us-gov",
+            "aws-cn"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS partition to use. This should be set to 'aws' for commercial accounts, 'aws-us-gov' for GovCloud accounts, and 'aws-cn' for China accounts."
+    },
+    "AuthConfig": {
+      "description": "The configuration for the AWS role delegation.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RoleName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Your Datadog role delegation name."
+        }
+      },
+      "required": [
+        "RoleName"
+      ]
+    },
+    "AWSRegions": {
+      "description": "The configuration for which regions to collect data from.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IncludeOnly": {
+          "description": "Array of AWS regions to include from metrics collection.",
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "IncludeAll": {
+          "description": "Collect data for all AWS regions.",
+          "type": "boolean"
+        }
+      }
+    },
+    "MetricsConfig": {
+      "description": "The configuration for ingesting AWS Metrics into Datadog.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "description": "Enable the infrastructure monitoring Datadog product for this AWS Account. This will enable collecting all AWS metrics in your account.",
+          "type": "boolean",
+          "default": true
+        },
+        "AutomuteEnabled": {
+          "description": "Enable EC2 automute for AWS metrics",
+          "type": "boolean",
+          "default": true
+        },
+        "CollectCloudwatchAlarms": {
+          "description": "Enable CloudWatch alarms collection",
+          "type": "boolean",
+          "default": false
+        },
+        "CollectCustomMetrics": {
+          "description": "Enable custom metrics collection",
+          "type": "boolean",
+          "default": false
+        },
+        "TagFilters": {
+          "description": "The array of EC2 tags (in the form key:value) defines a filter that Datadog uses when collecting metrics from EC2.",
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "Namespace": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              },
+              "Tags": {
+                "type": "array",
+                "insertionOrder": true,
+                "uniqueItems": true,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "NamespaceFilters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "IncludeOnly": {
+              "description": "Array of AWS namespaces to include from metrics collection. Only one of IncludeOnlyNamespaces or ExcludeNamespaces can be set.",
+              "type": "array",
+              "insertionOrder": true,
+              "uniqueItems": true,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            },
+            "ExcludeOnly": {
+              "description": "Array of AWS namespaces to exclude from metrics collection. Only one of IncludeOnlyNamespaces or ExcludeNamespaces can be set.",
+              "type": "array",
+              "insertionOrder": true,
+              "uniqueItems": true,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "AccountTags": {
+      "description": "Array of tags (in the form key:value) to add to all hosts and metrics reporting through this integration.",
+      "type": "array",
+      "insertionOrder": true,
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "ResourcesConfig": {
+      "description": "The configuration for ingesting AWS Resources into Datadog.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CSPMResourceCollection": {
+          "description": "Enable the compliance and security posture management Datadog product. This will enable collecting information on your AWS resources and providing security validation.",
+          "type": "boolean",
+          "default": false
+        },
+        "ExtendedResourceCollection": {
+          "description": "Enable collecting information on your AWS resources for use in Datadog products such as Network Process Monitoring.",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "LogsConfig": {
+      "description": "The configuration for ingesting AWS Logs into Datadog.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LambdaForwarder": {
+          "description": "The configuration for Lambda Log Forwarders.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "Lambdas": {
+              "description": "List of Datadog Lambda Log Forwarder ARNs",
+              "type": "array",
+              "insertionOrder": true,
+              "uniqueItems": true,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            },
+            "Sources": {
+              "description": "List of AWS services that will send logs to the Datadog Lambda Log Forwarder.",
+              "type": "array",
+              "insertionOrder": true,
+              "uniqueItems": true,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "TracesConfig": {
+      "description": "The configuration for ingesting AWS Traces into Datadog.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "XRayServices": {
+          "description": "The services to collect X-Ray traces from.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "IncludeOnly": {
+              "description": "Array of services to collect traces for.",
+              "type": "array",
+              "insertionOrder": true,
+              "uniqueItems": true,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            },
+            "IncludeAll": {
+              "description": "Collect traces for all services.",
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "ExternalIDSecretName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the AWS SecretsManager secret created in your account to hold this integration's `external_id`. Defaults to `DatadogIntegrationExternalID`. Cannot be referenced from created resource."
+    }
+  },
+  "required": [
+    "AuthConfig",
+    "AWSPartition"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "createOnlyProperties": [
+    "/properties/AccountID",
+    "/properties/AuthConfig/RoleName"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "DatadogIntegrationsAWSAccountProperties"
+}

@@ -1,0 +1,1325 @@
+{
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wisdom",
+  "typeName": "AWS::Wisdom::MessageTemplate",
+  "description": "Definition of AWS::Wisdom::MessageTemplate Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wisdom",
+  "definitions": {
+    "ChannelSubtype": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EMAIL",
+            "SMS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The channel subtype this message template applies to.",
+      "title": "AWSWisdomMessageTemplateChannelSubtypeDefinition"
+    },
+    "Content": {
+      "description": "The content of the message template.",
+      "type": "object",
+      "properties": {
+        "EmailMessageTemplateContent": {
+          "$ref": "#/definitions/EmailMessageTemplateContent"
+        },
+        "SmsMessageTemplateContent": {
+          "$ref": "#/definitions/SmsMessageTemplateContent"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "EmailMessageTemplateContent"
+          ]
+        },
+        {
+          "required": [
+            "SmsMessageTemplateContent"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateContentDefinition"
+    },
+    "EmailMessageTemplateContent": {
+      "description": "The content of message template that applies to email channel subtype.",
+      "type": "object",
+      "properties": {
+        "Subject": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The subject line, or title, to use in email messages."
+        },
+        "Body": {
+          "$ref": "#/definitions/EmailMessageTemplateContentBody"
+        },
+        "Headers": {
+          "description": "The email headers to include in email messages.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EmailMessageTemplateHeader"
+          },
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "minItems": 0,
+          "maxItems": 15
+        }
+      },
+      "required": [
+        "Subject",
+        "Body",
+        "Headers"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateEmailMessageTemplateContentDefinition"
+    },
+    "EmailMessageTemplateContentBody": {
+      "description": "The body to use in email messages.",
+      "type": "object",
+      "properties": {
+        "PlainText": {
+          "description": "The message body, in plain text format, to use in email messages that are based on the message template. We recommend using plain text format for email clients that don't render HTML content and clients that are connected to high-latency networks, such as mobile devices.",
+          "$ref": "#/definitions/MessageTemplateBodyContentProvider"
+        },
+        "Html": {
+          "description": "The message body, in HTML format, to use in email messages that are based on the message template. We recommend using HTML format for email clients that render HTML content. You can include links, formatted text, and more in an HTML message.",
+          "$ref": "#/definitions/MessageTemplateBodyContentProvider"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateEmailMessageTemplateContentBodyDefinition"
+    },
+    "EmailMessageTemplateHeader": {
+      "description": "The email header to include in email messages.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[!-9;-@A-~]+$",
+              "minLength": 1,
+              "maxLength": 126
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the email header."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[ -~]*",
+              "minLength": 1,
+              "maxLength": 870
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value of the email header."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateEmailMessageTemplateHeaderDefinition"
+    },
+    "SmsMessageTemplateContent": {
+      "description": "The content of message template that applies to SMS channel subtype.",
+      "type": "object",
+      "properties": {
+        "Body": {
+          "$ref": "#/definitions/SmsMessageTemplateContentBody"
+        }
+      },
+      "required": [
+        "Body"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateSmsMessageTemplateContentDefinition"
+    },
+    "SmsMessageTemplateContentBody": {
+      "description": "The body to use in SMS messages.",
+      "type": "object",
+      "properties": {
+        "PlainText": {
+          "$ref": "#/definitions/MessageTemplateBodyContentProvider"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateSmsMessageTemplateContentBodyDefinition"
+    },
+    "MessageTemplateBodyContentProvider": {
+      "description": "The container of message template body.",
+      "type": "object",
+      "properties": {
+        "Content": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateMessageTemplateBodyContentProviderDefinition"
+    },
+    "MessageTemplateAttributes": {
+      "description": "An object that specifies the default values to use for variables in the message template. This object contains different categories of key-value pairs. Each key defines a variable or placeholder in the message template. The corresponding value defines the default value for that variable.",
+      "type": "object",
+      "properties": {
+        "SystemAttributes": {
+          "$ref": "#/definitions/SystemAttributes"
+        },
+        "AgentAttributes": {
+          "$ref": "#/definitions/AgentAttributes"
+        },
+        "CustomerProfileAttributes": {
+          "$ref": "#/definitions/CustomerProfileAttributes"
+        },
+        "CustomAttributes": {
+          "$ref": "#/definitions/CustomAttributes"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateMessageTemplateAttributesDefinition"
+    },
+    "SystemAttributes": {
+      "description": "The system attributes that are used with the message template.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the task."
+        },
+        "CustomerEndpoint": {
+          "description": "The CustomerEndpoint attribute.",
+          "$ref": "#/definitions/SystemEndpointAttributes"
+        },
+        "SystemEndpoint": {
+          "description": "The SystemEndpoint attribute.",
+          "$ref": "#/definitions/SystemEndpointAttributes"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateSystemAttributesDefinition"
+    },
+    "SystemEndpointAttributes": {
+      "description": "The system endpoint attributes that are used with the message template.",
+      "type": "object",
+      "properties": {
+        "Address": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's phone number if used with customerEndpoint, or the number the customer dialed to call your contact center if used with systemEndpoint."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateSystemEndpointAttributesDefinition"
+    },
+    "AgentAttributes": {
+      "description": "The agent attributes that are used with the message template.",
+      "type": "object",
+      "properties": {
+        "FirstName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The agent’s first name as entered in their Amazon Connect user account."
+        },
+        "LastName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The agent’s last name as entered in their Amazon Connect user account."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateAgentAttributesDefinition"
+    },
+    "CustomerProfileAttributes": {
+      "description": "The customer profile attributes that are used with the message template.",
+      "type": "object",
+      "properties": {
+        "ProfileId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The unique identifier of a customer profile."
+        },
+        "ProfileARN": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of a customer profile."
+        },
+        "FirstName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's first name."
+        },
+        "MiddleName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's middle name."
+        },
+        "LastName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's last name."
+        },
+        "AccountNumber": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A unique account number that you have given to the customer."
+        },
+        "EmailAddress": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's email address, which has not been specified as a personal or business address."
+        },
+        "PhoneNumber": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's phone number, which has not been specified as a mobile, home, or business number."
+        },
+        "AdditionalInformation": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Any additional information relevant to the customer's profile."
+        },
+        "PartyType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's party type."
+        },
+        "BusinessName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the customer's business."
+        },
+        "BirthDate": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's birth date."
+        },
+        "Gender": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's gender."
+        },
+        "MobilePhoneNumber": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's mobile phone number."
+        },
+        "HomePhoneNumber": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's home phone number."
+        },
+        "BusinessPhoneNumber": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's business phone number."
+        },
+        "BusinessEmailAddress": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The customer's business email address."
+        },
+        "Address1": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The first line of a customer address."
+        },
+        "Address2": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The second line of a customer address."
+        },
+        "Address3": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The third line of a customer address."
+        },
+        "Address4": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The fourth line of a customer address."
+        },
+        "City": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The city in which a customer lives."
+        },
+        "County": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The county in which a customer lives."
+        },
+        "Country": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The country in which a customer lives."
+        },
+        "PostalCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The postal code of a customer address."
+        },
+        "Province": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The province in which a customer lives."
+        },
+        "State": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The state in which a customer lives."
+        },
+        "ShippingAddress1": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The first line of a customer’s shipping address."
+        },
+        "ShippingAddress2": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The second line of a customer’s shipping address."
+        },
+        "ShippingAddress3": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The third line of a customer’s shipping address."
+        },
+        "ShippingAddress4": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The fourth line of a customer’s shipping address"
+        },
+        "ShippingCity": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The city of a customer’s shipping address."
+        },
+        "ShippingCounty": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The county of a customer’s shipping address."
+        },
+        "ShippingCountry": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The country of a customer’s shipping address."
+        },
+        "ShippingPostalCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The postal code of a customer’s shipping address."
+        },
+        "ShippingProvince": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The province of a customer’s shipping address."
+        },
+        "ShippingState": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The state of a customer’s shipping address."
+        },
+        "MailingAddress1": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The first line of a customer’s mailing address."
+        },
+        "MailingAddress2": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The second line of a customer’s mailing address."
+        },
+        "MailingAddress3": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The third line of a customer’s mailing address."
+        },
+        "MailingAddress4": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The fourth line of a customer’s mailing address."
+        },
+        "MailingCity": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The city of a customer’s mailing address."
+        },
+        "MailingCounty": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The county of a customer’s mailing address."
+        },
+        "MailingCountry": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The country of a customer’s mailing address."
+        },
+        "MailingPostalCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The postal code of a customer’s mailing address"
+        },
+        "MailingProvince": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The province of a customer’s mailing address."
+        },
+        "MailingState": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The state of a customer’s mailing address."
+        },
+        "BillingAddress1": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The first line of a customer’s billing address."
+        },
+        "BillingAddress2": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The second line of a customer’s billing address."
+        },
+        "BillingAddress3": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The third line of a customer’s billing address."
+        },
+        "BillingAddress4": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The fourth line of a customer’s billing address."
+        },
+        "BillingCity": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The city of a customer’s billing address."
+        },
+        "BillingCounty": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The county of a customer’s billing address."
+        },
+        "BillingCountry": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The country of a customer’s billing address."
+        },
+        "BillingPostalCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The postal code of a customer’s billing address."
+        },
+        "BillingProvince": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The province of a customer’s billing address."
+        },
+        "BillingState": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The state of a customer’s billing address."
+        },
+        "Custom": {
+          "$ref": "#/definitions/CustomAttributes"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateCustomerProfileAttributesDefinition"
+    },
+    "CustomAttributes": {
+      "description": "The custom attributes that are used with the message template.",
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9\\s._:/=+@-]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32767
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Value of a custom attribute."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateCustomAttributesDefinition"
+    },
+    "GroupingConfiguration": {
+      "description": "The configuration information of the user groups that the message template is accessible to.",
+      "type": "object",
+      "properties": {
+        "Criteria": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The criteria used for grouping Amazon Q in Connect users."
+        },
+        "Values": {
+          "description": "The list of values that define different groups of Amazon Q in Connect users.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GroupingValue"
+          },
+          "insertionOrder": true,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "Criteria",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateGroupingConfigurationDefinition"
+    },
+    "GroupingValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The value that define the group of Amazon Q in Connect users.",
+      "title": "AWSWisdomMessageTemplateGroupingValueDefinition"
+    },
+    "AttachmentUrl": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The S3 Presigned URL for the attachment file. When generating the PreSignedUrl, please ensure that the expires-in time is set to 30 minutes. The URL can be generated through the AWS Console or through the AWS CLI (https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html). ",
+      "title": "AWSWisdomMessageTemplateAttachmentUrlDefinition"
+    },
+    "AttachmentName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the attachment file being uploaded. The name should include the file extension.",
+      "title": "AWSWisdomMessageTemplateAttachmentNameDefinition"
+    },
+    "MessageTemplateAttachment": {
+      "description": "",
+      "type": "object",
+      "properties": {
+        "AttachmentId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AttachmentName": {
+          "$ref": "#/definitions/AttachmentName"
+        },
+        "S3PresignedUrl": {
+          "$ref": "#/definitions/AttachmentUrl"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "AttachmentName",
+        "S3PresignedUrl"
+      ],
+      "title": "AWSWisdomMessageTemplateMessageTemplateAttachmentDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWisdomMessageTemplateTagDefinition"
+    }
+  },
+  "properties": {
+    "KnowledgeBaseArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the knowledge base to which the message template belongs."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9\\\\s_.,-]+",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the message template."
+    },
+    "ChannelSubtype": {
+      "$ref": "#/definitions/ChannelSubtype"
+    },
+    "Content": {
+      "$ref": "#/definitions/Content"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9\\\\s_.,-]+",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the message template."
+    },
+    "Language": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 5
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The language code value for the language in which the message template is written. The supported language codes include de_DE, en_US, es_ES, fr_FR, id_ID, it_IT, ja_JP, ko_KR, pt_BR, zh_CN, zh_TW"
+    },
+    "GroupingConfiguration": {
+      "$ref": "#/definitions/GroupingConfiguration"
+    },
+    "DefaultAttributes": {
+      "$ref": "#/definitions/MessageTemplateAttributes"
+    },
+    "MessageTemplateAttachments": {
+      "description": "List of message template attachments",
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/MessageTemplateAttachment"
+      }
+    },
+    "Tags": {
+      "description": "The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "KnowledgeBaseArn",
+    "ChannelSubtype",
+    "Name",
+    "Content"
+  ],
+  "readOnlyProperties": [
+    "/properties/MessageTemplateId",
+    "/properties/MessageTemplateArn",
+    "/properties/MessageTemplateContentSha256",
+    "/properties/MessageTemplateAttachments/*/AttachmentId"
+  ],
+  "writeOnlyProperties": [
+    "/properties/MessageTemplateAttachments/*/S3PresignedUrl"
+  ],
+  "createOnlyProperties": [
+    "/properties/KnowledgeBaseArn",
+    "/properties/ChannelSubtype"
+  ],
+  "primaryIdentifier": [
+    "/properties/MessageTemplateArn"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "wisdom:TagResource",
+      "wisdom:UntagResource"
+    ]
+  },
+  "replacementStrategy": "create_then_delete",
+  "type": "object",
+  "title": "AWSWisdomMessageTemplateProperties"
+}

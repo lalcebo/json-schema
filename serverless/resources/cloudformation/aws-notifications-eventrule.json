@@ -1,0 +1,156 @@
+{
+  "typeName": "AWS::Notifications::EventRule",
+  "description": "Resource Type definition for AWS::Notifications::EventRule. Source:- No source definition found, add manually please",
+  "definitions": {
+    "EventRuleStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "INACTIVE",
+            "CREATING",
+            "UPDATING",
+            "DELETING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSNotificationsEventRuleEventRuleStatusDefinition"
+    },
+    "EventRuleStatusSummary": {
+      "type": "object",
+      "properties": {
+        "Status": {
+          "$ref": "#/definitions/EventRuleStatus"
+        },
+        "Reason": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Reason",
+        "Status"
+      ],
+      "additionalProperties": false,
+      "title": "AWSNotificationsEventRuleEventRuleStatusSummaryDefinition"
+    },
+    "StatusSummaryByRegion": {
+      "type": "object",
+      "patternProperties": {
+        "^([a-z]{1,2})-([a-z]{1,15}-)+([0-9])$": {
+          "$ref": "#/definitions/EventRuleStatusSummary"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSNotificationsEventRuleStatusSummaryByRegionDefinition"
+    },
+    "Unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSNotificationsEventRuleUnitDefinition"
+    }
+  },
+  "properties": {
+    "EventPattern": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 4096,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "EventType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^([a-zA-Z0-9 \\-\\(\\)])+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "NotificationConfigurationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:[a-z-]{3,10}:notifications::[0-9]{12}:configuration/[a-z0-9]{27}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Regions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 25,
+            "minLength": 2
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "minItems": 1
+    },
+    "Source": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 1,
+          "pattern": "^aws.([a-z0-9\\-])+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "EventType",
+    "NotificationConfigurationArn",
+    "Regions",
+    "Source"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CreationTime",
+    "/properties/ManagedRules",
+    "/properties/StatusSummaryByRegion"
+  ],
+  "createOnlyProperties": [
+    "/properties/EventType",
+    "/properties/NotificationConfigurationArn",
+    "/properties/Source"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "taggable": false
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSNotificationsEventRuleProperties"
+}

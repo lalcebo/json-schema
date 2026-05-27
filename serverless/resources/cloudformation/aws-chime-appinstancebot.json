@@ -1,0 +1,256 @@
+{
+  "typeName": "AWS::Chime::AppInstanceBot",
+  "description": "Resource Type definition for AWS::Chime::AppInstanceBot. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "description": "A tag object containing a key-value pair.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key in a tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value in a tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSChimeAppInstanceBotTagDefinition"
+    },
+    "InvokedBy": {
+      "description": "Specifies the type of message that triggers a bot.",
+      "type": "object",
+      "properties": {
+        "StandardMessages": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AUTO",
+                "ALL",
+                "MENTIONS",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Sets standard messages as the bot trigger."
+        },
+        "TargetedMessages": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ALL",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Sets targeted messages as the bot trigger."
+        }
+      },
+      "required": [
+        "StandardMessages",
+        "TargetedMessages"
+      ],
+      "additionalProperties": false,
+      "title": "AWSChimeAppInstanceBotInvokedByDefinition"
+    },
+    "LexConfiguration": {
+      "description": "The configuration for an Amazon Lex V2 bot.",
+      "type": "object",
+      "properties": {
+        "RespondsTo": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "STANDARD_MESSAGES"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Determines whether the Amazon Lex V2 bot responds to all standard messages. Control messages are not supported."
+        },
+        "InvokedBy": {
+          "$ref": "#/definitions/InvokedBy"
+        },
+        "LexBotAliasArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 15,
+              "maxLength": 2048,
+              "pattern": "^arn:aws:lex:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:bot-alias/[A-Z0-9]{10}/[A-Z0-9]{10}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the Amazon Lex V2 bot's alias."
+        },
+        "LocaleId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Identifies the Amazon Lex V2 bot's language and locale."
+        },
+        "WelcomeIntent": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^([A-Za-z]_?)+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the welcome intent configured in the Amazon Lex V2 bot."
+        }
+      },
+      "required": [
+        "LexBotAliasArn",
+        "LocaleId"
+      ],
+      "additionalProperties": false,
+      "title": "AWSChimeAppInstanceBotLexConfigurationDefinition"
+    },
+    "Configuration": {
+      "description": "A structure that contains configuration data.",
+      "type": "object",
+      "properties": {
+        "Lex": {
+          "$ref": "#/definitions/LexConfiguration"
+        }
+      },
+      "required": [
+        "Lex"
+      ],
+      "additionalProperties": false,
+      "title": "AWSChimeAppInstanceBotConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "AppInstanceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 1600,
+          "pattern": "^arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the AppInstance."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256,
+          "pattern": "^[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u0085\\u00A0-\\uD7FF\\uE000-\\uFFFD\\u10000-\\u10FFFF]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the AppInstanceBot."
+    },
+    "Metadata": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1024,
+          "pattern": ".*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The metadata of the AppInstanceBot."
+    },
+    "Configuration": {
+      "$ref": "#/definitions/Configuration"
+    },
+    "Tags": {
+      "description": "The tags assigned to the AppInstanceBot.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "AppInstanceArn",
+    "Configuration"
+  ],
+  "readOnlyProperties": [
+    "/properties/AppInstanceBotArn",
+    "/properties/CreatedTimestamp",
+    "/properties/LastUpdatedTimestamp"
+  ],
+  "createOnlyProperties": [
+    "/properties/AppInstanceArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/AppInstanceBotArn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "chime:TagResource",
+      "chime:UntagResource",
+      "chime:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSChimeAppInstanceBotProperties"
+}

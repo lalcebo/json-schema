@@ -1,0 +1,265 @@
+{
+  "typeName": "AWS::S3::StorageLensGroup",
+  "description": "The AWS::S3::StorageLensGroup resource is an Amazon S3 resource type that you can use to create Storage Lens Group.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3-storagelensgroup",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3-storagelensgroup",
+  "definitions": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9\\-_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name that identifies the Amazon S3 Storage Lens Group.",
+      "title": "AWSS3StorageLensGroupNameDefinition"
+    },
+    "MatchAnyPrefix": {
+      "description": "Filter to match any of the specified prefixes.",
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 1024
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "title": "AWSS3StorageLensGroupMatchAnyPrefixDefinition"
+    },
+    "MatchAnySuffix": {
+      "description": "Filter to match any of the specified suffixes.",
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 1024
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "title": "AWSS3StorageLensGroupMatchAnySuffixDefinition"
+    },
+    "MatchAnyTag": {
+      "description": "Filter to match any of the specified object tags.",
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSS3StorageLensGroupMatchAnyTagDefinition"
+    },
+    "MatchObjectAge": {
+      "description": "Filter to match all of the specified values for the minimum and maximum object age.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DaysGreaterThan": {
+          "description": "Minimum object age to which the rule applies.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "DaysLessThan": {
+          "description": "Maximum object age to which the rule applies.",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "title": "AWSS3StorageLensGroupMatchObjectAgeDefinition"
+    },
+    "MatchObjectSize": {
+      "description": "Filter to match all of the specified values for the minimum and maximum object size.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BytesGreaterThan": {
+          "description": "Minimum object size to which the rule applies.",
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
+        },
+        "BytesLessThan": {
+          "description": "Maximum object size to which the rule applies.",
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
+        }
+      },
+      "title": "AWSS3StorageLensGroupMatchObjectSizeDefinition"
+    },
+    "And": {
+      "description": "The Storage Lens group will include objects that match all of the specified filter values.",
+      "type": "object",
+      "uniqueItems": true,
+      "additionalProperties": false,
+      "minProperties": 2,
+      "properties": {
+        "MatchAnyPrefix": {
+          "$ref": "#/definitions/MatchAnyPrefix"
+        },
+        "MatchAnySuffix": {
+          "$ref": "#/definitions/MatchAnySuffix"
+        },
+        "MatchAnyTag": {
+          "$ref": "#/definitions/MatchAnyTag"
+        },
+        "MatchObjectSize": {
+          "$ref": "#/definitions/MatchObjectSize"
+        },
+        "MatchObjectAge": {
+          "$ref": "#/definitions/MatchObjectAge"
+        }
+      },
+      "title": "AWSS3StorageLensGroupAndDefinition"
+    },
+    "Or": {
+      "description": "The Storage Lens group will include objects that match any of the specified filter values.",
+      "type": "object",
+      "uniqueItems": true,
+      "additionalProperties": false,
+      "minProperties": 2,
+      "properties": {
+        "MatchAnyPrefix": {
+          "$ref": "#/definitions/MatchAnyPrefix"
+        },
+        "MatchAnySuffix": {
+          "$ref": "#/definitions/MatchAnySuffix"
+        },
+        "MatchAnyTag": {
+          "$ref": "#/definitions/MatchAnyTag"
+        },
+        "MatchObjectSize": {
+          "$ref": "#/definitions/MatchObjectSize"
+        },
+        "MatchObjectAge": {
+          "$ref": "#/definitions/MatchObjectAge"
+        }
+      },
+      "title": "AWSS3StorageLensGroupOrDefinition"
+    },
+    "Filter": {
+      "description": "Sets the Storage Lens Group filter.",
+      "type": "object",
+      "properties": {
+        "MatchAnyPrefix": {
+          "$ref": "#/definitions/MatchAnyPrefix"
+        },
+        "MatchAnySuffix": {
+          "$ref": "#/definitions/MatchAnySuffix"
+        },
+        "MatchAnyTag": {
+          "$ref": "#/definitions/MatchAnyTag"
+        },
+        "MatchObjectSize": {
+          "$ref": "#/definitions/MatchObjectSize"
+        },
+        "MatchObjectAge": {
+          "$ref": "#/definitions/MatchObjectAge"
+        },
+        "And": {
+          "$ref": "#/definitions/And"
+        },
+        "Or": {
+          "$ref": "#/definitions/Or"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSS3StorageLensGroupFilterDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSS3StorageLensGroupTagDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "$ref": "#/definitions/Name"
+    },
+    "Filter": {
+      "$ref": "#/definitions/Filter"
+    },
+    "Tags": {
+      "description": "A set of tags (key-value pairs) for this Amazon S3 Storage Lens Group.",
+      "type": "array",
+      "insertionOrder": true,
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "Name",
+    "Filter"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "s3:TagResource",
+      "s3:UntagResource",
+      "s3:ListTagsForResource"
+    ]
+  },
+  "readOnlyProperties": [
+    "/properties/StorageLensGroupArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "type": "object",
+  "title": "AWSS3StorageLensGroupProperties"
+}

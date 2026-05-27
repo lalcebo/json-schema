@@ -1,0 +1,261 @@
+{
+  "typeName": "AWS::S3Files::FileSystem",
+  "description": "Resource Type definition for AWS::S3Files::FileSystem. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "primaryIdentifier": [
+    "/properties/FileSystemArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/FileSystemId"
+    ]
+  ],
+  "readOnlyProperties": [
+    "/properties/CreationTime",
+    "/properties/FileSystemArn",
+    "/properties/FileSystemId",
+    "/properties/CreationTime",
+    "/properties/Status",
+    "/properties/StatusMessage",
+    "/properties/OwnerId",
+    "/properties/SynchronizationConfiguration/LatestVersionNumber"
+  ],
+  "createOnlyProperties": [
+    "/properties/Bucket",
+    "/properties/Prefix",
+    "/properties/ClientToken",
+    "/properties/KmsKeyId",
+    "/properties/RoleArn",
+    "/properties/AcceptBucketWarning"
+  ],
+  "writeOnlyProperties": [
+    "/properties/AcceptBucketWarning"
+  ],
+  "propertyTransform": {
+    "/properties/KmsKeyId": "\"arn:aws[-a-z]*:kms:[a-z0-9-]+:[0-9]{12}:key/[a-zA-Z0-9-]+\""
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "s3files:TagResource",
+      "s3files:ListTagsForResource",
+      "s3files:UntagResource"
+    ]
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSS3FilesFileSystemTagDefinition"
+    },
+    "ImportDataRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024,
+              "pattern": "^(|.*/)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Trigger": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ON_DIRECTORY_FIRST_ACCESS",
+                "ON_FILE_ACCESS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SizeLessThan": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 52673613135872
+        }
+      },
+      "required": [
+        "Prefix",
+        "Trigger",
+        "SizeLessThan"
+      ],
+      "title": "AWSS3FilesFileSystemImportDataRuleDefinition"
+    },
+    "ExpirationDataRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DaysAfterLastAccess": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 365
+        }
+      },
+      "required": [
+        "DaysAfterLastAccess"
+      ],
+      "title": "AWSS3FilesFileSystemExpirationDataRuleDefinition"
+    },
+    "SynchronizationConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LatestVersionNumber": {
+          "type": "integer"
+        },
+        "ImportDataRules": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/definitions/ImportDataRule"
+          }
+        },
+        "ExpirationDataRules": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/definitions/ExpirationDataRule"
+          }
+        }
+      },
+      "required": [
+        "ImportDataRules",
+        "ExpirationDataRules"
+      ],
+      "title": "AWSS3FilesFileSystemSynchronizationConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "Tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|mrk-[0-9a-f]{32}|alias/[a-zA-Z0-9/_-]+|(arn:aws[-a-z]*:kms:[a-z0-9-]+:\\d{12}:((key/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(key/mrk-[0-9a-f]{32})|(alias/[a-zA-Z0-9/_-]+))))$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Bucket": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(arn:aws[a-zA-Z0-9-]*:s3:::.+)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Prefix": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^(|.*/)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ClientToken": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(.+)$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "SynchronizationConfiguration": {
+      "$ref": "#/definitions/SynchronizationConfiguration"
+    },
+    "AcceptBucketWarning": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Bucket",
+    "RoleArn"
+  ],
+  "type": "object",
+  "title": "AWSS3FilesFileSystemProperties"
+}

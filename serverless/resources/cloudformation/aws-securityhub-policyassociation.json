@@ -1,0 +1,71 @@
+{
+  "typeName": "AWS::SecurityHub::PolicyAssociation",
+  "description": "The AWS::SecurityHub::PolicyAssociation resource represents the AWS Security Hub Central Configuration Policy associations in your Target. Only the AWS Security Hub delegated administrator can create the resouce from the home region.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-securityhub",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-securityhub",
+  "properties": {
+    "ConfigurationPolicyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^SELF_MANAGED_SECURITY_HUB$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The universally unique identifier (UUID) of the configuration policy or a value of SELF_MANAGED_SECURITY_HUB for a self-managed configuration"
+    },
+    "TargetId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the target account, organizational unit, or the root"
+    },
+    "TargetType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACCOUNT",
+            "ORGANIZATIONAL_UNIT",
+            "ROOT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Indicates whether the target is an AWS account, organizational unit, or the organization root"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "TargetId",
+    "TargetType",
+    "ConfigurationPolicyId"
+  ],
+  "readOnlyProperties": [
+    "/properties/AssociationStatus",
+    "/properties/AssociationType",
+    "/properties/AssociationStatusMessage",
+    "/properties/UpdatedAt",
+    "/properties/AssociationIdentifier"
+  ],
+  "createOnlyProperties": [
+    "/properties/TargetId",
+    "/properties/TargetType"
+  ],
+  "primaryIdentifier": [
+    "/properties/AssociationIdentifier"
+  ],
+  "tagging": {
+    "taggable": false
+  },
+  "type": "object",
+  "title": "AWSSecurityHubPolicyAssociationProperties"
+}

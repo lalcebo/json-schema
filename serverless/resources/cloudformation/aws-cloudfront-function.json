@@ -12,7 +12,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "A comment to describe the function."
         },
         "Runtime": {
           "oneOf": [
@@ -22,7 +23,16 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The function's runtime environment version."
+        },
+        "KeyValueStoreAssociations": {
+          "items": {
+            "$ref": "#/definitions/KeyValueStoreAssociation"
+          },
+          "type": "array",
+          "uniqueItems": true,
+          "description": "The configuration for the key value store associations."
         }
       },
       "required": [
@@ -30,6 +40,7 @@
         "Runtime"
       ],
       "type": "object",
+      "description": "Contains configuration information about a CloudFront function.",
       "title": "AWSCloudFrontFunctionFunctionConfigDefinition"
     },
     "FunctionMetadata": {
@@ -43,20 +54,85 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The Amazon Resource Name (ARN) of the function. The ARN uniquely identifies the function."
         }
       },
       "type": "object",
+      "description": "Contains metadata about a CloudFront function.",
       "title": "AWSCloudFrontFunctionFunctionMetadataDefinition"
+    },
+    "KeyValueStoreAssociation": {
+      "additionalProperties": false,
+      "properties": {
+        "KeyValueStoreARN": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the key value store association."
+        }
+      },
+      "required": [
+        "KeyValueStoreARN"
+      ],
+      "type": "object",
+      "description": "The key value store association.",
+      "title": "AWSCloudFrontFunctionKeyValueStoreAssociationDefinition"
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string that contains ``Tag`` key.\n The string length should be between 1 and 128 characters. Valid characters include ``a-z``, ``A-Z``, ``0-9``, space, and the special characters ``_ - . : / = + @``."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string that contains an optional ``Tag`` value.\n The string length should be between 0 and 256 characters. Valid characters include ``a-z``, ``A-Z``, ``0-9``, space, and the special characters ``_ - . : / = + @``."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "type": "object",
+      "description": "A complex type that contains ``Tag`` key and ``Tag`` value.",
+      "title": "AWSCloudFrontFunctionTagDefinition"
     }
   },
-  "description": "Resource Type definition for AWS::CloudFront::Function. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Creates a CF function.\n To create a function, you provide the function code and some configuration information about the function. The response contains an Amazon Resource Name (ARN) that uniquely identifies the function, and the function’s stage.\n By default, when you create a function, it’s in the ``DEVELOPMENT`` stage. In this stage, you can [test the function](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/test-function.html) in the CF console (or with ``TestFunction`` in the CF API).\n When you’re ready to use your function with a CF distribution, publish the function to the ``LIVE`` stage. You can do this in the CF console, with ``PublishFunction`` in the CF API, or by updating the ``AWS::CloudFront::Function`` resource with the ``AutoPublish`` property set to ``true``. When the function is published to the ``LIVE`` stage, you can attach it to a distribution’s cache behavior, using the function’s ARN.\n To automatically publish the function to the ``LIVE`` stage when it’s created, set the ``AutoPublish`` property to ``true``.. Source:- No source definition found, add manually please",
   "primaryIdentifier": [
     "/properties/FunctionARN"
   ],
   "properties": {
     "AutoPublish": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "A flag that determines whether to automatically publish the function to the ``LIVE`` stage when it’s created. To automatically publish to the ``LIVE`` stage, set this property to ``true``."
     },
     "FunctionCode": {
       "oneOf": [
@@ -66,13 +142,16 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The function code. For more information about writing a CloudFront function, see [Writing function code for CloudFront Functions](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/writing-function-code.html) in the *Amazon CloudFront Developer Guide*."
     },
     "FunctionConfig": {
-      "$ref": "#/definitions/FunctionConfig"
+      "$ref": "#/definitions/FunctionConfig",
+      "description": "Contains configuration information about a CloudFront function."
     },
     "FunctionMetadata": {
-      "$ref": "#/definitions/FunctionMetadata"
+      "$ref": "#/definitions/FunctionMetadata",
+      "description": "Contains metadata about a CloudFront function."
     },
     "Name": {
       "oneOf": [
@@ -82,9 +161,21 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "A name to identify the function."
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "description": "A complex type that contains zero or more ``Tag`` elements."
     }
   },
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
   "readOnlyProperties": [
     "/properties/FunctionARN",
     "/properties/FunctionMetadata/FunctionARN",
@@ -95,6 +186,18 @@
     "FunctionConfig",
     "FunctionCode"
   ],
+  "tagging": {
+    "cloudFormationSystemTags": false,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "taggable": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cloudfront:TagResource",
+      "cloudfront:UntagResource",
+      "cloudfront:ListTagsForResource"
+    ]
+  },
   "typeName": "AWS::CloudFront::Function",
   "writeOnlyProperties": [
     "/properties/AutoPublish"

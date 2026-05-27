@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::ApplicationInsights::Application",
-  "description": "Resource schema for AWS::ApplicationInsights::Application. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-applicationinsights.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-applicationinsights.git",
+  "description": "Resource Type definition for AWS::ApplicationInsights::Application. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-applicationinsights.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-applicationinsights.git",
   "properties": {
     "ResourceGroupName": {
@@ -38,6 +38,20 @@
         }
       ],
       "description": "The SNS topic provided to Application Insights that is associated to the created opsItem."
+    },
+    "SNSNotificationArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 300,
+          "pattern": "^arn:aws(-[\\w]+)*:[\\w\\d-]+:([\\w\\d-]*)?:[\\w\\d_-]*([:/].+)*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Application Insights sends notifications to this SNS topic whenever there is a problem update in the associated application."
     },
     "Tags": {
       "description": "The tags of Application Insights application.",
@@ -92,6 +106,10 @@
         }
       ],
       "description": "The grouping type of the application"
+    },
+    "AttachMissingPermission": {
+      "description": "If set to true, the managed policies for SSM and CW will be attached to the instance roles if they are missing",
+      "type": "boolean"
     }
   },
   "definitions": {
@@ -293,7 +311,7 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^[A-Z][[A-Z]_]*$"
+              "pattern": "^[A-Z][A-Z_]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -394,6 +412,14 @@
           },
           "insertionOrder": true
         },
+        "Processes": {
+          "description": "A list of processes to monitor for the component. Only Windows EC2 instances can have a processes section.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Process"
+          },
+          "insertionOrder": true
+        },
         "Alarms": {
           "description": "A list of alarms to monitor for the component.",
           "type": "array",
@@ -413,6 +439,14 @@
         "HAClusterPrometheusExporter": {
           "description": "The HA cluster Prometheus Exporter settings.",
           "$ref": "#/definitions/HAClusterPrometheusExporter"
+        },
+        "NetWeaverPrometheusExporter": {
+          "description": "The NetWeaver Prometheus Exporter settings.",
+          "$ref": "#/definitions/NetWeaverPrometheusExporter"
+        },
+        "SQLServerPrometheusExporter": {
+          "description": "The SQL Prometheus Exporter settings.",
+          "$ref": "#/definitions/SQLServerPrometheusExporter"
         }
       },
       "additionalProperties": false,
@@ -443,6 +477,14 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/WindowsEvent"
+          },
+          "insertionOrder": true
+        },
+        "Processes": {
+          "description": "A list of processes to monitor for the component. Only Windows EC2 instances can have a processes section.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Process"
           },
           "insertionOrder": true
         }
@@ -572,6 +614,91 @@
       "additionalProperties": false,
       "title": "AWSApplicationInsightsApplicationHAClusterPrometheusExporterDefinition"
     },
+    "NetWeaverPrometheusExporter": {
+      "description": "The NetWeaver Prometheus Exporter Settings.",
+      "type": "object",
+      "properties": {
+        "SAPSID": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "SAP NetWeaver SID."
+        },
+        "InstanceNumbers": {
+          "description": "SAP instance numbers for ASCS, ERS, and App Servers.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2,
+                "pattern": "\\b([0-9]|[0-9][0-9])\\b"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "PrometheusPort": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Prometheus exporter port."
+        }
+      },
+      "required": [
+        "SAPSID",
+        "InstanceNumbers"
+      ],
+      "additionalProperties": false,
+      "title": "AWSApplicationInsightsApplicationNetWeaverPrometheusExporterDefinition"
+    },
+    "SQLServerPrometheusExporter": {
+      "description": "The SQL prometheus exporter settings.",
+      "type": "object",
+      "properties": {
+        "PrometheusPort": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Prometheus exporter port."
+        },
+        "SQLSecretName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Secret name which managers SQL exporter connection. e.g. {\"data_source_name\": \"sqlserver://<USERNAME>:<PASSWORD>@localhost:1433\"}"
+        }
+      },
+      "required": [
+        "PrometheusPort",
+        "SQLSecretName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSApplicationInsightsApplicationSQLServerPrometheusExporterDefinition"
+    },
     "AlarmMetric": {
       "description": "A metric to be monitored for the component.",
       "type": "object",
@@ -630,7 +757,7 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^[A-Z][[A-Z]_]*$"
+              "pattern": "^[A-Z][A-Z_]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -699,7 +826,7 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 260,
-              "pattern": "^[a-zA-Z0-9_ \\\\/-]$"
+              "pattern": "^[a-zA-Z0-9_ \\\\/-]+$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -738,6 +865,40 @@
       ],
       "additionalProperties": false,
       "title": "AWSApplicationInsightsApplicationWindowsEventDefinition"
+    },
+    "Process": {
+      "description": "A process to be monitored for the component.",
+      "type": "object",
+      "properties": {
+        "ProcessName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[a-zA-Z0-9_,-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the process to be monitored for the component."
+        },
+        "AlarmMetrics": {
+          "description": "A list of metrics to monitor for the component.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AlarmMetric"
+          },
+          "insertionOrder": true
+        }
+      },
+      "required": [
+        "ProcessName",
+        "AlarmMetrics"
+      ],
+      "additionalProperties": false,
+      "title": "AWSApplicationInsightsApplicationProcessDefinition"
     },
     "EventLevel": {
       "oneOf": [
@@ -840,10 +1001,31 @@
   "readOnlyProperties": [
     "/properties/ApplicationARN"
   ],
-  "createOnlyProperties": [
-    "/properties/ResourceGroupName"
+  "writeOnlyProperties": [
+    "/properties/ComponentMonitoringSettings",
+    "/properties/LogPatternSets",
+    "/properties/CustomComponents",
+    "/properties/GroupingType",
+    "/properties/OpsItemSNSTopicArn",
+    "/properties/SNSNotificationArn",
+    "/properties/AttachMissingPermission"
   ],
-  "taggable": true,
+  "createOnlyProperties": [
+    "/properties/ResourceGroupName",
+    "/properties/GroupingType"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "applicationinsights:ListTagsForResource",
+      "applicationinsights:TagResource",
+      "applicationinsights:UntagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSApplicationInsightsApplicationProperties"
 }

@@ -1,0 +1,171 @@
+{
+  "typeName": "AWS::Logs::Delivery",
+  "description": "This structure contains information about one delivery in your account.\n\nA delivery is a connection between a logical delivery source and a logical delivery destination.\n\nFor more information, see [CreateDelivery](https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html).. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsDeliveryTagDefinition"
+    },
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 2048,
+          "pattern": "[\\w#+=/:,.@-]*\\*?"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Amazon Resource Name (ARN) that uniquely identify AWS resource.",
+      "title": "AWSLogsDeliveryArnDefinition"
+    },
+    "FieldHeader": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A single record field to be delivered to the destination.",
+      "title": "AWSLogsDeliveryFieldHeaderDefinition"
+    }
+  },
+  "properties": {
+    "DeliverySourceName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\w-]*$",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the delivery source that is associated with this delivery."
+    },
+    "DeliveryDestinationArn": {
+      "description": "The ARN of the delivery destination that is associated with this delivery.",
+      "$ref": "#/definitions/Arn"
+    },
+    "Tags": {
+      "description": "The tags that have been assigned to this delivery.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "RecordFields": {
+      "description": "The list of record fields to be delivered to the destination, in order. If the delivery's log source has mandatory fields, they must be included in this list.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FieldHeader"
+      }
+    },
+    "FieldDelimiter": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 5
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The field delimiter to use between record fields when the final output format of a delivery is in Plain , W3C , or Raw format."
+    },
+    "S3SuffixPath": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "This string allows re-configuring the S3 object prefix to contain either static or variable sections. The valid variables to use in the suffix path will vary by each log source. See ConfigurationTemplate$allowedSuffixPathFields for more info on what values are supported in the suffix path for each log source."
+    },
+    "S3EnableHiveCompatiblePath": {
+      "description": "This parameter causes the S3 objects that contain delivered logs to use a prefix structure that allows for integration with Apache Hive.",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "DeliverySourceName",
+    "DeliveryDestinationArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/DeliveryId",
+    "/properties/Arn",
+    "/properties/DeliveryDestinationType"
+  ],
+  "createOnlyProperties": [
+    "/properties/DeliverySourceName",
+    "/properties/DeliveryDestinationArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/DeliveryId"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "logs:TagResource",
+      "logs:UntagResource",
+      "logs:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSLogsDeliveryProperties"
+}

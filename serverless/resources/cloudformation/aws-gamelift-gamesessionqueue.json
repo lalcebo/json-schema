@@ -1,91 +1,70 @@
 {
+  "$schema": "https://schema.cloudformation.us-east-1.amazonaws.com/provider.definition.schema.v1.json",
   "typeName": "AWS::GameLift::GameSessionQueue",
-  "description": "Resource Type definition for AWS::GameLift::GameSessionQueue. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "TimeoutInSeconds": {
-      "type": "integer"
-    },
-    "PlayerLatencyPolicies": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/PlayerLatencyPolicy"
-      }
-    },
-    "Destinations": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Destination"
-      }
-    },
-    "NotificationTarget": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "FilterConfiguration": {
-      "$ref": "#/definitions/FilterConfiguration"
-    },
-    "CustomEventData": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    },
-    "Name": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "PriorityConfiguration": {
-      "$ref": "#/definitions/PriorityConfiguration"
-    }
+  "description": "The AWS::GameLift::GameSessionQueue resource creates an Amazon GameLift (GameLift) game session queue.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "gamelift:ListTagsForResource",
+      "gamelift:TagResource",
+      "gamelift:UntagResource"
+    ]
   },
   "definitions": {
-    "PlayerLatencyPolicy": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "PolicyDurationSeconds": {
-          "type": "integer"
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length."
         },
-        "MaximumIndividualPlayerLatencyMilliseconds": {
-          "type": "integer"
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 1 to 256 Unicode characters in length."
         }
       },
-      "title": "AWSGameLiftGameSessionQueuePlayerLatencyPolicyDefinition"
-    },
-    "Destination": {
-      "type": "object",
+      "required": [
+        "Key",
+        "Value"
+      ],
       "additionalProperties": false,
+      "title": "AWSGameLiftGameSessionQueueTagDefinition"
+    },
+    "GameSessionQueueDestination": {
+      "type": "object",
+      "description": "A fleet or alias designated in a game session queue.",
       "properties": {
         "DestinationArn": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "[a-zA-Z0-9:/-]+"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -93,108 +72,214 @@
           ]
         }
       },
-      "title": "AWSGameLiftGameSessionQueueDestinationDefinition"
+      "additionalProperties": false,
+      "title": "AWSGameLiftGameSessionQueueGameSessionQueueDestinationDefinition"
+    },
+    "PlayerLatencyPolicy": {
+      "type": "object",
+      "description": "Sets a latency cap for individual players when placing a game session.",
+      "properties": {
+        "MaximumIndividualPlayerLatencyMilliseconds": {
+          "type": "integer",
+          "description": "The maximum latency value that is allowed for any player, in milliseconds. All policies must have a value set for this property.",
+          "minimum": 0
+        },
+        "PolicyDurationSeconds": {
+          "type": "integer",
+          "description": "The length of time, in seconds, that the policy is enforced while placing a new game session.",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGameLiftGameSessionQueuePlayerLatencyPolicyDefinition"
+    },
+    "AllowedLocations": {
+      "type": "array",
+      "insertionOrder": false,
+      "description": "A list of locations to allow game session placement in, in the form of AWS Region codes such as us-west-2.",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z]+(-([a-z]+|\\d))*"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "title": "AWSGameLiftGameSessionQueueAllowedLocationsDefinition"
     },
     "FilterConfiguration": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "AllowedLocations": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
+          "$ref": "#/definitions/AllowedLocations"
         }
       },
+      "additionalProperties": false,
       "title": "AWSGameLiftGameSessionQueueFilterConfigurationDefinition"
     },
-    "Tag": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Value": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
+    "LocationOrder": {
+      "description": "The prioritization order to use for fleet locations, when the PriorityOrder property includes LOCATION.",
+      "type": "array",
+      "insertionOrder": true,
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[A-Za-z0-9\\-]+"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
       },
-      "required": [
-        "Value",
-        "Key"
-      ],
-      "title": "AWSGameLiftGameSessionQueueTagDefinition"
+      "title": "AWSGameLiftGameSessionQueueLocationOrderDefinition"
+    },
+    "PriorityOrder": {
+      "description": "The recommended sequence to use when prioritizing where to place new game sessions.",
+      "type": "array",
+      "insertionOrder": true,
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "LATENCY",
+              "COST",
+              "DESTINATION",
+              "LOCATION"
+            ]
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "title": "AWSGameLiftGameSessionQueuePriorityOrderDefinition"
     },
     "PriorityConfiguration": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "PriorityOrder": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
         "LocationOrder": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
+          "$ref": "#/definitions/LocationOrder"
+        },
+        "PriorityOrder": {
+          "$ref": "#/definitions/PriorityOrder"
         }
       },
+      "additionalProperties": false,
       "title": "AWSGameLiftGameSessionQueuePriorityConfigurationDefinition"
     }
   },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "[a-zA-Z0-9-]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A descriptive label that is associated with game session queue. Queue names must be unique within each Region."
+    },
+    "TimeoutInSeconds": {
+      "description": "The maximum time, in seconds, that a new game session placement request remains in the queue.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "Destinations": {
+      "description": "A list of fleets and/or fleet aliases that can be used to fulfill game session placement requests in the queue.",
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/GameSessionQueueDestination"
+      }
+    },
+    "PlayerLatencyPolicies": {
+      "description": "A set of policies that act as a sliding cap on player latency.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/PlayerLatencyPolicy"
+      }
+    },
+    "CustomEventData": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "[\\s\\S]*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Information that is added to all events that are related to this game session queue."
+    },
+    "NotificationTarget": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "pattern": "[a-zA-Z0-9:_-]*(\\.fifo)?"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An SNS topic ARN that is set up to receive game session placement notifications."
+    },
+    "FilterConfiguration": {
+      "description": "A list of locations where a queue is allowed to place new game sessions.",
+      "type": "object",
+      "$ref": "#/definitions/FilterConfiguration"
+    },
+    "PriorityConfiguration": {
+      "description": "Custom settings to use when prioritizing destinations and locations for game session placements.",
+      "type": "object",
+      "$ref": "#/definitions/PriorityConfiguration"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
   "required": [
     "Name"
   ],
   "createOnlyProperties": [
     "/properties/Name"
   ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
   "readOnlyProperties": [
-    "/properties/Id",
     "/properties/Arn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
   ],
   "type": "object",
   "title": "AWSGameLiftGameSessionQueueProperties"

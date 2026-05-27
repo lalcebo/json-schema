@@ -1,0 +1,121 @@
+{
+  "typeName": "AWS::Logs::Integration",
+  "description": "Resource Schema for Logs Integration Resource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "replacementStrategy": "delete_then_create",
+  "definitions": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "[\\w#+=/:,.@-]*\\*?"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsIntegrationArnDefinition"
+    },
+    "OpenSearchResourceConfig": {
+      "type": "object",
+      "properties": {
+        "KmsKeyArn": {
+          "$ref": "#/definitions/Arn"
+        },
+        "DataSourceRoleArn": {
+          "$ref": "#/definitions/Arn"
+        },
+        "DashboardViewerPrincipals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Arn"
+          }
+        },
+        "ApplicationARN": {
+          "$ref": "#/definitions/Arn"
+        },
+        "RetentionDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3650
+        }
+      },
+      "required": [
+        "DataSourceRoleArn",
+        "DashboardViewerPrincipals"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsIntegrationOpenSearchResourceConfigDefinition"
+    }
+  },
+  "properties": {
+    "IntegrationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\.\\-_/#A-Za-z0-9]+",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "User provided identifier for integration, unique to the user account."
+    },
+    "IntegrationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OPENSEARCH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of the Integration."
+    },
+    "ResourceConfig": {
+      "description": "OpenSearchResourceConfig for the given Integration",
+      "type": "object",
+      "properties": {
+        "OpenSearchResourceConfig": {
+          "$ref": "#/definitions/OpenSearchResourceConfig"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "IntegrationName",
+    "IntegrationType",
+    "ResourceConfig"
+  ],
+  "createOnlyProperties": [
+    "/properties/IntegrationName",
+    "/properties/IntegrationType",
+    "/properties/ResourceConfig"
+  ],
+  "readOnlyProperties": [
+    "/properties/IntegrationStatus"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ResourceConfig"
+  ],
+  "primaryIdentifier": [
+    "/properties/IntegrationName"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "type": "object",
+  "title": "AWSLogsIntegrationProperties"
+}

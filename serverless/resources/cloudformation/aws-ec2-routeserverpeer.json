@@ -1,0 +1,148 @@
+{
+  "typeName": "AWS::EC2::RouteServerPeer",
+  "description": "VPC Route Server Peer. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEC2RouteServerPeerTagDefinition"
+    },
+    "BgpOptions": {
+      "description": "BGP Options",
+      "type": "object",
+      "properties": {
+        "PeerAsn": {
+          "description": "BGP ASN of the Route Server Peer",
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1,
+          "maximum": 4294967294
+        },
+        "PeerLivenessDetection": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "bfd",
+                "bgp-keepalive"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "BGP Liveness Detection"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSEC2RouteServerPeerBgpOptionsDefinition"
+    }
+  },
+  "properties": {
+    "RouteServerEndpointId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Route Server Endpoint ID"
+    },
+    "PeerAddress": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "IP address of the Route Server Peer"
+    },
+    "BgpOptions": {
+      "$ref": "#/definitions/BgpOptions"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "RouteServerEndpointId",
+    "PeerAddress",
+    "BgpOptions"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/Id",
+    "/properties/RouteServerId",
+    "/properties/EndpointEniId",
+    "/properties/EndpointEniAddress",
+    "/properties/SubnetId",
+    "/properties/VpcId"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "createOnlyProperties": [
+    "/properties/RouteServerEndpointId",
+    "/properties/PeerAddress",
+    "/properties/BgpOptions"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DescribeTags",
+      "ec2:DeleteTags"
+    ]
+  },
+  "type": "object",
+  "title": "AWSEC2RouteServerPeerProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Cassandra::Keyspace",
-  "description": "Resource schema for AWS::Cassandra::Keyspace. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource schema for AWS::Cassandra::Keyspace. Source:- No source definition found, add manually please",
   "properties": {
     "KeyspaceName": {
       "oneOf": [
@@ -22,6 +22,13 @@
       },
       "minItems": 0,
       "maxItems": 50
+    },
+    "ReplicationSpecification": {
+      "$ref": "#/definitions/ReplicationSpecification"
+    },
+    "ClientSideTimestampsEnabled": {
+      "type": "boolean",
+      "description": "Indicates whether client-side timestamps are enabled (true) or disabled (false) for all tables in the keyspace. To add a Region to a single-Region keyspace with at least one table, the value must be set to true. After you enabled client-side timestamps for a table, you can’t disable it again."
     }
   },
   "definitions": {
@@ -59,6 +66,83 @@
         "Key"
       ],
       "title": "AWSCassandraKeyspaceTagDefinition"
+    },
+    "ReplicationSpecification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ReplicationStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SINGLE_REGION",
+                "MULTI_REGION"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RegionList": {
+          "$ref": "#/definitions/RegionList"
+        }
+      },
+      "default": {
+        "properties": {
+          "ReplicationStrategy": {
+            "type": "string",
+            "const": "SINGLE_REGION"
+          }
+        }
+      },
+      "dependencies": {
+        "RegionList": [
+          "ReplicationStrategy"
+        ]
+      },
+      "title": "AWSCassandraKeyspaceReplicationSpecificationDefinition"
+    },
+    "RegionList": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "af-south-1",
+              "ap-east-1",
+              "ap-northeast-1",
+              "ap-northeast-2",
+              "ap-south-1",
+              "ap-southeast-1",
+              "ap-southeast-2",
+              "ca-central-1",
+              "eu-central-1",
+              "eu-north-1",
+              "eu-west-1",
+              "eu-west-2",
+              "eu-west-3",
+              "me-central-1",
+              "me-south-1",
+              "sa-east-1",
+              "us-east-1",
+              "us-east-2",
+              "us-west-1",
+              "us-west-2"
+            ]
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "minItems": 2,
+      "maxItems": 20,
+      "title": "AWSCassandraKeyspaceRegionListDefinition"
     }
   },
   "additionalProperties": false,
@@ -69,6 +153,19 @@
   "primaryIdentifier": [
     "/properties/KeyspaceName"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cassandra:TagResource",
+      "cassandra:TagMultiRegionResource",
+      "cassandra:UntagResource",
+      "cassandra:UntagMultiRegionResource"
+    ]
+  },
   "type": "object",
   "title": "AWSCassandraKeyspaceProperties"
 }

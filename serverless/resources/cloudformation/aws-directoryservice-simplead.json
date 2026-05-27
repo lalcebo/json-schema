@@ -1,9 +1,47 @@
 {
   "typeName": "AWS::DirectoryService::SimpleAD",
-  "description": "Resource Type definition for AWS::DirectoryService::SimpleAD. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::DirectoryService::SimpleAD. Source:- No source definition found, add manually please",
   "documentationUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-directoryservice-simplead.html",
   "additionalProperties": false,
   "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDirectoryServiceSimpleADTagDefinition"
+    },
     "VpcSettings": {
       "$comment": "Contains VPC information",
       "type": "object",
@@ -111,6 +149,14 @@
     "VpcSettings": {
       "description": "VPC settings of the Simple AD directory server in AWS.",
       "$ref": "#/definitions/VpcSettings"
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "required": [
@@ -119,10 +165,16 @@
     "Name"
   ],
   "tagging": {
-    "taggable": false,
-    "tagOnCreate": false,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": false
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ds:AddTagsToResource",
+      "ds:RemoveTagsFromResource",
+      "ds:ListTagsForResource"
+    ]
   },
   "readOnlyProperties": [
     "/properties/Alias",

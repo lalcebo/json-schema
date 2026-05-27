@@ -1,0 +1,181 @@
+{
+  "typeName": "AWS::LaunchWizard::Deployment",
+  "description": "Definition of AWS::LaunchWizard::Deployment Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "DeploymentSpecifications": {
+      "type": "object",
+      "maxProperties": 100,
+      "minProperties": 1,
+      "patternProperties": {
+        "^[a-zA-Z0-9-:]{3,256}$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1500,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLaunchWizardDeploymentDeploymentSpecificationsDefinition"
+    },
+    "DeploymentStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "COMPLETED",
+            "CREATING",
+            "DELETE_IN_PROGRESS",
+            "DELETE_INITIATING",
+            "DELETE_FAILED",
+            "DELETED",
+            "FAILED",
+            "IN_PROGRESS",
+            "VALIDATING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLaunchWizardDeploymentDeploymentStatusDefinition"
+    },
+    "Tags": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLaunchWizardDeploymentTagsDefinition"
+    }
+  },
+  "properties": {
+    "DeploymentPatternName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][a-zA-Z0-9-]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Workload deployment pattern name"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_\\s\\.-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of LaunchWizard deployment"
+    },
+    "Specifications": {
+      "description": "LaunchWizard deployment specifications",
+      "$ref": "#/definitions/DeploymentSpecifications"
+    },
+    "Tags": {
+      "description": "Tags for LaunchWizard deployment",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tags"
+      },
+      "insertionOrder": false
+    },
+    "WorkloadName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z][a-zA-Z0-9-_]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Workload Name for LaunchWizard deployment"
+    }
+  },
+  "required": [
+    "DeploymentPatternName",
+    "Name",
+    "WorkloadName"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CreatedAt",
+    "/properties/DeletedAt",
+    "/properties/DeploymentId",
+    "/properties/ResourceGroup",
+    "/properties/Status"
+  ],
+  "createOnlyProperties": [
+    "/properties/DeploymentPatternName",
+    "/properties/Name",
+    "/properties/WorkloadName"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Specifications"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "launchwizard:ListTagsForResource",
+      "launchwizard:TagResource",
+      "launchwizard:UntagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSLaunchWizardDeploymentProperties"
+}

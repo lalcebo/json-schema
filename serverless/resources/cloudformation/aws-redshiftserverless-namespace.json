@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::RedshiftServerless::Namespace",
-  "description": "Definition of AWS::RedshiftServerless::Namespace Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift-serverless. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift-serverless",
+  "description": "Definition of AWS::RedshiftServerless::Namespace Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift-serverless",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift-serverless",
   "definitions": {
     "LogExport": {
@@ -133,6 +133,26 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "AdminPasswordSecretArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AdminPasswordSecretKmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
@@ -188,9 +208,53 @@
       ],
       "additionalProperties": false,
       "title": "AWSRedshiftServerlessNamespaceTagDefinition"
+    },
+    "SnapshotCopyConfiguration": {
+      "type": "object",
+      "properties": {
+        "DestinationRegion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DestinationKmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SnapshotRetentionPeriod": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "DestinationRegion"
+      ],
+      "additionalProperties": false,
+      "title": "AWSRedshiftServerlessNamespaceSnapshotCopyConfigurationDefinition"
     }
   },
   "properties": {
+    "AdminPasswordSecretKmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the AWS Key Management Service (KMS) key used to encrypt and store the namespace's admin credentials secret. You can only use this parameter if manageAdminPassword is true."
+    },
     "AdminUserPassword": {
       "oneOf": [
         {
@@ -203,7 +267,7 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The password associated with the admin user for the namespace that is being created. Password must be at least 8 characters in length, should be any printable ASCII character. Must contain at least one lowercase letter, one uppercase letter and one decimal digit."
+      "description": "The password associated with the admin user for the namespace that is being created. Password must be at least 8 characters in length, should be any printable ASCII character. Must contain at least one lowercase letter, one uppercase letter and one decimal digit. You can't use adminUserPassword if manageAdminPassword is true."
     },
     "AdminUsername": {
       "oneOf": [
@@ -279,6 +343,10 @@
       "maxItems": 16,
       "minItems": 0
     },
+    "ManageAdminPassword": {
+      "description": "If true, Amazon Redshift uses AWS Secrets Manager to manage the namespace's admin credentials. You can't use adminUserPassword if manageAdminPassword is true. If manageAdminPassword is false or not set, Amazon Redshift uses adminUserPassword for the admin user account's password.",
+      "type": "boolean"
+    },
     "NamespaceName": {
       "oneOf": [
         {
@@ -319,10 +387,44 @@
     "FinalSnapshotRetentionPeriod": {
       "description": "The number of days to retain automated snapshot in the destination region after they are copied from the source region. If the value is -1, the manual snapshot is retained indefinitely. The value must be either -1 or an integer between 1 and 3,653.",
       "type": "integer"
+    },
+    "NamespaceResourcePolicy": {
+      "description": "The resource policy document that will be attached to the namespace.",
+      "type": "object"
+    },
+    "RedshiftIdcApplicationArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN for the Redshift application that integrates with IAM Identity Center."
+    },
+    "SnapshotCopyConfigurations": {
+      "description": "The snapshot copy configurations for the namespace.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SnapshotCopyConfiguration"
+      },
+      "maxItems": 1,
+      "minItems": 0
     }
   },
   "tagging": {
-    "taggable": false
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "redshift-serverless:ListTagsForResource",
+      "redshift-serverless:TagResource",
+      "redshift-serverless:UntagResource"
+    ]
   },
   "required": [
     "NamespaceName"
@@ -345,13 +447,11 @@
     "/properties/AdminUserPassword",
     "/properties/FinalSnapshotName",
     "/properties/FinalSnapshotRetentionPeriod",
-    "/properties/Tags",
-    "/properties/Tags/*/Key",
-    "/properties/Tags/*/Value"
+    "/properties/ManageAdminPassword",
+    "/properties/RedshiftIdcApplicationArn"
   ],
   "createOnlyProperties": [
-    "/properties/NamespaceName",
-    "/properties/Tags"
+    "/properties/NamespaceName"
   ],
   "primaryIdentifier": [
     "/properties/NamespaceName"

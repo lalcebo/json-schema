@@ -1,0 +1,313 @@
+{
+  "typeName": "AWS::AppSync::ChannelNamespace",
+  "description": "Resource schema for AppSync ChannelNamespace. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Namespace": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "pattern": "([A-Za-z0-9](?:[A-Za-z0-9\\-]{0,48}[A-Za-z0-9])?)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Namespace indentifier.",
+      "title": "AWSAppSyncChannelNamespaceNamespaceDefinition"
+    },
+    "AuthMode": {
+      "description": "An auth mode.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuthType": {
+          "$ref": "#/definitions/AuthenticationType"
+        }
+      },
+      "title": "AWSAppSyncChannelNamespaceAuthModeDefinition"
+    },
+    "AuthModes": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AuthMode"
+      },
+      "title": "AWSAppSyncChannelNamespaceAuthModesDefinition"
+    },
+    "AuthenticationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AMAZON_COGNITO_USER_POOLS",
+            "AWS_IAM",
+            "API_KEY",
+            "OPENID_CONNECT",
+            "AWS_LAMBDA"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Security configuration for your AppSync API.",
+      "title": "AWSAppSyncChannelNamespaceAuthenticationTypeDefinition"
+    },
+    "Code": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32768
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "String of APPSYNC_JS code to be used by the handlers.",
+      "title": "AWSAppSyncChannelNamespaceCodeDefinition"
+    },
+    "ChannelNamespaceArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) for the Channel Namespace.",
+      "title": "AWSAppSyncChannelNamespaceChannelNamespaceArnDefinition"
+    },
+    "HandlerBehavior": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CODE",
+            "DIRECT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Integration behavior for a handler configuration.",
+      "title": "AWSAppSyncChannelNamespaceHandlerBehaviorDefinition"
+    },
+    "HandlerConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Behavior": {
+          "$ref": "#/definitions/HandlerBehavior"
+        },
+        "Integration": {
+          "$ref": "#/definitions/Integration"
+        }
+      },
+      "required": [
+        "Behavior",
+        "Integration"
+      ],
+      "title": "AWSAppSyncChannelNamespaceHandlerConfigDefinition"
+    },
+    "HandlerConfigs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "OnPublish": {
+          "$ref": "#/definitions/HandlerConfig"
+        },
+        "OnSubscribe": {
+          "$ref": "#/definitions/HandlerConfig"
+        }
+      },
+      "title": "AWSAppSyncChannelNamespaceHandlerConfigsDefinition"
+    },
+    "Integration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DataSourceName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "([_A-Za-z][_0-9A-Za-z]{0,511})?"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Data source to invoke for this integration."
+        },
+        "LambdaConfig": {
+          "$ref": "#/definitions/LambdaConfig"
+        }
+      },
+      "required": [
+        "DataSourceName"
+      ],
+      "title": "AWSAppSyncChannelNamespaceIntegrationDefinition"
+    },
+    "InvokeType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "REQUEST_RESPONSE",
+            "EVENT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Invocation type for direct lambda integrations.",
+      "title": "AWSAppSyncChannelNamespaceInvokeTypeDefinition"
+    },
+    "LambdaConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InvokeType": {
+          "$ref": "#/definitions/InvokeType"
+        }
+      },
+      "required": [
+        "InvokeType"
+      ],
+      "title": "AWSAppSyncChannelNamespaceLambdaConfigDefinition"
+    },
+    "Tag": {
+      "description": "An arbitrary set of tags (key-value pairs) for this AppSync API.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:)[ a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag. You can specify a maximum of 128 characters for a tag key."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "^[\\s\\w+-=\\.:/@]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for this tag. You can specify a maximum of 256 characters for a tag value."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppSyncChannelNamespaceTagDefinition"
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this AppSync API.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSAppSyncChannelNamespaceTagsDefinition"
+    }
+  },
+  "properties": {
+    "ApiId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "AppSync Api Id that this Channel Namespace belongs to."
+    },
+    "Name": {
+      "$ref": "#/definitions/Namespace"
+    },
+    "SubscribeAuthModes": {
+      "description": "List of AuthModes supported for Subscribe operations.",
+      "$ref": "#/definitions/AuthModes"
+    },
+    "PublishAuthModes": {
+      "description": "List of AuthModes supported for Publish operations.",
+      "$ref": "#/definitions/AuthModes"
+    },
+    "CodeHandlers": {
+      "$ref": "#/definitions/Code"
+    },
+    "CodeS3Location": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon S3 endpoint where the code is located."
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    },
+    "HandlerConfigs": {
+      "$ref": "#/definitions/HandlerConfigs"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "appsync:TagResource",
+      "appsync:UntagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "required": [
+    "ApiId",
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/ChannelNamespaceArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/ApiId",
+    "/properties/Name"
+  ],
+  "primaryIdentifier": [
+    "/properties/ChannelNamespaceArn"
+  ],
+  "writeOnlyProperties": [
+    "/properties/CodeS3Location"
+  ],
+  "type": "object",
+  "title": "AWSAppSyncChannelNamespaceProperties"
+}

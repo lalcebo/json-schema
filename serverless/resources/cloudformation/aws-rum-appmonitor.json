@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::RUM::AppMonitor",
-  "description": "Resource Type definition for AWS::RUM::AppMonitor. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Resource Type definition for AWS::RUM::AppMonitor. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "AppMonitorConfiguration": {
@@ -214,7 +214,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Defines the destination to send the metrics to. Valid values are CloudWatch and Evidently. If you specify Evidently, you must also specify the ARN of the Evidently experiment that is to be the destination and an IAM role that has permission to write to the experiment."
+          "description": "Defines the destination to send the metrics to. Valid values are CloudWatch and Evidently. Note: Evidently has been discontinued and is no longer supported - requests with Evidently will be rejected."
         },
         "DestinationArn": {
           "oneOf": [
@@ -226,7 +226,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Use this parameter only if Destination is Evidently. This parameter specifies the ARN of the Evidently experiment that will receive the extended metrics."
+          "description": "Evidently has been discontinued and therefore this is no longer an acceptable field. If Destination is CloudWatch, do not use this parameter. \n\nThis parameter specifies the ARN of the Evidently experiment that will receive the extended metrics."
         },
         "IamRoleArn": {
           "oneOf": [
@@ -238,7 +238,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "This parameter is required if Destination is Evidently. If Destination is CloudWatch, do not use this parameter.\n\nThis parameter specifies the ARN of an IAM role that RUM will assume to write to the Evidently experiment that you are sending metrics to. This role must have permission to write to that experiment."
+          "description": "Evidently has been discontinued and therefore this is no longer an acceptable field. If Destination is CloudWatch, do not use this parameter. \n\nThis parameter specifies the ARN of an IAM role that RUM will assume to write to the Evidently experiment that you are sending metrics to. This role must have permission to write to that experiment."
         },
         "MetricDefinitions": {
           "description": "An array of structures which define the metrics that you want to send.",
@@ -273,7 +273,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The name for the metric that is defined in this structure. For extended metrics, valid values are the following:\n\nPerformanceNavigationDuration\n\nPerformanceResourceDuration\n\nNavigationSatisfiedTransaction\n\nNavigationToleratedTransaction\n\nNavigationFrustratedTransaction\n\nWebVitalsCumulativeLayoutShift\n\nWebVitalsFirstInputDelay\n\nWebVitalsLargestContentfulPaint\n\nJsErrorCount\n\nHttpErrorCount\n\nSessionCount"
+          "description": "The name for the metric that is defined in this structure. For extended metrics, valid values are the following:\n\nPerformanceNavigationDuration\n\nPerformanceResourceDuration\n\nNavigationSatisfiedTransaction\n\nNavigationToleratedTransaction\n\nNavigationFrustratedTransaction\n\nWebVitalsCumulativeLayoutShift\n\nWebVitalsFirstInputDelay\n\nWebVitalsLargestContentfulPaint\n\nWebVitalsInteractionToNextPaint\n\nJsErrorCount\n\nHttpErrorCount\n\nSessionCount\n\nPageViewCount\n\nHttp4xxCount\n\nHttp5xxCount\n\nSessionDuration\n\nPageViewCountPerSession\n\nJsErrorCountPerSession\n\nHttp4xxCountPerSession\n\nHttp5xxCountPerSession\n\nJsErrorCountPerPageView\n\nHttp4xxCountPerPageView\n\nHttp5xxCountPerPageView\n\nTimeOnPage\n\nColdLaunchTime\n\nWarmLaunchTime\n\nCrashCount\n\nANRCount\n\nAppHangCount\n\nScreenLoadCount\n\nScreenLoadTime\n\nNetworkLatency\n\nSpanPayloadSize\n\nLogEventPayloadSize"
         },
         "Namespace": {
           "oneOf": [
@@ -301,7 +301,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The field within the event object that the metric value is sourced from.\n\nIf you omit this field, a hardcoded value of 1 is pushed as the metric value. This is useful if you just want to count the number of events that the filter catches.\n\nIf this metric is sent to Evidently, this field will be passed to Evidently raw and Evidently will handle data extraction from the event."
+          "description": "The field within the event object that the metric value is sourced from.\n\nIf you omit this field, a hardcoded value of 1 is pushed as the metric value. This is useful if you just want to count the number of events that the filter catches.\n\nIf this metric is sent to Evidently, this field will be passed to Evidently raw and Evidently will handle data extraction from the event. Note: Evidently has been discontinued."
         },
         "UnitLabel": {
           "oneOf": [
@@ -355,6 +355,41 @@
       ],
       "title": "AWSRUMAppMonitorMetricDefinition"
     },
+    "ResourcePolicy": {
+      "description": "A structure that defines resource policy attached to your app monitor.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PolicyDocument": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The JSON to use as the resource policy. The document can be up to 4 KB in size. "
+        },
+        "PolicyRevisionId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string value that you can use to conditionally update your policy. You can provide the revision ID of your existing policy to make mutating requests against that policy. \n\n When you assign a policy revision ID, then later requests about that policy will be rejected with an InvalidPolicyRevisionIdException error if they don't provide the correct current revision ID."
+        }
+      },
+      "required": [
+        "PolicyDocument"
+      ],
+      "title": "AWSRUMAppMonitorResourcePolicyDefinition"
+    },
     "CustomEventsStatus": {
       "oneOf": [
         {
@@ -381,6 +416,51 @@
         }
       },
       "title": "AWSRUMAppMonitorCustomEventsDefinition"
+    },
+    "DeobfuscationConfiguration": {
+      "description": "A structure that contains the configuration for how an app monitor can deobfuscate stack traces.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "JavaScriptSourceMaps": {
+          "description": "A structure that contains the configuration for how an app monitor can unminify JavaScript error stack traces using source maps.",
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "Status": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "ENABLED",
+                    "DISABLED"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "Specifies whether JavaScript error stack traces should be unminified for this app monitor. The default is for JavaScript error stack trace unminification to be DISABLED"
+            },
+            "S3Uri": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^s3://[a-z0-9][-.a-z0-9]{1,62}(?:/[-!_*'().a-z0-9A-Z]+(?:/[-!_*'().a-z0-9A-Z]+)*)?/?$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The S3Uri of the bucket or folder that stores the source map files. It is required if status is ENABLED."
+            }
+          },
+          "required": [
+            "Status"
+          ]
+        }
+      },
+      "title": "AWSRUMAppMonitorDeobfuscationConfigurationDefinition"
     }
   },
   "properties": {
@@ -402,7 +482,7 @@
       "oneOf": [
         {
           "type": "string",
-          "pattern": "^(localhost)|^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(?![-.])([A-Za-z0-9-\\.\\-]{0,63})((?![-])([a-zA-Z0-9]{1}|^[a-zA-Z0-9]{0,1}))\\.(?![-])[A-Za-z-0-9]{1,63}((?![-])([a-zA-Z0-9]{1}|^[a-zA-Z0-9]{0,1}))|^(\\*\\.)(?![-.])([A-Za-z0-9-\\.\\-]{0,63})((?![-])([a-zA-Z0-9]{1}|^[a-zA-Z0-9]{0,1}))\\.(?![-])[A-Za-z-0-9]{1,63}((?![-])([a-zA-Z0-9]{1}|^[a-zA-Z0-9]{0,1}))",
+          "pattern": "^(localhost)$|^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|(?=^[a-zA-Z0-9\\.\\*-]{4,253}$)(?!.*\\.-)(?!.*-\\.)(?!.*\\.\\.)(?!.*[^\\.]{64,})^(\\*\\.)?(?![-\\.\\*])[^\\*]{1,}\\.(\\*|(?!.*--)(?=.*[a-zA-Z])[^\\*]{1,}[^\\*-])$",
           "minLength": 1,
           "maxLength": 253
         },
@@ -410,7 +490,26 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The top-level internet domain name for which your application has administrative authority."
+      "description": "The top-level internet domain name for which your application has administrative authority. The CreateAppMonitor requires either the domain or the domain list."
+    },
+    "DomainList": {
+      "description": "The top-level internet domain names for which your application has administrative authority. The CreateAppMonitor requires either the domain or the domain list.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^(localhost)$|^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|(?=^[a-zA-Z0-9\\.\\*-]{4,253}$)(?!.*\\.-)(?!.*-\\.)(?!.*\\.\\.)(?!.*[^\\.]{64,})^(\\*\\.)?(?![-\\.\\*])[^\\*]{1,}\\.(\\*|(?!.*--)(?=.*[a-zA-Z])[^\\*]{1,}[^\\*-])$",
+            "minLength": 1,
+            "maxLength": 253
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
     },
     "CwLogEnabled": {
       "description": "Data collected by RUM is kept by RUM for 30 days and then deleted. This parameter specifies whether RUM sends a copy of this telemetry data to CWLlong in your account. This enables you to keep the telemetry data for more than 30 days, but it does incur CWLlong charges. If you omit this parameter, the default is false",
@@ -424,11 +523,37 @@
     },
     "CustomEvents": {
       "$ref": "#/definitions/CustomEvents"
+    },
+    "ResourcePolicy": {
+      "$ref": "#/definitions/ResourcePolicy"
+    },
+    "DeobfuscationConfiguration": {
+      "$ref": "#/definitions/DeobfuscationConfiguration"
+    },
+    "Platform": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Web",
+            "Android",
+            "iOS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     }
   },
   "additionalProperties": false,
   "createOnlyProperties": [
-    "/properties/Name"
+    "/properties/Name",
+    "/properties/Platform"
+  ],
+  "deprecatedProperties": [
+    "/properties/AppMonitorConfiguration/MetricDestinations/*/DestinationArn",
+    "/properties/AppMonitorConfiguration/MetricDestinations/*/IamRoleArn"
   ],
   "readOnlyProperties": [
     "/properties/Id"
@@ -442,10 +567,20 @@
     ]
   ],
   "required": [
-    "Name",
-    "Domain"
+    "Name"
   ],
-  "taggable": true,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "rum:UntagResource",
+      "rum:TagResource",
+      "rum:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSRUMAppMonitorProperties"
 }

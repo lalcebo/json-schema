@@ -1,0 +1,182 @@
+{
+  "typeName": "AWS::ARCZonalShift::ZonalAutoshiftConfiguration",
+  "description": "Definition of AWS::ARCZonalShift::ZonalAutoshiftConfiguration Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "ZonalAutoshiftStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCZonalShiftZonalAutoshiftConfigurationZonalAutoshiftStatusDefinition"
+    },
+    "ControlCondition": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/ControlConditionType"
+        },
+        "AlarmIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 8,
+              "pattern": "^.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AlarmIdentifier",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCZonalShiftZonalAutoshiftConfigurationControlConditionDefinition"
+    },
+    "ControlConditionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 10,
+          "pattern": "^[a-zA-Z]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCZonalShiftZonalAutoshiftConfigurationControlConditionTypeDefinition"
+    },
+    "PracticeRunConfiguration": {
+      "type": "object",
+      "properties": {
+        "BlockingAlarms": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ControlCondition"
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "OutcomeAlarms": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ControlCondition"
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "BlockedDates": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 10,
+                "minLength": 10,
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 15,
+          "minItems": 0
+        },
+        "BlockedWindows": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 19,
+                "minLength": 19,
+                "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun):[0-9]{2}:[0-9]{2}-(Mon|Tue|Wed|Thu|Fri|Sat|Sun):[0-9]{2}:[0-9]{2}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 15,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "OutcomeAlarms"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCZonalShiftZonalAutoshiftConfigurationPracticeRunConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "ZonalAutoshiftStatus": {
+      "$ref": "#/definitions/ZonalAutoshiftStatus"
+    },
+    "PracticeRunConfiguration": {
+      "$ref": "#/definitions/PracticeRunConfiguration"
+    },
+    "ResourceIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 8
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "createOnlyProperties": [
+    "/properties/ResourceIdentifier"
+  ],
+  "primaryIdentifier": [
+    "/properties/ResourceIdentifier"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": false
+  },
+  "allOf": [
+    {
+      "anyOf": [
+        {
+          "required": [
+            "ZonalAutoshiftStatus"
+          ]
+        },
+        {
+          "required": [
+            "PracticeRunConfiguration"
+          ]
+        }
+      ],
+      "allOf": [
+        {
+          "required": [
+            "ResourceIdentifier"
+          ]
+        }
+      ]
+    }
+  ],
+  "type": "object",
+  "title": "AWSARCZonalShiftZonalAutoshiftConfigurationProperties"
+}

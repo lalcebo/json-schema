@@ -1,8 +1,54 @@
 {
   "typeName": "MongoDB::Atlas::SearchIndex",
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/search-index",
   "additionalProperties": false,
   "definitions": {
+    "ApiAtlasFTSAnalyzersTokenizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Tokenizer that you want to use to create tokens. Tokens determine how Atlas Search splits up text into discrete chunks for indexing.",
+      "properties": {
+        "MaxGram": {
+          "type": "integer",
+          "description": "Characters to include in the longest token that Atlas Search creates."
+        },
+        "MinGram": {
+          "type": "integer",
+          "description": "Characters to include in the shortest token that Atlas Search creates."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Human-readable label that identifies this tokenizer type."
+        },
+        "Group": {
+          "type": "integer",
+          "description": "Index of the character group within the matching expression to extract into tokens. Use `0` to extract all character groups."
+        },
+        "Pattern": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Regular expression to match against."
+        },
+        "MaxTokenLength": {
+          "type": "integer",
+          "description": "Maximum number of characters in a single token. Tokens greater than this length are split at this length into multiple tokens."
+        }
+      },
+      "title": "MongoDBAtlasSearchIndexApiAtlasFTSAnalyzersTokenizerDefinition"
+    },
     "ApiAtlasFTSAnalyzersViewManual": {
       "type": "object",
       "properties": {
@@ -11,7 +57,14 @@
           "insertionOrder": false,
           "description": "Filters that examine text one character at a time and perform filtering operations.",
           "items": {
-            "type": "object"
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
           }
         },
         "Name": {
@@ -29,9 +82,19 @@
           "type": "array",
           "insertionOrder": false,
           "description": "Filter that performs operations such as:\n\n- Stemming, which reduces related words, such as \"talking\", \"talked\", and \"talks\" to their root word \"talk\".\n\n- Redaction, the removal of sensitive information from public documents.",
-          "items": {}
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         },
         "Tokenizer": {
+          "$ref": "#/definitions/ApiAtlasFTSAnalyzersTokenizer",
           "type": "object",
           "description": "Tokenizer that you want to use to create tokens. Tokens determine how Atlas Search splits up text into discrete chunks for indexing."
         }
@@ -44,21 +107,29 @@
       "properties": {
         "Dynamic": {
           "type": "boolean",
-          "description": "Flag that indicates whether the index uses dynamic or static mappings. Required if **mappings.fields** is omitted."
+          "description": "Flag that indicates whether the index uses dynamic or static mappings. If DynamicConfig is specified, this field is ignored (DynamicConfig takes precedence). Required for search indexes if **mappings.fields** is omitted and **mappings.dynamicConfig** is not specified."
+        },
+        "DynamicConfig": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Stringify json representation of dynamic mapping configuration object. This allows for more complex dynamic mapping configurations beyond a simple boolean. If both Dynamic and DynamicConfig are specified, DynamicConfig takes precedence."
         },
         "Fields": {
-          "type": "array",
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          },
-          "description": "One or more field specifications for the Atlas Search index. The element of the array must have the format fieldName:fieldType. Required if **mappings.dynamic** is omitted or set to **false**."
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "One or more field specifications for the Atlas Search index. Stringify json representation of field with types and properties. Required for search indexes if **mappings.dynamic** and **mappings.dynamicConfig** are omitted or if **mappings.dynamic** is set to **false**."
         }
       },
       "additionalProperties": false,
@@ -95,6 +166,11 @@
           "$ref": "#/definitions/SynonymSource"
         }
       },
+      "required": [
+        "Analyzer",
+        "Name",
+        "Source"
+      ],
       "additionalProperties": false,
       "title": "MongoDBAtlasSearchIndexApiAtlasFTSSynonymMappingDefinitionViewDefinition"
     },
@@ -113,11 +189,46 @@
           "description": "Human-readable label that identifies the MongoDB collection that stores words and their applicable synonyms."
         }
       },
+      "required": [
+        "Collection"
+      ],
       "additionalProperties": false,
       "title": "MongoDBAtlasSearchIndexSynonymSourceDefinition"
+    },
+    "TypeSet": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Human-readable label that identifies this type set."
+        },
+        "Types": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Stringify json representation of types array. Each type defines a field type for the search index."
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "additionalProperties": false,
+      "title": "MongoDBAtlasSearchIndexTypeSetDefinition"
     }
   },
-  "description": "Returns, adds, edits, and removes Atlas Search indexes. Also returns and updates user-defined analyzers.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Returns, adds, edits, and removes Atlas Search indexes. Also returns and updates user-defined analyzers.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/search-index",
   "properties": {
     "Analyzer": {
       "oneOf": [
@@ -157,7 +268,7 @@
           "type": "string",
           "maxLength": 64,
           "minLength": 1,
-          "pattern": "^([a-zA-Z0-9]([a-zA-Z0-9-]){0,21}(?<!-)([\\w]{0,42}))$"
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]*$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -217,6 +328,17 @@
       ],
       "description": "Human-readable label that identifies this index. Within each namespace, names of all indexes in the namespace must be unique."
     },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of index: **search** or **vectorSearch**. Default type is **search**."
+    },
     "SearchAnalyzer": {
       "oneOf": [
         {
@@ -236,13 +358,48 @@
         "$ref": "#/definitions/ApiAtlasFTSSynonymMappingDefinitionView",
         "type": "object"
       }
+    },
+    "Fields": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Array of [Fields](https://www.mongodb.com/docs/atlas/atlas-search/field-types/knn-vector/#std-label-fts-data-types-knn-vector) to configure this vectorSearch index. Stringify json representation of field with types and properties. Required for vector indexes. It must contain at least one **vector** type field."
+    },
+    "StoredSource": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Flag that indicates whether to store the original document in the index. Can be a boolean (\"true\" or \"false\") or a stringified JSON object specifying which fields to include/exclude. When stored, this allows the index to return the original document for queries."
+    },
+    "TypeSets": {
+      "type": "array",
+      "insertionOrder": false,
+      "description": "Array of type sets that define alternate types for fields in the index. Each type set allows you to group related fields under a common name.",
+      "items": {
+        "$ref": "#/definitions/TypeSet",
+        "type": "object"
+      }
+    },
+    "NumPartitions": {
+      "type": "integer",
+      "description": "Number of partitions for the index. This is used to improve search performance for large datasets by distributing the index across multiple partitions."
     }
   },
   "required": [
-    "Mappings",
     "ClusterName",
     "CollectionName",
-    "Database"
+    "Database",
+    "Name"
   ],
   "primaryIdentifier": [
     "/properties/IndexId",
@@ -260,9 +417,13 @@
     "/properties/ClusterName",
     "/properties/CollectionName",
     "/properties/Database",
-    "/properties/Mappings",
-    "/properties/SearchAnalyzer"
+    "/properties/Type",
+    "/properties/Name"
   ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/search-index/README.md",
+  "tagging": {
+    "taggable": false
+  },
   "type": "object",
   "title": "MongoDBAtlasSearchIndexProperties"
 }

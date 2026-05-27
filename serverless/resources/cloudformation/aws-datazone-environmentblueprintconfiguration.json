@@ -1,0 +1,243 @@
+{
+  "tagging": {
+    "taggable": false
+  },
+  "typeName": "AWS::DataZone::EnvironmentBlueprintConfiguration",
+  "readOnlyProperties": [
+    "/properties/CreatedAt",
+    "/properties/DomainId",
+    "/properties/EnvironmentBlueprintId",
+    "/properties/UpdatedAt"
+  ],
+  "description": "Definition of AWS::DataZone::EnvironmentBlueprintConfiguration Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "createOnlyProperties": [
+    "/properties/DomainIdentifier",
+    "/properties/EnvironmentBlueprintIdentifier"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainId",
+    "/properties/EnvironmentBlueprintId"
+  ],
+  "required": [
+    "DomainIdentifier",
+    "EnvironmentBlueprintIdentifier",
+    "EnabledRegions"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "additionalIdentifiers": [
+    [
+      "/properties/DomainIdentifier",
+      "/properties/EnvironmentBlueprintIdentifier"
+    ]
+  ],
+  "writeOnlyProperties": [
+    "/properties/DomainIdentifier",
+    "/properties/EnvironmentBlueprintIdentifier",
+    "/properties/EnvironmentRolePermissionBoundary",
+    "/properties/GlobalParameters",
+    "/properties/ProvisioningConfigurations"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "ProvisioningConfiguration": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "type": "object",
+          "title": "LakeFormationConfiguration",
+          "properties": {
+            "LakeFormationConfiguration": {
+              "$ref": "#/definitions/LakeFormationConfiguration"
+            }
+          },
+          "required": [
+            "LakeFormationConfiguration"
+          ]
+        }
+      ],
+      "title": "AWSDataZoneEnvironmentBlueprintConfigurationProvisioningConfigurationDefinition"
+    },
+    "LakeFormationConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "LocationRegistrationExcludeS3Locations": {
+          "minItems": 0,
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "minLength": 1,
+                "pattern": "^s3://.+$",
+                "type": "string",
+                "maxLength": 1024
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "LocationRegistrationRole": {
+          "oneOf": [
+            {
+              "pattern": "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSDataZoneEnvironmentBlueprintConfigurationLakeFormationConfigurationDefinition"
+    },
+    "RegionalParameter": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Parameters": {
+          "$ref": "#/definitions/Parameter"
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "pattern": "^[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSDataZoneEnvironmentBlueprintConfigurationRegionalParameterDefinition"
+    },
+    "Parameter": {
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "title": "AWSDataZoneEnvironmentBlueprintConfigurationParameterDefinition"
+    }
+  },
+  "properties": {
+    "GlobalParameters": {
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "description": "Region-agnostic environment blueprint parameters.",
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "EnabledRegions": {
+      "minItems": 0,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "minLength": 4,
+            "pattern": "^[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]$",
+            "type": "string",
+            "maxLength": 16
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "EnvironmentBlueprintIdentifier": {
+      "oneOf": [
+        {
+          "pattern": "^[a-zA-Z0-9_-]{1,36}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "RegionalParameters": {
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RegionalParameter"
+      }
+    },
+    "ProvisioningRoleArn": {
+      "oneOf": [
+        {
+          "pattern": "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProvisioningConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ProvisioningConfiguration"
+      }
+    },
+    "DomainIdentifier": {
+      "oneOf": [
+        {
+          "pattern": "^dzd[-_][a-zA-Z0-9_-]{1,36}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "EnvironmentRolePermissionBoundary": {
+      "oneOf": [
+        {
+          "pattern": "^arn:aws[^:]*:iam::(aws|\\d{12}):policy/[\\w+=,.@-]*$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ManageAccessRoleArn": {
+      "oneOf": [
+        {
+          "pattern": "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "title": "AWSDataZoneEnvironmentBlueprintConfigurationProperties"
+}

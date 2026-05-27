@@ -1,0 +1,899 @@
+{
+  "typeName": "AWS::Bedrock::Prompt",
+  "description": "Definition of AWS::Bedrock::Prompt Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "PromptTemplateType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "TEXT",
+            "CHAT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Prompt template type",
+      "title": "AWSBedrockPromptPromptTemplateTypeDefinition"
+    },
+    "PromptVariant": {
+      "type": "object",
+      "description": "Prompt variant",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^([0-9a-zA-Z][_-]?){1,100}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name for a variant."
+        },
+        "TemplateType": {
+          "$ref": "#/definitions/PromptTemplateType"
+        },
+        "TemplateConfiguration": {
+          "$ref": "#/definitions/PromptTemplateConfiguration"
+        },
+        "ModelId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^(arn:aws(-[^:]{1,12})?:(bedrock|sagemaker):[a-z0-9-]{1,20}:([0-9]{12})?:([a-z-]+/)?)?([a-zA-Z0-9.-]{1,63}){0,2}(([:][a-z0-9-]{1,63}){0,2})?(/[a-z0-9]{1,12})?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN or Id of a Bedrock Foundational Model or Inference Profile, or the ARN of a imported model, or a provisioned throughput ARN for custom models."
+        },
+        "InferenceConfiguration": {
+          "$ref": "#/definitions/PromptInferenceConfiguration"
+        },
+        "GenAiResource": {
+          "$ref": "#/definitions/PromptGenAiResource"
+        },
+        "AdditionalModelRequestFields": {
+          "$ref": "#/definitions/AdditionalModelRequestFields"
+        },
+        "Metadata": {
+          "$ref": "#/definitions/PromptMetadataList"
+        }
+      },
+      "required": [
+        "Name",
+        "TemplateType",
+        "TemplateConfiguration"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptPromptVariantDefinition"
+    },
+    "TextPromptTemplateConfiguration": {
+      "type": "object",
+      "description": "Configuration for text prompt template",
+      "properties": {
+        "Text": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Prompt content for String prompt template"
+        },
+        "TextS3Location": {
+          "$ref": "#/definitions/TextS3Location"
+        },
+        "InputVariables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PromptInputVariable"
+          },
+          "maxItems": 20,
+          "minItems": 0,
+          "description": "List of input variables",
+          "insertionOrder": true
+        },
+        "CachePoint": {
+          "$ref": "#/definitions/CachePointBlock"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptTextPromptTemplateConfigurationDefinition"
+    },
+    "ChatPromptTemplateConfiguration": {
+      "type": "object",
+      "description": "Configuration for chat prompt template",
+      "properties": {
+        "Messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Message"
+          },
+          "minItems": 0,
+          "description": "List of messages for chat prompt template",
+          "insertionOrder": true
+        },
+        "System": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SystemContentBlock"
+          },
+          "minItems": 0,
+          "description": "Configuration for chat prompt template",
+          "insertionOrder": true
+        },
+        "ToolConfiguration": {
+          "$ref": "#/definitions/ToolConfiguration"
+        },
+        "InputVariables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PromptInputVariable"
+          },
+          "maxItems": 20,
+          "minItems": 0,
+          "description": "List of input variables",
+          "insertionOrder": true
+        }
+      },
+      "required": [
+        "Messages"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptChatPromptTemplateConfigurationDefinition"
+    },
+    "PromptTemplateConfiguration": {
+      "description": "Prompt template configuration",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Text",
+          "properties": {
+            "Text": {
+              "$ref": "#/definitions/TextPromptTemplateConfiguration"
+            }
+          },
+          "required": [
+            "Text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Chat",
+          "properties": {
+            "Chat": {
+              "$ref": "#/definitions/ChatPromptTemplateConfiguration"
+            }
+          },
+          "required": [
+            "Chat"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockPromptPromptTemplateConfigurationDefinition"
+    },
+    "TextS3Location": {
+      "type": "object",
+      "description": "The identifier for the S3 resource.",
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "minLength": 3,
+              "pattern": "^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A bucket in S3"
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A object key in S3"
+        },
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the the S3 object to use"
+        }
+      },
+      "required": [
+        "Bucket",
+        "Key"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptTextS3LocationDefinition"
+    },
+    "ConversationRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "user",
+            "assistant"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Conversation roles for the chat prompt",
+      "title": "AWSBedrockPromptConversationRoleDefinition"
+    },
+    "ContentBlock": {
+      "description": "Configuration for chat prompt template",
+      "oneOf": [
+        {
+          "title": "Text",
+          "type": "object",
+          "properties": {
+            "Text": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "Configuration for chat prompt template"
+            }
+          },
+          "required": [
+            "Text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "CachePoint",
+          "type": "object",
+          "properties": {
+            "CachePoint": {
+              "$ref": "#/definitions/CachePointBlock"
+            }
+          },
+          "required": [
+            "CachePoint"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockPromptContentBlockDefinition"
+    },
+    "SystemContentBlock": {
+      "description": "Configuration for chat prompt template",
+      "oneOf": [
+        {
+          "title": "Text",
+          "type": "object",
+          "properties": {
+            "Text": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "Configuration for chat prompt template"
+            }
+          },
+          "required": [
+            "Text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "CachePoint",
+          "type": "object",
+          "properties": {
+            "CachePoint": {
+              "$ref": "#/definitions/CachePointBlock"
+            }
+          },
+          "required": [
+            "CachePoint"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockPromptSystemContentBlockDefinition"
+    },
+    "Message": {
+      "type": "object",
+      "description": "Chat prompt Message",
+      "properties": {
+        "Role": {
+          "$ref": "#/definitions/ConversationRole"
+        },
+        "Content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContentBlock"
+          },
+          "minItems": 1,
+          "description": "List of Content Blocks",
+          "insertionOrder": true
+        }
+      },
+      "required": [
+        "Role",
+        "Content"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptMessageDefinition"
+    },
+    "ToolInputSchema": {
+      "description": "Tool input schema",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Json",
+          "properties": {
+            "Json": {
+              "type": "object"
+            }
+          },
+          "description": "Tool input schema json",
+          "required": [
+            "Json"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockPromptToolInputSchemaDefinition"
+    },
+    "ToolSpecification": {
+      "type": "object",
+      "description": "Tool specification",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tool name"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "InputSchema": {
+          "$ref": "#/definitions/ToolInputSchema"
+        }
+      },
+      "required": [
+        "Name",
+        "InputSchema"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptToolSpecificationDefinition"
+    },
+    "Tool": {
+      "description": "Tool details",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "ToolSpec",
+          "properties": {
+            "ToolSpec": {
+              "$ref": "#/definitions/ToolSpecification"
+            }
+          },
+          "required": [
+            "ToolSpec"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "CachePoint",
+          "type": "object",
+          "properties": {
+            "CachePoint": {
+              "$ref": "#/definitions/CachePointBlock"
+            }
+          },
+          "required": [
+            "CachePoint"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockPromptToolDefinition"
+    },
+    "AutoToolChoice": {
+      "type": "object",
+      "description": "Auto Tool choice",
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptAutoToolChoiceDefinition"
+    },
+    "AnyToolChoice": {
+      "type": "object",
+      "description": "Any Tool choice",
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptAnyToolChoiceDefinition"
+    },
+    "SpecificToolChoice": {
+      "type": "object",
+      "description": "Specific Tool choice",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tool name"
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptSpecificToolChoiceDefinition"
+    },
+    "ToolChoice": {
+      "description": "Tool choice",
+      "oneOf": [
+        {
+          "title": "Auto",
+          "type": "object",
+          "properties": {
+            "Auto": {
+              "$ref": "#/definitions/AutoToolChoice"
+            }
+          },
+          "required": [
+            "Auto"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Any",
+          "type": "object",
+          "properties": {
+            "Any": {
+              "$ref": "#/definitions/AnyToolChoice"
+            }
+          },
+          "required": [
+            "Any"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "Tool",
+          "type": "object",
+          "properties": {
+            "Tool": {
+              "$ref": "#/definitions/SpecificToolChoice"
+            }
+          },
+          "required": [
+            "Tool"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockPromptToolChoiceDefinition"
+    },
+    "ToolConfiguration": {
+      "type": "object",
+      "description": "Tool configuration",
+      "properties": {
+        "Tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tool"
+          },
+          "minItems": 1,
+          "description": "List of Tools",
+          "insertionOrder": true
+        },
+        "ToolChoice": {
+          "$ref": "#/definitions/ToolChoice"
+        }
+      },
+      "required": [
+        "Tools"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptToolConfigurationDefinition"
+    },
+    "PromptModelInferenceConfiguration": {
+      "type": "object",
+      "description": "Prompt model inference configuration",
+      "properties": {
+        "Temperature": {
+          "type": "number",
+          "maximum": 1,
+          "minimum": 0,
+          "description": "Controls randomness, higher values increase diversity"
+        },
+        "TopP": {
+          "type": "number",
+          "maximum": 1,
+          "minimum": 0,
+          "description": "Cumulative probability cutoff for token selection"
+        },
+        "MaxTokens": {
+          "type": "number",
+          "maximum": 512000,
+          "minimum": 0,
+          "description": "Maximum length of output"
+        },
+        "StopSequences": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 4,
+          "minItems": 0,
+          "description": "List of stop sequences",
+          "insertionOrder": true
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptPromptModelInferenceConfigurationDefinition"
+    },
+    "PromptInferenceConfiguration": {
+      "description": "Model inference configuration",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Text",
+          "properties": {
+            "Text": {
+              "$ref": "#/definitions/PromptModelInferenceConfiguration"
+            }
+          },
+          "required": [
+            "Text"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockPromptPromptInferenceConfigurationDefinition"
+    },
+    "PromptInputVariable": {
+      "type": "object",
+      "description": "Input variable",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^([0-9a-zA-Z][_-]?){1,100}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name for an input variable"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptPromptInputVariableDefinition"
+    },
+    "TagsMap": {
+      "type": "object",
+      "description": "A map of tag keys and values",
+      "patternProperties": {
+        "^[a-zA-Z0-9\\s._:/=+@-]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Value of a tag"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptTagsMapDefinition"
+    },
+    "PromptAgentResource": {
+      "description": "Target Agent to invoke with Prompt",
+      "type": "object",
+      "properties": {
+        "AgentIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:agent-alias/[0-9a-zA-Z]{10}/[0-9a-zA-Z]{10}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Arn representation of the Agent Alias."
+        }
+      },
+      "required": [
+        "AgentIdentifier"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptPromptAgentResourceDefinition"
+    },
+    "PromptGenAiResource": {
+      "description": "Target resource to invoke with Prompt",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Agent",
+          "properties": {
+            "Agent": {
+              "$ref": "#/definitions/PromptAgentResource"
+            }
+          },
+          "required": [
+            "Agent"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockPromptPromptGenAiResourceDefinition"
+    },
+    "CachePointBlock": {
+      "description": "CachePointBlock",
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/CachePointType"
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptCachePointBlockDefinition"
+    },
+    "CachePointType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "default"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "CachePoint types for CachePointBlock",
+      "title": "AWSBedrockPromptCachePointTypeDefinition"
+    },
+    "AdditionalModelRequestFields": {
+      "type": "object",
+      "description": "Contains model-specific configurations",
+      "title": "AWSBedrockPromptAdditionalModelRequestFieldsDefinition"
+    },
+    "PromptMetadataList": {
+      "type": "array",
+      "description": "List of metadata to associate with the prompt variant.",
+      "items": {
+        "$ref": "#/definitions/PromptMetadataEntry"
+      },
+      "maxItems": 50,
+      "minItems": 0,
+      "insertionOrder": true,
+      "title": "AWSBedrockPromptPromptMetadataListDefinition"
+    },
+    "PromptMetadataEntry": {
+      "type": "object",
+      "description": "Contains a key-value pair that defines a metadata tag and value to attach to a prompt variant.",
+      "properties": {
+        "Key": {
+          "$ref": "#/definitions/PromptMetadataKey"
+        },
+        "Value": {
+          "$ref": "#/definitions/PromptMetadataValue"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockPromptPromptMetadataEntryDefinition"
+    },
+    "PromptMetadataKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The key of a metadata tag for a prompt variant.",
+      "title": "AWSBedrockPromptPromptMetadataKeyDefinition"
+    },
+    "PromptMetadataValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The value of a metadata tag for a prompt variant.",
+      "title": "AWSBedrockPromptPromptMetadataValueDefinition"
+    }
+  },
+  "properties": {
+    "DefaultVariant": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-9a-zA-Z][_-]?){1,100}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name for a variant."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name for a prompt resource."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-9a-zA-Z][_-]?){1,100}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name for a prompt resource."
+    },
+    "Variants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PromptVariant"
+      },
+      "maxItems": 1,
+      "minItems": 0,
+      "description": "List of prompt variants",
+      "insertionOrder": true
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagsMap"
+    },
+    "CustomerEncryptionKeyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 1,
+          "pattern": "^arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A KMS key ARN"
+    }
+  },
+  "required": [
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CreatedAt",
+    "/properties/Id",
+    "/properties/UpdatedAt",
+    "/properties/Version"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Variants/*/TemplateConfiguration/Text/TextS3Location"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": false,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "bedrock:TagResource",
+      "bedrock:UntagResource",
+      "bedrock:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSBedrockPromptProperties"
+}

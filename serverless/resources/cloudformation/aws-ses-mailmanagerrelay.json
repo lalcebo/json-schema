@@ -1,0 +1,158 @@
+{
+  "typeName": "AWS::SES::MailManagerRelay",
+  "description": "Definition of AWS::SES::MailManagerRelay Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses-mailmanager",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses-mailmanager",
+  "definitions": {
+    "NoAuthentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRelayNoAuthenticationDefinition"
+    },
+    "RelayAuthentication": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "SecretArn",
+          "properties": {
+            "SecretArn": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=,.@-]+$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "SecretArn"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "NoAuthentication",
+          "properties": {
+            "NoAuthentication": {
+              "$ref": "#/definitions/NoAuthentication"
+            }
+          },
+          "required": [
+            "NoAuthentication"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerRelayRelayAuthenticationDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9/_\\+=\\.:@\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9/_\\+=\\.:@\\-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRelayTagDefinition"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ses:TagResource",
+      "ses:UntagResource"
+    ]
+  },
+  "properties": {
+    "Authentication": {
+      "$ref": "#/definitions/RelayAuthentication"
+    },
+    "RelayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ServerName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-\\.]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ServerPort": {
+      "type": "number",
+      "maximum": 65535,
+      "minimum": 1
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0
+    }
+  },
+  "required": [
+    "Authentication",
+    "ServerName",
+    "ServerPort"
+  ],
+  "readOnlyProperties": [
+    "/properties/RelayArn",
+    "/properties/RelayId"
+  ],
+  "primaryIdentifier": [
+    "/properties/RelayId"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSSESMailManagerRelayProperties"
+}

@@ -1,7 +1,55 @@
 {
   "typeName": "AWS::EC2::VPCEndpointService",
-  "description": "Resource Type definition for AWS::EC2::VPCEndpointService. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::EC2::VPCEndpointService. Source:- No source definition found, add manually please",
   "additionalProperties": false,
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSEC2VPCEndpointServiceTagDefinition"
+    },
+    "IpAddressType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ipv4",
+            "ipv6"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEC2VPCEndpointServiceIpAddressTypeDefinition"
+    }
+  },
   "properties": {
     "NetworkLoadBalancerArns": {
       "type": "array",
@@ -9,7 +57,11 @@
       "items": {
         "oneOf": [
           {
-            "type": "string"
+            "type": "string",
+            "relationshipRef": {
+              "typeName": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+              "propertyPath": "/properties/LoadBalancerArn"
+            }
           },
           {
             "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -46,6 +98,40 @@
           }
         ]
       }
+    },
+    "Tags": {
+      "type": "array",
+      "description": "The tags to add to the VPC endpoint service.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "SupportedIpAddressTypes": {
+      "type": "array",
+      "description": "Specify which Ip Address types are supported for VPC endpoint service.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/IpAddressType"
+      }
+    },
+    "SupportedRegions": {
+      "type": "array",
+      "description": "The Regions from which service consumers can access the service.",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
     }
   },
   "primaryIdentifier": [
@@ -58,10 +144,15 @@
     "/properties/ContributorInsightsEnabled"
   ],
   "tagging": {
-    "taggable": false,
-    "tagOnCreate": false,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": false
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
   },
   "type": "object",
   "title": "AWSEC2VPCEndpointServiceProperties"

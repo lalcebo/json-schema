@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::RedshiftServerless::Workgroup",
-  "description": "Definition of AWS::RedshiftServerless::Workgroup Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift-serverless. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift-serverless",
+  "description": "Definition of AWS::RedshiftServerless::Workgroup Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift-serverless",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift-serverless",
   "definitions": {
     "ConfigParameter": {
@@ -108,6 +108,21 @@
       "additionalProperties": false,
       "title": "AWSRedshiftServerlessWorkgroupNetworkInterfaceDefinition"
     },
+    "PerformanceTarget": {
+      "type": "object",
+      "properties": {
+        "Status": {
+          "$ref": "#/definitions/PerformanceTargetStatus"
+        },
+        "Level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSRedshiftServerlessWorkgroupPerformanceTargetDefinition"
+    },
     "VpcEndpoint": {
       "type": "object",
       "properties": {
@@ -194,6 +209,9 @@
         "BaseCapacity": {
           "type": "integer"
         },
+        "MaxCapacity": {
+          "type": "integer"
+        },
         "EnhancedVpcRouting": {
           "type": "boolean"
         },
@@ -257,6 +275,22 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "PricePerformanceTarget": {
+          "$ref": "#/definitions/PerformanceTarget"
+        },
+        "TrackName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "additionalProperties": false,
@@ -313,6 +347,21 @@
         }
       ],
       "title": "AWSRedshiftServerlessWorkgroupWorkgroupStatusDefinition"
+    },
+    "PerformanceTargetStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSRedshiftServerlessWorkgroupPerformanceTargetStatusDefinition"
     }
   },
   "properties": {
@@ -327,7 +376,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The name of the workgroup."
     },
     "NamespaceName": {
       "oneOf": [
@@ -340,16 +390,24 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The namespace the workgroup is associated with."
     },
     "BaseCapacity": {
+      "description": "The base compute capacity of the workgroup in Redshift Processing Units (RPUs).",
+      "type": "integer"
+    },
+    "MaxCapacity": {
+      "description": "The max compute capacity of the workgroup in Redshift Processing Units (RPUs).",
       "type": "integer"
     },
     "EnhancedVpcRouting": {
+      "description": "The value that specifies whether to enable enhanced virtual private cloud (VPC) routing, which forces Amazon Redshift Serverless to route traffic through your VPC.",
       "type": "boolean",
       "default": false
     },
     "ConfigParameters": {
+      "description": "A list of parameters to set for finer control over a database. Available options are datestyle, enable_user_activity_logging, query_group, search_path, max_query_execution_time, and require_ssl.",
       "type": "array",
       "uniqueItems": true,
       "insertionOrder": false,
@@ -359,6 +417,7 @@
       "minItems": 1
     },
     "SecurityGroupIds": {
+      "description": "A list of security group IDs to associate with the workgroup.",
       "type": "array",
       "insertionOrder": false,
       "items": {
@@ -378,6 +437,7 @@
       "minItems": 1
     },
     "SubnetIds": {
+      "description": "A list of subnet IDs the workgroup is associated with.",
       "type": "array",
       "insertionOrder": false,
       "items": {
@@ -397,13 +457,65 @@
       "minItems": 1
     },
     "PubliclyAccessible": {
+      "description": "A value that specifies whether the workgroup can be accessible from a public network.",
       "type": "boolean",
       "default": false
     },
     "Port": {
+      "description": "The custom port to use when connecting to a workgroup. Valid port ranges are 5431-5455 and 8191-8215. The default is 5439.",
       "type": "integer"
     },
+    "PricePerformanceTarget": {
+      "description": "A property that represents the price performance target settings for the workgroup.",
+      "type": "object",
+      "$ref": "#/definitions/PerformanceTarget"
+    },
+    "SnapshotArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the snapshot to restore from."
+    },
+    "SnapshotName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The snapshot name to restore from."
+    },
+    "SnapshotOwnerAccount": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Web Services account that owns the snapshot."
+    },
+    "RecoveryPointId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The recovery point id to restore from."
+    },
     "Tags": {
+      "description": "The map of the key-value pairs used to tag the workgroup.",
       "type": "array",
       "insertionOrder": false,
       "items": {
@@ -411,10 +523,36 @@
       },
       "maxItems": 200,
       "minItems": 0
+    },
+    "TrackName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Workgroup": {
+      "description": "Definition for workgroup resource",
+      "$ref": "#/definitions/Workgroup"
     }
   },
   "tagging": {
-    "taggable": true
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "redshift-serverless:ListTagsForResource",
+      "redshift-serverless:TagResource",
+      "redshift-serverless:UntagResource"
+    ]
   },
   "additionalProperties": false,
   "required": [
@@ -425,17 +563,17 @@
     "/properties/NamespaceName"
   ],
   "readOnlyProperties": [
-    "/properties/Workgroup",
     "/properties/Workgroup/WorkgroupId",
     "/properties/Workgroup/WorkgroupArn",
     "/properties/Workgroup/WorkgroupName",
     "/properties/Workgroup/NamespaceName",
     "/properties/Workgroup/BaseCapacity",
+    "/properties/Workgroup/MaxCapacity",
     "/properties/Workgroup/EnhancedVpcRouting",
-    "/properties/Workgroup/ConfigParameters/*/ParameterKey",
-    "/properties/Workgroup/ConfigParameters/*/ParameterValue",
+    "/properties/Workgroup/ConfigParameters",
     "/properties/Workgroup/SecurityGroupIds",
     "/properties/Workgroup/SubnetIds",
+    "/properties/Workgroup/TrackName",
     "/properties/Workgroup/Status",
     "/properties/Workgroup/Endpoint/Address",
     "/properties/Workgroup/Endpoint/Port",
@@ -449,13 +587,13 @@
     "/properties/Workgroup/CreationDate"
   ],
   "writeOnlyProperties": [
-    "/properties/BaseCapacity",
     "/properties/ConfigParameters",
     "/properties/SecurityGroupIds",
     "/properties/SubnetIds",
-    "/properties/Tags",
-    "/properties/Tags/*/Key",
-    "/properties/Tags/*/Value"
+    "/properties/SnapshotArn",
+    "/properties/SnapshotName",
+    "/properties/SnapshotOwnerAccount",
+    "/properties/RecoveryPointId"
   ],
   "primaryIdentifier": [
     "/properties/WorkgroupName"

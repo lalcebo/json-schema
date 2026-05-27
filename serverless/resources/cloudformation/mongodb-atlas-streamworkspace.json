@@ -1,0 +1,153 @@
+{
+  "typeName": "MongoDB::Atlas::StreamWorkspace",
+  "description": "Returns, adds, updates, and removes Atlas Stream Processing Workspaces. The DataProcessRegion.Region property can be updated after creation. Other properties (WorkspaceName, ProjectId, Profile, StreamConfig, DataProcessRegion.CloudProvider) are create-only and require resource replacement to change.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources.git",
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources.git",
+  "definitions": {
+    "BaseStreamsRegion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of the cloud provider region hosting Atlas Stream Processing.",
+      "title": "MongoDBAtlasStreamWorkspaceBaseStreamsRegionDefinition"
+    },
+    "StreamsDataProcessRegion": {
+      "type": "object",
+      "description": "Information about the cloud provider region in which MongoDB Cloud processes the stream.",
+      "properties": {
+        "CloudProvider": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AWS"
+              ],
+              "default": "AWS"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Label that identifies the cloud service provider where MongoDB Cloud performs stream processing. For CloudFormation, this is restricted to AWS only."
+        },
+        "Region": {
+          "$ref": "#/definitions/BaseStreamsRegion"
+        }
+      },
+      "required": [
+        "CloudProvider",
+        "Region"
+      ],
+      "additionalProperties": false,
+      "title": "MongoDBAtlasStreamWorkspaceStreamsDataProcessRegionDefinition"
+    },
+    "StreamConfig": {
+      "type": "object",
+      "description": "Configuration options for an Atlas Stream Processing Workspace.",
+      "properties": {
+        "Tier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "title": "Stream Workspace Tier"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Selected tier for the Stream Workspace. Configures Memory / VCPU allowances. Valid values: SP2, SP5, SP10, SP30, SP50."
+        },
+        "MaxTierSize": {
+          "oneOf": [
+            {
+              "type": "string",
+              "title": "Stream Workspace Max Tier Size"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Max tier size for the Stream Workspace. Configures Memory / VCPU allowances. Valid values: SP2, SP5, SP10, SP30, SP50."
+        }
+      },
+      "required": [
+        "Tier"
+      ],
+      "additionalProperties": false,
+      "title": "MongoDBAtlasStreamWorkspaceStreamConfigDefinition"
+    }
+  },
+  "properties": {
+    "Profile": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml)."
+    },
+    "WorkspaceName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Human-readable label that identifies the stream workspace."
+    },
+    "DataProcessRegion": {
+      "$ref": "#/definitions/StreamsDataProcessRegion"
+    },
+    "StreamConfig": {
+      "$ref": "#/definitions/StreamConfig"
+    },
+    "ProjectId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique 24-hexadecimal character string that identifies the project."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ProjectId",
+    "WorkspaceName",
+    "DataProcessRegion"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Hostnames"
+  ],
+  "primaryIdentifier": [
+    "/properties/WorkspaceName",
+    "/properties/ProjectId",
+    "/properties/Profile"
+  ],
+  "createOnlyProperties": [
+    "/properties/WorkspaceName",
+    "/properties/ProjectId",
+    "/properties/Profile",
+    "/properties/StreamConfig"
+  ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/stream-workspace/README.md",
+  "tagging": {
+    "taggable": false
+  },
+  "type": "object",
+  "title": "MongoDBAtlasStreamWorkspaceProperties"
+}

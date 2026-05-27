@@ -1,0 +1,249 @@
+{
+  "typeName": "AWS::IVS::Stage",
+  "description": "Resource Type definition for AWS::IVS::Stage.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSIVSStageTagDefinition"
+    },
+    "ParticipantRecordingHlsConfiguration": {
+      "description": "An object representing a configuration of participant HLS recordings for individual participant recording.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TargetSegmentDurationSeconds": {
+          "description": "Defines the target duration for recorded segments generated when recording a stage participant. Segments may have durations longer than the specified value when needed to ensure each segment begins with a keyframe. Default: 6.",
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 10,
+          "default": 6
+        }
+      },
+      "title": "AWSIVSStageParticipantRecordingHlsConfigurationDefinition"
+    },
+    "HlsConfiguration": {
+      "description": "HLS configuration object for individual participant recording.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ParticipantRecordingHlsConfiguration": {
+          "$ref": "#/definitions/ParticipantRecordingHlsConfiguration"
+        }
+      },
+      "required": [],
+      "title": "AWSIVSStageHlsConfigurationDefinition"
+    },
+    "ThumbnailConfiguration": {
+      "description": "A complex type that allows you to enable/disable the recording of thumbnails for individual participant recording and modify the interval at which thumbnails are generated for the live session.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ParticipantThumbnailConfiguration": {
+          "description": "An object representing a configuration of thumbnails for recorded video from an individual participant.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "RecordingMode": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "INTERVAL",
+                    "DISABLED"
+                  ],
+                  "default": "DISABLED"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "Thumbnail recording mode. Default: DISABLED."
+            },
+            "Storage": {
+              "description": "Indicates the format in which thumbnails are recorded. SEQUENTIAL records all generated thumbnails in a serial manner, to the media/thumbnails/high directory. LATEST saves the latest thumbnail in media/latest_thumbnail/high/thumb.jpg and overwrites it at the interval specified by targetIntervalSeconds. You can enable both SEQUENTIAL and LATEST. Default: SEQUENTIAL.",
+              "type": "array",
+              "minItems": 0,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "insertionOrder": false,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "SEQUENTIAL",
+                      "LATEST"
+                    ]
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              },
+              "default": [
+                "SEQUENTIAL"
+              ]
+            },
+            "TargetIntervalSeconds": {
+              "description": "The targeted thumbnail-generation interval in seconds. This is configurable only if recordingMode is INTERVAL. Default: 60.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 86400,
+              "default": 60
+            }
+          }
+        }
+      },
+      "required": [],
+      "title": "AWSIVSStageThumbnailConfigurationDefinition"
+    },
+    "AutoParticipantRecordingConfiguration": {
+      "description": "Configuration object for individual participant recording, to attach to the new stage.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StorageConfigurationArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:storage-configuration/[a-zA-Z0-9-]+$",
+              "minLength": 0,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN of the StorageConfiguration resource to use for individual participant recording."
+        },
+        "MediaTypes": {
+          "description": "Types of media to be recorded. Default: AUDIO_VIDEO.",
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "AUDIO_VIDEO",
+                  "AUDIO_ONLY"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "default": [
+            "AUDIO_VIDEO"
+          ]
+        },
+        "HlsConfiguration": {
+          "$ref": "#/definitions/HlsConfiguration"
+        },
+        "RecordingReconnectWindowSeconds": {
+          "description": "If a stage publisher disconnects and then reconnects within the specified interval, the multiple recordings will be considered a single recording and merged together. The default value is 0, which disables merging.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 300,
+          "default": 0
+        },
+        "ThumbnailConfiguration": {
+          "$ref": "#/definitions/ThumbnailConfiguration"
+        }
+      },
+      "required": [
+        "StorageConfigurationArn"
+      ],
+      "title": "AWSIVSStageAutoParticipantRecordingConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9-_]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Stage name"
+    },
+    "AutoParticipantRecordingConfiguration": {
+      "$ref": "#/definitions/AutoParticipantRecordingConfiguration"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ivs:TagResource",
+      "ivs:UntagResource",
+      "ivs:ListTagsForResource"
+    ]
+  },
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/ActiveSessionId"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "type": "object",
+  "title": "AWSIVSStageProperties"
+}

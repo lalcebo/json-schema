@@ -1,0 +1,254 @@
+{
+  "typeName": "AWS::DataZone::UserProfile",
+  "description": "A user profile represents Amazon DataZone users. Amazon DataZone supports both IAM roles and SSO identities to interact with the Amazon DataZone Management Console and the data portal for different purposes. Domain administrators use IAM roles to perform the initial administrative domain-related work in the Amazon DataZone Management Console, including creating new Amazon DataZone domains, configuring metadata form types, and implementing policies. Data workers use their SSO corporate identities via Identity Center to log into the Amazon DataZone Data Portal and access projects where they have memberships.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "definitions": {
+    "IamUserProfileDetails": {
+      "type": "object",
+      "description": "The details of the IAM User Profile.",
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the IAM User Profile."
+        },
+        "SessionName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The session name of the IAM User Profile."
+        },
+        "GroupProfileId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The group profile ID of the IAM User Profile."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneUserProfileIamUserProfileDetailsDefinition"
+    },
+    "SsoUserProfileDetails": {
+      "type": "object",
+      "description": "The details of the SSO User Profile.",
+      "properties": {
+        "Username": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z_0-9+=,.@-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The username of the SSO User Profile."
+        },
+        "FirstName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The First Name of the IAM User Profile."
+        },
+        "LastName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Last Name of the IAM User Profile."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneUserProfileSsoUserProfileDetailsDefinition"
+    },
+    "UserProfileDetails": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Iam",
+          "properties": {
+            "Iam": {
+              "$ref": "#/definitions/IamUserProfileDetails"
+            }
+          },
+          "required": [
+            "Iam"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Sso",
+          "properties": {
+            "Sso": {
+              "$ref": "#/definitions/SsoUserProfileDetails"
+            }
+          },
+          "required": [
+            "Sso"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDataZoneUserProfileUserProfileDetailsDefinition"
+    },
+    "UserProfileStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ASSIGNED",
+            "NOT_ASSIGNED",
+            "ACTIVATED",
+            "DEACTIVATED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the user profile.",
+      "title": "AWSDataZoneUserProfileUserProfileStatusDefinition"
+    },
+    "UserProfileType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IAM",
+            "SSO"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of the user profile.",
+      "title": "AWSDataZoneUserProfileUserProfileTypeDefinition"
+    },
+    "UserType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IAM_USER",
+            "IAM_ROLE",
+            "SSO_USER",
+            "IAM_ROLE_SESSION"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of the user.",
+      "title": "AWSDataZoneUserProfileUserTypeDefinition"
+    }
+  },
+  "properties": {
+    "DomainIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^dzd[-_][a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the Amazon DataZone domain in which the user profile would be created."
+    },
+    "Status": {
+      "$ref": "#/definitions/UserProfileStatus"
+    },
+    "UserIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "(^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$|^[a-zA-Z_0-9+=,.@-]+$|^arn:aws:iam::\\d{12}:.+$)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the user."
+    },
+    "UserType": {
+      "$ref": "#/definitions/UserType"
+    },
+    "SessionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The session name of the user profile."
+    }
+  },
+  "required": [
+    "DomainIdentifier",
+    "UserIdentifier"
+  ],
+  "readOnlyProperties": [
+    "/properties/DomainId",
+    "/properties/Type",
+    "/properties/Id",
+    "/properties/Details"
+  ],
+  "writeOnlyProperties": [
+    "/properties/DomainIdentifier",
+    "/properties/UserIdentifier",
+    "/properties/UserType",
+    "/properties/SessionName"
+  ],
+  "createOnlyProperties": [
+    "/properties/DomainIdentifier",
+    "/properties/UserIdentifier",
+    "/properties/UserType"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainId",
+    "/properties/Id"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDataZoneUserProfileProperties"
+}

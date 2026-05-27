@@ -1,0 +1,250 @@
+{
+  "typeName": "AWS::Logs::ScheduledQuery",
+  "description": "Creates a new Scheduled Query that allows you to define a Logs Insights query that will run on a schedule and configure actions to take with the query results.. Source:- No source definition found, add manually please",
+  "definitions": {
+    "ScheduledQueryState": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsScheduledQueryScheduledQueryStateDefinition"
+    },
+    "S3Configuration": {
+      "type": "object",
+      "properties": {
+        "DestinationIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DestinationIdentifier",
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsScheduledQueryS3ConfigurationDefinition"
+    },
+    "DestinationConfiguration": {
+      "type": "object",
+      "properties": {
+        "S3Configuration": {
+          "$ref": "#/definitions/S3Configuration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLogsScheduledQueryDestinationConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[a-zA-Z0-9_\\-/.#]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "QueryLanguage": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "QueryString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 10000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "LogGroupIdentifiers": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 50
+    },
+    "ScheduleExpression": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Timezone": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "StartTimeOffset": {
+      "type": "integer"
+    },
+    "DestinationConfiguration": {
+      "$ref": "#/definitions/DestinationConfiguration"
+    },
+    "ScheduleStartTime": {
+      "type": "number"
+    },
+    "ScheduleEndTime": {
+      "type": "number"
+    },
+    "ExecutionRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "State": {
+      "$ref": "#/definitions/ScheduledQueryState"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Key": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "Value": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 256
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "required": [
+          "Key",
+          "Value"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "QueryLanguage",
+    "QueryString",
+    "ScheduleExpression",
+    "ExecutionRoleArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/ScheduledQueryArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Name"
+    ]
+  ],
+  "readOnlyProperties": [
+    "/properties/ScheduledQueryArn",
+    "/properties/LastTriggeredTime",
+    "/properties/LastExecutionStatus",
+    "/properties/CreationTime",
+    "/properties/LastUpdatedTime"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "logs:TagResource",
+      "logs:UntagResource",
+      "logs:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSLogsScheduledQueryProperties"
+}

@@ -1,0 +1,250 @@
+{
+  "typeName": "AWS::MPA::ApprovalTeam",
+  "description": "Resource Type definition for AWS::MPA::ApprovalTeam.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Timestamp": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSMPAApprovalTeamTimestampDefinition"
+    },
+    "MofNApprovalStrategy": {
+      "type": "object",
+      "properties": {
+        "MinApprovalsRequired": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "MinApprovalsRequired"
+      ],
+      "title": "AWSMPAApprovalTeamMofNApprovalStrategyDefinition"
+    },
+    "ApprovalStrategy": {
+      "type": "object",
+      "properties": {
+        "MofN": {
+          "$ref": "#/definitions/MofNApprovalStrategy"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "MofN"
+      ],
+      "title": "AWSMPAApprovalTeamApprovalStrategyDefinition"
+    },
+    "Approver": {
+      "type": "object",
+      "properties": {
+        "PrimaryIdentityId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PrimaryIdentitySourceArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ApproverId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResponseTime": {
+          "$ref": "#/definitions/Timestamp"
+        },
+        "PrimaryIdentityStatus": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "PrimaryIdentityId",
+        "PrimaryIdentitySourceArn"
+      ],
+      "title": "AWSMPAApprovalTeamApproverDefinition"
+    },
+    "Policy": {
+      "properties": {
+        "PolicyArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "PolicyArn"
+      ],
+      "title": "AWSMPAApprovalTeamPolicyDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSMPAApprovalTeamTagDefinition"
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSMPAApprovalTeamTagsDefinition"
+    }
+  },
+  "properties": {
+    "ApprovalStrategy": {
+      "$ref": "#/definitions/ApprovalStrategy"
+    },
+    "Approvers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Approver"
+      },
+      "minItems": 1,
+      "insertionOrder": false,
+      "uniqueItems": true
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    },
+    "Policies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Policy"
+      },
+      "minItems": 1,
+      "insertionOrder": false,
+      "uniqueItems": true
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "mpa:TagResource",
+      "mpa:ListTagsForResource",
+      "mpa:UntagResource"
+    ]
+  },
+  "required": [
+    "ApprovalStrategy",
+    "Approvers",
+    "Policies",
+    "Name",
+    "Description"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/VersionId",
+    "/properties/NumberOfApprovers",
+    "/properties/Approvers/*/ApproverId",
+    "/properties/Approvers/*/ResponseTime",
+    "/properties/Approvers/*/PrimaryIdentityStatus",
+    "/properties/UpdateSessionArn",
+    "/properties/CreationTime",
+    "/properties/LastUpdateTime",
+    "/properties/Status",
+    "/properties/StatusCode",
+    "/properties/StatusMessage"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Policies",
+    "/properties/Policies/*/PolicyArn"
+  ],
+  "type": "object",
+  "title": "AWSMPAApprovalTeamProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::DataSync::Task",
-  "description": "Resource schema for AWS::DataSync::Task.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
+  "description": "Resource schema for AWS::DataSync::Task.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
   "definitions": {
     "FilterRule": {
@@ -80,6 +80,324 @@
       ],
       "title": "AWSDataSyncTaskTagDefinition"
     },
+    "TaskReportConfig": {
+      "additionalProperties": false,
+      "description": "Specifies how you want to configure a task report, which provides detailed information about for your Datasync transfer.",
+      "type": "object",
+      "properties": {
+        "Destination": {
+          "additionalProperties": false,
+          "description": "Specifies where DataSync uploads your task report.",
+          "type": "object",
+          "properties": {
+            "S3": {
+              "$ref": "#/definitions/TaskReportConfigDestinationS3"
+            }
+          }
+        },
+        "OutputType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SUMMARY_ONLY",
+                "STANDARD"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the type of task report that you want."
+        },
+        "ReportLevel": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ERRORS_ONLY",
+                "SUCCESSES_AND_ERRORS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies whether you want your task report to include only what went wrong with your transfer or a list of what succeeded and didn't."
+        },
+        "ObjectVersionIds": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "INCLUDE",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies whether your task report includes the new version of each object transferred into an S3 bucket, this only applies if you enable versioning on your bucket."
+        },
+        "Overrides": {
+          "additionalProperties": false,
+          "description": "Customizes the reporting level for aspects of your task report. For example, your report might generally only include errors, but you could specify that you want a list of successes and errors just for the files that Datasync attempted to delete in your destination location.",
+          "type": "object",
+          "properties": {
+            "Transferred": {
+              "additionalProperties": false,
+              "description": "Specifies the level of reporting for the files, objects, and directories that Datasync attempted to transfer.",
+              "type": "object",
+              "properties": {
+                "ReportLevel": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "ERRORS_ONLY",
+                        "SUCCESSES_AND_ERRORS"
+                      ]
+                    },
+                    {
+                      "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                  ],
+                  "description": "Specifies whether you want your task report to include only what went wrong with your transfer or a list of what succeeded and didn't."
+                }
+              }
+            },
+            "Verified": {
+              "additionalProperties": false,
+              "description": "Specifies the level of reporting for the files, objects, and directories that Datasync attempted to verify at the end of your transfer. This only applies if you configure your task to verify data during and after the transfer (which Datasync does by default)",
+              "type": "object",
+              "properties": {
+                "ReportLevel": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "ERRORS_ONLY",
+                        "SUCCESSES_AND_ERRORS"
+                      ]
+                    },
+                    {
+                      "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                  ],
+                  "description": "Specifies whether you want your task report to include only what went wrong with your transfer or a list of what succeeded and didn't."
+                }
+              }
+            },
+            "Deleted": {
+              "additionalProperties": false,
+              "description": "Specifies the level of reporting for the files, objects, and directories that Datasync attempted to delete in your destination location. This only applies if you configure your task to delete data in the destination that isn't in the source.",
+              "type": "object",
+              "properties": {
+                "ReportLevel": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "ERRORS_ONLY",
+                        "SUCCESSES_AND_ERRORS"
+                      ]
+                    },
+                    {
+                      "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                  ],
+                  "description": "Specifies whether you want your task report to include only what went wrong with your transfer or a list of what succeeded and didn't."
+                }
+              }
+            },
+            "Skipped": {
+              "additionalProperties": false,
+              "description": "Specifies the level of reporting for the files, objects, and directories that Datasync attempted to skip during your transfer.",
+              "type": "object",
+              "properties": {
+                "ReportLevel": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "ERRORS_ONLY",
+                        "SUCCESSES_AND_ERRORS"
+                      ]
+                    },
+                    {
+                      "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                  ],
+                  "description": "Specifies whether you want your task report to include only what went wrong with your transfer or a list of what succeeded and didn't."
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "Destination",
+        "OutputType"
+      ],
+      "title": "AWSDataSyncTaskTaskReportConfigDefinition"
+    },
+    "TaskReportConfigDestinationS3": {
+      "additionalProperties": false,
+      "description": "Specifies the Amazon S3 bucket where DataSync uploads your task report.",
+      "type": "object",
+      "properties": {
+        "Subdirectory": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4096,
+              "pattern": "^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\p{Zs}]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a bucket prefix for your report."
+        },
+        "BucketAccessRoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the Amazon Resource Name (ARN) of the IAM policy that allows Datasync to upload a task report to your S3 bucket."
+        },
+        "S3BucketArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 156,
+              "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):(s3|s3-outposts):[a-z\\-0-9]*:[0-9]*:.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN of the S3 bucket where Datasync uploads your report."
+        }
+      },
+      "title": "AWSDataSyncTaskTaskReportConfigDestinationS3Definition"
+    },
+    "ManifestConfig": {
+      "additionalProperties": false,
+      "description": "Configures a manifest, which is a list of files or objects that you want DataSync to transfer.",
+      "type": "object",
+      "properties": {
+        "Action": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "TRANSFER"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies what DataSync uses the manifest for."
+        },
+        "Format": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CSV"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the file format of your manifest."
+        },
+        "Source": {
+          "additionalProperties": false,
+          "description": "Specifies the manifest that you want DataSync to use and where it's hosted.",
+          "type": "object",
+          "properties": {
+            "S3": {
+              "$ref": "#/definitions/ManifestConfigSourceS3"
+            }
+          }
+        }
+      },
+      "required": [
+        "Source"
+      ],
+      "title": "AWSDataSyncTaskManifestConfigDefinition"
+    },
+    "ManifestConfigSourceS3": {
+      "additionalProperties": false,
+      "description": "Specifies the S3 bucket where you're hosting the manifest that you want AWS DataSync to use.",
+      "type": "object",
+      "properties": {
+        "ManifestObjectPath": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "pattern": "^[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}\\p{C}]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the Amazon S3 object key of your manifest."
+        },
+        "BucketAccessRoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the AWS Identity and Access Management (IAM) role that allows DataSync to access your manifest."
+        },
+        "S3BucketArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 156,
+              "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):(s3|s3-outposts):[a-z\\-0-9]*:[0-9]*:.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the Amazon Resource Name (ARN) of the S3 bucket where you're hosting your manifest."
+        },
+        "ManifestObjectVersionId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "pattern": "^.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the object version ID of the manifest that you want DataSync to use."
+        }
+      },
+      "title": "AWSDataSyncTaskManifestConfigSourceS3Definition"
+    },
     "TaskSchedule": {
       "additionalProperties": false,
       "description": "Specifies the schedule you want your task to use for repeated executions.",
@@ -97,11 +415,23 @@
             }
           ],
           "description": "A cron expression that specifies when AWS DataSync initiates a scheduled transfer from a source to a destination location"
+        },
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies status of a schedule."
         }
       },
-      "required": [
-        "ScheduleExpression"
-      ],
       "title": "AWSDataSyncTaskTaskScheduleDefinition"
     },
     "Options": {
@@ -406,7 +736,7 @@
         {
           "type": "string",
           "maxLength": 562,
-          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):logs:[a-z\\-0-9]*:[0-9]{12}:log-group:([^:\\*]*)(:\\*)?$"
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):logs:[a-z\\-0-9]*:[0-9]{12}:log-group:([^:\\*]*)(:\\*)?$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -419,7 +749,7 @@
         {
           "type": "string",
           "maxLength": 128,
-          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$"
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -444,6 +774,12 @@
     "Options": {
       "$ref": "#/definitions/Options"
     },
+    "TaskReportConfig": {
+      "$ref": "#/definitions/TaskReportConfig"
+    },
+    "ManifestConfig": {
+      "$ref": "#/definitions/ManifestConfig"
+    },
     "Schedule": {
       "$ref": "#/definitions/TaskSchedule"
     },
@@ -452,21 +788,41 @@
         {
           "type": "string",
           "maxLength": 128,
-          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$"
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
       "description": "The ARN of the source location for the task."
+    },
+    "TaskMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BASIC",
+            "ENHANCED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the task mode for the task."
     }
   },
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "datasync:TagResource",
+      "datasync:UntagResource",
+      "datasync:ListTagsForResource"
+    ]
   },
   "additionalProperties": false,
   "required": [
@@ -484,7 +840,8 @@
   ],
   "createOnlyProperties": [
     "/properties/DestinationLocationArn",
-    "/properties/SourceLocationArn"
+    "/properties/SourceLocationArn",
+    "/properties/TaskMode"
   ],
   "type": "object",
   "title": "AWSDataSyncTaskProperties"

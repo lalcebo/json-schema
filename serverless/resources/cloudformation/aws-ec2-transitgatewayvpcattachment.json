@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EC2::TransitGatewayVpcAttachment",
-  "description": "Resource Type definition for AWS::EC2::TransitGatewayVpcAttachment. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-transitgateway. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-transitgateway",
+  "description": "Resource Type definition for AWS::EC2::TransitGatewayVpcAttachment. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-transitgateway",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-transitgateway",
   "additionalProperties": false,
   "properties": {
@@ -113,6 +113,17 @@
             }
           ],
           "description": "Indicates whether to enable Ipv6 Support for Vpc Attachment. Valid Values: enable | disable"
+        },
+        "SecurityGroupReferencingSupport": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indicates whether to enable Security Group referencing support for Vpc Attachment. Valid values: enable | disable"
         }
       },
       "additionalProperties": false
@@ -161,9 +172,23 @@
     "VpcId",
     "TransitGatewayId"
   ],
-  "taggable": true,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
+  },
   "readOnlyProperties": [
     "/properties/Id"
+  ],
+  "writeOnlyProperties": [
+    "/properties/AddSubnetIds",
+    "/properties/RemoveSubnetIds"
   ],
   "primaryIdentifier": [
     "/properties/Id"

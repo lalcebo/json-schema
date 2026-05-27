@@ -1,0 +1,315 @@
+{
+  "typeName": "AWS::S3Tables::TableBucket",
+  "description": "Creates an Amazon S3 Tables table bucket in the same AWS Region where you create the AWS CloudFormation stack.. Source:- No source definition found, add manually please",
+  "properties": {
+    "TableBucketName": {
+      "$ref": "#/definitions/TableBucketName"
+    },
+    "UnreferencedFileRemoval": {
+      "$ref": "#/definitions/UnreferencedFileRemoval"
+    },
+    "EncryptionConfiguration": {
+      "$ref": "#/definitions/EncryptionConfiguration"
+    },
+    "MetricsConfiguration": {
+      "$ref": "#/definitions/MetricsConfiguration"
+    },
+    "StorageClassConfiguration": {
+      "$ref": "#/definitions/StorageClassConfiguration"
+    },
+    "ReplicationConfiguration": {
+      "$ref": "#/definitions/ReplicationConfiguration"
+    },
+    "Tags": {
+      "description": "User tags (key-value pairs) to associate with the table bucket.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "TableBucketARN": {
+      "oneOf": [
+        {
+          "type": "string",
+          "examples": [
+            "arn:aws:s3tables:us-west-2:123456789012:bucket/mytablebucket"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the specified table bucket.",
+      "title": "AWSS3TablesTableBucketTableBucketARNDefinition"
+    },
+    "TableBucketName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A name for the table bucket.",
+      "title": "AWSS3TablesTableBucketTableBucketNameDefinition"
+    },
+    "UnreferencedFileRemoval": {
+      "description": "Settings governing the Unreferenced File Removal maintenance action. Unreferenced file removal identifies and deletes all objects that are not referenced by any table snapshots.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Enabled",
+                "Disabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indicates whether the Unreferenced File Removal maintenance action is enabled."
+        },
+        "UnreferencedDays": {
+          "description": "For any object not referenced by your table and older than the UnreferencedDays property, S3 creates a delete marker and marks the object version as noncurrent.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "NoncurrentDays": {
+          "description": "S3 permanently deletes noncurrent objects after the number of days specified by the NoncurrentDays property.",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "title": "AWSS3TablesTableBucketUnreferencedFileRemovalDefinition"
+    },
+    "EncryptionConfiguration": {
+      "type": "object",
+      "description": "Specifies encryption settings for the table bucket",
+      "properties": {
+        "SSEAlgorithm": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AES256",
+                "aws:kms"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Server-side encryption algorithm"
+        },
+        "KMSKeyArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN of the KMS key to use for encryption"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSS3TablesTableBucketEncryptionConfigurationDefinition"
+    },
+    "MetricsConfiguration": {
+      "type": "object",
+      "description": "Settings governing the Metric configuration for the table bucket.",
+      "properties": {
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "Disabled",
+              "enum": [
+                "Enabled",
+                "Disabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indicates whether Metrics are enabled."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSS3TablesTableBucketMetricsConfigurationDefinition"
+    },
+    "StorageClassConfiguration": {
+      "type": "object",
+      "description": "Specifies storage class settings for the table bucket",
+      "properties": {
+        "StorageClass": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "STANDARD",
+                "INTELLIGENT_TIERING"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The storage class for the table bucket"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSS3TablesTableBucketStorageClassConfigurationDefinition"
+    },
+    "ReplicationConfiguration": {
+      "type": "object",
+      "description": "Specifies replication configuration for the table bucket",
+      "properties": {
+        "Role": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the IAM role to use for replication"
+        },
+        "Rules": {
+          "type": "array",
+          "description": "List of replication rules",
+          "items": {
+            "$ref": "#/definitions/ReplicationRule"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "Role",
+        "Rules"
+      ],
+      "additionalProperties": false,
+      "title": "AWSS3TablesTableBucketReplicationConfigurationDefinition"
+    },
+    "ReplicationRule": {
+      "type": "object",
+      "description": "A replication rule for the table bucket",
+      "properties": {
+        "Destinations": {
+          "type": "array",
+          "description": "List of replication destinations",
+          "items": {
+            "$ref": "#/definitions/ReplicationDestination"
+          },
+          "minItems": 1,
+          "maxItems": 5
+        }
+      },
+      "required": [
+        "Destinations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSS3TablesTableBucketReplicationRuleDefinition"
+    },
+    "ReplicationDestination": {
+      "type": "object",
+      "description": "A replication destination",
+      "properties": {
+        "DestinationTableBucketARN": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the destination table bucket"
+        }
+      },
+      "required": [
+        "DestinationTableBucketARN"
+      ],
+      "additionalProperties": false,
+      "title": "AWSS3TablesTableBucketReplicationDestinationDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag key must be between 1 to 128 characters in length. Tag key cannot start with 'aws:' and can only contain alphanumeric characters, spaces, _, ., /, =, +, -, and @."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag value must be between 0 to 256 characters in length. Tag value can only contain alphanumeric characters, spaces, _, ., /, =, +, -, and @."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSS3TablesTableBucketTagDefinition"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "TableBucketName"
+  ],
+  "createOnlyProperties": [
+    "/properties/TableBucketName"
+  ],
+  "readOnlyProperties": [
+    "/properties/TableBucketARN"
+  ],
+  "primaryIdentifier": [
+    "/properties/TableBucketARN"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "s3tables:TagResource",
+      "s3tables:UntagResource",
+      "s3tables:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSS3TablesTableBucketProperties"
+}

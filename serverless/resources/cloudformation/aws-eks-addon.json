@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EKS::Addon",
-  "description": "Resource Schema for AWS::EKS::Addon. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-eks.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-eks.git",
+  "description": "Resource Schema for AWS::EKS::Addon. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-eks.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-eks.git",
   "definitions": {
     "Tag": {
@@ -40,6 +40,41 @@
         "Value"
       ],
       "title": "AWSEKSAddonTagDefinition"
+    },
+    "PodIdentityAssociation": {
+      "description": "A pod identity to associate with an add-on.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ServiceAccount": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Kubernetes service account that the pod identity association is created for."
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:iam::\\d{12}:(role)\\/*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IAM role ARN that the pod identity association is created for."
+        }
+      },
+      "required": [
+        "ServiceAccount",
+        "RoleArn"
+      ],
+      "title": "AWSEKSAddonPodIdentityAssociationDefinition"
     }
   },
   "properties": {
@@ -112,6 +147,15 @@
       ],
       "description": "IAM role to bind to the add-on's service account"
     },
+    "PodIdentityAssociations": {
+      "description": "An array of pod identities to apply to this add-on.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/PodIdentityAssociation"
+      }
+    },
     "ConfigurationValues": {
       "oneOf": [
         {
@@ -123,6 +167,27 @@
         }
       ],
       "description": "The configuration values to use with the add-on"
+    },
+    "NamespaceConfig": {
+      "description": "The custom namespace configuration to use with the add-on",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Namespace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The custom namespace for creating the add-on"
+        }
+      },
+      "required": [
+        "Namespace"
+      ]
     },
     "Tags": {
       "description": "An array of key-value pairs to apply to this resource.",
@@ -138,8 +203,12 @@
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "eks:TagResource",
+      "eks:UntagResource"
+    ]
   },
   "additionalProperties": false,
   "required": [
@@ -152,15 +221,20 @@
   ],
   "createOnlyProperties": [
     "/properties/ClusterName",
-    "/properties/AddonName"
+    "/properties/AddonName",
+    "/properties/NamespaceConfig"
   ],
   "readOnlyProperties": [
     "/properties/Arn"
   ],
   "writeOnlyProperties": [
     "/properties/ResolveConflicts",
-    "/properties/PreserveOnDelete"
+    "/properties/PreserveOnDelete",
+    "/properties/PodIdentityAssociations"
   ],
+  "propertyTransform": {
+    "/properties/ConfigurationValues": "$replace(ConfigurationValues, /\n$/, '')"
+  },
   "type": "object",
   "title": "AWSEKSAddonProperties"
 }

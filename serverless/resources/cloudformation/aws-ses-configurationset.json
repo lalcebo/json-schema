@@ -1,8 +1,43 @@
 {
   "typeName": "AWS::SES::ConfigurationSet",
-  "description": "Resource schema for AWS::SES::ConfigurationSet.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
+  "description": "Resource schema for AWS::SES::ConfigurationSet.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
   "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESConfigurationSetTagDefinition"
+    },
     "TrackingOptions": {
       "description": "An object that defines the open and click tracking options for emails that you send using the configuration set.",
       "type": "object",
@@ -18,6 +53,18 @@
             }
           ],
           "description": "The domain to use for tracking open and click events."
+        },
+        "HttpsPolicy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "REQUIRE|REQUIRE_OPEN_ONLY|OPTIONAL"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The https policy to use for tracking open and click events."
         }
       },
       "title": "AWSSESConfigurationSetTrackingOptionsDefinition"
@@ -49,9 +96,34 @@
             }
           ],
           "description": "The name of the dedicated IP pool to associate with the configuration set."
+        },
+        "MaxDeliverySeconds": {
+          "type": "number",
+          "description": "Specifies the maximum time until which SES will retry sending emails",
+          "minimum": 300,
+          "maximum": 50400
         }
       },
       "title": "AWSSESConfigurationSetDeliveryOptionsDefinition"
+    },
+    "ArchivingOptions": {
+      "description": "An object that defines a MailManager archive that is used to preserve emails that you send using the configuration set.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ArchiveArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the MailManager archive to associate with the configuration set."
+        }
+      },
+      "title": "AWSSESConfigurationSetArchivingOptionsDefinition"
     },
     "ReputationOptions": {
       "description": "An object that defines whether or not Amazon SES collects reputation metrics for the emails that you send that use the configuration set.",
@@ -100,6 +172,60 @@
             ],
             "description": "The reason that the address was added to the suppression list for your account"
           }
+        },
+        "ValidationOptions": {
+          "type": "object",
+          "description": "An object that contains information about the validation options for your account.",
+          "additionalProperties": false,
+          "properties": {
+            "ConditionThreshold": {
+              "type": "object",
+              "description": "The condition threshold settings for suppression validation.",
+              "additionalProperties": false,
+              "properties": {
+                "ConditionThresholdEnabled": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "pattern": "ENABLED|DISABLED"
+                    },
+                    {
+                      "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                  ],
+                  "description": "Whether the condition threshold is enabled or disabled."
+                },
+                "OverallConfidenceThreshold": {
+                  "type": "object",
+                  "description": "The overall confidence threshold settings.",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ConfidenceVerdictThreshold": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "pattern": "MEDIUM|HIGH|MANAGED"
+                        },
+                        {
+                          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                        }
+                      ],
+                      "description": "The confidence verdict threshold level."
+                    }
+                  },
+                  "required": [
+                    "ConfidenceVerdictThreshold"
+                  ]
+                }
+              },
+              "required": [
+                "ConditionThresholdEnabled"
+              ]
+            }
+          },
+          "required": [
+            "ConditionThreshold"
+          ]
         }
       },
       "title": "AWSSESConfigurationSetSuppressionOptionsDefinition"
@@ -195,6 +321,19 @@
     },
     "VdmOptions": {
       "$ref": "#/definitions/VdmOptions"
+    },
+    "ArchivingOptions": {
+      "$ref": "#/definitions/ArchivingOptions"
+    },
+    "Tags": {
+      "description": "The tags (keys and values) associated with the contact list.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 50
     }
   },
   "createOnlyProperties": [
@@ -203,8 +342,19 @@
   "primaryIdentifier": [
     "/properties/Name"
   ],
-  "taggable": false,
   "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ses:TagResource",
+      "ses:UntagResource",
+      "ses:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSSESConfigurationSetProperties"
 }

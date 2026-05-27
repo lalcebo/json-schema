@@ -1,7 +1,43 @@
 {
   "typeName": "AWS::Macie::CustomDataIdentifier",
-  "description": "Macie CustomDataIdentifier resource schema. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-macie.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-macie.git",
+  "description": "Macie CustomDataIdentifier resource schema. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-macie.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-macie.git",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The tag's key."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The tag's value."
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMacieCustomDataIdentifierTagDefinition"
+    }
+  },
   "properties": {
     "Name": {
       "oneOf": [
@@ -67,7 +103,26 @@
           }
         ]
       }
+    },
+    "Tags": {
+      "description": "A collection of tags associated with a resource",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "macie2:TagResource",
+      "macie2:UntagResource"
+    ]
   },
   "required": [
     "Name",

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Glue::Table",
-  "description": "Resource Type definition for AWS::Glue::Table. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Glue::Table. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "DatabaseName": {
@@ -16,7 +16,20 @@
     "TableInput": {
       "$ref": "#/definitions/TableInput"
     },
+    "OpenTableFormatInput": {
+      "$ref": "#/definitions/OpenTableFormatInput"
+    },
     "CatalogId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Name": {
       "oneOf": [
         {
           "type": "string"
@@ -33,6 +46,16 @@
       "additionalProperties": false,
       "properties": {
         "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Region": {
           "oneOf": [
             {
               "type": "string"
@@ -89,192 +112,102 @@
       ],
       "title": "AWSGlueTableOrderDefinition"
     },
-    "SchemaReference": {
+    "MetadataOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSGlueTableMetadataOperationDefinition"
+    },
+    "OpenTableFormatInput": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "SchemaId": {
-          "$ref": "#/definitions/SchemaId"
-        },
-        "SchemaVersionId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "SchemaVersionNumber": {
-          "type": "integer"
+        "IcebergInput": {
+          "$ref": "#/definitions/IcebergInput"
         }
       },
-      "title": "AWSGlueTableSchemaReferenceDefinition"
+      "title": "AWSGlueTableOpenTableFormatInputDefinition"
     },
-    "TableInput": {
+    "IcebergSortOrder": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Owner": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ViewOriginalText": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Description": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "TableType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Parameters": {
-          "type": "object"
-        },
-        "ViewExpandedText": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "StorageDescriptor": {
-          "$ref": "#/definitions/StorageDescriptor"
-        },
-        "TargetTable": {
-          "$ref": "#/definitions/TableIdentifier"
-        },
-        "PartitionKeys": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "$ref": "#/definitions/Column"
-          }
-        },
-        "Retention": {
+        "OrderId": {
           "type": "integer"
         },
-        "Name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "title": "AWSGlueTableTableInputDefinition"
-    },
-    "SkewedInfo": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "SkewedColumnValues": {
+        "Fields": {
           "type": "array",
           "uniqueItems": false,
           "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
+            "$ref": "#/definitions/IcebergSortField"
           }
-        },
-        "SkewedColumnValueLocationMaps": {
-          "type": "object"
-        },
-        "SkewedColumnNames": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        }
-      },
-      "title": "AWSGlueTableSkewedInfoDefinition"
-    },
-    "Column": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Comment": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Type": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
         }
       },
       "required": [
-        "Name"
+        "Fields",
+        "OrderId"
       ],
-      "title": "AWSGlueTableColumnDefinition"
+      "title": "AWSGlueTableIcebergSortOrderDefinition"
+    },
+    "ViewDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Definer": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SubObjects": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Representations": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/ViewRepresentation"
+          }
+        },
+        "IsProtected": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSGlueTableViewDefinition"
+    },
+    "IcebergPartitionSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SpecId": {
+          "type": "integer"
+        },
+        "Fields": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/IcebergPartitionField"
+          }
+        }
+      },
+      "required": [
+        "Fields"
+      ],
+      "title": "AWSGlueTableIcebergPartitionSpecDefinition"
     },
     "StorageDescriptor": {
       "type": "object",
@@ -362,6 +295,399 @@
       },
       "title": "AWSGlueTableStorageDescriptorDefinition"
     },
+    "SerdeInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Parameters": {
+          "type": "object"
+        },
+        "SerializationLibrary": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSGlueTableSerdeInfoDefinition"
+    },
+    "SchemaReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SchemaId": {
+          "$ref": "#/definitions/SchemaId"
+        },
+        "SchemaVersionId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SchemaVersionNumber": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSGlueTableSchemaReferenceDefinition"
+    },
+    "IcebergTableInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "WriteOrder": {
+          "$ref": "#/definitions/IcebergSortOrder"
+        },
+        "Properties": {
+          "type": "object"
+        },
+        "PartitionSpec": {
+          "$ref": "#/definitions/IcebergPartitionSpec"
+        },
+        "Schema": {
+          "$ref": "#/definitions/IcebergSchema"
+        },
+        "Location": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Schema",
+        "Location"
+      ],
+      "title": "AWSGlueTableIcebergTableInputDefinition"
+    },
+    "TableInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Owner": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ViewOriginalText": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TableType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Parameters": {
+          "type": "object"
+        },
+        "ViewDefinition": {
+          "$ref": "#/definitions/ViewDefinition"
+        },
+        "StorageDescriptor": {
+          "$ref": "#/definitions/StorageDescriptor"
+        },
+        "Retention": {
+          "type": "integer"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ViewExpandedText": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetTable": {
+          "$ref": "#/definitions/TableIdentifier"
+        },
+        "PartitionKeys": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/Column"
+          }
+        }
+      },
+      "title": "AWSGlueTableTableInputDefinition"
+    },
+    "IcebergSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SchemaId": {
+          "type": "integer"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Fields": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/IcebergStructField"
+          }
+        },
+        "IdentifierFieldIds": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "Fields"
+      ],
+      "title": "AWSGlueTableIcebergSchemaDefinition"
+    },
+    "ViewRepresentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Dialect": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ViewOriginalText": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DialectVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ViewExpandedText": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ValidationConnection": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSGlueTableViewRepresentationDefinition"
+    },
+    "SkewedInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SkewedColumnValues": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "SkewedColumnValueLocationMaps": {
+          "type": "object"
+        },
+        "SkewedColumnNames": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSGlueTableSkewedInfoDefinition"
+    },
+    "Column": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Comment": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "title": "AWSGlueTableColumnDefinition"
+    },
+    "IcebergSortField": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "NullOrder": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Transform": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Direction": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SourceId": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "SourceId",
+        "NullOrder",
+        "Transform",
+        "Direction"
+      ],
+      "title": "AWSGlueTableIcebergSortFieldDefinition"
+    },
     "SchemaId": {
       "type": "object",
       "additionalProperties": false,
@@ -399,14 +725,17 @@
       },
       "title": "AWSGlueTableSchemaIdDefinition"
     },
-    "SerdeInfo": {
+    "IcebergInput": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Parameters": {
-          "type": "object"
+        "IcebergTableInput": {
+          "$ref": "#/definitions/IcebergTableInput"
         },
-        "SerializationLibrary": {
+        "MetadataOperation": {
+          "$ref": "#/definitions/MetadataOperation"
+        },
+        "Version": {
           "oneOf": [
             {
               "type": "string"
@@ -415,6 +744,29 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        }
+      },
+      "title": "AWSGlueTableIcebergInputDefinition"
+    },
+    "IcebergPartitionField": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Transform": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SourceId": {
+          "type": "integer"
+        },
+        "FieldId": {
+          "type": "integer"
         },
         "Name": {
           "oneOf": [
@@ -427,15 +779,69 @@
           ]
         }
       },
-      "title": "AWSGlueTableSerdeInfoDefinition"
+      "required": [
+        "SourceId",
+        "Transform",
+        "Name"
+      ],
+      "title": "AWSGlueTableIcebergPartitionFieldDefinition"
+    },
+    "IcebergStructField": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Doc": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Id": {
+          "type": "integer"
+        },
+        "Required": {
+          "type": "boolean"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "Required",
+        "Id",
+        "Name"
+      ],
+      "title": "AWSGlueTableIcebergStructFieldDefinition"
     }
   },
   "required": [
-    "TableInput",
     "DatabaseName",
     "CatalogId"
   ],
   "createOnlyProperties": [
+    "/properties/Name",
     "/properties/DatabaseName",
     "/properties/CatalogId"
   ],

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Location::PlaceIndex",
-  "description": "Definition of AWS::Location::PlaceIndex Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::Location::PlaceIndex Resource Type. Source:- No source definition found, add manually please",
   "definitions": {
     "DataSourceConfiguration": {
       "type": "object",
@@ -40,6 +40,67 @@
         }
       ],
       "title": "AWSLocationPlaceIndexPricingPlanDefinition"
+    },
+    "TagMap": {
+      "type": "object",
+      "maxProperties": 50,
+      "patternProperties": {
+        "^([\\p{L}\\p{Z}\\p{N}_.,:/=+\\-@]*)$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.,:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLocationPlaceIndexTagMapDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "^[A-Za-z0-9 _=@:.+-/]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLocationPlaceIndexTagDefinition"
     },
     "iso8601UTC": {
       "oneOf": [
@@ -96,28 +157,47 @@
     },
     "PricingPlan": {
       "$ref": "#/definitions/PricingPlan"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
+  "required": [
+    "DataSource",
+    "IndexName"
+  ],
   "readOnlyProperties": [
     "/properties/CreateTime",
-    "/properties/IndexArn",
     "/properties/Arn",
+    "/properties/IndexArn",
     "/properties/UpdateTime"
   ],
   "createOnlyProperties": [
-    "/properties/IndexName",
     "/properties/DataSource",
-    "/properties/DataSourceConfiguration",
-    "/properties/Description",
-    "/properties/PricingPlan"
-  ],
-  "required": [
-    "IndexName",
-    "DataSource"
+    "/properties/IndexName"
   ],
   "primaryIdentifier": [
     "/properties/IndexName"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "geo:TagResource",
+      "geo:UntagResource"
+    ]
+  },
   "additionalProperties": false,
   "type": "object",
   "title": "AWSLocationPlaceIndexProperties"

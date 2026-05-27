@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::CleanRooms::Membership",
-  "description": "Represents an AWS account that is a part of a collaboration. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Represents an AWS account that is a part of a collaboration. Source:- No source definition found, add manually please",
   "definitions": {
     "MembershipQueryLogStatus": {
       "oneOf": [
@@ -16,6 +16,21 @@
         }
       ],
       "title": "AWSCleanRoomsMembershipMembershipQueryLogStatusDefinition"
+    },
+    "MembershipJobLogStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipJobLogStatusDefinition"
     },
     "MembershipStatus": {
       "oneOf": [
@@ -67,6 +82,269 @@
         "Key"
       ],
       "title": "AWSCleanRoomsMembershipTagDefinition"
+    },
+    "ResultFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CSV",
+            "PARQUET"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsMembershipResultFormatDefinition"
+    },
+    "ProtectedQueryS3OutputConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ResultFormat": {
+          "$ref": "#/definitions/ResultFormat"
+        },
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KeyPrefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SingleFileOutput": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ResultFormat",
+        "Bucket"
+      ],
+      "title": "AWSCleanRoomsMembershipProtectedQueryS3OutputConfigurationDefinition"
+    },
+    "ProtectedJobS3OutputConfigurationInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 63
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KeyPrefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Bucket"
+      ],
+      "title": "AWSCleanRoomsMembershipProtectedJobS3OutputConfigurationInputDefinition"
+    },
+    "MembershipProtectedQueryOutputConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3": {
+          "$ref": "#/definitions/ProtectedQueryS3OutputConfiguration"
+        }
+      },
+      "required": [
+        "S3"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipProtectedQueryOutputConfigurationDefinition"
+    },
+    "MembershipProtectedJobOutputConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3": {
+          "$ref": "#/definitions/ProtectedJobS3OutputConfigurationInput"
+        }
+      },
+      "required": [
+        "S3"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipProtectedJobOutputConfigurationDefinition"
+    },
+    "MembershipProtectedQueryResultConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "OutputConfiguration": {
+          "$ref": "#/definitions/MembershipProtectedQueryOutputConfiguration"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "OutputConfiguration"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipProtectedQueryResultConfigurationDefinition"
+    },
+    "MembershipProtectedJobResultConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "OutputConfiguration": {
+          "$ref": "#/definitions/MembershipProtectedJobOutputConfiguration"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "OutputConfiguration",
+        "RoleArn"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipProtectedJobResultConfigurationDefinition"
+    },
+    "MembershipPaymentConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "QueryCompute": {
+          "$ref": "#/definitions/MembershipQueryComputePaymentConfig"
+        },
+        "MachineLearning": {
+          "$ref": "#/definitions/MembershipMLPaymentConfig"
+        },
+        "JobCompute": {
+          "$ref": "#/definitions/MembershipJobComputePaymentConfig"
+        }
+      },
+      "required": [
+        "QueryCompute"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipPaymentConfigurationDefinition"
+    },
+    "MembershipQueryComputePaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipQueryComputePaymentConfigDefinition"
+    },
+    "MembershipMLPaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ModelTraining": {
+          "$ref": "#/definitions/MembershipModelTrainingPaymentConfig"
+        },
+        "ModelInference": {
+          "$ref": "#/definitions/MembershipModelInferencePaymentConfig"
+        },
+        "SyntheticDataGeneration": {
+          "$ref": "#/definitions/MembershipSyntheticDataGenerationPaymentConfig"
+        }
+      },
+      "title": "AWSCleanRoomsMembershipMembershipMLPaymentConfigDefinition"
+    },
+    "MembershipModelTrainingPaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipModelTrainingPaymentConfigDefinition"
+    },
+    "MembershipModelInferencePaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipModelInferencePaymentConfigDefinition"
+    },
+    "MembershipSyntheticDataGenerationPaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipSyntheticDataGenerationPaymentConfigDefinition"
+    },
+    "MembershipJobComputePaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsMembershipMembershipJobComputePaymentConfigDefinition"
     }
   },
   "properties": {
@@ -94,6 +372,21 @@
     },
     "QueryLogStatus": {
       "$ref": "#/definitions/MembershipQueryLogStatus"
+    },
+    "JobLogStatus": {
+      "$ref": "#/definitions/MembershipJobLogStatus"
+    },
+    "DefaultResultConfiguration": {
+      "$ref": "#/definitions/MembershipProtectedQueryResultConfiguration"
+    },
+    "DefaultJobResultConfiguration": {
+      "$ref": "#/definitions/MembershipProtectedJobResultConfiguration"
+    },
+    "PaymentConfiguration": {
+      "$ref": "#/definitions/MembershipPaymentConfiguration"
+    },
+    "IsMetricsEnabled": {
+      "type": "boolean"
     }
   },
   "required": [
@@ -117,7 +410,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cleanrooms:ListTagsForResource",
+      "cleanrooms:UntagResource",
+      "cleanrooms:TagResource"
+    ]
   },
   "additionalProperties": false,
   "type": "object",

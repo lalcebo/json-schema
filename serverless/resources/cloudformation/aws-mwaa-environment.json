@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::MWAA::Environment",
-  "description": "Resource schema for AWS::MWAA::Environment. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mwaa.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mwaa.git",
+  "description": "Resource schema for AWS::MWAA::Environment. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mwaa.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mwaa.git",
   "definitions": {
     "EnvironmentName": {
@@ -30,7 +30,8 @@
             "DELETING",
             "DELETED",
             "UPDATE_FAILED",
-            "UNAVAILABLE"
+            "UNAVAILABLE",
+            "PENDING"
           ]
         },
         {
@@ -338,6 +339,18 @@
       "minimum": 1,
       "title": "AWSMWAAEnvironmentMinWorkersDefinition"
     },
+    "MaxWebservers": {
+      "type": "integer",
+      "description": "Maximum webserver compute units.",
+      "minimum": 1,
+      "title": "AWSMWAAEnvironmentMaxWebserversDefinition"
+    },
+    "MinWebservers": {
+      "type": "integer",
+      "description": "Minimum webserver compute units.",
+      "minimum": 1,
+      "title": "AWSMWAAEnvironmentMinWebserversDefinition"
+    },
     "Schedulers": {
       "type": "integer",
       "description": "Scheduler compute units.",
@@ -462,6 +475,9 @@
         },
         "Error": {
           "$ref": "#/definitions/UpdateError"
+        },
+        "WorkerReplacementStrategy": {
+          "$ref": "#/definitions/WorkerReplacementStrategy"
         }
       },
       "title": "AWSMWAAEnvironmentLastUpdateDefinition"
@@ -535,6 +551,77 @@
       ],
       "description": "Choice for mode of webserver access including over public internet or via private VPC endpoint.",
       "title": "AWSMWAAEnvironmentWebserverAccessModeDefinition"
+    },
+    "EndpointManagement": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CUSTOMER",
+            "SERVICE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Defines whether the VPC endpoints configured for the environment are created, and managed, by the customer or by Amazon MWAA.",
+      "title": "AWSMWAAEnvironmentEndpointManagementDefinition"
+    },
+    "CeleryExecutorQueue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The celery executor queue associated with the environment.",
+      "title": "AWSMWAAEnvironmentCeleryExecutorQueueDefinition"
+    },
+    "DatabaseVpcEndpointService": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The database VPC endpoint service name.",
+      "title": "AWSMWAAEnvironmentDatabaseVpcEndpointServiceDefinition"
+    },
+    "WebserverVpcEndpointService": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The webserver VPC endpoint service name, applicable if private webserver access mode selected.",
+      "title": "AWSMWAAEnvironmentWebserverVpcEndpointServiceDefinition"
+    },
+    "WorkerReplacementStrategy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "FORCED",
+            "GRACEFUL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The worker replacement strategy to use when updating the environment. Valid values: `FORCED`, `GRACEFUL`. FORCED means Apache Airflow workers will be stopped and replaced without waiting for tasks to complete before an update. GRACEFUL means Apache Airflow workers will be able to complete running tasks for up to 12 hours during an update before being stopped and replaced.",
+      "title": "AWSMWAAEnvironmentWorkerReplacementStrategyDefinition"
     }
   },
   "properties": {
@@ -587,6 +674,12 @@
     "MinWorkers": {
       "$ref": "#/definitions/MinWorkers"
     },
+    "MaxWebservers": {
+      "$ref": "#/definitions/MaxWebservers"
+    },
+    "MinWebservers": {
+      "$ref": "#/definitions/MinWebservers"
+    },
     "Schedulers": {
       "$ref": "#/definitions/Schedulers"
     },
@@ -605,6 +698,12 @@
     },
     "WebserverAccessMode": {
       "$ref": "#/definitions/WebserverAccessMode"
+    },
+    "EndpointManagement": {
+      "$ref": "#/definitions/EndpointManagement"
+    },
+    "WorkerReplacementStrategy": {
+      "$ref": "#/definitions/WorkerReplacementStrategy"
     }
   },
   "additionalProperties": false,
@@ -614,10 +713,14 @@
   "createOnlyProperties": [
     "/properties/Name",
     "/properties/KmsKey",
-    "/properties/NetworkConfiguration/SubnetIds"
+    "/properties/NetworkConfiguration/SubnetIds",
+    "/properties/EndpointManagement"
   ],
   "readOnlyProperties": [
     "/properties/Arn",
+    "/properties/CeleryExecutorQueue",
+    "/properties/DatabaseVpcEndpointService",
+    "/properties/WebserverVpcEndpointService",
     "/properties/WebserverUrl",
     "/properties/LoggingConfiguration/DagProcessingLogs/CloudWatchLogGroupArn",
     "/properties/LoggingConfiguration/SchedulerLogs/CloudWatchLogGroupArn",
@@ -625,10 +728,23 @@
     "/properties/LoggingConfiguration/WorkerLogs/CloudWatchLogGroupArn",
     "/properties/LoggingConfiguration/TaskLogs/CloudWatchLogGroupArn"
   ],
-  "taggable": true,
+  "writeOnlyProperties": [
+    "/properties/WorkerReplacementStrategy"
+  ],
   "primaryIdentifier": [
     "/properties/Name"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "airflow:UntagResource",
+      "airflow:TagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSMWAAEnvironmentProperties"
 }

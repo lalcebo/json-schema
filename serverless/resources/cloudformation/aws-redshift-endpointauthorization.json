@@ -1,79 +1,8 @@
 {
-  "typeName": "AWS::Redshift::EndpointAuthorization",
-  "description": "Describes an endpoint authorization for authorizing Redshift-managed VPC endpoint access to a cluster across AWS accounts.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
-  "definitions": {
-    "AwsAccount": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^\\d{12}$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSRedshiftEndpointAuthorizationAwsAccountDefinition"
-    },
-    "VpcId": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^vpc-[A-Za-z0-9]{1,17}$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSRedshiftEndpointAuthorizationVpcIdDefinition"
-    }
-  },
-  "properties": {
-    "ClusterIdentifier": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^(?=^[a-z][a-z0-9]*(-[a-z0-9]+)*$).{1,63}$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The cluster identifier."
-    },
-    "Account": {
-      "description": "The target AWS account ID to grant or revoke access for.",
-      "$ref": "#/definitions/AwsAccount"
-    },
-    "VpcIds": {
-      "description": "The virtual private cloud (VPC) identifiers to grant or revoke access to.",
-      "type": "array",
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/VpcId"
-      }
-    },
-    "Force": {
-      "description": " Indicates whether to force the revoke action. If true, the Redshift-managed VPC endpoints associated with the endpoint authorization are also deleted.",
-      "type": "boolean"
-    }
-  },
   "tagging": {
     "taggable": false
   },
-  "additionalProperties": false,
-  "required": [
-    "ClusterIdentifier",
-    "Account"
-  ],
-  "primaryIdentifier": [
-    "/properties/ClusterIdentifier",
-    "/properties/Account"
-  ],
-  "createOnlyProperties": [
-    "/properties/ClusterIdentifier",
-    "/properties/Account"
-  ],
+  "typeName": "AWS::Redshift::EndpointAuthorization",
   "readOnlyProperties": [
     "/properties/Grantor",
     "/properties/Grantee",
@@ -84,9 +13,84 @@
     "/properties/AllowedVPCs",
     "/properties/EndpointCount"
   ],
+  "description": "Describes an endpoint authorization for authorizing Redshift-managed VPC endpoint access to a cluster across AWS accounts.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
+  "createOnlyProperties": [
+    "/properties/ClusterIdentifier",
+    "/properties/Account"
+  ],
+  "primaryIdentifier": [
+    "/properties/ClusterIdentifier",
+    "/properties/Account"
+  ],
+  "required": [
+    "ClusterIdentifier",
+    "Account"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
   "writeOnlyProperties": [
     "/properties/Force"
   ],
+  "additionalProperties": false,
+  "definitions": {
+    "VpcId": {
+      "oneOf": [
+        {
+          "relationshipRef": {
+            "typeName": "AWS::EC2::VPC",
+            "propertyPath": "/properties/VpcId"
+          },
+          "pattern": "^vpc-[A-Za-z0-9]{1,17}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSRedshiftEndpointAuthorizationVpcIdDefinition"
+    },
+    "AwsAccount": {
+      "oneOf": [
+        {
+          "pattern": "^\\d{12}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSRedshiftEndpointAuthorizationAwsAccountDefinition"
+    }
+  },
+  "properties": {
+    "Account": {
+      "description": "The target AWS account ID to grant or revoke access for.",
+      "$ref": "#/definitions/AwsAccount"
+    },
+    "Force": {
+      "description": " Indicates whether to force the revoke action. If true, the Redshift-managed VPC endpoints associated with the endpoint authorization are also deleted.",
+      "type": "boolean"
+    },
+    "VpcIds": {
+      "description": "The virtual private cloud (VPC) identifiers to grant or revoke access to.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/VpcId"
+      }
+    },
+    "ClusterIdentifier": {
+      "oneOf": [
+        {
+          "pattern": "^(?=^[a-z][a-z0-9]*(-[a-z0-9]+)*$).{1,63}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The cluster identifier."
+    }
+  },
   "type": "object",
   "title": "AWSRedshiftEndpointAuthorizationProperties"
 }

@@ -1,0 +1,185 @@
+{
+  "typeName": "AWS::PCS::Queue",
+  "description": "AWS::PCS::Queue resource creates an AWS PCS queue.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-pcs.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-pcs.git",
+  "definitions": {
+    "ComputeNodeGroupConfiguration": {
+      "type": "object",
+      "description": "The compute node group configuration for a queue.",
+      "properties": {
+        "ComputeNodeGroupId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The compute node group ID for the compute node group configuration."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSPCSQueueComputeNodeGroupConfigurationDefinition"
+    },
+    "ErrorInfo": {
+      "type": "object",
+      "description": "An error that occurred during resource provisioning.",
+      "properties": {
+        "Code": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The short-form error code."
+        },
+        "Message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The detailed error information."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSPCSQueueErrorInfoDefinition"
+    },
+    "SlurmCustomSetting": {
+      "type": "object",
+      "description": "Additional settings that directly map to Slurm settings.",
+      "properties": {
+        "ParameterName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS PCS supports configuration of the Slurm parameters for queues:."
+        },
+        "ParameterValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the configured Slurm setting."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "ParameterName",
+        "ParameterValue"
+      ],
+      "title": "AWSPCSQueueSlurmCustomSettingDefinition"
+    }
+  },
+  "properties": {
+    "ClusterId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the cluster of the queue."
+    },
+    "ComputeNodeGroupConfigurations": {
+      "type": "array",
+      "description": "The list of compute node group configurations associated with the queue. Queues assign jobs to associated compute node groups.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/ComputeNodeGroupConfiguration"
+      }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name that identifies the queue."
+    },
+    "SlurmConfiguration": {
+      "type": "object",
+      "description": "The Slurm configuration for the queue.",
+      "properties": {
+        "SlurmCustomSettings": {
+          "type": "array",
+          "description": "Custom Slurm parameters that directly map to Slurm configuration settings.",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/SlurmCustomSetting"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Tags": {
+      "type": "object",
+      "description": "1 or more tags added to the resource. Each tag consists of a tag key and tag value. The tag value is optional and can be an empty string.",
+      "patternProperties": {
+        "^.+$": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "ClusterId"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/ClusterId"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/ErrorInfo",
+    "/properties/Id",
+    "/properties/Status"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "pcs:TagResource",
+      "pcs:ListTagsForResource",
+      "pcs:UntagResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSPCSQueueProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::LicenseManager::License",
-  "description": "Resource Type definition for AWS::LicenseManager::License. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-licensemanager.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-licensemanager.git",
+  "description": "Resource Type definition for AWS::LicenseManager::License. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-licensemanager.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-licensemanager.git",
   "definitions": {
     "ValidityDateFormat": {
@@ -224,6 +224,40 @@
         }
       ],
       "title": "AWSLicenseManagerLicenseArnDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLicenseManagerLicenseTagDefinition"
     }
   },
   "properties": {
@@ -309,6 +343,15 @@
     },
     "Status": {
       "$ref": "#/definitions/LicenseStatus"
+    },
+    "Tags": {
+      "description": "A list of tags to attach.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "additionalProperties": false,
@@ -319,10 +362,9 @@
     "HomeRegion",
     "Validity",
     "ConsumptionConfiguration",
-    "Entitlements"
-  ],
-  "writeOnlyProperties": [
-    "/properties/Status"
+    "Entitlements",
+    "Beneficiary",
+    "ProductSKU"
   ],
   "readOnlyProperties": [
     "/properties/LicenseArn",
@@ -331,6 +373,18 @@
   "primaryIdentifier": [
     "/properties/LicenseArn"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "license-manager:TagResource",
+      "license-manager:UntagResource",
+      "license-manager:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSLicenseManagerLicenseProperties"
 }

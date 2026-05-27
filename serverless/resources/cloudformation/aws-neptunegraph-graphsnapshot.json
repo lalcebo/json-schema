@@ -1,0 +1,121 @@
+{
+  "typeName": "AWS::NeptuneGraph::GraphSnapshot",
+  "description": "Resource Type definition for AWS::NeptuneGraph::GraphSnapshot. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-neptunegraph",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-neptunegraph",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSNeptuneGraphGraphSnapshotTagDefinition"
+    }
+  },
+  "properties": {
+    "GraphIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^g-[a-z0-9]{10}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The unique identifier of the Neptune Analytics graph to create the snapshot from."
+    },
+    "SnapshotName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 63,
+          "pattern": "^(?!gs-)[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The snapshot name."
+    },
+    "Tags": {
+      "type": "array",
+      "description": "An array of key-value pairs to apply to this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "GraphIdentifier",
+    "SnapshotName"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Arn",
+    "/properties/SnapshotCreateTime",
+    "/properties/Status",
+    "/properties/KmsKeyIdentifier"
+  ],
+  "createOnlyProperties": [
+    "/properties/SnapshotName",
+    "/properties/GraphIdentifier"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Id"
+    ]
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "neptune-graph:TagResource",
+      "neptune-graph:UntagResource",
+      "neptune-graph:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSNeptuneGraphGraphSnapshotProperties"
+}

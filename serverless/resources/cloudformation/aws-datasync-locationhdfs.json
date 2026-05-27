@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::DataSync::LocationHDFS",
-  "description": "Resource schema for AWS::DataSync::LocationHDFS.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
+  "description": "Resource Type definition for AWS::DataSync::LocationHDFS.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
   "definitions": {
     "NameNode": {
@@ -115,6 +115,102 @@
         }
       },
       "title": "AWSDataSyncLocationHDFSQopConfigurationDefinition"
+    },
+    "CmkSecretConfig": {
+      "additionalProperties": false,
+      "description": "Specifies configuration information for a DataSync-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location, and a customer-managed AWS KMS key.",
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):secretsmanager:[a-z-0-9]+:[0-9]{12}:secret:.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for an AWS Secrets Manager secret, managed by DataSync."
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):kms:[a-z-0-9]+:[0-9]{12}:key/.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for the customer-managed AWS KMS key used to encrypt the secret specified for SecretArn. DataSync provides this key to AWS Secrets Manager."
+        }
+      },
+      "title": "AWSDataSyncLocationHDFSCmkSecretConfigDefinition"
+    },
+    "CustomSecretConfig": {
+      "additionalProperties": false,
+      "description": "Specifies configuration information for a customer-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location, and an IAM role that DataSync can assume and access the customer-managed secret.",
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):secretsmanager:[a-z-0-9]+:[0-9]{12}:secret:.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for a customer created AWS Secrets Manager secret."
+        },
+        "SecretAccessRoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for the AWS Identity and Access Management role that DataSync uses to access the secret specified for SecretArn."
+        }
+      },
+      "required": [
+        "SecretArn",
+        "SecretAccessRoleArn"
+      ],
+      "title": "AWSDataSyncLocationHDFSCustomSecretConfigDefinition"
+    },
+    "ManagedSecretConfig": {
+      "additionalProperties": false,
+      "description": "Specifies configuration information for a DataSync-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location. DataSync uses the default AWS-managed KMS key to encrypt this secret in AWS Secrets Manager.",
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):secretsmanager:[a-z-0-9]+:[0-9]{12}:secret:.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for an AWS Secrets Manager secret."
+        }
+      },
+      "required": [
+        "SecretArn"
+      ],
+      "title": "AWSDataSyncLocationHDFSManagedSecretConfigDefinition"
     }
   },
   "properties": {
@@ -243,7 +339,7 @@
         "oneOf": [
           {
             "type": "string",
-            "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:agent/agent-[0-9a-z]{17}$",
+            "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:agent/agent-[0-9a-z]{17}$",
             "maxLength": 128
           },
           {
@@ -267,14 +363,25 @@
         }
       ],
       "description": "The subdirectory in HDFS that is used to read data from the HDFS source location or write data to the HDFS destination."
+    },
+    "CmkSecretConfig": {
+      "$ref": "#/definitions/CmkSecretConfig"
+    },
+    "CustomSecretConfig": {
+      "$ref": "#/definitions/CustomSecretConfig"
     }
   },
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "datasync:TagResource",
+      "datasync:UntagResource",
+      "datasync:ListTagsForResource"
+    ]
   },
   "additionalProperties": false,
   "required": [
@@ -284,7 +391,9 @@
   ],
   "readOnlyProperties": [
     "/properties/LocationArn",
-    "/properties/LocationUri"
+    "/properties/LocationUri",
+    "/properties/ManagedSecretConfig",
+    "/properties/CmkSecretConfig/SecretArn"
   ],
   "primaryIdentifier": [
     "/properties/LocationArn"

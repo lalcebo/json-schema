@@ -1,0 +1,510 @@
+{
+  "typeName": "AWS::ComputeOptimizer::AutomationRule",
+  "description": "Creates an AWS Compute Optimizer automation rule that automatically implements recommended actions based on your defined criteria and schedule. Automation rules are global resources that manage automated actions across all AWS Regions where Compute Optimizer Automation is available. Organization-level rules can only be created by the management account or delegated administrator.. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_-]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the automation rule."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1024,
+          "pattern": "^[a-zA-Z0-9_\\-\\s@\\.]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the automation rule."
+    },
+    "RuleType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AccountRule",
+            "OrganizationRule"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of automation rule."
+    },
+    "OrganizationConfiguration": {
+      "description": "Organization configuration for organization rules, including rule apply order and account scope.",
+      "$ref": "#/definitions/OrganizationConfiguration"
+    },
+    "RecommendedActionTypes": {
+      "type": "array",
+      "description": "The types of recommended actions this rule will implement.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "SnapshotAndDeleteUnattachedEbsVolume",
+              "UpgradeEbsVolumeType"
+            ]
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "minItems": 1,
+      "insertionOrder": false
+    },
+    "Priority": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Rule priority within its group"
+    },
+    "Schedule": {
+      "description": "The schedule configuration for when the rule runs.",
+      "$ref": "#/definitions/Schedule"
+    },
+    "Criteria": {
+      "description": "Filter criteria that specify which recommended actions qualify for implementation.",
+      "$ref": "#/definitions/Criteria"
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Active",
+            "Inactive"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the automation rule."
+    },
+    "Tags": {
+      "type": "array",
+      "description": "Tags associated with the automation rule.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "insertionOrder": false
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\w\\s\\.\\-\\:\\/\\=\\+\\@]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[\\w\\s\\.\\-\\:\\/\\=\\+\\@]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSComputeOptimizerAutomationRuleTagDefinition"
+    },
+    "OrganizationConfiguration": {
+      "type": "object",
+      "properties": {
+        "RuleApplyOrder": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "BeforeAccountRules",
+                "AfterAccountRules"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "When the rule should be applied relative to account rules"
+        },
+        "AccountIds": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]{12}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 50,
+          "description": "List of account IDs where the organization rule applies",
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSComputeOptimizerAutomationRuleOrganizationConfigurationDefinition"
+    },
+    "Schedule": {
+      "type": "object",
+      "properties": {
+        "ScheduleExpression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Schedule expression (e.g., cron or rate expression)"
+        },
+        "ScheduleExpressionTimezone": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IANA timezone identifier"
+        },
+        "ExecutionWindowInMinutes": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 1440,
+          "description": "Execution window duration in minutes"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSComputeOptimizerAutomationRuleScheduleDefinition"
+    },
+    "Criteria": {
+      "type": "object",
+      "properties": {
+        "Region": {
+          "$ref": "#/definitions/StringCriteriaConditionList"
+        },
+        "ResourceArn": {
+          "$ref": "#/definitions/StringCriteriaConditionList"
+        },
+        "EbsVolumeType": {
+          "$ref": "#/definitions/StringCriteriaConditionList"
+        },
+        "EbsVolumeSizeInGib": {
+          "$ref": "#/definitions/IntegerCriteriaConditionList"
+        },
+        "EstimatedMonthlySavings": {
+          "$ref": "#/definitions/DoubleCriteriaConditionList"
+        },
+        "ResourceTag": {
+          "$ref": "#/definitions/ResourceTagsCriteriaConditionList"
+        },
+        "LookBackPeriodInDays": {
+          "$ref": "#/definitions/IntegerCriteriaConditionList"
+        },
+        "RestartNeeded": {
+          "$ref": "#/definitions/StringCriteriaConditionList"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSComputeOptimizerAutomationRuleCriteriaDefinition"
+    },
+    "StringCriteriaConditionList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/StringCriteriaCondition"
+      },
+      "insertionOrder": false,
+      "title": "AWSComputeOptimizerAutomationRuleStringCriteriaConditionListDefinition"
+    },
+    "StringCriteriaCondition": {
+      "type": "object",
+      "properties": {
+        "Comparison": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "StringEquals",
+                "StringNotEquals",
+                "StringEqualsIgnoreCase",
+                "StringNotEqualsIgnoreCase",
+                "StringLike",
+                "StringNotLike",
+                "NumericEquals",
+                "NumericNotEquals",
+                "NumericLessThan",
+                "NumericLessThanEquals",
+                "NumericGreaterThan",
+                "NumericGreaterThanEquals"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[\\w\\s\\.\\-\\:\\/\\=\\+\\@\\*\\?]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSComputeOptimizerAutomationRuleStringCriteriaConditionDefinition"
+    },
+    "IntegerCriteriaConditionList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/IntegerCriteriaCondition"
+      },
+      "insertionOrder": false,
+      "title": "AWSComputeOptimizerAutomationRuleIntegerCriteriaConditionListDefinition"
+    },
+    "IntegerCriteriaCondition": {
+      "type": "object",
+      "properties": {
+        "Comparison": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "StringEquals",
+                "StringNotEquals",
+                "StringEqualsIgnoreCase",
+                "StringNotEqualsIgnoreCase",
+                "StringLike",
+                "StringNotLike",
+                "NumericEquals",
+                "NumericNotEquals",
+                "NumericLessThan",
+                "NumericLessThanEquals",
+                "NumericGreaterThan",
+                "NumericGreaterThanEquals"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSComputeOptimizerAutomationRuleIntegerCriteriaConditionDefinition"
+    },
+    "DoubleCriteriaConditionList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DoubleCriteriaCondition"
+      },
+      "insertionOrder": false,
+      "title": "AWSComputeOptimizerAutomationRuleDoubleCriteriaConditionListDefinition"
+    },
+    "DoubleCriteriaCondition": {
+      "type": "object",
+      "properties": {
+        "Comparison": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "StringEquals",
+                "StringNotEquals",
+                "StringEqualsIgnoreCase",
+                "StringNotEqualsIgnoreCase",
+                "StringLike",
+                "StringNotLike",
+                "NumericEquals",
+                "NumericNotEquals",
+                "NumericLessThan",
+                "NumericLessThanEquals",
+                "NumericGreaterThan",
+                "NumericGreaterThanEquals"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSComputeOptimizerAutomationRuleDoubleCriteriaConditionDefinition"
+    },
+    "ResourceTagsCriteriaConditionList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ResourceTagsCriteriaCondition"
+      },
+      "insertionOrder": false,
+      "title": "AWSComputeOptimizerAutomationRuleResourceTagsCriteriaConditionListDefinition"
+    },
+    "ResourceTagsCriteriaCondition": {
+      "type": "object",
+      "properties": {
+        "Comparison": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "StringEquals",
+                "StringNotEquals",
+                "StringEqualsIgnoreCase",
+                "StringNotEqualsIgnoreCase",
+                "StringLike",
+                "StringNotLike",
+                "NumericEquals",
+                "NumericNotEquals",
+                "NumericLessThan",
+                "NumericLessThanEquals",
+                "NumericGreaterThan",
+                "NumericGreaterThanEquals"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^[\\w\\s\\.\\-\\:\\/\\=\\+\\@\\*\\?]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[\\w\\s\\.\\-\\:\\/\\=\\+\\@\\*\\?]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSComputeOptimizerAutomationRuleResourceTagsCriteriaConditionDefinition"
+    }
+  },
+  "required": [
+    "Name",
+    "RuleType",
+    "RecommendedActionTypes",
+    "Schedule",
+    "Status"
+  ],
+  "primaryIdentifier": [
+    "/properties/RuleArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/RuleArn",
+    "/properties/RuleId",
+    "/properties/RuleRevision",
+    "/properties/AccountId",
+    "/properties/CreatedTimestamp",
+    "/properties/LastUpdatedTimestamp"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "aco-automation:TagResource",
+      "aco-automation:UntagResource",
+      "aco-automation:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSComputeOptimizerAutomationRuleProperties"
+}

@@ -1,6 +1,7 @@
 {
   "typeName": "AWS::SageMaker::ModelPackage",
-  "description": "Resource Type definition for AWS::SageMaker::ModelPackage. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::SageMaker::ModelPackage. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-sagemaker",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-sagemaker",
   "definitions": {
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
@@ -604,18 +605,8 @@
           ],
           "description": "A structure with Model Input details."
         },
-        "ProductId": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$",
-              "maxLength": 256
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The AWS Marketplace product ID of the model package."
+        "ModelDataSource": {
+          "$ref": "#/definitions/ModelDataSource"
         },
         "Framework": {
           "oneOf": [
@@ -735,6 +726,22 @@
       ],
       "description": "The approval status of the model package.",
       "title": "AWSSageMakerModelPackageModelApprovalStatusDefinition"
+    },
+    "SkipModelValidation": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "None",
+            "All"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Indicates if you want to skip model validation.",
+      "title": "AWSSageMakerModelPackageSkipModelValidationDefinition"
     },
     "ModelMetrics": {
       "description": "A structure that contains model metrics reports.",
@@ -1266,7 +1273,7 @@
       "oneOf": [
         {
           "type": "string",
-          "pattern": "^arn:aws(-cn|-us-gov)?:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package/[\\S]{1,2048}$",
+          "pattern": "^arn:aws(-cn|-us-gov|-iso-f)?:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package/[\\S]{1,2048}$",
           "minLength": 1,
           "maxLength": 2048
         },
@@ -1291,10 +1298,6 @@
       "description": "A description provided for the model approval.",
       "title": "AWSSageMakerModelPackageApprovalDescriptionDefinition"
     },
-    "CreatedBy": {
-      "$ref": "#/definitions/UserContext",
-      "title": "AWSSageMakerModelPackageCreatedByDefinition"
-    },
     "CreationTime": {
       "oneOf": [
         {
@@ -1306,51 +1309,6 @@
       ],
       "description": "The time at which the model package was created.",
       "title": "AWSSageMakerModelPackageCreationTimeDefinition"
-    },
-    "UserContext": {
-      "type": "object",
-      "additionalProperties": false,
-      "description": "Information about the user who created or modified an experiment, trial, trial component, lineage group, or project.",
-      "properties": {
-        "DomainId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The domain associated with the user."
-        },
-        "UserProfileArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The Amazon Resource Name (ARN) of the user's profile."
-        },
-        "UserProfileName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The name of the user's profile."
-        }
-      },
-      "title": "AWSSageMakerModelPackageUserContextDefinition"
-    },
-    "LastModifiedBy": {
-      "$ref": "#/definitions/UserContext",
-      "title": "AWSSageMakerModelPackageLastModifiedByDefinition"
     },
     "LastModifiedTime": {
       "oneOf": [
@@ -1387,13 +1345,6 @@
       "description": "Details about the current status of the model package.",
       "type": "object",
       "properties": {
-        "ImageScanStatuses": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ModelPackageStatusItem"
-          },
-          "insertionOrder": true
-        },
         "ValidationStatuses": {
           "type": "array",
           "items": {
@@ -1402,9 +1353,6 @@
           "insertionOrder": true
         }
       },
-      "required": [
-        "ValidationStatuses"
-      ],
       "additionalProperties": false,
       "title": "AWSSageMakerModelPackageModelPackageStatusDetailsDefinition"
     },
@@ -1479,6 +1427,173 @@
       ],
       "description": "The machine learning task your model package accomplishes.",
       "title": "AWSSageMakerModelPackageTaskDefinition"
+    },
+    "ModelDataSource": {
+      "description": "Specifies the location of ML model data to deploy during endpoint creation.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3DataSource": {
+          "$ref": "#/definitions/S3ModelDataSource"
+        }
+      },
+      "title": "AWSSageMakerModelPackageModelDataSourceDefinition"
+    },
+    "S3ModelDataSource": {
+      "description": "Specifies the S3 location of ML model data to deploy.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3DataType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "S3Prefix",
+                "S3Object"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the type of ML model data to deploy."
+        },
+        "S3Uri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "pattern": "^(https|s3)://([^/]+)/?(.*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the S3 path of ML model data to deploy."
+        },
+        "CompressionType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "None",
+                "Gzip"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies how the ML model data is prepared."
+        },
+        "ModelAccessConfig": {
+          "$ref": "#/definitions/ModelAccessConfig"
+        }
+      },
+      "required": [
+        "S3DataType",
+        "S3Uri",
+        "CompressionType"
+      ],
+      "title": "AWSSageMakerModelPackageS3ModelDataSourceDefinition"
+    },
+    "ModelAccessConfig": {
+      "description": "Specifies the access configuration file for the ML model.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AcceptEula": {
+          "description": "Specifies agreement to the model end-user license agreement (EULA).",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "AcceptEula"
+      ],
+      "title": "AWSSageMakerModelPackageModelAccessConfigDefinition"
+    },
+    "SourceUri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1024,
+          "pattern": "[\\p{L}\\p{M}\\p{Z}\\p{N}\\p{P}]{0,1024}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The URI of the source for the model package.",
+      "title": "AWSSageMakerModelPackageSourceUriDefinition"
+    },
+    "SecurityConfig": {
+      "description": "An optional AWS Key Management Service key to encrypt, decrypt, and re-encrypt model package information for regulated workloads with highly sensitive data.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "KmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^[a-zA-Z0-9:/_-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The AWS KMS Key ID (KMSKeyId) used for encryption of model package information."
+        }
+      },
+      "required": [
+        "KmsKeyId"
+      ],
+      "title": "AWSSageMakerModelPackageSecurityConfigDefinition"
+    },
+    "ModelCard": {
+      "description": "The model card associated with the model package.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ModelCardContent": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 100000,
+              "pattern": ".*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The content of the model card."
+        },
+        "ModelCardStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Draft",
+                "PendingReview",
+                "Approved",
+                "Archived"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The approval status of the model card within your organization."
+        }
+      },
+      "required": [
+        "ModelCardContent",
+        "ModelCardStatus"
+      ],
+      "title": "AWSSageMakerModelPackageModelCardDefinition"
     }
   },
   "properties": {
@@ -1492,9 +1607,6 @@
     },
     "AdditionalInferenceSpecifications": {
       "$ref": "#/definitions/AdditionalInferenceSpecifications"
-    },
-    "AdditionalInferenceSpecificationDefinition": {
-      "$ref": "#/definitions/AdditionalInferenceSpecificationDefinition"
     },
     "CertifyForMarketplace": {
       "$ref": "#/definitions/CertifyForMarketplace"
@@ -1535,6 +1647,9 @@
     "SamplePayloadUrl": {
       "$ref": "#/definitions/SamplePayloadUrl"
     },
+    "SkipModelValidation": {
+      "$ref": "#/definitions/SkipModelValidation"
+    },
     "SourceAlgorithmSpecification": {
       "$ref": "#/definitions/SourceAlgorithmSpecification"
     },
@@ -1547,12 +1662,6 @@
     "ApprovalDescription": {
       "$ref": "#/definitions/ApprovalDescription"
     },
-    "LastModifiedBy": {
-      "$ref": "#/definitions/LastModifiedBy"
-    },
-    "LastModifiedTime": {
-      "$ref": "#/definitions/LastModifiedTime"
-    },
     "ModelPackageVersion": {
       "$ref": "#/definitions/ModelPackageVersion"
     },
@@ -1562,14 +1671,14 @@
     "ModelPackageStatusDetails": {
       "$ref": "#/definitions/ModelPackageStatusDetails"
     },
-    "ModelPackageStatusItem": {
-      "$ref": "#/definitions/ModelPackageStatusItem"
+    "SourceUri": {
+      "$ref": "#/definitions/SourceUri"
     },
-    "CreatedBy": {
-      "$ref": "#/definitions/CreatedBy"
+    "ModelCard": {
+      "$ref": "#/definitions/ModelCard"
     },
-    "Environment": {
-      "$ref": "#/definitions/Environment"
+    "SecurityConfig": {
+      "$ref": "#/definitions/SecurityConfig"
     }
   },
   "additionalProperties": false,
@@ -1578,11 +1687,17 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "sagemaker:AddTags",
+      "sagemaker:ListTags",
+      "sagemaker:DeleteTags"
+    ]
   },
   "readOnlyProperties": [
     "/properties/ModelPackageArn",
     "/properties/CreationTime",
+    "/properties/LastModifiedTime",
     "/properties/ModelPackageStatus"
   ],
   "createOnlyProperties": [
@@ -1597,7 +1712,16 @@
     "/properties/DriftCheckBaselines",
     "/properties/Domain",
     "/properties/Task",
-    "/properties/SamplePayloadUrl"
+    "/properties/SamplePayloadUrl",
+    "/properties/SecurityConfig"
+  ],
+  "conditionalCreateOnlyProperties": [
+    "/properties/ModelCard",
+    "/properties/SourceUri"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ClientToken",
+    "/properties/AdditionalInferenceSpecificationsToAdd"
   ],
   "primaryIdentifier": [
     "/properties/ModelPackageArn"

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::MediaLive::Channel",
-  "description": "Resource Type definition for AWS::MediaLive::Channel. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::MediaLive::Channel. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "InputAttachments": {
@@ -13,6 +13,20 @@
     "InputSpecification": {
       "$ref": "#/definitions/InputSpecification"
     },
+    "ChannelSecurityGroups": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
     "Destinations": {
       "type": "array",
       "uniqueItems": false,
@@ -20,8 +34,14 @@
         "$ref": "#/definitions/OutputDestination"
       }
     },
+    "DryRun": {
+      "type": "boolean"
+    },
     "Vpc": {
       "$ref": "#/definitions/VpcOutputSettings"
+    },
+    "ChannelEngineVersion": {
+      "$ref": "#/definitions/ChannelEngineVersionRequest"
     },
     "Maintenance": {
       "$ref": "#/definitions/MaintenanceCreateSettings"
@@ -69,11 +89,20 @@
     "EncoderSettings": {
       "$ref": "#/definitions/EncoderSettings"
     },
+    "LinkedChannelSettings": {
+      "$ref": "#/definitions/LinkedChannelSettings"
+    },
+    "AnywhereSettings": {
+      "$ref": "#/definitions/AnywhereSettings"
+    },
     "CdiInputSpecification": {
       "$ref": "#/definitions/CdiInputSpecification"
     },
     "Tags": {
       "type": "object"
+    },
+    "InferenceSettings": {
+      "$ref": "#/definitions/InferenceSettings"
     }
   },
   "definitions": {
@@ -203,6 +232,16 @@
             }
           ]
         },
+        "AttenuationControl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "Bitrate": {
           "type": "number"
         }
@@ -288,7 +327,47 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "ChannelName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "ChannelId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ChannelGroup": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ChannelEndpointId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MediaPackageRegionName": {
           "oneOf": [
             {
               "type": "string"
@@ -388,6 +467,9 @@
             }
           ]
         },
+        "MinBitrate": {
+          "type": "integer"
+        },
         "MinIInterval": {
           "type": "integer"
         },
@@ -432,6 +514,9 @@
         },
         "FilterSettings": {
           "$ref": "#/definitions/H264FilterSettings"
+        },
+        "MinQp": {
+          "type": "integer"
         },
         "ColorSpaceSettings": {
           "$ref": "#/definitions/H264ColorSpaceSettings"
@@ -630,10 +715,57 @@
       },
       "title": "AWSMediaLiveChannelUdpContainerSettingsDefinition"
     },
+    "BandwidthReductionFilterSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PostFilterSharpening": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Strength": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelBandwidthReductionFilterSettingsDefinition"
+    },
+    "MediaPackageAdditionalDestinations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Destination": {
+          "$ref": "#/definitions/OutputLocationRef"
+        }
+      },
+      "title": "AWSMediaLiveChannelMediaPackageAdditionalDestinationsDefinition"
+    },
     "FeatureActivations": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "OutputStaticImageOverlayScheduleActions": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "InputPrepareScheduleActions": {
           "oneOf": [
             {
@@ -651,6 +783,23 @@
       "type": "object",
       "additionalProperties": false,
       "title": "AWSMediaLiveChannelMultiplexGroupSettingsDefinition"
+    },
+    "SrtGroupSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InputLossAction": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelSrtGroupSettingsDefinition"
     },
     "ArchiveGroupSettings": {
       "type": "object",
@@ -684,6 +833,16 @@
         }
       },
       "title": "AWSMediaLiveChannelArchiveS3SettingsDefinition"
+    },
+    "MultiplexContainerSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MultiplexM2tsSettings": {
+          "$ref": "#/definitions/MultiplexM2tsSettings"
+        }
+      },
+      "title": "AWSMediaLiveChannelMultiplexContainerSettingsDefinition"
     },
     "NielsenConfiguration": {
       "type": "object",
@@ -732,6 +891,149 @@
       },
       "title": "AWSMediaLiveChannelTeletextSourceSettingsDefinition"
     },
+    "CmafIngestGroupSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Destination": {
+          "$ref": "#/definitions/OutputLocationRef"
+        },
+        "KlvNameModifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Scte35Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TimedMetadataId3Frame": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TimedMetadataPassthrough": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "NielsenId3Behavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Scte35NameModifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CaptionLanguageMappings": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CmafIngestCaptionLanguageMapping"
+          }
+        },
+        "SegmentLengthUnits": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TimedMetadataId3Period": {
+          "type": "integer"
+        },
+        "AdditionalDestinations": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/AdditionalDestinations"
+          }
+        },
+        "NielsenId3NameModifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KlvBehavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SegmentLength": {
+          "type": "integer"
+        },
+        "Id3Behavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SendDelayMs": {
+          "type": "integer"
+        },
+        "Id3NameModifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelCmafIngestGroupSettingsDefinition"
+    },
     "AribDestinationSettings": {
       "type": "object",
       "additionalProperties": false,
@@ -779,6 +1081,9 @@
             }
           ]
         },
+        "OutputLockingSettings": {
+          "$ref": "#/definitions/OutputLockingSettings"
+        },
         "OutputTimingSource": {
           "oneOf": [
             {
@@ -818,6 +1123,33 @@
       },
       "title": "AWSMediaLiveChannelGlobalConfigurationDefinition"
     },
+    "PipelineLockingSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PipelineLockingMethod": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomEpoch": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelPipelineLockingSettingsDefinition"
+    },
     "FrameCaptureS3Settings": {
       "type": "object",
       "additionalProperties": false,
@@ -834,6 +1166,132 @@
         }
       },
       "title": "AWSMediaLiveChannelFrameCaptureS3SettingsDefinition"
+    },
+    "MultiplexM2tsSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Scte35Control": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PcrPeriod": {
+          "type": "integer"
+        },
+        "NielsenId3Behavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EsRateInPes": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CcDescriptor": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AudioFramesPerPes": {
+          "type": "integer"
+        },
+        "AbsentInputAudioBehavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AudioStreamType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Klv": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Arib": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AudioBufferModel": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Ebif": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Scte35PrerollPullupMilliseconds": {
+          "type": "number"
+        },
+        "PcrControl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelMultiplexM2tsSettingsDefinition"
     },
     "FailoverCondition": {
       "type": "object",
@@ -938,6 +1396,46 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "AudioDashRoles": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "LanguageCodeControl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CodecSettings": {
+          "$ref": "#/definitions/AudioCodecSettings"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AudioWatermarkingSettings": {
+          "$ref": "#/definitions/AudioWatermarkSettings"
+        },
         "AudioNormalizationSettings": {
           "$ref": "#/definitions/AudioNormalizationSettings"
         },
@@ -974,7 +1472,7 @@
             }
           ]
         },
-        "LanguageCodeControl": {
+        "DvbDashAccessibility": {
           "oneOf": [
             {
               "type": "string"
@@ -1003,22 +1501,6 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
-        },
-        "CodecSettings": {
-          "$ref": "#/definitions/AudioCodecSettings"
-        },
-        "Name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "AudioWatermarkingSettings": {
-          "$ref": "#/definitions/AudioWatermarkSettings"
         }
       },
       "title": "AWSMediaLiveChannelAudioDescriptionDefinition"
@@ -1059,10 +1541,44 @@
       },
       "title": "AWSMediaLiveChannelVideoSelectorSettingsDefinition"
     },
+    "AdditionalDestinations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Destination": {
+          "$ref": "#/definitions/OutputLocationRef"
+        }
+      },
+      "title": "AWSMediaLiveChannelAdditionalDestinationsDefinition"
+    },
     "OutputDestination": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "SrtSettings": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/SrtOutputDestinationSettings"
+          }
+        },
+        "LogicalInterfaceNames": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "MultiplexSettings": {
+          "$ref": "#/definitions/MultiplexProgramChannelDestinationSettings"
+        },
         "Id": {
           "oneOf": [
             {
@@ -1072,9 +1588,6 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
-        },
-        "MultiplexSettings": {
-          "$ref": "#/definitions/MultiplexProgramChannelDestinationSettings"
         },
         "Settings": {
           "type": "array",
@@ -1092,6 +1605,19 @@
         }
       },
       "title": "AWSMediaLiveChannelOutputDestinationDefinition"
+    },
+    "LinkedChannelSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PrimaryChannelSettings": {
+          "$ref": "#/definitions/PrimaryChannelSettings"
+        },
+        "FollowerChannelSettings": {
+          "$ref": "#/definitions/FollowerChannelSettings"
+        }
+      },
+      "title": "AWSMediaLiveChannelLinkedChannelSettingsDefinition"
     },
     "AudioLanguageSelection": {
       "type": "object",
@@ -1191,6 +1717,52 @@
         }
       },
       "title": "AWSMediaLiveChannelInputLossBehaviorDefinition"
+    },
+    "MulticastInputSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SourceIpAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelMulticastInputSettingsDefinition"
+    },
+    "SrtOutputSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EncryptionType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Destination": {
+          "$ref": "#/definitions/OutputLocationRef"
+        },
+        "BufferMsec": {
+          "type": "integer"
+        },
+        "ContainerSettings": {
+          "$ref": "#/definitions/UdpContainerSettings"
+        },
+        "Latency": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSMediaLiveChannelSrtOutputSettingsDefinition"
     },
     "HlsMediaStoreSettings": {
       "type": "object",
@@ -1385,6 +1957,16 @@
         "PmtInterval": {
           "type": "integer"
         },
+        "KlvDataPids": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "NielsenId3Behavior": {
           "oneOf": [
             {
@@ -1442,6 +2024,16 @@
           ]
         },
         "Scte35Behavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KlvBehavior": {
           "oneOf": [
             {
               "type": "string"
@@ -1535,6 +2127,16 @@
             ]
           }
         },
+        "IncludeFillerNalUnits": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "InputLossAction": {
           "oneOf": [
             {
@@ -1577,6 +2179,9 @@
       "properties": {
         "TemporalFilterSettings": {
           "$ref": "#/definitions/TemporalFilterSettings"
+        },
+        "BandwidthReductionFilterSettings": {
+          "$ref": "#/definitions/BandwidthReductionFilterSettings"
         }
       },
       "title": "AWSMediaLiveChannelH264FilterSettingsDefinition"
@@ -1659,6 +2264,23 @@
       },
       "title": "AWSMediaLiveChannelOutputDefinition"
     },
+    "ChannelEngineVersionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelChannelEngineVersionRequestDefinition"
+    },
     "VideoDescription": {
       "type": "object",
       "additionalProperties": false,
@@ -1730,6 +2352,47 @@
         }
       },
       "title": "AWSMediaLiveChannelFrameCaptureSettingsDefinition"
+    },
+    "AnywhereSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ChannelPlacementGroupId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ClusterId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelAnywhereSettingsDefinition"
+    },
+    "ColorCorrectionSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "GlobalColorCorrections": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/ColorCorrection"
+          }
+        }
+      },
+      "title": "AWSMediaLiveChannelColorCorrectionSettingsDefinition"
     },
     "CdiInputSpecification": {
       "type": "object",
@@ -1994,6 +2657,9 @@
         },
         "Hdr10Settings": {
           "$ref": "#/definitions/Hdr10Settings"
+        },
+        "Hlg2020Settings": {
+          "$ref": "#/definitions/Hlg2020Settings"
         }
       },
       "title": "AWSMediaLiveChannelH265ColorSpaceSettingsDefinition"
@@ -2013,6 +2679,9 @@
         },
         "H265Settings": {
           "$ref": "#/definitions/H265Settings"
+        },
+        "Av1Settings": {
+          "$ref": "#/definitions/Av1Settings"
         }
       },
       "title": "AWSMediaLiveChannelVideoCodecSettingsDefinition"
@@ -2021,6 +2690,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "MediapackageV2GroupSettings": {
+          "$ref": "#/definitions/MediaPackageV2GroupSettings"
+        },
         "Destination": {
           "$ref": "#/definitions/OutputLocationRef"
         }
@@ -2033,6 +2705,9 @@
       "properties": {
         "TemporalFilterSettings": {
           "$ref": "#/definitions/TemporalFilterSettings"
+        },
+        "BandwidthReductionFilterSettings": {
+          "$ref": "#/definitions/BandwidthReductionFilterSettings"
         }
       },
       "title": "AWSMediaLiveChannelH265FilterSettingsDefinition"
@@ -2087,6 +2762,9 @@
         "MultiplexGroupSettings": {
           "$ref": "#/definitions/MultiplexGroupSettings"
         },
+        "SrtGroupSettings": {
+          "$ref": "#/definitions/SrtGroupSettings"
+        },
         "ArchiveGroupSettings": {
           "$ref": "#/definitions/ArchiveGroupSettings"
         },
@@ -2101,6 +2779,9 @@
         },
         "RtmpGroupSettings": {
           "$ref": "#/definitions/RtmpGroupSettings"
+        },
+        "CmafIngestGroupSettings": {
+          "$ref": "#/definitions/CmafIngestGroupSettings"
         }
       },
       "title": "AWSMediaLiveChannelOutputGroupSettingsDefinition"
@@ -2122,10 +2803,30 @@
       },
       "title": "AWSMediaLiveChannelAudioChannelMappingDefinition"
     },
+    "CmafIngestOutputSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "NameModifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelCmafIngestOutputSettingsDefinition"
+    },
     "NetworkInputSettings": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "MulticastInputSettings": {
+          "$ref": "#/definitions/MulticastInputSettings"
+        },
         "ServerValidation": {
           "oneOf": [
             {
@@ -2146,6 +2847,43 @@
       "type": "object",
       "additionalProperties": false,
       "title": "AWSMediaLiveChannelTeletextDestinationSettingsDefinition"
+    },
+    "ColorCorrection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "OutputColorSpace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "InputColorSpace": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Uri": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelColorCorrectionDefinition"
     },
     "WebvttDestinationSettings": {
       "type": "object",
@@ -2207,6 +2945,9 @@
         "MotionGraphicsConfiguration": {
           "$ref": "#/definitions/MotionGraphicsConfiguration"
         },
+        "ThumbnailConfiguration": {
+          "$ref": "#/definitions/ThumbnailConfiguration"
+        },
         "FeatureActivations": {
           "$ref": "#/definitions/FeatureActivations"
         },
@@ -2219,6 +2960,9 @@
         },
         "AvailConfiguration": {
           "$ref": "#/definitions/AvailConfiguration"
+        },
+        "ColorCorrectionSettings": {
+          "$ref": "#/definitions/ColorCorrectionSettings"
         },
         "OutputGroups": {
           "type": "array",
@@ -2297,6 +3041,56 @@
         }
       },
       "title": "AWSMediaLiveChannelHlsSettingsDefinition"
+    },
+    "SrtOutputDestinationSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ConnectionMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ListenerPort": {
+          "type": "integer"
+        },
+        "StreamId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EncryptionPassphraseSecretArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Url": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelSrtOutputDestinationSettingsDefinition"
     },
     "AutomaticInputFailoverSettings": {
       "type": "object",
@@ -3144,6 +3938,23 @@
       "additionalProperties": false,
       "title": "AWSMediaLiveChannelColorSpacePassthroughSettingsDefinition"
     },
+    "ThumbnailConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "State": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelThumbnailConfigurationDefinition"
+    },
     "AudioHlsRenditionSelection": {
       "type": "object",
       "additionalProperties": false,
@@ -3170,6 +3981,23 @@
         }
       },
       "title": "AWSMediaLiveChannelAudioHlsRenditionSelectionDefinition"
+    },
+    "DisabledLockingSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CustomEpoch": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelDisabledLockingSettingsDefinition"
     },
     "MsSmoothOutputSettings": {
       "type": "object",
@@ -3464,6 +4292,16 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "Scte35SegmentationScope": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "AvailSettings": {
           "$ref": "#/definitions/AvailSettings"
         }
@@ -3505,15 +4343,15 @@
       },
       "title": "AWSMediaLiveChannelAncillarySourceSettingsDefinition"
     },
+    "Hlg2020Settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSMediaLiveChannelHlg2020SettingsDefinition"
+    },
     "EmbeddedPlusScte20DestinationSettings": {
       "type": "object",
       "additionalProperties": false,
       "title": "AWSMediaLiveChannelEmbeddedPlusScte20DestinationSettingsDefinition"
-    },
-    "Rec709Settings": {
-      "type": "object",
-      "additionalProperties": false,
-      "title": "AWSMediaLiveChannelRec709SettingsDefinition"
     },
     "ArchiveContainerSettings": {
       "type": "object",
@@ -3527,6 +4365,11 @@
         }
       },
       "title": "AWSMediaLiveChannelArchiveContainerSettingsDefinition"
+    },
+    "Rec709Settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSMediaLiveChannelRec709SettingsDefinition"
     },
     "InputAttachment": {
       "type": "object",
@@ -3552,6 +4395,20 @@
             }
           ]
         },
+        "LogicalInterfaceNames": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
         "AutomaticInputFailoverSettings": {
           "$ref": "#/definitions/AutomaticInputFailoverSettings"
         },
@@ -3560,6 +4417,50 @@
         }
       },
       "title": "AWSMediaLiveChannelInputAttachmentDefinition"
+    },
+    "PrimaryChannelSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LinkedChannelType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelPrimaryChannelSettingsDefinition"
+    },
+    "EpochLockingSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "JamSyncTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomEpoch": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelEpochLockingSettingsDefinition"
     },
     "VideoSelectorPid": {
       "type": "object",
@@ -3587,7 +4488,34 @@
     "MediaPackageOutputSettings": {
       "type": "object",
       "additionalProperties": false,
+      "properties": {
+        "MediaPackageV2DestinationSettings": {
+          "$ref": "#/definitions/MediaPackageV2DestinationSettings"
+        }
+      },
       "title": "AWSMediaLiveChannelMediaPackageOutputSettingsDefinition"
+    },
+    "Av1ColorSpaceSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Rec601Settings": {
+          "$ref": "#/definitions/Rec601Settings"
+        },
+        "Rec709Settings": {
+          "$ref": "#/definitions/Rec709Settings"
+        },
+        "ColorSpacePassthroughSettings": {
+          "$ref": "#/definitions/ColorSpacePassthroughSettings"
+        },
+        "Hdr10Settings": {
+          "$ref": "#/definitions/Hdr10Settings"
+        },
+        "Hlg2020Settings": {
+          "$ref": "#/definitions/Hlg2020Settings"
+        }
+      },
+      "title": "AWSMediaLiveChannelAv1ColorSpaceSettingsDefinition"
     },
     "HlsWebdavSettings": {
       "type": "object",
@@ -3692,6 +4620,12 @@
         },
         "MultiplexOutputSettings": {
           "$ref": "#/definitions/MultiplexOutputSettings"
+        },
+        "CmafIngestOutputSettings": {
+          "$ref": "#/definitions/CmafIngestOutputSettings"
+        },
+        "SrtOutputSettings": {
+          "$ref": "#/definitions/SrtOutputSettings"
         },
         "ArchiveOutputSettings": {
           "$ref": "#/definitions/ArchiveOutputSettings"
@@ -3800,6 +4734,23 @@
         }
       },
       "title": "AWSMediaLiveChannelScte20SourceSettingsDefinition"
+    },
+    "InferenceSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FeedArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelInferenceSettingsDefinition"
     },
     "Scte27DestinationSettings": {
       "type": "object",
@@ -4045,6 +4996,103 @@
       },
       "title": "AWSMediaLiveChannelTimecodeBurninSettingsDefinition"
     },
+    "MediaPackageV2GroupSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CaptionLanguageMappings": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CaptionLanguageMapping"
+          }
+        },
+        "Scte35Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SegmentLengthUnits": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TimedMetadataId3Frame": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TimedMetadataId3Period": {
+          "type": "integer"
+        },
+        "TimedMetadataPassthrough": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AdditionalDestinations": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/MediaPackageAdditionalDestinations"
+          }
+        },
+        "NielsenId3Behavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KlvBehavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Id3Behavior": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SegmentLength": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSMediaLiveChannelMediaPackageV2GroupSettingsDefinition"
+    },
     "AudioSelector": {
       "type": "object",
       "additionalProperties": false,
@@ -4140,6 +5188,16 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "MvOverPictureBoundaries": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "TimecodeBurninSettings": {
           "$ref": "#/definitions/TimecodeBurninSettings"
         },
@@ -4147,6 +5205,9 @@
           "type": "integer"
         },
         "QvbrQualityLevel": {
+          "type": "integer"
+        },
+        "TileHeight": {
           "type": "integer"
         },
         "FramerateNumerator": {
@@ -4174,6 +5235,19 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "MvTemporalPredictor": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MinBitrate": {
+          "type": "integer"
         },
         "MinIInterval": {
           "type": "integer"
@@ -4204,8 +5278,14 @@
             }
           ]
         },
+        "TileWidth": {
+          "type": "integer"
+        },
         "FilterSettings": {
           "$ref": "#/definitions/H265FilterSettings"
+        },
+        "MinQp": {
+          "type": "integer"
         },
         "AlternativeTransferFunction": {
           "oneOf": [
@@ -4244,6 +5324,16 @@
           ]
         },
         "GopSizeUnits": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TilePadding": {
           "oneOf": [
             {
               "type": "string"
@@ -4302,6 +5392,16 @@
             }
           ]
         },
+        "Deblocking": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "ColorMetadata": {
           "oneOf": [
             {
@@ -4322,6 +5422,16 @@
             }
           ]
         },
+        "GopBReference": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "Level": {
           "oneOf": [
             {
@@ -4333,6 +5443,29 @@
           ]
         },
         "MaxBitrate": {
+          "type": "integer"
+        },
+        "TreeblockSize": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SubgopLength": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GopNumBFrames": {
           "type": "integer"
         }
       },
@@ -4491,6 +5624,16 @@
             }
           ]
         },
+        "SubtitleRows": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "FontOpacity": {
           "type": "integer"
         },
@@ -4509,6 +5652,22 @@
         }
       },
       "title": "AWSMediaLiveChannelDvbSubDestinationSettingsDefinition"
+    },
+    "OutputLockingSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DisabledLockingSettings": {
+          "$ref": "#/definitions/DisabledLockingSettings"
+        },
+        "EpochLockingSettings": {
+          "$ref": "#/definitions/EpochLockingSettings"
+        },
+        "PipelineLockingSettings": {
+          "$ref": "#/definitions/PipelineLockingSettings"
+        }
+      },
+      "title": "AWSMediaLiveChannelOutputLockingSettingsDefinition"
     },
     "CaptionDescription": {
       "type": "object",
@@ -4547,6 +5706,16 @@
             }
           ]
         },
+        "DvbDashAccessibility": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "CaptionSelectorName": {
           "oneOf": [
             {
@@ -4556,6 +5725,20 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "CaptionDashRoles": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         },
         "Name": {
           "oneOf": [
@@ -4649,6 +5832,16 @@
           "type": "integer"
         },
         "TeletextGridControl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SubtitleRows": {
           "oneOf": [
             {
               "type": "string"
@@ -4810,12 +6003,42 @@
       "additionalProperties": false,
       "title": "AWSMediaLiveChannelHtmlMotionGraphicsSettingsDefinition"
     },
+    "FollowerChannelSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PrimaryChannelArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LinkedChannelType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelFollowerChannelSettingsDefinition"
+    },
     "MultiplexOutputSettings": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "Destination": {
           "$ref": "#/definitions/OutputLocationRef"
+        },
+        "ContainerSettings": {
+          "$ref": "#/definitions/MultiplexContainerSettings"
         }
       },
       "title": "AWSMediaLiveChannelMultiplexOutputSettingsDefinition"
@@ -4931,6 +6154,162 @@
         }
       },
       "title": "AWSMediaLiveChannelCaptionRectangleDefinition"
+    },
+    "Av1Settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TimecodeBurninSettings": {
+          "$ref": "#/definitions/TimecodeBurninSettings"
+        },
+        "TemporalAq": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "QvbrQualityLevel": {
+          "type": "integer"
+        },
+        "FramerateNumerator": {
+          "type": "integer"
+        },
+        "BitDepth": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MinBitrate": {
+          "type": "integer"
+        },
+        "MinIInterval": {
+          "type": "integer"
+        },
+        "SceneChangeDetect": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "FramerateDenominator": {
+          "type": "integer"
+        },
+        "GopSize": {
+          "type": "number"
+        },
+        "ColorSpaceSettings": {
+          "$ref": "#/definitions/Av1ColorSpaceSettings"
+        },
+        "SpatialAq": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ParDenominator": {
+          "type": "integer"
+        },
+        "FixedAfd": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GopSizeUnits": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AfdSignaling": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Bitrate": {
+          "type": "integer"
+        },
+        "ParNumerator": {
+          "type": "integer"
+        },
+        "RateControlMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BufSize": {
+          "type": "integer"
+        },
+        "TimecodeInsertion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LookAheadRateControl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Level": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MaxBitrate": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSMediaLiveChannelAv1SettingsDefinition"
     },
     "TimecodeConfig": {
       "type": "object",
@@ -5138,6 +6517,22 @@
             }
           ]
         },
+        "DefaultFontSize": {
+          "type": "integer"
+        },
+        "DefaultLineHeight": {
+          "type": "integer"
+        },
+        "FillLineGap": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "StyleControl": {
           "oneOf": [
             {
@@ -5149,16 +6544,6 @@
           ]
         },
         "CopyrightHolder": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "FillLineGap": {
           "oneOf": [
             {
               "type": "string"
@@ -5226,6 +6611,53 @@
       },
       "title": "AWSMediaLiveChannelVideoSelectorDefinition"
     },
+    "MediaPackageV2DestinationSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HlsDefault": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AudioRenditionSets": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AudioGroupId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HlsAutoSelect": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveChannelMediaPackageV2DestinationSettingsDefinition"
+    },
     "MotionGraphicsConfiguration": {
       "type": "object",
       "additionalProperties": false,
@@ -5245,6 +6677,26 @@
         }
       },
       "title": "AWSMediaLiveChannelMotionGraphicsConfigurationDefinition"
+    },
+    "CmafIngestCaptionLanguageMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LanguageCode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CaptionChannel": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSMediaLiveChannelCmafIngestCaptionLanguageMappingDefinition"
     },
     "Hdr10Settings": {
       "type": "object",

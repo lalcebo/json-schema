@@ -1,10 +1,22 @@
 {
   "typeName": "AWS::AppSync::DataSource",
-  "description": "Resource Type definition for AWS::AppSync::DataSource. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::AppSync::DataSource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appsync",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appsync",
   "additionalProperties": false,
+  "tagging": {
+    "taggable": false
+  },
   "properties": {
-    "OpenSearchServiceConfig": {
-      "$ref": "#/definitions/OpenSearchServiceConfig"
+    "ApiId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique AWS AppSync GraphQL API identifier where this data source will be created."
     },
     "Description": {
       "oneOf": [
@@ -14,17 +26,28 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The description of the data source."
     },
-    "ServiceRoleArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
+    "DynamoDBConfig": {
+      "description": "AWS Region and TableName for an Amazon DynamoDB table in your account.",
+      "$ref": "#/definitions/DynamoDBConfig"
+    },
+    "ElasticsearchConfig": {
+      "description": "AWS Region and Endpoints for an Amazon OpenSearch Service domain in your account.\nAs of September 2021, Amazon Elasticsearch Service is Amazon OpenSearch Service. This property is deprecated. For new data sources, use OpenSearchServiceConfig to specify an OpenSearch Service data source.",
+      "$ref": "#/definitions/ElasticsearchConfig"
+    },
+    "EventBridgeConfig": {
+      "description": "ARN for the EventBridge bus.",
+      "$ref": "#/definitions/EventBridgeConfig"
+    },
+    "HttpConfig": {
+      "description": "Endpoints for an HTTP data source.",
+      "$ref": "#/definitions/HttpConfig"
+    },
+    "LambdaConfig": {
+      "description": "An ARN of a Lambda function in valid ARN format. This can be the ARN of a Lambda function that exists in the current account or in another account.",
+      "$ref": "#/definitions/LambdaConfig"
     },
     "Name": {
       "oneOf": [
@@ -34,7 +57,27 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "Friendly name for you to identify your AppSync data source after creation."
+    },
+    "OpenSearchServiceConfig": {
+      "description": "AWS Region and Endpoints for an Amazon OpenSearch Service domain in your account.",
+      "$ref": "#/definitions/OpenSearchServiceConfig"
+    },
+    "RelationalDatabaseConfig": {
+      "description": "Relational Database configuration of the relational database data source.",
+      "$ref": "#/definitions/RelationalDatabaseConfig"
+    },
+    "ServiceRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Identity and Access Management service role ARN for the data source. The system assumes this role when accessing the data source."
     },
     "Type": {
       "oneOf": [
@@ -44,35 +87,22 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The type of the data source."
     },
-    "EventBridgeConfig": {
-      "$ref": "#/definitions/EventBridgeConfig"
-    },
-    "HttpConfig": {
-      "$ref": "#/definitions/HttpConfig"
-    },
-    "RelationalDatabaseConfig": {
-      "$ref": "#/definitions/RelationalDatabaseConfig"
-    },
-    "LambdaConfig": {
-      "$ref": "#/definitions/LambdaConfig"
-    },
-    "ApiId": {
+    "MetricsConfig": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "DISABLED",
+            "ENABLED"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
-    },
-    "DynamoDBConfig": {
-      "$ref": "#/definitions/DynamoDBConfig"
-    },
-    "ElasticsearchConfig": {
-      "$ref": "#/definitions/ElasticsearchConfig"
     }
   },
   "definitions": {
@@ -88,7 +118,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Logical database name."
         },
         "AwsRegion": {
           "oneOf": [
@@ -98,7 +129,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "AWS Region for RDS HTTP endpoint."
         },
         "DbClusterIdentifier": {
           "oneOf": [
@@ -108,7 +140,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Amazon RDS cluster Amazon Resource Name (ARN)."
         },
         "AwsSecretStoreArn": {
           "oneOf": [
@@ -118,7 +151,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The ARN for database credentials stored in AWS Secrets Manager."
         },
         "Schema": {
           "oneOf": [
@@ -128,7 +162,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Logical schema name."
         }
       },
       "required": [
@@ -150,7 +185,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The AWS Region."
         },
         "Endpoint": {
           "oneOf": [
@@ -160,7 +196,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The endpoint."
         }
       },
       "required": [
@@ -181,7 +218,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The signing Region for AWS Identity and Access Management authorization."
         },
         "SigningServiceName": {
           "oneOf": [
@@ -191,7 +229,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The signing service name for AWS Identity and Access Management authorization."
         }
       },
       "title": "AWSAppSyncDataSourceAwsIamConfigDefinition"
@@ -208,7 +247,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "ARN for the EventBridge bus."
         }
       },
       "required": [
@@ -228,9 +268,11 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The authorization type that the HTTP endpoint requires."
         },
         "AwsIamConfig": {
+          "description": "The AWS Identity and Access Management settings.",
           "$ref": "#/definitions/AwsIamConfig"
         }
       },
@@ -251,7 +293,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The number of minutes that an Item is stored in the data source."
         },
         "DeltaSyncTableTTL": {
           "oneOf": [
@@ -261,7 +304,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The number of minutes that a Delta Sync log entry is stored in the Delta Sync table."
         },
         "DeltaSyncTableName": {
           "oneOf": [
@@ -271,7 +315,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The Delta Sync table name."
         }
       },
       "required": [
@@ -286,6 +331,7 @@
       "additionalProperties": false,
       "properties": {
         "RdsHttpEndpointConfig": {
+          "description": "Information about the Amazon RDS resource.",
           "$ref": "#/definitions/RdsHttpEndpointConfig"
         },
         "RelationalDatabaseSourceType": {
@@ -296,7 +342,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The type of relational data source."
         }
       },
       "required": [
@@ -316,9 +363,11 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The endpoint."
         },
         "AuthorizationConfig": {
+          "description": "The authorization configuration.",
           "$ref": "#/definitions/AuthorizationConfig"
         }
       },
@@ -339,7 +388,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The ARN for the Lambda function."
         }
       },
       "required": [
@@ -359,7 +409,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The AWS Region."
         },
         "Endpoint": {
           "oneOf": [
@@ -369,7 +420,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The endpoint."
         }
       },
       "required": [
@@ -390,12 +442,15 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The table name."
         },
         "DeltaSyncConfig": {
+          "description": "The DeltaSyncConfig for a versioned datasource.",
           "$ref": "#/definitions/DeltaSyncConfig"
         },
         "UseCallerCredentials": {
+          "description": "Set to TRUE to use AWS Identity and Access Management with this data source.",
           "type": "boolean"
         },
         "AwsRegion": {
@@ -406,9 +461,11 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The AWS Region."
         },
         "Versioned": {
+          "description": "Set to TRUE to use Conflict Detection and Resolution with this data source.",
           "type": "boolean"
         }
       },
@@ -429,11 +486,13 @@
     "/properties/Name"
   ],
   "primaryIdentifier": [
-    "/properties/Id"
+    "/properties/DataSourceArn"
   ],
   "readOnlyProperties": [
-    "/properties/Id",
     "/properties/DataSourceArn"
+  ],
+  "deprecatedProperties": [
+    "/properties/ElasticsearchConfig"
   ],
   "type": "object",
   "title": "AWSAppSyncDataSourceProperties"

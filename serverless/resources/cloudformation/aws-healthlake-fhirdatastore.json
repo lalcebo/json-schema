@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::HealthLake::FHIRDatastore",
-  "description": "HealthLake FHIR Datastore. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "HealthLake FHIR Datastore. Source:- No source definition found, add manually please",
   "documentationUrl": "https://docs.aws.amazon.com/healthlake/latest/devguide/working-with-FHIR-healthlake.html",
   "definitions": {
     "CreatedAt": {
@@ -153,6 +153,11 @@
       "required": [
         "KmsEncryptionConfig"
       ],
+      "default": {
+        "KmsEncryptionConfig": {
+          "CmkType": "AWS_OWNED_KMS_KEY"
+        }
+      },
       "additionalProperties": false,
       "title": "AWSHealthLakeFHIRDatastoreSseConfigurationDefinition"
     },
@@ -195,6 +200,66 @@
       ],
       "additionalProperties": false,
       "title": "AWSHealthLakeFHIRDatastoreKmsEncryptionConfigDefinition"
+    },
+    "IdentityProviderConfiguration": {
+      "description": "The identity provider configuration for the datastore",
+      "type": "object",
+      "properties": {
+        "AuthorizationStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SMART_ON_FHIR_V1",
+                "AWS_AUTH",
+                "SMART_ON_FHIR"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Type of Authorization Strategy. The two types of supported Authorization strategies are SMART_ON_FHIR_V1 and AWS_AUTH."
+        },
+        "FineGrainedAuthorizationEnabled": {
+          "description": "Flag to indicate if fine-grained authorization will be enabled for the datastore",
+          "type": "boolean"
+        },
+        "Metadata": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The JSON metadata elements for identity provider configuration."
+        },
+        "IdpLambdaArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 49,
+              "maxLength": 256,
+              "pattern": "arn:aws[-a-z]*:lambda:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9\\-_\\.]+(:(\\$LATEST|[a-zA-Z0-9\\-_]+))?"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the Lambda function that will be used to decode the access token created by the authorization server."
+        }
+      },
+      "required": [
+        "AuthorizationStrategy"
+      ],
+      "default": {
+        "AuthorizationStrategy": "AWS_AUTH",
+        "FineGrainedAuthorizationEnabled": false
+      },
+      "additionalProperties": false,
+      "title": "AWSHealthLakeFHIRDatastoreIdentityProviderConfigurationDefinition"
     },
     "Tag": {
       "description": "A key-value pair. A tag consists of a tag key and a tag value. Tag keys and tag values are both required, but tag values can be empty (null) strings.",
@@ -248,6 +313,9 @@
     "SseConfiguration": {
       "$ref": "#/definitions/SseConfiguration"
     },
+    "IdentityProviderConfiguration": {
+      "$ref": "#/definitions/IdentityProviderConfiguration"
+    },
     "Tags": {
       "type": "array",
       "insertionOrder": false,
@@ -257,7 +325,6 @@
     }
   },
   "additionalProperties": false,
-  "taggable": true,
   "required": [
     "DatastoreTypeVersion"
   ],
@@ -276,8 +343,20 @@
     "/properties/DatastoreTypeVersion",
     "/properties/PreloadDataConfig",
     "/properties/SseConfiguration",
-    "/properties/KmsEncryptionConfig"
+    "/properties/IdentityProviderConfiguration"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "healthlake:UntagResource",
+      "healthlake:TagResource",
+      "healthlake:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSHealthLakeFHIRDatastoreProperties"
 }

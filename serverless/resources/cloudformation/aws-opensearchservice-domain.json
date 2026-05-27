@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::OpenSearchService::Domain",
-  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "ZoneAwarenessConfig": {
@@ -12,6 +12,52 @@
         }
       },
       "title": "AWSOpenSearchServiceDomainZoneAwarenessConfigDefinition"
+    },
+    "NodeConfig": {
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Count": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSOpenSearchServiceDomainNodeConfigDefinition"
+    },
+    "NodeOption": {
+      "type": "object",
+      "properties": {
+        "NodeType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "coordinator"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "NodeConfig": {
+          "$ref": "#/definitions/NodeConfig"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSOpenSearchServiceDomainNodeOptionDefinition"
     },
     "ClusterConfig": {
       "type": "object",
@@ -70,6 +116,15 @@
         },
         "MultiAZWithStandbyEnabled": {
           "type": "boolean"
+        },
+        "ColdStorageOptions": {
+          "$ref": "#/definitions/ColdStorageOptions"
+        },
+        "NodeOptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NodeOption"
+          }
         }
       },
       "title": "AWSOpenSearchServiceDomainClusterConfigDefinition"
@@ -148,6 +203,44 @@
         }
       },
       "title": "AWSOpenSearchServiceDomainNodeToNodeEncryptionOptionsDefinition"
+    },
+    "S3VectorsEngine": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean",
+          "description": "Whether to enable S3 vectors engine."
+        }
+      },
+      "required": [
+        "Enabled"
+      ],
+      "title": "AWSOpenSearchServiceDomainS3VectorsEngineDefinition"
+    },
+    "ServerlessVectorAcceleration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean",
+          "description": "Whether to enable serverless vector acceleration."
+        }
+      },
+      "title": "AWSOpenSearchServiceDomainServerlessVectorAccelerationDefinition"
+    },
+    "AIMLOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3VectorsEngine": {
+          "$ref": "#/definitions/S3VectorsEngine"
+        },
+        "ServerlessVectorAcceleration": {
+          "$ref": "#/definitions/ServerlessVectorAcceleration"
+        }
+      },
+      "title": "AWSOpenSearchServiceDomainAIMLOptionsDefinition"
     },
     "DomainEndpointOptions": {
       "type": "object",
@@ -358,6 +451,76 @@
       },
       "title": "AWSOpenSearchServiceDomainSAMLOptionsDefinition"
     },
+    "JWTOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "PublicKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SubjectKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RolesKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSOpenSearchServiceDomainJWTOptionsDefinition"
+    },
+    "IAMFederationOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "RolesKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SubjectKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSOpenSearchServiceDomainIAMFederationOptionsDefinition"
+    },
     "AdvancedSecurityOptionsInput": {
       "type": "object",
       "additionalProperties": false,
@@ -376,6 +539,12 @@
         },
         "SAMLOptions": {
           "$ref": "#/definitions/SAMLOptions"
+        },
+        "JWTOptions": {
+          "$ref": "#/definitions/JWTOptions"
+        },
+        "IAMFederationOptions": {
+          "$ref": "#/definitions/IAMFederationOptions"
         },
         "AnonymousAuthDisableDate": {
           "oneOf": [
@@ -595,6 +764,123 @@
         }
       },
       "title": "AWSOpenSearchServiceDomainSoftwareUpdateOptionsDefinition"
+    },
+    "DeploymentStrategyOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DeploymentStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Default",
+                "CapacityOptimized"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSOpenSearchServiceDomainDeploymentStrategyOptionsDefinition"
+    },
+    "ColdStorageOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSOpenSearchServiceDomainColdStorageOptionsDefinition"
+    },
+    "SubjectKeyIdcType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "UserName",
+            "UserId",
+            "Email"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Subject Key Idc type values.",
+      "title": "AWSOpenSearchServiceDomainSubjectKeyIdcTypeDefinition"
+    },
+    "RolesKeyIdcType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GroupName",
+            "GroupId"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Roles Key Idc type values.",
+      "title": "AWSOpenSearchServiceDomainRolesKeyIdcTypeDefinition"
+    },
+    "IdentityCenterOptions": {
+      "type": "object",
+      "description": "Options for configuring Identity Center",
+      "properties": {
+        "EnabledAPIAccess": {
+          "type": "boolean",
+          "description": "Whether Identity Center is enabled."
+        },
+        "IdentityCenterInstanceARN": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the Identity Center instance."
+        },
+        "SubjectKey": {
+          "$ref": "#/definitions/SubjectKeyIdcType",
+          "description": "The subject key for Identity Center options."
+        },
+        "RolesKey": {
+          "$ref": "#/definitions/RolesKeyIdcType",
+          "description": "The roles key for Identity Center options."
+        },
+        "IdentityCenterApplicationARN": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the Identity Center application."
+        },
+        "IdentityStoreId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IdentityStoreId for Identity Center options."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSOpenSearchServiceDomainIdentityCenterOptionsDefinition"
     }
   },
   "properties": {
@@ -613,6 +899,16 @@
     },
     "AccessPolicies": {
       "type": "object"
+    },
+    "IPAddressType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "EngineVersion": {
       "oneOf": [
@@ -686,7 +982,34 @@
     },
     "SoftwareUpdateOptions": {
       "$ref": "#/definitions/SoftwareUpdateOptions"
+    },
+    "SkipShardMigrationWait": {
+      "type": "boolean"
+    },
+    "IdentityCenterOptions": {
+      "$ref": "#/definitions/IdentityCenterOptions"
+    },
+    "AIMLOptions": {
+      "$ref": "#/definitions/AIMLOptions"
+    },
+    "DeploymentStrategyOptions": {
+      "$ref": "#/definitions/DeploymentStrategyOptions"
     }
+  },
+  "propertyTransform": {
+    "/properties/EncryptionAtRestOptions/KmsKeyId": "$split(EncryptionAtRestOptions.KmsKeyId, \"/\")[-1] $OR EncryptionAtRestOptions.KmsKeyId"
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "es:AddTags",
+      "es:RemoveTags",
+      "es:ListTags"
+    ]
   },
   "additionalProperties": false,
   "createOnlyProperties": [
@@ -701,14 +1024,18 @@
     "/properties/Arn",
     "/properties/DomainArn",
     "/properties/DomainEndpoint",
+    "/properties/DomainEndpointV2",
     "/properties/DomainEndpoints",
     "/properties/ServiceSoftwareOptions",
-    "/properties/AdvancedSecurityOptions/AnonymousAuthDisableDate"
+    "/properties/AdvancedSecurityOptions/AnonymousAuthDisableDate",
+    "/properties/IdentityCenterOptions/IdentityCenterApplicationARN",
+    "/properties/IdentityCenterOptions/IdentityStoreId"
   ],
   "writeOnlyProperties": [
     "/properties/AdvancedSecurityOptions/MasterUserOptions",
     "/properties/AdvancedSecurityOptions/SAMLOptions/MasterUserName",
-    "/properties/AdvancedSecurityOptions/SAMLOptions/MasterBackendRole"
+    "/properties/AdvancedSecurityOptions/SAMLOptions/MasterBackendRole",
+    "/properties/AdvancedSecurityOptions/JWTOptions/PublicKey"
   ],
   "primaryIdentifier": [
     "/properties/DomainName"

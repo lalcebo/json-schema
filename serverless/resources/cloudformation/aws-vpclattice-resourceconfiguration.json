@@ -1,0 +1,349 @@
+{
+  "tagging": {
+    "permissions": [
+      "vpc-lattice:UntagResource",
+      "vpc-lattice:TagResource",
+      "vpc-lattice:ListTagsForResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "typeName": "AWS::VpcLattice::ResourceConfiguration",
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Arn"
+  ],
+  "description": "VpcLattice ResourceConfiguration CFN resource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "createOnlyProperties": [
+    "/properties/ResourceGatewayId",
+    "/properties/ResourceConfigurationType",
+    "/properties/ProtocolType",
+    "/properties/ResourceConfigurationAuthType",
+    "/properties/CustomDomainName",
+    "/properties/GroupDomain",
+    "/properties/DomainVerificationId"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "required": [
+    "Name",
+    "ResourceConfigurationType"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "writeOnlyProperties": [
+    "/properties/ResourceConfigurationAuthType",
+    "/properties/ResourceConfigurationGroupId"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Id"
+    ]
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "IpResource": {
+      "oneOf": [
+        {
+          "minLength": 4,
+          "type": "string",
+          "maxLength": 39
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSVpcLatticeResourceConfigurationIpResourceDefinition"
+    },
+    "PortRange": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "pattern": "^((\\d{1,5}\\-\\d{1,5})|(\\d+))$",
+          "type": "string",
+          "maxLength": 11
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSVpcLatticeResourceConfigurationPortRangeDefinition"
+    },
+    "DnsResource": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "IpAddressType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "IPV4",
+                "IPV6",
+                "DUALSTACK"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DomainName": {
+          "oneOf": [
+            {
+              "minLength": 3,
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DomainName",
+        "IpAddressType"
+      ],
+      "title": "AWSVpcLatticeResourceConfigurationDnsResourceDefinition"
+    },
+    "ArnResource": {
+      "oneOf": [
+        {
+          "pattern": "^arn.*",
+          "type": "string",
+          "maxLength": 1224
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSVpcLatticeResourceConfigurationArnResourceDefinition"
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "title": "AWSVpcLatticeResourceConfigurationTagDefinition"
+    },
+    "Id": {
+      "oneOf": [
+        {
+          "minLength": 22,
+          "pattern": "^rcfg-[0-9a-z]{17}$",
+          "type": "string",
+          "maxLength": 22
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSVpcLatticeResourceConfigurationIdDefinition"
+    }
+  },
+  "properties": {
+    "CustomDomainName": {
+      "oneOf": [
+        {
+          "minLength": 3,
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "PortRanges": {
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PortRange"
+      }
+    },
+    "ResourceConfigurationDefinition": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "type": "object",
+          "title": "IpResource",
+          "properties": {
+            "IpResource": {
+              "$ref": "#/definitions/IpResource"
+            }
+          },
+          "required": [
+            "IpResource"
+          ]
+        },
+        {
+          "additionalProperties": false,
+          "type": "object",
+          "title": "ArnResource",
+          "properties": {
+            "ArnResource": {
+              "$ref": "#/definitions/ArnResource"
+            }
+          },
+          "required": [
+            "ArnResource"
+          ]
+        },
+        {
+          "additionalProperties": false,
+          "type": "object",
+          "title": "DnsResource",
+          "properties": {
+            "DnsResource": {
+              "$ref": "#/definitions/DnsResource"
+            }
+          },
+          "required": [
+            "DnsResource"
+          ]
+        }
+      ],
+      "type": "object"
+    },
+    "GroupDomain": {
+      "oneOf": [
+        {
+          "minLength": 3,
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ResourceConfigurationAuthType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "AWS_IAM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ResourceConfigurationGroupId": {
+      "$ref": "#/definitions/Id"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "minLength": 3,
+          "pattern": "^(?!rcfg-)(?![-])(?!.*[-]$)(?!.*[-]{2})[a-z0-9-]+$",
+          "type": "string",
+          "maxLength": 40
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "AllowAssociationToSharableServiceNetwork": {
+      "type": "boolean"
+    },
+    "ProtocolType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "TCP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ResourceConfigurationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GROUP",
+            "CHILD",
+            "SINGLE",
+            "ARN"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DomainVerificationId": {
+      "oneOf": [
+        {
+          "minLength": 20,
+          "pattern": "^dv-[a-fA-F0-9]{17}$",
+          "type": "string",
+          "maxLength": 20
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ResourceGatewayId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "minItems": 0,
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "type": "object",
+  "title": "AWSVpcLatticeResourceConfigurationProperties"
+}

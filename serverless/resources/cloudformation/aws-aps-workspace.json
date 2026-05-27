@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::APS::Workspace",
-  "description": "Resource Type definition for AWS::APS::Workspace. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Resource Type definition for AWS::APS::Workspace. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Tag": {
@@ -61,6 +61,182 @@
       },
       "additionalProperties": false,
       "title": "AWSAPSWorkspaceLoggingConfigurationDefinition"
+    },
+    "Label": {
+      "description": "Series label",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the label"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Value of the label"
+        }
+      },
+      "required": [
+        "Name",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSWorkspaceLabelDefinition"
+    },
+    "LimitsPerLabelSetEntry": {
+      "description": "Limits that can be applied to a label set",
+      "type": "object",
+      "properties": {
+        "MaxSeries": {
+          "description": "The maximum number of active series that can be ingested for this label set",
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAPSWorkspaceLimitsPerLabelSetEntryDefinition"
+    },
+    "LimitsPerLabelSet": {
+      "description": "Label set and its associated limits",
+      "type": "object",
+      "properties": {
+        "Limits": {
+          "$ref": "#/definitions/LimitsPerLabelSetEntry"
+        },
+        "LabelSet": {
+          "description": "An array of series labels",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/Label"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "Limits",
+        "LabelSet"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSWorkspaceLimitsPerLabelSetDefinition"
+    },
+    "WorkspaceConfiguration": {
+      "description": "Workspace configuration",
+      "type": "object",
+      "properties": {
+        "RetentionPeriodInDays": {
+          "description": "How many days that metrics are retained in the workspace",
+          "type": "integer",
+          "minimum": 1
+        },
+        "LimitsPerLabelSets": {
+          "description": "An array of label set and associated limits",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/LimitsPerLabelSet"
+          },
+          "minItems": 0
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAPSWorkspaceWorkspaceConfigurationDefinition"
+    },
+    "CloudWatchLogDestination": {
+      "description": "Represents a cloudwatch logs destination for query logging",
+      "type": "object",
+      "properties": {
+        "LogGroupArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the CloudWatch Logs log group"
+        }
+      },
+      "required": [
+        "LogGroupArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSWorkspaceCloudWatchLogDestinationDefinition"
+    },
+    "LoggingFilter": {
+      "description": "Filters for logging",
+      "type": "object",
+      "properties": {
+        "QspThreshold": {
+          "description": "Query logs with QSP above this limit are vended",
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "QspThreshold"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSWorkspaceLoggingFilterDefinition"
+    },
+    "LoggingDestination": {
+      "description": "Destinations for query logging",
+      "type": "object",
+      "properties": {
+        "CloudWatchLogs": {
+          "$ref": "#/definitions/CloudWatchLogDestination"
+        },
+        "Filters": {
+          "$ref": "#/definitions/LoggingFilter"
+        }
+      },
+      "required": [
+        "CloudWatchLogs",
+        "Filters"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSWorkspaceLoggingDestinationDefinition"
+    },
+    "QueryLoggingConfiguration": {
+      "description": "Query logging configuration",
+      "type": "object",
+      "properties": {
+        "Destinations": {
+          "description": "The destinations configuration for query logging",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LoggingDestination"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "Destinations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSWorkspaceQueryLoggingConfigurationDefinition"
     }
   },
   "properties": {
@@ -91,6 +267,26 @@
     "LoggingConfiguration": {
       "$ref": "#/definitions/LoggingConfiguration"
     },
+    "WorkspaceConfiguration": {
+      "$ref": "#/definitions/WorkspaceConfiguration"
+    },
+    "QueryLoggingConfiguration": {
+      "$ref": "#/definitions/QueryLoggingConfiguration"
+    },
+    "KmsKeyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z]*:kms:[-a-z0-9]+:[0-9]{12}:key/.+$",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "KMS Key ARN used to encrypt and decrypt AMP workspace data."
+    },
     "Tags": {
       "description": "An array of key-value pairs to apply to this resource.",
       "type": "array",
@@ -103,6 +299,9 @@
   },
   "additionalProperties": false,
   "required": [],
+  "createOnlyProperties": [
+    "/properties/KmsKeyArn"
+  ],
   "readOnlyProperties": [
     "/properties/WorkspaceId",
     "/properties/Arn",
@@ -113,7 +312,11 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "aps:TagResource",
+      "aps:UntagResource"
+    ]
   },
   "primaryIdentifier": [
     "/properties/Arn"

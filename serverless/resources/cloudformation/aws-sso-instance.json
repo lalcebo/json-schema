@@ -1,0 +1,95 @@
+{
+  "typeName": "AWS::SSO::Instance",
+  "description": "Resource Type definition for Identity Center (SSO) Instance. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-sso/aws-sso-instance",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-sso/aws-sso-instance",
+  "definitions": {
+    "Tag": {
+      "description": "The metadata that you apply to the Identity Center (SSO) Instance to help you categorize and organize them.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\w+=,.@-]+",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[\\w+=,.@-]+",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSSOInstanceTagDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[\\w+=,.@-]+$",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name you want to assign to this Identity Center (SSO) Instance"
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 75
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true,
+    "permissions": [
+      "sso:TagInstance",
+      "sso:TagResource",
+      "sso:UntagResource",
+      "sso:ListTagsForResource"
+    ]
+  },
+  "readOnlyProperties": [
+    "/properties/InstanceArn",
+    "/properties/OwnerAccountId",
+    "/properties/IdentityStoreId",
+    "/properties/Status"
+  ],
+  "primaryIdentifier": [
+    "/properties/InstanceArn"
+  ],
+  "type": "object",
+  "title": "AWSSSOInstanceProperties"
+}

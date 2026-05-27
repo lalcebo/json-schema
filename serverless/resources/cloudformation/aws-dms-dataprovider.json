@@ -1,0 +1,887 @@
+{
+  "typeName": "AWS::DMS::DataProvider",
+  "description": "Resource schema for AWS::DMS::DataProvider. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-dms.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-dms.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "dms:AddTagsToResource",
+      "dms:RemoveTagsFromResource",
+      "dms:ListTagsForResource"
+    ]
+  },
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDMSDataProviderTagDefinition"
+    },
+    "DmsSslModeValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "none",
+            "require",
+            "verify-ca",
+            "verify-full"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDMSDataProviderDmsSslModeValueDefinition"
+    },
+    "Db2SslModeValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "none",
+            "verify-ca"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDMSDataProviderDb2SslModeValueDefinition"
+    },
+    "MongoDbSslModeValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "none",
+            "require",
+            "verify-full"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDMSDataProviderMongoDbSslModeValueDefinition"
+    },
+    "MongoDbAuthType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "no",
+            "password"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDMSDataProviderMongoDbAuthTypeDefinition"
+    },
+    "MongoDbAuthMechanism": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "default",
+            "mongodb_cr",
+            "scram_sha_1"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDMSDataProviderMongoDbAuthMechanismDefinition"
+    },
+    "SybaseSslModeValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "none",
+            "require",
+            "verify-ca"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDMSDataProviderSybaseSslModeValueDefinition"
+    }
+  },
+  "properties": {
+    "DataProviderName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The property describes a name to identify the data provider."
+    },
+    "DataProviderIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The property describes an identifier for the data provider. It is used for describing/deleting/modifying can be name/arn"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The optional description of the data provider."
+    },
+    "Engine": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "aurora",
+            "aurora_postgresql",
+            "mysql",
+            "oracle",
+            "postgres",
+            "sqlserver",
+            "redshift",
+            "mariadb",
+            "mongodb",
+            "docdb",
+            "db2",
+            "db2_zos",
+            "sybase"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The property describes a data engine for the data provider."
+    },
+    "ExactSettings": {
+      "description": "The property describes the exact settings which can be modified",
+      "type": "boolean",
+      "default": false
+    },
+    "Settings": {
+      "description": "The property identifies the exact type of settings for the data provider.",
+      "type": "object",
+      "properties": {
+        "PostgreSqlSettings": {
+          "description": "PostgreSqlSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SslMode": {
+              "$ref": "#/definitions/DmsSslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "SslMode",
+            "DatabaseName"
+          ],
+          "additionalProperties": false
+        },
+        "MySqlSettings": {
+          "description": "MySqlSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "SslMode": {
+              "$ref": "#/definitions/DmsSslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "SslMode"
+          ],
+          "additionalProperties": false
+        },
+        "OracleSettings": {
+          "description": "OracleSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SslMode": {
+              "$ref": "#/definitions/DmsSslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "AsmServer": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SecretsManagerOracleAsmSecretId": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SecretsManagerOracleAsmAccessRoleArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SecretsManagerSecurityDbEncryptionSecretId": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SecretsManagerSecurityDbEncryptionAccessRoleArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "SslMode",
+            "DatabaseName"
+          ],
+          "additionalProperties": false
+        },
+        "MicrosoftSqlServerSettings": {
+          "description": "MicrosoftSqlServerSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SslMode": {
+              "$ref": "#/definitions/DmsSslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "SslMode",
+            "DatabaseName"
+          ],
+          "additionalProperties": false
+        },
+        "RedshiftSettings": {
+          "description": "RedshiftSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "DatabaseName"
+          ],
+          "additionalProperties": false
+        },
+        "MariaDbSettings": {
+          "description": "MariaDbSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "SslMode": {
+              "$ref": "#/definitions/DmsSslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "SslMode"
+          ],
+          "additionalProperties": false
+        },
+        "DocDbSettings": {
+          "description": "DocDbSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SslMode": {
+              "$ref": "#/definitions/MongoDbSslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "DatabaseName"
+          ],
+          "additionalProperties": false
+        },
+        "MongoDbSettings": {
+          "description": "MongoDbSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SslMode": {
+              "$ref": "#/definitions/MongoDbSslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "AuthType": {
+              "$ref": "#/definitions/MongoDbAuthType"
+            },
+            "AuthSource": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "AuthMechanism": {
+              "$ref": "#/definitions/MongoDbAuthMechanism"
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port"
+          ],
+          "additionalProperties": false
+        },
+        "IbmDb2LuwSettings": {
+          "description": "IbmDb2LuwSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SslMode": {
+              "$ref": "#/definitions/Db2SslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "SslMode",
+            "DatabaseName"
+          ],
+          "additionalProperties": false
+        },
+        "IbmDb2zOsSettings": {
+          "description": "IbmDb2zOsSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "SslMode": {
+              "$ref": "#/definitions/Db2SslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "SslMode",
+            "DatabaseName"
+          ],
+          "additionalProperties": false
+        },
+        "SybaseAseSettings": {
+          "description": "SybaseAseSettings property identifier.",
+          "type": "object",
+          "properties": {
+            "ServerName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Port": {
+              "type": "integer"
+            },
+            "DatabaseName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "EncryptPassword": {
+              "type": "boolean"
+            },
+            "SslMode": {
+              "$ref": "#/definitions/SybaseSslModeValue"
+            },
+            "CertificateArn": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ServerName",
+            "Port",
+            "SslMode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "PostgreSqlSettings"
+          ]
+        },
+        {
+          "required": [
+            "MySqlSettings"
+          ]
+        },
+        {
+          "required": [
+            "OracleSettings"
+          ]
+        },
+        {
+          "required": [
+            "MicrosoftSqlServerSettings"
+          ]
+        },
+        {
+          "required": [
+            "RedshiftSettings"
+          ]
+        },
+        {
+          "required": [
+            "DocDbSettings"
+          ]
+        },
+        {
+          "required": [
+            "MariaDbSettings"
+          ]
+        },
+        {
+          "required": [
+            "MongoDbSettings"
+          ]
+        },
+        {
+          "required": [
+            "IbmDb2LuwSettings"
+          ]
+        },
+        {
+          "required": [
+            "IbmDb2zOsSettings"
+          ]
+        },
+        {
+          "required": [
+            "SybaseAseSettings"
+          ]
+        }
+      ],
+      "additionalProperties": false
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Engine"
+  ],
+  "primaryIdentifier": [
+    "/properties/DataProviderArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/DataProviderName"
+    ]
+  ],
+  "readOnlyProperties": [
+    "/properties/DataProviderArn",
+    "/properties/DataProviderCreationTime"
+  ],
+  "writeOnlyProperties": [
+    "/properties/DataProviderIdentifier",
+    "/properties/ExactSettings"
+  ],
+  "type": "object",
+  "title": "AWSDMSDataProviderProperties"
+}

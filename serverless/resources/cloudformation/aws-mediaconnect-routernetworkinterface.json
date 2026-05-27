@@ -1,0 +1,261 @@
+{
+  "typeName": "AWS::MediaConnect::RouterNetworkInterface",
+  "description": "Represents a router network interface in AWS Elemental MediaConnect that is used to define a network boundary for router resources. Source:- No source definition found, add manually please",
+  "definitions": {
+    "PublicRouterNetworkInterfaceConfiguration": {
+      "type": "object",
+      "description": "The configuration settings for a public router network interface, including the list of allowed CIDR blocks.",
+      "properties": {
+        "AllowRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PublicRouterNetworkInterfaceRule"
+          },
+          "maxItems": 10,
+          "minItems": 0,
+          "description": "The list of allowed CIDR blocks for the public router network interface."
+        }
+      },
+      "required": [
+        "AllowRules"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaConnectRouterNetworkInterfacePublicRouterNetworkInterfaceConfigurationDefinition"
+    },
+    "PublicRouterNetworkInterfaceRule": {
+      "type": "object",
+      "description": "A rule that allows a specific CIDR block to access the public router network interface.",
+      "properties": {
+        "Cidr": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The CIDR block that is allowed to access the public router network interface."
+        }
+      },
+      "required": [
+        "Cidr"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaConnectRouterNetworkInterfacePublicRouterNetworkInterfaceRuleDefinition"
+    },
+    "RouterNetworkInterfaceConfiguration": {
+      "description": "The configuration settings for a router network interface.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Public",
+          "properties": {
+            "Public": {
+              "$ref": "#/definitions/PublicRouterNetworkInterfaceConfiguration"
+            }
+          },
+          "required": [
+            "Public"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Vpc",
+          "properties": {
+            "Vpc": {
+              "$ref": "#/definitions/VpcRouterNetworkInterfaceConfiguration"
+            }
+          },
+          "required": [
+            "Vpc"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSMediaConnectRouterNetworkInterfaceRouterNetworkInterfaceConfigurationDefinition"
+    },
+    "RouterNetworkInterfaceState": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "ACTIVE",
+            "UPDATING",
+            "DELETING",
+            "ERROR",
+            "RECOVERING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSMediaConnectRouterNetworkInterfaceRouterNetworkInterfaceStateDefinition"
+    },
+    "RouterNetworkInterfaceType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "VPC"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSMediaConnectRouterNetworkInterfaceRouterNetworkInterfaceTypeDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaConnectRouterNetworkInterfaceTagDefinition"
+    },
+    "Unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSMediaConnectRouterNetworkInterfaceUnitDefinition"
+    },
+    "VpcRouterNetworkInterfaceConfiguration": {
+      "type": "object",
+      "description": "The configuration settings for a router network interface within a VPC, including the security group IDs and subnet ID.",
+      "properties": {
+        "SecurityGroupIds": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "description": "The IDs of the security groups to associate with the router network interface within the VPC."
+        },
+        "SubnetId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the subnet within the VPC to associate the router network interface with."
+        }
+      },
+      "required": [
+        "SecurityGroupIds",
+        "SubnetId"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaConnectRouterNetworkInterfaceVpcRouterNetworkInterfaceConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "Configuration": {
+      "$ref": "#/definitions/RouterNetworkInterfaceConfiguration"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the router network interface."
+    },
+    "RegionName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Region for the router network interface. Defaults to the current region if not specified."
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "description": "Key-value pairs that can be used to tag and organize this router network interface.",
+      "insertionOrder": false
+    }
+  },
+  "required": [
+    "Configuration",
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/AssociatedInputCount",
+    "/properties/AssociatedOutputCount",
+    "/properties/CreatedAt",
+    "/properties/Id",
+    "/properties/NetworkInterfaceType",
+    "/properties/State",
+    "/properties/UpdatedAt"
+  ],
+  "createOnlyProperties": [
+    "/properties/RegionName"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": true,
+    "permissions": [
+      "mediaconnect:ListTagsForResource",
+      "mediaconnect:TagResource",
+      "mediaconnect:UntagResource"
+    ],
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSMediaConnectRouterNetworkInterfaceProperties"
+}

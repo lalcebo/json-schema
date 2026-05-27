@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::CleanRooms::ConfiguredTable",
-  "description": "Represents a table that can be associated with collaborations. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Represents a table that can be associated with collaborations. Source:- No source definition found, add manually please",
   "definitions": {
     "AnalysisRuleColumnName": {
       "oneOf": [
@@ -93,12 +93,29 @@
       ],
       "title": "AWSCleanRoomsConfiguredTableAggregationTypeDefinition"
     },
+    "JoinOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OR",
+            "AND"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsConfiguredTableJoinOperatorDefinition"
+    },
     "AnalysisMethod": {
       "oneOf": [
         {
           "type": "string",
           "enum": [
-            "DIRECT_QUERY"
+            "DIRECT_QUERY",
+            "DIRECT_JOB",
+            "MULTIPLE"
           ]
         },
         {
@@ -106,6 +123,29 @@
         }
       ],
       "title": "AWSCleanRoomsConfiguredTableAnalysisMethodDefinition"
+    },
+    "SelectedAnalysisMethod": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DIRECT_QUERY",
+            "DIRECT_JOB"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsConfiguredTableSelectedAnalysisMethodDefinition"
+    },
+    "SelectedAnalysisMethods": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SelectedAnalysisMethod"
+      },
+      "title": "AWSCleanRoomsConfiguredTableSelectedAnalysisMethodsDefinition"
     },
     "JoinRequiredOption": {
       "oneOf": [
@@ -138,7 +178,18 @@
             "LOWER",
             "RTRIM",
             "UPPER",
-            "COALESCE"
+            "COALESCE",
+            "CONVERT",
+            "CURRENT_DATE",
+            "DATEADD",
+            "EXTRACT",
+            "GETDATE",
+            "SUBSTRING",
+            "TO_CHAR",
+            "TO_DATE",
+            "TO_NUMBER",
+            "TO_TIMESTAMP",
+            "TRIM"
           ]
         },
         {
@@ -165,6 +216,14 @@
             "$ref": "#/definitions/AnalysisRuleColumnName"
           }
         },
+        "AllowedJoinOperators": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/JoinOperator"
+          },
+          "maxItems": 2
+        },
         "JoinRequired": {
           "$ref": "#/definitions/JoinRequiredOption"
         },
@@ -189,6 +248,9 @@
             "$ref": "#/definitions/AggregationConstraint"
           },
           "minItems": 1
+        },
+        "AdditionalAnalyses": {
+          "$ref": "#/definitions/AdditionalAnalyses"
         }
       },
       "required": [
@@ -212,12 +274,23 @@
           },
           "minItems": 1
         },
+        "AllowedJoinOperators": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/JoinOperator"
+          },
+          "maxItems": 2
+        },
         "ListColumns": {
           "type": "array",
           "insertionOrder": false,
           "items": {
             "$ref": "#/definitions/AnalysisRuleColumnName"
           }
+        },
+        "AdditionalAnalyses": {
+          "$ref": "#/definitions/AdditionalAnalyses"
         }
       },
       "required": [
@@ -226,6 +299,140 @@
       ],
       "additionalProperties": false,
       "title": "AWSCleanRoomsConfiguredTableAnalysisRuleListDefinition"
+    },
+    "AllowedAnalysis": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 200,
+          "pattern": "(ANY_QUERY|ANY_JOB|arn:[\\w]{3}:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/analysistemplate/[\\d\\w-]+)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsConfiguredTableAllowedAnalysisDefinition"
+    },
+    "AllowedAnalyses": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "items": {
+        "$ref": "#/definitions/AllowedAnalysis"
+      },
+      "title": "AWSCleanRoomsConfiguredTableAllowedAnalysesDefinition"
+    },
+    "AllowedAnalysisProvider": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 12,
+          "pattern": "\\d+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsConfiguredTableAllowedAnalysisProviderDefinition"
+    },
+    "AllowedAnalysisProviders": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "items": {
+        "$ref": "#/definitions/AllowedAnalysisProvider"
+      },
+      "title": "AWSCleanRoomsConfiguredTableAllowedAnalysisProvidersDefinition"
+    },
+    "DisallowedOutputColumns": {
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "items": {
+        "$ref": "#/definitions/AnalysisRuleColumnName"
+      },
+      "title": "AWSCleanRoomsConfiguredTableDisallowedOutputColumnsDefinition"
+    },
+    "AdditionalAnalyses": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ALLOWED",
+            "REQUIRED",
+            "NOT_ALLOWED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsConfiguredTableAdditionalAnalysesDefinition"
+    },
+    "DifferentialPrivacyColumn": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsConfiguredTableDifferentialPrivacyColumnDefinition"
+    },
+    "DifferentialPrivacy": {
+      "type": "object",
+      "properties": {
+        "Columns": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/DifferentialPrivacyColumn"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "Columns"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsConfiguredTableDifferentialPrivacyDefinition"
+    },
+    "AnalysisRuleCustom": {
+      "type": "object",
+      "properties": {
+        "AllowedAnalyses": {
+          "$ref": "#/definitions/AllowedAnalyses"
+        },
+        "AllowedAnalysisProviders": {
+          "$ref": "#/definitions/AllowedAnalysisProviders"
+        },
+        "DifferentialPrivacy": {
+          "$ref": "#/definitions/DifferentialPrivacy"
+        },
+        "DisallowedOutputColumns": {
+          "$ref": "#/definitions/DisallowedOutputColumns"
+        },
+        "AdditionalAnalyses": {
+          "$ref": "#/definitions/AdditionalAnalyses"
+        }
+      },
+      "required": [
+        "AllowedAnalyses"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsConfiguredTableAnalysisRuleCustomDefinition"
     },
     "ConfiguredTableAnalysisRulePolicy": {
       "type": "object",
@@ -267,6 +474,19 @@
             "Aggregation"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Custom",
+          "properties": {
+            "Custom": {
+              "$ref": "#/definitions/AnalysisRuleCustom"
+            }
+          },
+          "required": [
+            "Custom"
+          ],
+          "additionalProperties": false
         }
       ],
       "title": "AWSCleanRoomsConfiguredTableConfiguredTableAnalysisRulePolicyV1Definition"
@@ -277,7 +497,8 @@
           "type": "string",
           "enum": [
             "AGGREGATION",
-            "LIST"
+            "LIST",
+            "CUSTOM"
           ]
         },
         {
@@ -285,6 +506,51 @@
         }
       ],
       "title": "AWSCleanRoomsConfiguredTableConfiguredTableAnalysisRuleTypeDefinition"
+    },
+    "CommercialRegion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "us-west-1",
+            "us-west-2",
+            "us-east-1",
+            "us-east-2",
+            "af-south-1",
+            "ap-east-1",
+            "ap-south-2",
+            "ap-southeast-1",
+            "ap-southeast-2",
+            "ap-southeast-5",
+            "ap-southeast-4",
+            "ap-southeast-7",
+            "ap-south-1",
+            "ap-northeast-3",
+            "ap-northeast-1",
+            "ap-northeast-2",
+            "ca-central-1",
+            "ca-west-1",
+            "eu-south-1",
+            "eu-west-3",
+            "eu-south-2",
+            "eu-central-2",
+            "eu-central-1",
+            "eu-north-1",
+            "eu-west-1",
+            "eu-west-2",
+            "me-south-1",
+            "me-central-1",
+            "il-central-1",
+            "sa-east-1",
+            "mx-central-1",
+            "ap-east-2"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsConfiguredTableCommercialRegionDefinition"
     },
     "GlueTableReference": {
       "type": "object",
@@ -312,6 +578,9 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "Region": {
+          "$ref": "#/definitions/CommercialRegion"
         }
       },
       "required": [
@@ -320,6 +589,214 @@
       ],
       "additionalProperties": false,
       "title": "AWSCleanRoomsConfiguredTableGlueTableReferenceDefinition"
+    },
+    "SnowflakeTableReference": {
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AccountIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 3
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TableName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SchemaName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TableSchema": {
+          "$ref": "#/definitions/SnowflakeTableSchema"
+        }
+      },
+      "required": [
+        "AccountIdentifier",
+        "DatabaseName",
+        "SchemaName",
+        "SecretArn",
+        "TableName",
+        "TableSchema"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsConfiguredTableSnowflakeTableReferenceDefinition"
+    },
+    "SnowflakeTableSchema": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "V1",
+          "properties": {
+            "V1": {
+              "type": "array",
+              "insertionOrder": false,
+              "items": {
+                "$ref": "#/definitions/SnowflakeTableSchemaV1"
+              },
+              "maxItems": 250,
+              "minItems": 1
+            }
+          },
+          "required": [
+            "V1"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSCleanRoomsConfiguredTableSnowflakeTableSchemaDefinition"
+    },
+    "SnowflakeTableSchemaV1": {
+      "type": "object",
+      "properties": {
+        "ColumnName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ColumnType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ColumnName",
+        "ColumnType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsConfiguredTableSnowflakeTableSchemaV1Definition"
+    },
+    "AthenaTableReference": {
+      "type": "object",
+      "properties": {
+        "WorkGroup": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OutputLocation": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 8
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TableName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Region": {
+          "$ref": "#/definitions/CommercialRegion"
+        },
+        "CatalogName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DatabaseName",
+        "TableName",
+        "WorkGroup"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsConfiguredTableAthenaTableReferenceDefinition"
     },
     "AnalysisRule": {
       "type": "object",
@@ -339,17 +816,48 @@
       "title": "AWSCleanRoomsConfiguredTableAnalysisRuleDefinition"
     },
     "TableReference": {
-      "type": "object",
-      "title": "Glue",
-      "properties": {
-        "Glue": {
-          "$ref": "#/definitions/GlueTableReference"
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Glue",
+          "properties": {
+            "Glue": {
+              "$ref": "#/definitions/GlueTableReference"
+            }
+          },
+          "required": [
+            "Glue"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Snowflake",
+          "properties": {
+            "Snowflake": {
+              "$ref": "#/definitions/SnowflakeTableReference"
+            }
+          },
+          "required": [
+            "Snowflake"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Athena",
+          "properties": {
+            "Athena": {
+              "$ref": "#/definitions/AthenaTableReference"
+            }
+          },
+          "required": [
+            "Athena"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "Glue"
       ],
-      "additionalProperties": false
+      "title": "AWSCleanRoomsConfiguredTableTableReferenceDefinition"
     },
     "Tag": {
       "type": "object",
@@ -418,6 +926,9 @@
     "AnalysisMethod": {
       "$ref": "#/definitions/AnalysisMethod"
     },
+    "SelectedAnalysisMethods": {
+      "$ref": "#/definitions/SelectedAnalysisMethods"
+    },
     "Description": {
       "oneOf": [
         {
@@ -466,11 +977,6 @@
     "/properties/Arn",
     "/properties/ConfiguredTableIdentifier"
   ],
-  "createOnlyProperties": [
-    "/properties/AllowedColumns",
-    "/properties/AnalysisMethod",
-    "/properties/TableReference"
-  ],
   "primaryIdentifier": [
     "/properties/ConfiguredTableIdentifier"
   ],
@@ -479,7 +985,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cleanrooms:ListTagsForResource",
+      "cleanrooms:UntagResource",
+      "cleanrooms:TagResource"
+    ]
   },
   "additionalProperties": false,
   "type": "object",

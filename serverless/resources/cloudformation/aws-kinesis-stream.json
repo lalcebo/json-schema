@@ -1,22 +1,35 @@
 {
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesis.git",
   "typeName": "AWS::Kinesis::Stream",
-  "readOnlyProperties": [
-    "/properties/Arn"
-  ],
-  "description": "Resource Type definition for AWS::Kinesis::Stream. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesis.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesis.git",
-  "createOnlyProperties": [
-    "/properties/Name"
-  ],
-  "additionalProperties": false,
-  "primaryIdentifier": [
-    "/properties/Name"
-  ],
+  "description": "Resource Type definition for AWS::Kinesis::Stream. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesis.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesis.git",
   "definitions": {
+    "EnhancedMetric": {
+      "oneOf": [
+        {
+          "type": "string",
+          "additionalProperties": false,
+          "enum": [
+            "IncomingBytes",
+            "IncomingRecords",
+            "OutgoingBytes",
+            "OutgoingRecords",
+            "WriteProvisionedThroughputExceeded",
+            "ReadProvisionedThroughputExceeded",
+            "IteratorAgeMilliseconds",
+            "ALL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Value of an enhanced metric",
+      "title": "AWSKinesisStreamEnhancedMetricDefinition"
+    },
     "StreamModeDetails": {
       "description": "When specified, enables or updates the mode of stream. Default is PROVISIONED.",
-      "additionalProperties": false,
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "StreamMode": {
           "oneOf": [
@@ -41,8 +54,8 @@
     },
     "StreamEncryption": {
       "description": "When specified, enables or updates server-side encryption using an AWS KMS key for a specified stream. Removing this property from your stack template and updating your stack disables encryption.",
-      "additionalProperties": false,
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "EncryptionType": {
           "oneOf": [
@@ -61,9 +74,23 @@
         "KeyId": {
           "oneOf": [
             {
-              "minLength": 1,
               "type": "string",
-              "maxLength": 2048
+              "minLength": 1,
+              "maxLength": 2048,
+              "anyOf": [
+                {
+                  "relationshipRef": {
+                    "typeName": "AWS::KMS::Key",
+                    "propertyPath": "/properties/Arn"
+                  }
+                },
+                {
+                  "relationshipRef": {
+                    "typeName": "AWS::KMS::Key",
+                    "propertyPath": "/properties/KeyId"
+                  }
+                }
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -80,27 +107,14 @@
     },
     "Tag": {
       "description": "An arbitrary set of tags (key-value pairs) to associate with the Kinesis stream.",
-      "additionalProperties": false,
       "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "Value": {
-          "oneOf": [
-            {
-              "minLength": 0,
-              "type": "string",
-              "maxLength": 255
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
-        },
         "Key": {
           "oneOf": [
             {
-              "minLength": 1,
               "type": "string",
+              "minLength": 1,
               "maxLength": 128
             },
             {
@@ -108,6 +122,19 @@
             }
           ],
           "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
       "required": [
@@ -115,41 +142,32 @@
         "Value"
       ],
       "title": "AWSKinesisStreamTagDefinition"
+    },
+    "WarmThroughputObject": {
+      "description": "Warm throughput configuration details for the stream. Only present for ON_DEMAND streams.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TargetMiBps": {
+          "description": "Target warm throughput in MiB/s that a customer can write to a stream at any given time",
+          "type": "integer"
+        },
+        "CurrentMiBps": {
+          "description": "Current warm throughput in MiB/s",
+          "type": "integer"
+        }
+      },
+      "title": "AWSKinesisStreamWarmThroughputObjectDefinition"
     }
   },
   "properties": {
-    "StreamModeDetails": {
-      "default": {
-        "StreamMode": "PROVISIONED"
-      },
-      "description": "The mode in which the stream is running.",
-      "$ref": "#/definitions/StreamModeDetails"
-    },
-    "StreamEncryption": {
-      "description": "When specified, enables or updates server-side encryption using an AWS KMS key for a specified stream.",
-      "$ref": "#/definitions/StreamEncryption"
-    },
-    "RetentionPeriodHours": {
-      "description": "The number of hours for the data records that are stored in shards to remain accessible.",
-      "type": "integer",
-      "minimum": 24
-    },
-    "Tags": {
-      "uniqueItems": false,
-      "description": "An arbitrary set of tags (key–value pairs) to associate with the Kinesis stream.",
-      "insertionOrder": false,
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    },
     "Name": {
       "oneOf": [
         {
-          "minLength": 1,
-          "pattern": "^[a-zA-Z0-9_.-]+$",
           "type": "string",
-          "maxLength": 128
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -157,11 +175,87 @@
       ],
       "description": "The name of the Kinesis stream."
     },
+    "DesiredShardLevelMetrics": {
+      "description": "The final list of shard-level metrics",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 7,
+      "items": {
+        "$ref": "#/definitions/EnhancedMetric"
+      }
+    },
+    "RetentionPeriodHours": {
+      "description": "The number of hours for the data records that are stored in shards to remain accessible.",
+      "type": "integer",
+      "minimum": 24
+    },
     "ShardCount": {
       "description": "The number of shards that the stream uses. Required when StreamMode = PROVISIONED is passed.",
       "type": "integer",
       "minimum": 1
+    },
+    "StreamModeDetails": {
+      "description": "The mode in which the stream is running.",
+      "$ref": "#/definitions/StreamModeDetails",
+      "default": {
+        "StreamMode": "PROVISIONED"
+      }
+    },
+    "StreamEncryption": {
+      "description": "When specified, enables or updates server-side encryption using an AWS KMS key for a specified stream.",
+      "$ref": "#/definitions/StreamEncryption"
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) to associate with the Kinesis stream.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "MaxRecordSizeInKiB": {
+      "description": "Maximum size of a data record in KiB allowed to be put into Kinesis stream.",
+      "type": "integer",
+      "minimum": 1024,
+      "maximum": 10240
+    },
+    "WarmThroughputMiBps": {
+      "description": "Target warm throughput in MiB/s for the stream. This property can ONLY be set when StreamMode is ON_DEMAND.",
+      "type": "integer"
     }
+  },
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/WarmThroughputObject"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "writeOnlyProperties": [
+    "/properties/WarmThroughputMiBps"
+  ],
+  "$comment": "Do not set SystemTags to true without implementing a fail-open mechanism. It should not fail when adding systemTags for customers without AddTagsToStream Permission. Cloudformation will automatically add system tags even if customer does not have the AddTagsToStream permission. COE: https://www.coe.a2z.com/coe/236297/content",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "kinesis:AddTagsToStream",
+      "kinesis:TagResource",
+      "kinesis:RemoveTagsFromStream",
+      "kinesis:UntagResource",
+      "kinesis:ListTagsForStream",
+      "kinesis:ListTagsForResource"
+    ]
   },
   "type": "object",
   "title": "AWSKinesisStreamProperties"

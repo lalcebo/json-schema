@@ -1,10 +1,19 @@
 {
   "typeName": "AWS::SNS::Subscription",
-  "description": "Resource Type definition for AWS::SNS::Subscription. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::SNS::Subscription. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-sns",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-sns",
   "additionalProperties": false,
   "properties": {
+    "ReplayPolicy": {
+      "type": [
+        "object",
+        "string"
+      ],
+      "description": "Specifies whether Amazon SNS resends the notification to the subscription when a message's attribute changes."
+    },
     "RawMessageDelivery": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "When set to true, enables raw message delivery. Raw messages don't contain any JSON formatting and can be sent to Amazon SQS and HTTP/S endpoints."
     },
     "Endpoint": {
       "oneOf": [
@@ -14,10 +23,15 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The subscription's endpoint. The endpoint value depends on the protocol that you specify. "
     },
     "FilterPolicy": {
-      "type": "object"
+      "type": [
+        "object",
+        "string"
+      ],
+      "description": "The filter policy JSON assigned to the subscription. Enables the subscriber to filter out unwanted messages."
     },
     "TopicArn": {
       "oneOf": [
@@ -27,13 +41,22 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The ARN of the topic to subscribe to."
     },
     "RedrivePolicy": {
-      "type": "object"
+      "type": [
+        "object",
+        "string"
+      ],
+      "description": "When specified, sends undeliverable messages to the specified Amazon SQS dead-letter queue. Messages that can't be delivered due to client errors are held in the dead-letter queue for further analysis or reprocessing."
     },
     "DeliveryPolicy": {
-      "type": "object"
+      "type": [
+        "object",
+        "string"
+      ],
+      "description": "The delivery policy JSON assigned to the subscription. Enables the subscriber to define the message delivery retry strategy in the case of an HTTP/S endpoint subscribed to the topic."
     },
     "Region": {
       "oneOf": [
@@ -43,7 +66,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "For cross-region subscriptions, the region in which the topic resides.If no region is specified, AWS CloudFormation uses the region of the caller as the default."
     },
     "SubscriptionRoleArn": {
       "oneOf": [
@@ -53,7 +77,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "This property applies only to Amazon Data Firehose delivery stream subscriptions."
     },
     "FilterPolicyScope": {
       "oneOf": [
@@ -63,7 +88,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "This attribute lets you choose the filtering scope by using one of the following string value types: MessageAttributes (default) and MessageBody."
     },
     "Protocol": {
       "oneOf": [
@@ -73,8 +99,15 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The subscription's protocol."
     }
+  },
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
   },
   "required": [
     "TopicArn",
@@ -86,10 +119,16 @@
     "/properties/TopicArn"
   ],
   "primaryIdentifier": [
-    "/properties/Id"
+    "/properties/Arn"
   ],
   "readOnlyProperties": [
-    "/properties/Id"
+    "/properties/Arn"
+  ],
+  "conditionalCreateOnlyProperties": [
+    "/properties/Region"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Region"
   ],
   "type": "object",
   "title": "AWSSNSSubscriptionProperties"

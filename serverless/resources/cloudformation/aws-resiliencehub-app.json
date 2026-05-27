@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::ResilienceHub::App",
-  "description": "Resource Type Definition for AWS::ResilienceHub::App.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-resiliencehub. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-resiliencehub",
+  "description": "Resource Type Definition for AWS::ResilienceHub::App.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-resiliencehub",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-resiliencehub",
   "definitions": {
     "TagValue": {
@@ -147,6 +147,116 @@
         "PhysicalResourceId"
       ],
       "title": "AWSResilienceHubAppResourceMappingDefinition"
+    },
+    "IamRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):iam::[0-9]{12}:role\\/(([\\u0021-\\u007E]+\\u002F){1,511})?[A-Za-z0-9+=,.@_/-]{1,64}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSResilienceHubAppIamRoleArnDefinition"
+    },
+    "PermissionModel": {
+      "description": "Defines the roles and credentials that AWS Resilience Hub would use while creating the application, importing its resources, and running an assessment.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LegacyIAMUser",
+                "RoleBased"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Defines how AWS Resilience Hub scans your resources. It can scan for the resources by using a pre-existing role in your AWS account, or by using the credentials of the current IAM user."
+        },
+        "InvokerRoleName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "((\\u002F[\\u0021-\\u007E]+\\u002F){1,511})?[A-Za-z0-9+=,.@_/-]{1,64}"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Existing AWS IAM role name in the primary AWS account that will be assumed by AWS Resilience Hub Service Principle to obtain a read-only access to your application resources while running an assessment."
+        },
+        "CrossAccountRoleArns": {
+          "description": "Defines a list of role Amazon Resource Names (ARNs) to be used in other accounts. These ARNs are used for querying purposes while importing resources and assessing your application.",
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/IamRoleArn"
+          }
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "title": "AWSResilienceHubAppPermissionModelDefinition"
+    },
+    "EventSubscription": {
+      "description": "Indicates an event you would like to subscribe and get notification for.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Unique name to identify an event subscription."
+        },
+        "EventType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ScheduledAssessmentFailure",
+                "DriftDetected"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of event you would like to subscribe and get notification for."
+        },
+        "SnsTopicArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov):[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:([a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-[0-9]):[0-9]{12}:[A-Za-z0-9/][A-Za-z0-9:_/+.-]{0,1023}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Amazon Resource Name (ARN) of the Amazon Simple Notification Service topic."
+        }
+      },
+      "required": [
+        "Name",
+        "EventType"
+      ],
+      "title": "AWSResilienceHubAppEventSubscriptionDefinition"
     }
   },
   "properties": {
@@ -195,7 +305,7 @@
         {
           "type": "string",
           "minLength": 0,
-          "maxLength": 5000,
+          "maxLength": 409600,
           "pattern": "^[\\w\\s:,-\\.'\\/{}\\[\\]:\"]+$"
         },
         {
@@ -227,14 +337,31 @@
         }
       ],
       "description": "Assessment execution schedule."
+    },
+    "PermissionModel": {
+      "$ref": "#/definitions/PermissionModel"
+    },
+    "EventSubscriptions": {
+      "description": "The list of events you would like to subscribe and get notification for.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/EventSubscription"
+      }
     }
   },
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "resiliencehub:TagResource",
+      "resiliencehub:ListTagsForResource",
+      "resiliencehub:UntagResource"
+    ]
   },
   "additionalProperties": false,
   "required": [
@@ -246,7 +373,8 @@
     "/properties/Name"
   ],
   "readOnlyProperties": [
-    "/properties/AppArn"
+    "/properties/AppArn",
+    "/properties/DriftStatus"
   ],
   "primaryIdentifier": [
     "/properties/AppArn"

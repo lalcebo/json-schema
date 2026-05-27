@@ -1,0 +1,469 @@
+{
+  "typeName": "AWS::Comprehend::DocumentClassifier",
+  "description": "Document Classifier enables training document classifier models.. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "DataAccessRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "InputDataConfig": {
+      "$ref": "#/definitions/DocumentClassifierInputDataConfig"
+    },
+    "OutputDataConfig": {
+      "$ref": "#/definitions/DocumentClassifierOutputDataConfig"
+    },
+    "LanguageCode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "en",
+            "es",
+            "fr",
+            "it",
+            "de",
+            "pt"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ModelKmsKeyId": {
+      "$ref": "#/definitions/KmsKeyId"
+    },
+    "ModelPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DocumentClassifierName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Mode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MULTI_CLASS",
+            "MULTI_LABEL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "insertionOrder": false,
+      "uniqueItems": true
+    },
+    "VersionName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "VolumeKmsKeyId": {
+      "$ref": "#/definitions/KmsKeyId"
+    },
+    "VpcConfig": {
+      "$ref": "#/definitions/VpcConfig"
+    }
+  },
+  "required": [
+    "DocumentClassifierName",
+    "DataAccessRoleArn",
+    "InputDataConfig",
+    "LanguageCode"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/DataAccessRoleArn",
+    "/properties/InputDataConfig",
+    "/properties/OutputDataConfig",
+    "/properties/LanguageCode",
+    "/properties/ModelKmsKeyId",
+    "/properties/DocumentClassifierName",
+    "/properties/VersionName",
+    "/properties/Mode",
+    "/properties/VolumeKmsKeyId",
+    "/properties/VpcConfig"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "comprehend:TagResource",
+      "comprehend:UntagResource"
+    ]
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSComprehendDocumentClassifierTagDefinition"
+    },
+    "DocumentClassifierInputDataConfig": {
+      "type": "object",
+      "properties": {
+        "AugmentedManifests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AugmentedManifestsListItem"
+          },
+          "insertionOrder": false,
+          "uniqueItems": true
+        },
+        "DataFormat": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "COMPREHEND_CSV",
+                "AUGMENTED_MANIFEST"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LabelDelimiter": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ ~!@#$%^*\\-_+=|\\\\:;\\t>?/]$",
+              "minLength": 1,
+              "maxLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DocumentType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PLAIN_TEXT_DOCUMENT",
+                "SEMI_STRUCTURED_DOCUMENT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Documents": {
+          "$ref": "#/definitions/DocumentClassifierDocuments"
+        },
+        "DocumentReaderConfig": {
+          "$ref": "#/definitions/DocumentReaderConfig"
+        },
+        "S3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        },
+        "TestS3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "AWSComprehendDocumentClassifierDocumentClassifierInputDataConfigDefinition"
+    },
+    "AugmentedManifestsListItem": {
+      "type": "object",
+      "properties": {
+        "AttributeNames": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 63
+        },
+        "S3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        },
+        "Split": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "TRAIN",
+                "TEST"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AttributeNames",
+        "S3Uri"
+      ],
+      "additionalProperties": false,
+      "title": "AWSComprehendDocumentClassifierAugmentedManifestsListItemDefinition"
+    },
+    "DocumentClassifierDocuments": {
+      "type": "object",
+      "properties": {
+        "S3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        },
+        "TestS3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        }
+      },
+      "required": [
+        "S3Uri"
+      ],
+      "additionalProperties": false,
+      "title": "AWSComprehendDocumentClassifierDocumentClassifierDocumentsDefinition"
+    },
+    "DocumentReaderConfig": {
+      "type": "object",
+      "properties": {
+        "DocumentReadAction": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "TEXTRACT_DETECT_DOCUMENT_TEXT",
+                "TEXTRACT_ANALYZE_DOCUMENT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DocumentReadMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SERVICE_DEFAULT",
+                "FORCE_DOCUMENT_READ_ACTION"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "FeatureTypes": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "TABLES",
+                  "FORMS"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "DocumentReadAction"
+      ],
+      "additionalProperties": false,
+      "title": "AWSComprehendDocumentClassifierDocumentReaderConfigDefinition"
+    },
+    "DocumentClassifierOutputDataConfig": {
+      "type": "object",
+      "properties": {
+        "KmsKeyId": {
+          "$ref": "#/definitions/KmsKeyId"
+        },
+        "S3Uri": {
+          "$ref": "#/definitions/S3Uri"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "AWSComprehendDocumentClassifierDocumentClassifierOutputDataConfigDefinition"
+    },
+    "VpcConfig": {
+      "type": "object",
+      "properties": {
+        "SecurityGroupIds": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "[-0-9a-zA-Z]+",
+                "minLength": 1,
+                "maxLength": 32
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "Subnets": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "[-0-9a-zA-Z]+",
+                "minLength": 1,
+                "maxLength": 32
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 16
+        }
+      },
+      "required": [
+        "SecurityGroupIds",
+        "Subnets"
+      ],
+      "additionalProperties": false,
+      "title": "AWSComprehendDocumentClassifierVpcConfigDefinition"
+    },
+    "S3Uri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSComprehendDocumentClassifierS3UriDefinition"
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSComprehendDocumentClassifierKmsKeyIdDefinition"
+    }
+  },
+  "type": "object",
+  "title": "AWSComprehendDocumentClassifierProperties"
+}

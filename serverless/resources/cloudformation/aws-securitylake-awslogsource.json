@@ -1,0 +1,81 @@
+{
+  "typeName": "AWS::SecurityLake::AwsLogSource",
+  "description": "Resource Type definition for AWS::SecurityLake::AwsLogSource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-securitylake.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-securitylake.git",
+  "additionalProperties": false,
+  "properties": {
+    "Accounts": {
+      "description": "AWS account where you want to collect logs from.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^[0-9]{12}$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "DataLakeArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN for the data lake."
+    },
+    "SourceName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name for a AWS source. This must be a Regionally unique value."
+    },
+    "SourceVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(latest|[0-9]\\.[0-9])$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The version for a AWS source. This must be a Regionally unique value."
+    }
+  },
+  "required": [
+    "DataLakeArn",
+    "SourceVersion",
+    "SourceName"
+  ],
+  "primaryIdentifier": [
+    "/properties/SourceName",
+    "/properties/SourceVersion"
+  ],
+  "createOnlyProperties": [
+    "/properties/DataLakeArn",
+    "/properties/SourceName",
+    "/properties/SourceVersion"
+  ],
+  "tagging": {
+    "taggable": false
+  },
+  "replacementStrategy": "delete_then_create",
+  "type": "object",
+  "title": "AWSSecurityLakeAwsLogSourceProperties"
+}

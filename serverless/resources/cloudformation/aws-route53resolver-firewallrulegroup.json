@@ -1,12 +1,99 @@
 {
   "typeName": "AWS::Route53Resolver::FirewallRuleGroup",
-  "description": "Resource schema for AWS::Route53Resolver::FirewallRuleGroup.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource schema for AWS::Route53Resolver::FirewallRuleGroup.. Source:- No source definition found, add manually please",
   "definitions": {
+    "FirewallAdvancedContentCategoryConfig": {
+      "description": "Configuration for an advanced content category rule type.",
+      "type": "object",
+      "properties": {
+        "Category": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The content category value."
+        }
+      },
+      "required": [
+        "Category"
+      ],
+      "additionalProperties": false,
+      "title": "AWSRoute53ResolverFirewallRuleGroupFirewallAdvancedContentCategoryConfigDefinition"
+    },
+    "FirewallAdvancedThreatCategoryConfig": {
+      "description": "Configuration for an advanced threat category rule type.",
+      "type": "object",
+      "properties": {
+        "Category": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The threat category value."
+        }
+      },
+      "required": [
+        "Category"
+      ],
+      "additionalProperties": false,
+      "title": "AWSRoute53ResolverFirewallRuleGroupFirewallAdvancedThreatCategoryConfigDefinition"
+    },
+    "FirewallRuleType": {
+      "description": "Firewall rule type union. Exactly one member must be set. Mutually exclusive with FirewallDomainListId and DnsThreatProtection/ConfidenceThreshold.",
+      "type": "object",
+      "properties": {
+        "FirewallAdvancedContentCategory": {
+          "$ref": "#/definitions/FirewallAdvancedContentCategoryConfig"
+        },
+        "FirewallAdvancedThreatCategory": {
+          "$ref": "#/definitions/FirewallAdvancedThreatCategoryConfig"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "FirewallAdvancedContentCategory"
+          ]
+        },
+        {
+          "required": [
+            "FirewallAdvancedThreatCategory"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSRoute53ResolverFirewallRuleGroupFirewallRuleTypeDefinition"
+    },
     "FirewallRule": {
-      "description": "Firewall Rule associating the Rule Group to a Domain List",
+      "description": "Firewall Rule associating the Rule Group to a Domain List or advanced rule type",
       "type": "object",
       "properties": {
         "FirewallDomainListId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ResourceId"
+        },
+        "FirewallThreatProtectionId": {
           "oneOf": [
             {
               "type": "string",
@@ -87,10 +174,73 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 604800
+        },
+        "Qtype": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Qtype"
+        },
+        "ConfidenceThreshold": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LOW",
+                "MEDIUM",
+                "HIGH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ConfidenceThreshold"
+        },
+        "DnsThreatProtection": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DGA",
+                "DNS_TUNNELING",
+                "DICTIONARY_DGA"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "DnsThreatProtection"
+        },
+        "FirewallDomainRedirectionAction": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "INSPECT_REDIRECTION_DOMAIN",
+                "TRUST_REDIRECTION_DOMAIN"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "FirewallDomainRedirectionAction"
+        },
+        "FirewallRuleType": {
+          "description": "Advanced firewall rule type. Mutually exclusive with FirewallDomainListId and DnsThreatProtection/ConfidenceThreshold.",
+          "$ref": "#/definitions/FirewallRuleType"
         }
       },
       "required": [
-        "FirewallDomainListId",
         "Priority",
         "Action"
       ],
@@ -170,6 +320,17 @@
       }
     }
   },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "route53resolver:TagResource",
+      "route53resolver:UntagResource"
+    ]
+  },
   "createOnlyProperties": [
     "/properties/Name"
   ],
@@ -183,7 +344,8 @@
     "/properties/ShareStatus",
     "/properties/CreatorRequestId",
     "/properties/CreationTime",
-    "/properties/ModificationTime"
+    "/properties/ModificationTime",
+    "/properties/FirewallRules/*/FirewallThreatProtectionId"
   ],
   "primaryIdentifier": [
     "/properties/Id"

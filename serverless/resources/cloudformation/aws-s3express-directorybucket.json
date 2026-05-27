@@ -1,0 +1,561 @@
+{
+  "typeName": "AWS::S3Express::DirectoryBucket",
+  "description": "Resource Type definition for AWS::S3Express::DirectoryBucket.. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "BucketName": {
+      "oneOf": [
+        {
+          "maxLength": 63,
+          "pattern": "^[a-z0-9][a-z0-9//.//-]*[a-z0-9]$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies a name for the bucket. The bucket name must contain only lowercase letters, numbers, and hyphens (-). A directory bucket name must be unique in the chosen Availability Zone or Local Zone. The bucket name must also follow the format 'bucket_base_name--zone_id--x-s3'. The zone_id can be the ID of an Availability Zone or a Local Zone. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the bucket name."
+    },
+    "LocationName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the Zone ID of the Availability Zone or Local Zone where the directory bucket will be created. An example Availability Zone ID value is 'use1-az5'."
+    },
+    "DataRedundancy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SingleAvailabilityZone",
+            "SingleLocalZone"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the number of Availability Zone or Local Zone that's used for redundancy for the bucket."
+    },
+    "BucketEncryption": {
+      "$ref": "#/definitions/BucketEncryption"
+    },
+    "LifecycleConfiguration": {
+      "$ref": "#/definitions/LifecycleConfiguration",
+      "description": "Lifecycle rules that define how Amazon S3 Express manages objects during their lifetime."
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "MetricsConfigurations": {
+      "description": "Specifies the metrics configurations for the Amazon S3 Express bucket.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/MetricsConfiguration"
+      }
+    },
+    "InventoryConfigurations": {
+      "description": "The inventory configuration for an Amazon S3 Express bucket.",
+      "items": {
+        "$ref": "#/definitions/InventoryConfiguration"
+      },
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": true
+    }
+  },
+  "definitions": {
+    "Arn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the specified bucket.",
+      "title": "AWSS3ExpressDirectoryBucketArnDefinition"
+    },
+    "BucketEncryption": {
+      "description": "Specifies default encryption for a bucket using server-side encryption with Amazon S3 managed keys (SSE-S3) or AWS KMS keys (SSE-KMS).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ServerSideEncryptionConfiguration": {
+          "description": "Specifies the default server-side-encryption configuration.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "items": {
+            "$ref": "#/definitions/ServerSideEncryptionRule"
+          }
+        }
+      },
+      "required": [
+        "ServerSideEncryptionConfiguration"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketBucketEncryptionDefinition"
+    },
+    "ServerSideEncryptionRule": {
+      "description": "Specifies the default server-side encryption configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BucketKeyEnabled": {
+          "description": "Specifies whether Amazon S3 should use an S3 Bucket Key with server-side encryption using KMS (SSE-KMS) for new objects in the bucket. Existing objects are not affected. Amazon S3 Express One Zone uses an S3 Bucket Key with SSE-KMS and S3 Bucket Key cannot be disabled. It's only allowed to set the BucketKeyEnabled element to true.",
+          "type": "boolean"
+        },
+        "ServerSideEncryptionByDefault": {
+          "$ref": "#/definitions/ServerSideEncryptionByDefault"
+        }
+      },
+      "title": "AWSS3ExpressDirectoryBucketServerSideEncryptionRuleDefinition"
+    },
+    "ServerSideEncryptionByDefault": {
+      "description": "Specifies the default server-side encryption to apply to new objects in the bucket. If a PUT Object request doesn't specify any server-side encryption, this default encryption will be applied.",
+      "type": "object",
+      "properties": {
+        "KMSMasterKeyID": {
+          "oneOf": [
+            {
+              "type": "string",
+              "anyOf": [
+                {
+                  "relationshipRef": {
+                    "typeName": "AWS::KMS::Key",
+                    "propertyPath": "/properties/KeyId"
+                  }
+                },
+                {
+                  "relationshipRef": {
+                    "typeName": "AWS::KMS::Key",
+                    "propertyPath": "/properties/Arn"
+                  }
+                }
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS Key Management Service (KMS) customer managed key ID to use for the default encryption. This parameter is allowed only if SSEAlgorithm is set to aws:kms. You can specify this parameter with the key ID or the Amazon Resource Name (ARN) of the KMS key"
+        },
+        "SSEAlgorithm": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "aws:kms",
+                "AES256"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "SSEAlgorithm"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketServerSideEncryptionByDefaultDefinition"
+    },
+    "LifecycleConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Rules": {
+          "description": "A lifecycle rule for individual objects in an Amazon S3 Express bucket.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "items": {
+            "$ref": "#/definitions/Rule"
+          }
+        }
+      },
+      "required": [
+        "Rules"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketLifecycleConfigurationDefinition"
+    },
+    "Rule": {
+      "type": "object",
+      "description": "You must specify at least one of the following properties: AbortIncompleteMultipartUpload, or ExpirationInDays.",
+      "additionalProperties": false,
+      "properties": {
+        "AbortIncompleteMultipartUpload": {
+          "$ref": "#/definitions/AbortIncompleteMultipartUpload"
+        },
+        "ExpirationInDays": {
+          "type": "integer"
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Enabled",
+                "Disabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ObjectSizeGreaterThan": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 20,
+              "pattern": "[0-9]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ObjectSizeLessThan": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 20,
+              "pattern": "[0-9]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Status"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketRuleDefinition"
+    },
+    "AbortIncompleteMultipartUpload": {
+      "description": "Specifies the days since the initiation of an incomplete multipart upload that Amazon S3 will wait before permanently removing all parts of the upload.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DaysAfterInitiation": {
+          "description": "Specifies the number of days after which Amazon S3 aborts an incomplete multipart upload.",
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "DaysAfterInitiation"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketAbortIncompleteMultipartUploadDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:.*)([\\p{L}\\p{Z}\\p{N}_.:=+\\/\\-@%]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:=+\\/\\-@%]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketTagDefinition"
+    },
+    "MetricsConfiguration": {
+      "description": "Specifies a metrics configuration for the CloudWatch request metrics from an Amazon S3 Express bucket.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID used to identify the metrics configuration."
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The prefix used when evaluating a metrics filter."
+        },
+        "AccessPointArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The access point ARN used when evaluating a metrics filter."
+        }
+      },
+      "required": [
+        "Id"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketMetricsConfigurationDefinition"
+    },
+    "InventoryConfiguration": {
+      "description": "Specifies an inventory configuration for an Amazon S3 Express bucket",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Destination": {
+          "$ref": "#/definitions/Destination"
+        },
+        "Enabled": {
+          "description": "Specifies whether the inventory is enabled or disabled.",
+          "type": "boolean"
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID used to identify the inventory configuration."
+        },
+        "IncludedObjectVersions": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "All",
+                "Current"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Object versions to include in the inventory list."
+        },
+        "OptionalFields": {
+          "description": "Contains the optional fields that are included in the inventory results.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "Size",
+                  "LastModifiedDate",
+                  "StorageClass",
+                  "ETag",
+                  "IsMultipartUploaded",
+                  "EncryptionStatus",
+                  "BucketKeyStatus",
+                  "ChecksumAlgorithm",
+                  "LifecycleExpirationDate"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The prefix that is prepended to all inventory results."
+        },
+        "ScheduleFrequency": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Daily",
+                "Weekly"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the schedule for generating inventory results."
+        }
+      },
+      "required": [
+        "Destination",
+        "Enabled",
+        "Id",
+        "IncludedObjectVersions",
+        "ScheduleFrequency"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketInventoryConfigurationDefinition"
+    },
+    "Destination": {
+      "description": "Specifies information about where to publish inventory reports for an Amazon S3 Express bucket.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BucketArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the destination Amazon S3 bucket to which data is exported."
+        },
+        "BucketAccountId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The account ID that owns the destination S3 bucket. "
+        },
+        "Format": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CSV",
+                "ORC",
+                "Parquet"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the file format used when exporting data to Amazon S3."
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The prefix to use when exporting data. The prefix is prepended to all results."
+        }
+      },
+      "required": [
+        "BucketArn",
+        "Format"
+      ],
+      "title": "AWSS3ExpressDirectoryBucketDestinationDefinition"
+    }
+  },
+  "createOnlyProperties": [
+    "/properties/BucketName",
+    "/properties/LocationName",
+    "/properties/DataRedundancy"
+  ],
+  "primaryIdentifier": [
+    "/properties/BucketName"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/AvailabilityZoneName"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "s3express:TagResource",
+      "s3express:UntagResource"
+    ]
+  },
+  "required": [
+    "LocationName",
+    "DataRedundancy"
+  ],
+  "type": "object",
+  "title": "AWSS3ExpressDirectoryBucketProperties"
+}

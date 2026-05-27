@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::AppRunner::Service",
-  "description": "The AWS::AppRunner::Service resource specifies an AppRunner Service.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-apprunner.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-apprunner.git",
+  "description": "The AWS::AppRunner::Service resource specifies an AppRunner Service.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-apprunner.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-apprunner.git",
   "definitions": {
     "SourceConfiguration": {
@@ -44,6 +44,20 @@
         },
         "CodeConfiguration": {
           "$ref": "#/definitions/CodeConfiguration"
+        },
+        "SourceDirectory": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "[^\\x00]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Source Directory"
         }
       },
       "required": [
@@ -137,7 +151,10 @@
                 "GO_1",
                 "DOTNET_6",
                 "PHP_81",
-                "RUBY_31"
+                "RUBY_31",
+                "PYTHON_311",
+                "NODEJS_18",
+                "NODEJS_22"
               ]
             },
             {
@@ -511,6 +528,21 @@
         },
         "IngressConfiguration": {
           "$ref": "#/definitions/IngressConfiguration"
+        },
+        "IpAddressType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "IPV4",
+                "DUAL_STACK"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "App Runner service endpoint IP address type"
         }
       },
       "additionalProperties": false,
@@ -659,7 +691,12 @@
     "tagOnCreate": true,
     "tagUpdatable": false,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "apprunner:TagResource",
+      "apprunner:UntagResource",
+      "apprunner:ListTagsForResource"
+    ]
   },
   "required": [
     "SourceConfiguration"
@@ -676,8 +713,8 @@
     "/properties/Status"
   ],
   "writeOnlyProperties": [
-    "/properties/Tags",
-    "/properties/AutoScalingConfigurationArn"
+    "/properties/AutoScalingConfigurationArn",
+    "/properties/Tags"
   ],
   "primaryIdentifier": [
     "/properties/ServiceArn"

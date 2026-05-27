@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EC2::ClientVpnEndpoint",
-  "description": "Resource Type definition for AWS::EC2::ClientVpnEndpoint. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::EC2::ClientVpnEndpoint. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "ClientCidrBlock": {
@@ -25,6 +25,9 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
+    },
+    "ClientRouteEnforcementOptions": {
+      "$ref": "#/definitions/ClientRouteEnforcementOptions"
     },
     "TagSpecifications": {
       "type": "array",
@@ -81,11 +84,24 @@
         ]
       }
     },
+    "DisconnectOnSessionTimeout": {
+      "type": "boolean"
+    },
     "ConnectionLogOptions": {
       "$ref": "#/definitions/ConnectionLogOptions"
     },
     "SplitTunnel": {
       "type": "boolean"
+    },
+    "TrafficIpAddressType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ClientLoginBannerOptions": {
       "$ref": "#/definitions/ClientLoginBannerOptions"
@@ -110,7 +126,20 @@
         }
       ]
     },
+    "TransitGatewayConfiguration": {
+      "$ref": "#/definitions/TransitGatewayConfiguration"
+    },
     "TransportProtocol": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "EndpointIpAddressType": {
       "oneOf": [
         {
           "type": "string"
@@ -211,6 +240,16 @@
       ],
       "title": "AWSEC2ClientVpnEndpointFederatedAuthenticationRequestDefinition"
     },
+    "ClientRouteEnforcementOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enforced": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSEC2ClientVpnEndpointClientRouteEnforcementOptionsDefinition"
+    },
     "ClientLoginBannerOptions": {
       "type": "object",
       "additionalProperties": false,
@@ -253,6 +292,54 @@
         "DirectoryId"
       ],
       "title": "AWSEC2ClientVpnEndpointDirectoryServiceAuthenticationRequestDefinition"
+    },
+    "TransitGatewayConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TransitGatewayId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AvailabilityZoneIds": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AvailabilityZones": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "TransitGatewayId"
+      ],
+      "title": "AWSEC2ClientVpnEndpointTransitGatewayConfigurationDefinition"
     },
     "CertificateAuthenticationRequest": {
       "type": "object",
@@ -364,7 +451,6 @@
     }
   },
   "required": [
-    "ClientCidrBlock",
     "ConnectionLogOptions",
     "AuthenticationOptions",
     "ServerCertificateArn"
@@ -373,7 +459,10 @@
     "/properties/TransportProtocol",
     "/properties/ClientCidrBlock",
     "/properties/TagSpecifications",
-    "/properties/AuthenticationOptions"
+    "/properties/AuthenticationOptions",
+    "/properties/TransitGatewayConfiguration",
+    "/properties/EndpointIpAddressType",
+    "/properties/TrafficIpAddressType"
   ],
   "primaryIdentifier": [
     "/properties/Id"

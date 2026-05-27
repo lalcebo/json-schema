@@ -1,0 +1,514 @@
+{
+  "typeName": "AWS::BedrockAgentCore::BrowserCustom",
+  "description": "Resource definition for AWS::BedrockAgentCore::BrowserCustom. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "BrowserId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The id of the browser.",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserIdDefinition"
+    },
+    "BrowserArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):browser(-custom)?\\/(aws\\.browser\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of a Browser resource.",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserArnDefinition"
+    },
+    "BrowserNetworkMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "VPC"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Network modes supported by browser",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserNetworkModeDefinition"
+    },
+    "BrowserNetworkConfiguration": {
+      "type": "object",
+      "properties": {
+        "NetworkMode": {
+          "$ref": "#/definitions/BrowserNetworkMode",
+          "default": "PUBLIC"
+        },
+        "VpcConfig": {
+          "$ref": "#/definitions/VpcConfig"
+        }
+      },
+      "required": [
+        "NetworkMode"
+      ],
+      "additionalProperties": false,
+      "description": "Network configuration for browser",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserNetworkConfigurationDefinition"
+    },
+    "RecordingConfig": {
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "S3Location": {
+          "$ref": "#/definitions/S3Location"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Recording configuration for browser",
+      "title": "AWSBedrockAgentCoreBrowserCustomRecordingConfigDefinition"
+    },
+    "BrowserSigning": {
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false,
+      "description": "Browser signing configuration",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserSigningDefinition"
+    },
+    "CertificateLocation": {
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=.@-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Secrets Manager secret ARN."
+        }
+      },
+      "required": [
+        "SecretArn"
+      ],
+      "additionalProperties": false,
+      "description": "Certificate location in Secrets Manager.",
+      "title": "AWSBedrockAgentCoreBrowserCustomCertificateLocationDefinition"
+    },
+    "Certificate": {
+      "type": "object",
+      "properties": {
+        "CertificateLocation": {
+          "$ref": "#/definitions/CertificateLocation",
+          "description": "Certificate location in Secrets Manager."
+        }
+      },
+      "required": [
+        "CertificateLocation"
+      ],
+      "additionalProperties": false,
+      "description": "A root CA certificate configuration.",
+      "title": "AWSBedrockAgentCoreBrowserCustomCertificateDefinition"
+    },
+    "CertificateList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Certificate"
+      },
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 10,
+      "description": "List of root CA certificates.",
+      "title": "AWSBedrockAgentCoreBrowserCustomCertificateListDefinition"
+    },
+    "BrowserEnterprisePolicyType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MANAGED",
+            "RECOMMENDED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of browser enterprise policy.",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserEnterprisePolicyTypeDefinition"
+    },
+    "BrowserEnterprisePolicy": {
+      "type": "object",
+      "properties": {
+        "Location": {
+          "$ref": "#/definitions/S3Location",
+          "description": "The S3 location of the enterprise policy file."
+        },
+        "Type": {
+          "$ref": "#/definitions/BrowserEnterprisePolicyType",
+          "description": "The type of browser enterprise policy."
+        }
+      },
+      "required": [
+        "Location",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "description": "Browser enterprise policy configuration.",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserEnterprisePolicyDefinition"
+    },
+    "BrowserEnterprisePolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/BrowserEnterprisePolicy"
+      },
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 10,
+      "description": "List of browser enterprise policies.",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserEnterprisePoliciesDefinition"
+    },
+    "S3Location": {
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Bucket",
+        "Prefix"
+      ],
+      "additionalProperties": false,
+      "description": "S3 Location Configuration",
+      "title": "AWSBedrockAgentCoreBrowserCustomS3LocationDefinition"
+    },
+    "VpcConfig": {
+      "type": "object",
+      "description": "Network mode configuration for VPC",
+      "properties": {
+        "SecurityGroups": {
+          "$ref": "#/definitions/SecurityGroups"
+        },
+        "Subnets": {
+          "$ref": "#/definitions/Subnets"
+        }
+      },
+      "required": [
+        "SecurityGroups",
+        "Subnets"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreBrowserCustomVpcConfigDefinition"
+    },
+    "SecurityGroups": {
+      "type": "array",
+      "description": "Security groups for VPC",
+      "minItems": 1,
+      "maxItems": 16,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SecurityGroupId"
+      },
+      "title": "AWSBedrockAgentCoreBrowserCustomSecurityGroupsDefinition"
+    },
+    "SecurityGroupId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^sg-[0-9a-zA-Z]{8,17}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Security group id",
+      "title": "AWSBedrockAgentCoreBrowserCustomSecurityGroupIdDefinition"
+    },
+    "Subnets": {
+      "type": "array",
+      "description": "Subnets for VPC",
+      "minItems": 1,
+      "maxItems": 16,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SubnetId"
+      },
+      "title": "AWSBedrockAgentCoreBrowserCustomSubnetsDefinition"
+    },
+    "SubnetId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^subnet-[0-9a-zA-Z]{8,17}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Subnet id",
+      "title": "AWSBedrockAgentCoreBrowserCustomSubnetIdDefinition"
+    },
+    "BrowserStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "CREATE_FAILED",
+            "READY",
+            "DELETING",
+            "DELETE_FAILED",
+            "DELETED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Status of browser",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserStatusDefinition"
+    },
+    "BrowserSummary": {
+      "type": "object",
+      "properties": {
+        "BrowserId": {
+          "$ref": "#/definitions/BrowserId"
+        },
+        "BrowserArn": {
+          "$ref": "#/definitions/BrowserArn"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Status": {
+          "$ref": "#/definitions/BrowserStatus"
+        },
+        "CreatedAt": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LastUpdatedAt": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "BrowserId",
+        "BrowserArn",
+        "Status",
+        "CreatedAt"
+      ],
+      "additionalProperties": false,
+      "description": "Browser",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserSummaryDefinition"
+    },
+    "BrowserSummaries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/BrowserSummary"
+      },
+      "description": "List of browsers",
+      "title": "AWSBedrockAgentCoreBrowserCustomBrowserSummariesDefinition"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):iam::[0-9]{12}:role/.+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the IAM role.",
+      "title": "AWSBedrockAgentCoreBrowserCustomRoleArnDefinition"
+    },
+    "TagsMap": {
+      "type": "object",
+      "description": "A map of tag keys and values",
+      "patternProperties": {
+        "^[a-zA-Z0-9\\s._:/=+@-]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Value of a tag"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreBrowserCustomTagsMapDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the browser."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the browser."
+    },
+    "NetworkConfiguration": {
+      "$ref": "#/definitions/BrowserNetworkConfiguration",
+      "description": "Network configuration for browser."
+    },
+    "RecordingConfig": {
+      "$ref": "#/definitions/RecordingConfig",
+      "description": "Recording configuration for browser."
+    },
+    "BrowserSigning": {
+      "$ref": "#/definitions/BrowserSigning",
+      "description": "Browser signing configuration."
+    },
+    "Certificates": {
+      "$ref": "#/definitions/CertificateList",
+      "description": "List of root CA certificates in PEM format."
+    },
+    "EnterprisePolicies": {
+      "$ref": "#/definitions/BrowserEnterprisePolicies",
+      "description": "A list of enterprise policy files for the browser."
+    },
+    "ExecutionRoleArn": {
+      "$ref": "#/definitions/RoleArn",
+      "description": "The Amazon Resource Name (ARN) of the IAM role that the browser uses to access resources."
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagsMap"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "NetworkConfiguration"
+  ],
+  "readOnlyProperties": [
+    "/properties/BrowserId",
+    "/properties/BrowserArn",
+    "/properties/Status",
+    "/properties/FailureReason",
+    "/properties/CreatedAt",
+    "/properties/LastUpdatedAt"
+  ],
+  "primaryIdentifier": [
+    "/properties/BrowserId"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/BrowserArn"
+    ]
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Description",
+    "/properties/NetworkConfiguration",
+    "/properties/RecordingConfig",
+    "/properties/BrowserSigning",
+    "/properties/Certificates",
+    "/properties/EnterprisePolicies",
+    "/properties/ExecutionRoleArn"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": false,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "bedrock-agentcore:TagResource",
+      "bedrock-agentcore:UntagResource",
+      "bedrock-agentcore:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSBedrockAgentCoreBrowserCustomProperties"
+}

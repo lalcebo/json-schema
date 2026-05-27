@@ -1,0 +1,145 @@
+{
+  "typeName": "AWS::Backup::LogicallyAirGappedBackupVault",
+  "description": "Resource Type definition for AWS::Backup::LogicallyAirGappedBackupVault. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "NotificationObjectType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BackupVaultEvents": {
+          "type": "array",
+          "insertionOrder": false,
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "SNSTopicArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "SNSTopicArn",
+        "BackupVaultEvents"
+      ],
+      "title": "AWSBackupLogicallyAirGappedBackupVaultNotificationObjectTypeDefinition"
+    },
+    "BackupVaultNamePattern": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9\\-\\_]{2,50}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBackupLogicallyAirGappedBackupVaultBackupVaultNamePatternDefinition"
+    }
+  },
+  "properties": {
+    "AccessPolicy": {
+      "type": [
+        "object",
+        "string"
+      ]
+    },
+    "BackupVaultName": {
+      "$ref": "#/definitions/BackupVaultNamePattern"
+    },
+    "MinRetentionDays": {
+      "type": "integer"
+    },
+    "MaxRetentionDays": {
+      "type": "integer"
+    },
+    "BackupVaultTags": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^.{1,128}$": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "Notifications": {
+      "$ref": "#/definitions/NotificationObjectType"
+    },
+    "EncryptionKeyArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "MpaApprovalTeamArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/BackupVaultTags",
+    "permissions": [
+      "backup:TagResource",
+      "backup:UntagResource",
+      "backup:ListTags"
+    ]
+  },
+  "required": [
+    "BackupVaultName",
+    "MinRetentionDays",
+    "MaxRetentionDays"
+  ],
+  "createOnlyProperties": [
+    "/properties/BackupVaultName",
+    "/properties/MinRetentionDays",
+    "/properties/MaxRetentionDays",
+    "/properties/EncryptionKeyArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/BackupVaultArn",
+    "/properties/VaultState",
+    "/properties/VaultType"
+  ],
+  "primaryIdentifier": [
+    "/properties/BackupVaultName"
+  ],
+  "type": "object",
+  "title": "AWSBackupLogicallyAirGappedBackupVaultProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoTFleetWise::Vehicle",
-  "description": "Definition of AWS::IoTFleetWise::Vehicle Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::IoTFleetWise::Vehicle Resource Type. Source:- No source definition found, add manually please",
   "definitions": {
     "VehicleAssociationBehavior": {
       "oneOf": [
@@ -69,6 +69,115 @@
       ],
       "additionalProperties": false,
       "title": "AWSIoTFleetWiseVehicleTagDefinition"
+    },
+    "OnChangeStateTemplateUpdateStrategy": {
+      "additionalProperties": false,
+      "type": "object",
+      "title": "AWSIoTFleetWiseVehicleOnChangeStateTemplateUpdateStrategyDefinition"
+    },
+    "PeriodicStateTemplateUpdateStrategy": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "StateTemplateUpdateRate": {
+          "$ref": "#/definitions/TimePeriod"
+        }
+      },
+      "required": [
+        "StateTemplateUpdateRate"
+      ],
+      "title": "AWSIoTFleetWiseVehiclePeriodicStateTemplateUpdateStrategyDefinition"
+    },
+    "StateTemplateUpdateStrategy": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "Periodic": {
+              "$ref": "#/definitions/PeriodicStateTemplateUpdateStrategy"
+            }
+          },
+          "required": [
+            "Periodic"
+          ]
+        },
+        {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "OnChange": {
+              "$ref": "#/definitions/OnChangeStateTemplateUpdateStrategy"
+            }
+          },
+          "required": [
+            "OnChange"
+          ]
+        }
+      ],
+      "title": "AWSIoTFleetWiseVehicleStateTemplateUpdateStrategyDefinition"
+    },
+    "StateTemplateAssociation": {
+      "type": "object",
+      "properties": {
+        "Identifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StateTemplateUpdateStrategy": {
+          "$ref": "#/definitions/StateTemplateUpdateStrategy"
+        }
+      },
+      "required": [
+        "Identifier",
+        "StateTemplateUpdateStrategy"
+      ],
+      "additionalProperties": false,
+      "minProperties": 0,
+      "title": "AWSIoTFleetWiseVehicleStateTemplateAssociationDefinition"
+    },
+    "TimePeriod": {
+      "type": "object",
+      "properties": {
+        "Unit": {
+          "$ref": "#/definitions/TimeUnit"
+        },
+        "Value": {
+          "type": "number",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "Unit",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSIoTFleetWiseVehicleTimePeriodDefinition"
+    },
+    "TimeUnit": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MILLISECOND",
+            "SECOND",
+            "MINUTE",
+            "HOUR"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSIoTFleetWiseVehicleTimeUnitDefinition"
     }
   },
   "properties": {
@@ -120,6 +229,16 @@
       "uniqueItems": true,
       "maxItems": 50,
       "minItems": 0
+    },
+    "StateTemplates": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/StateTemplateAssociation"
+      },
+      "maxItems": 20,
+      "minItems": 0
     }
   },
   "required": [
@@ -132,7 +251,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iotfleetwise:UntagResource",
+      "iotfleetwise:TagResource",
+      "iotfleetwise:ListTagsForResource"
+    ]
   },
   "readOnlyProperties": [
     "/properties/Arn",

@@ -1,9 +1,20 @@
 {
   "typeName": "AWS::CloudWatch::MetricStream",
-  "description": "Resource Type definition for Metric Stream. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
+  "description": "Resource Type definition for Metric Stream. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
   "additionalProperties": false,
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudwatch.git",
-  "taggable": true,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cloudwatch:TagResource",
+      "cloudwatch:UntagResource",
+      "cloudwatch:ListTagsForResource"
+    ]
+  },
   "properties": {
     "ExcludeFilters": {
       "description": "Define which metrics will be not streamed. Metrics matched by multiple instances of MetricStreamFilter are joined with an OR operation by default. If both IncludeFilters and ExcludeFilters are omitted, all metrics in the account will be streamed. IncludeFilters and ExcludeFilters are mutually exclusive. Default to null.",
@@ -237,7 +248,7 @@
           "oneOf": [
             {
               "type": "string",
-              "minLength": 1,
+              "minLength": 0,
               "maxLength": 256
             },
             {
@@ -254,12 +265,7 @@
       "title": "AWSCloudWatchMetricStreamTagDefinition"
     }
   },
-  "required": [
-    "FirehoseArn",
-    "RoleArn",
-    "OutputFormat"
-  ],
-  "anyOf": [
+  "allOf": [
     {
       "required": [
         "FirehoseArn",
@@ -268,25 +274,11 @@
       ]
     },
     {
-      "allOf": [
-        {
-          "required": [
-            "FirehoseArn",
-            "RoleArn",
-            "OutputFormat"
-          ]
-        }
-      ]
-    },
-    {
       "oneOf": [
+        {},
         {
           "required": [
-            "IncludeFilters"
-          ]
-        },
-        {
-          "required": [
+            "IncludeFilters",
             "ExcludeFilters"
           ]
         }
@@ -304,9 +296,6 @@
     "/properties/CreationDate",
     "/properties/LastUpdateDate",
     "/properties/State"
-  ],
-  "writeOnlyProperties": [
-    "/properties/Tags"
   ],
   "type": "object",
   "title": "AWSCloudWatchMetricStreamProperties"

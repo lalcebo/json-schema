@@ -1,27 +1,11 @@
 {
   "typeName": "AWS::SageMaker::Endpoint",
-  "description": "Resource Type definition for AWS::SageMaker::Endpoint. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::SageMaker::Endpoint. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
-    "RetainAllVariantProperties": {
-      "type": "boolean"
-    },
-    "EndpointName": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ExcludeRetainedVariantProperties": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/VariantProperty"
-      }
+    "DeploymentConfig": {
+      "$ref": "#/definitions/DeploymentConfig",
+      "description": "Specifies deployment configuration for updating the SageMaker endpoint. Includes rollback and update policies."
     },
     "EndpointConfigName": {
       "oneOf": [
@@ -31,47 +15,35 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The name of the endpoint configuration for the SageMaker endpoint. This is a required property."
     },
-    "DeploymentConfig": {
-      "$ref": "#/definitions/DeploymentConfig"
+    "ExcludeRetainedVariantProperties": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/VariantProperty"
+      },
+      "description": "Specifies a list of variant properties that you want to exclude when updating an endpoint."
+    },
+    "RetainAllVariantProperties": {
+      "type": "boolean",
+      "description": "When set to true, retains all variant properties for an endpoint when it is updated."
     },
     "RetainDeploymentConfig": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "When set to true, retains the deployment configuration during endpoint updates."
     },
     "Tags": {
       "type": "array",
       "uniqueItems": false,
       "items": {
         "$ref": "#/definitions/Tag"
-      }
+      },
+      "description": "An array of key-value pairs to apply to this resource."
     }
   },
   "definitions": {
-    "CapacitySize": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Value": {
-          "type": "integer"
-        },
-        "Type": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Type",
-        "Value"
-      ],
-      "title": "AWSSageMakerEndpointCapacitySizeDefinition"
-    },
     "Alarm": {
       "type": "object",
       "additionalProperties": false,
@@ -84,7 +56,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the CloudWatch alarm."
         }
       },
       "required": [
@@ -92,47 +65,17 @@
       ],
       "title": "AWSSageMakerEndpointAlarmDefinition"
     },
-    "Tag": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Value": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Value",
-        "Key"
-      ],
-      "title": "AWSSageMakerEndpointTagDefinition"
-    },
     "AutoRollbackConfig": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "Alarms": {
           "type": "array",
-          "uniqueItems": false,
+          "uniqueItems": true,
           "items": {
             "$ref": "#/definitions/Alarm"
-          }
+          },
+          "description": "List of CloudWatch alarms to monitor during the deployment. If any alarm goes off, the deployment is rolled back."
         }
       },
       "required": [
@@ -140,34 +83,21 @@
       ],
       "title": "AWSSageMakerEndpointAutoRollbackConfigDefinition"
     },
-    "DeploymentConfig": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "AutoRollbackConfiguration": {
-          "$ref": "#/definitions/AutoRollbackConfig"
-        },
-        "BlueGreenUpdatePolicy": {
-          "$ref": "#/definitions/BlueGreenUpdatePolicy"
-        }
-      },
-      "required": [
-        "BlueGreenUpdatePolicy"
-      ],
-      "title": "AWSSageMakerEndpointDeploymentConfigDefinition"
-    },
     "BlueGreenUpdatePolicy": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "MaximumExecutionTimeoutInSeconds": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The maximum time allowed for the blue/green update, in seconds."
         },
         "TerminationWaitInSeconds": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The wait time before terminating the old endpoint during a blue/green deployment."
         },
         "TrafficRoutingConfiguration": {
-          "$ref": "#/definitions/TrafficRoutingConfig"
+          "$ref": "#/definitions/TrafficRoutingConfig",
+          "description": "The traffic routing configuration for the blue/green deployment."
         }
       },
       "required": [
@@ -175,7 +105,7 @@
       ],
       "title": "AWSSageMakerEndpointBlueGreenUpdatePolicyDefinition"
     },
-    "TrafficRoutingConfig": {
+    "CapacitySize": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -187,16 +117,125 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Specifies whether the `Value` is an instance count or a capacity unit."
         },
-        "LinearStepSize": {
-          "$ref": "#/definitions/CapacitySize"
+        "Value": {
+          "type": "integer",
+          "description": "The value representing either the number of instances or the number of capacity units."
+        }
+      },
+      "required": [
+        "Type",
+        "Value"
+      ],
+      "title": "AWSSageMakerEndpointCapacitySizeDefinition"
+    },
+    "DeploymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AutoRollbackConfiguration": {
+          "$ref": "#/definitions/AutoRollbackConfig",
+          "description": "Configuration for automatic rollback if an error occurs during deployment."
         },
-        "CanarySize": {
-          "$ref": "#/definitions/CapacitySize"
+        "BlueGreenUpdatePolicy": {
+          "$ref": "#/definitions/BlueGreenUpdatePolicy",
+          "description": "Configuration for blue-green update deployment policies."
+        },
+        "RollingUpdatePolicy": {
+          "$ref": "#/definitions/RollingUpdatePolicy",
+          "description": "Configuration for rolling update deployment policies."
+        }
+      },
+      "title": "AWSSageMakerEndpointDeploymentConfigDefinition"
+    },
+    "RollingUpdatePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaximumBatchSize": {
+          "$ref": "#/definitions/CapacitySize",
+          "description": "Specifies the maximum batch size for each rolling update."
+        },
+        "MaximumExecutionTimeoutInSeconds": {
+          "type": "integer",
+          "description": "The maximum time allowed for the rolling update, in seconds."
+        },
+        "RollbackMaximumBatchSize": {
+          "$ref": "#/definitions/CapacitySize",
+          "description": "The maximum batch size for rollback during an update failure."
         },
         "WaitIntervalInSeconds": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The time to wait between steps during the rolling update, in seconds."
+        }
+      },
+      "required": [
+        "MaximumBatchSize",
+        "WaitIntervalInSeconds"
+      ],
+      "title": "AWSSageMakerEndpointRollingUpdatePolicyDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value of the tag."
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSSageMakerEndpointTagDefinition"
+    },
+    "TrafficRoutingConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CanarySize": {
+          "$ref": "#/definitions/CapacitySize",
+          "description": "Specifies the size of the canary traffic in a canary deployment."
+        },
+        "LinearStepSize": {
+          "$ref": "#/definitions/CapacitySize",
+          "description": "Specifies the step size for linear traffic routing."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the type of traffic routing (e.g., 'AllAtOnce', 'Canary', 'Linear')."
+        },
+        "WaitIntervalInSeconds": {
+          "type": "integer",
+          "description": "Specifies the wait interval between traffic shifts, in seconds."
         }
       },
       "required": [
@@ -216,7 +255,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The type of variant property (e.g., 'DesiredInstanceCount', 'DesiredWeight', 'DataCaptureConfig')."
         }
       },
       "title": "AWSSageMakerEndpointVariantPropertyDefinition"
@@ -229,11 +269,29 @@
     "/properties/EndpointName"
   ],
   "primaryIdentifier": [
-    "/properties/Id"
+    "/properties/EndpointArn"
   ],
   "readOnlyProperties": [
-    "/properties/Id"
+    "/properties/EndpointArn",
+    "/properties/EndpointName"
   ],
+  "writeOnlyProperties": [
+    "/properties/ExcludeRetainedVariantProperties",
+    "/properties/RetainAllVariantProperties",
+    "/properties/RetainDeploymentConfig"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "sagemaker:AddTags",
+      "sagemaker:DeleteTags",
+      "sagemaker:ListTags"
+    ]
+  },
   "type": "object",
   "title": "AWSSageMakerEndpointProperties"
 }

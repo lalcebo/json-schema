@@ -1,0 +1,1611 @@
+{
+  "typeName": "AWS::SES::MailManagerRuleSet",
+  "description": "Definition of AWS::SES::MailManagerRuleSet Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses-mailmanager",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses-mailmanager",
+  "definitions": {
+    "ActionFailurePolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CONTINUE",
+            "DROP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetActionFailurePolicyDefinition"
+    },
+    "AddHeaderAction": {
+      "type": "object",
+      "properties": {
+        "HeaderName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[xX]\\-[a-zA-Z0-9\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HeaderValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "HeaderName",
+        "HeaderValue"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetAddHeaderActionDefinition"
+    },
+    "Analysis": {
+      "type": "object",
+      "properties": {
+        "Analyzer": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResultField": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^(addon\\.)?[\\sa-zA-Z0-9_]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Analyzer",
+        "ResultField"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetAnalysisDefinition"
+    },
+    "RuleIsInAddressList": {
+      "type": "object",
+      "properties": {
+        "Attribute": {
+          "$ref": "#/definitions/RuleAddressListEmailAttribute"
+        },
+        "AddressLists": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "Attribute",
+        "AddressLists"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRuleIsInAddressListDefinition"
+    },
+    "ArchiveAction": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "TargetArchive": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "TargetArchive"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetArchiveActionDefinition"
+    },
+    "DeliverToMailboxAction": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "MailboxArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "MailboxArn",
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetDeliverToMailboxActionDefinition"
+    },
+    "SnsAction": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "TopicArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):sns:[a-z]{2}-[a-z]+-\\d{1}:\\d{12}:[\\w\\-]{1,256}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Encoding": {
+          "$ref": "#/definitions/SnsNotificationEncoding"
+        },
+        "PayloadType": {
+          "$ref": "#/definitions/SnsNotificationPayloadType"
+        }
+      },
+      "required": [
+        "TopicArn",
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetSnsActionDefinition"
+    },
+    "SnsNotificationEncoding": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "UTF-8",
+            "BASE64"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetSnsNotificationEncodingDefinition"
+    },
+    "SnsNotificationPayloadType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CONTENT",
+            "HEADERS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetSnsNotificationPayloadTypeDefinition"
+    },
+    "DeliverToQBusinessAction": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "ApplicationId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[a-z0-9-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IndexId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 36,
+              "minLength": 36,
+              "pattern": "^[a-z0-9-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ApplicationId",
+        "IndexId",
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetDeliverToQBusinessActionDefinition"
+    },
+    "DropAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetDropActionDefinition"
+    },
+    "BounceAction": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Sender": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 254,
+              "minLength": 0,
+              "pattern": "^[0-9A-Za-z@+.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StatusCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 9,
+              "pattern": "^[45]\\.[0-9]{1,3}\\.[0-9]{1,3}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SmtpReplyCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3,
+              "pattern": "^[45][0-9][0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DiagnosticMessage": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[\\x20-\\x7e]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Message": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^[\\r\\n\\x20-\\x7e]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "RoleArn",
+        "Sender",
+        "StatusCode",
+        "SmtpReplyCode",
+        "DiagnosticMessage"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetBounceActionDefinition"
+    },
+    "LambdaInvocationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EVENT",
+            "REQUEST_RESPONSE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetLambdaInvocationTypeDefinition"
+    },
+    "InvokeLambdaAction": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "FunctionArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "InvocationType": {
+          "$ref": "#/definitions/LambdaInvocationType"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RetryTimeMinutes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2160
+        }
+      },
+      "required": [
+        "FunctionArn",
+        "InvocationType",
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetInvokeLambdaActionDefinition"
+    },
+    "MailFrom": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "REPLACE",
+            "PRESERVE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetMailFromDefinition"
+    },
+    "RelayAction": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "Relay": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MailFrom": {
+          "$ref": "#/definitions/MailFrom"
+        }
+      },
+      "required": [
+        "Relay"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRelayActionDefinition"
+    },
+    "ReplaceRecipientAction": {
+      "type": "object",
+      "properties": {
+        "ReplaceWith": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 254,
+                "minLength": 0,
+                "pattern": "^[0-9A-Za-z@+.-]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetReplaceRecipientActionDefinition"
+    },
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 32,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleCondition"
+          },
+          "maxItems": 10,
+          "minItems": 0
+        },
+        "Unless": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleCondition"
+          },
+          "maxItems": 10,
+          "minItems": 0
+        },
+        "Actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleAction"
+          },
+          "maxItems": 10,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "Actions"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRuleDefinition"
+    },
+    "RuleAction": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Drop",
+          "properties": {
+            "Drop": {
+              "$ref": "#/definitions/DropAction"
+            }
+          },
+          "required": [
+            "Drop"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Relay",
+          "properties": {
+            "Relay": {
+              "$ref": "#/definitions/RelayAction"
+            }
+          },
+          "required": [
+            "Relay"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Archive",
+          "properties": {
+            "Archive": {
+              "$ref": "#/definitions/ArchiveAction"
+            }
+          },
+          "required": [
+            "Archive"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "WriteToS3",
+          "properties": {
+            "WriteToS3": {
+              "$ref": "#/definitions/S3Action"
+            }
+          },
+          "required": [
+            "WriteToS3"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Send",
+          "properties": {
+            "Send": {
+              "$ref": "#/definitions/SendAction"
+            }
+          },
+          "required": [
+            "Send"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "AddHeader",
+          "properties": {
+            "AddHeader": {
+              "$ref": "#/definitions/AddHeaderAction"
+            }
+          },
+          "required": [
+            "AddHeader"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "ReplaceRecipient",
+          "properties": {
+            "ReplaceRecipient": {
+              "$ref": "#/definitions/ReplaceRecipientAction"
+            }
+          },
+          "required": [
+            "ReplaceRecipient"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "DeliverToMailbox",
+          "properties": {
+            "DeliverToMailbox": {
+              "$ref": "#/definitions/DeliverToMailboxAction"
+            }
+          },
+          "required": [
+            "DeliverToMailbox"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "DeliverToQBusiness",
+          "properties": {
+            "DeliverToQBusiness": {
+              "$ref": "#/definitions/DeliverToQBusinessAction"
+            }
+          },
+          "required": [
+            "DeliverToQBusiness"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "PublishToSns",
+          "properties": {
+            "PublishToSns": {
+              "$ref": "#/definitions/SnsAction"
+            }
+          },
+          "required": [
+            "PublishToSns"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Bounce",
+          "properties": {
+            "Bounce": {
+              "$ref": "#/definitions/BounceAction"
+            }
+          },
+          "required": [
+            "Bounce"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "InvokeLambda",
+          "properties": {
+            "InvokeLambda": {
+              "$ref": "#/definitions/InvokeLambdaAction"
+            }
+          },
+          "required": [
+            "InvokeLambda"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleActionDefinition"
+    },
+    "RuleBooleanEmailAttribute": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "READ_RECEIPT_REQUESTED",
+            "TLS",
+            "TLS_WRAPPED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleBooleanEmailAttributeDefinition"
+    },
+    "RuleBooleanExpression": {
+      "type": "object",
+      "properties": {
+        "Evaluate": {
+          "$ref": "#/definitions/RuleBooleanToEvaluate"
+        },
+        "Operator": {
+          "$ref": "#/definitions/RuleBooleanOperator"
+        }
+      },
+      "required": [
+        "Evaluate",
+        "Operator"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRuleBooleanExpressionDefinition"
+    },
+    "RuleBooleanOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IS_TRUE",
+            "IS_FALSE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleBooleanOperatorDefinition"
+    },
+    "RuleBooleanToEvaluate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Attribute",
+          "properties": {
+            "Attribute": {
+              "$ref": "#/definitions/RuleBooleanEmailAttribute"
+            }
+          },
+          "required": [
+            "Attribute"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Analysis",
+          "properties": {
+            "Analysis": {
+              "$ref": "#/definitions/Analysis"
+            }
+          },
+          "required": [
+            "Analysis"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "IsInAddressList",
+          "properties": {
+            "IsInAddressList": {
+              "$ref": "#/definitions/RuleIsInAddressList"
+            }
+          },
+          "required": [
+            "IsInAddressList"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleBooleanToEvaluateDefinition"
+    },
+    "RuleCondition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "BooleanExpression",
+          "properties": {
+            "BooleanExpression": {
+              "$ref": "#/definitions/RuleBooleanExpression"
+            }
+          },
+          "required": [
+            "BooleanExpression"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "StringExpression",
+          "properties": {
+            "StringExpression": {
+              "$ref": "#/definitions/RuleStringExpression"
+            }
+          },
+          "required": [
+            "StringExpression"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "NumberExpression",
+          "properties": {
+            "NumberExpression": {
+              "$ref": "#/definitions/RuleNumberExpression"
+            }
+          },
+          "required": [
+            "NumberExpression"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "IpExpression",
+          "properties": {
+            "IpExpression": {
+              "$ref": "#/definitions/RuleIpExpression"
+            }
+          },
+          "required": [
+            "IpExpression"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "VerdictExpression",
+          "properties": {
+            "VerdictExpression": {
+              "$ref": "#/definitions/RuleVerdictExpression"
+            }
+          },
+          "required": [
+            "VerdictExpression"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "DmarcExpression",
+          "properties": {
+            "DmarcExpression": {
+              "$ref": "#/definitions/RuleDmarcExpression"
+            }
+          },
+          "required": [
+            "DmarcExpression"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleConditionDefinition"
+    },
+    "RuleDmarcExpression": {
+      "type": "object",
+      "properties": {
+        "Operator": {
+          "$ref": "#/definitions/RuleDmarcOperator"
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleDmarcPolicy"
+          },
+          "maxItems": 10,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "Operator",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRuleDmarcExpressionDefinition"
+    },
+    "RuleDmarcOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EQUALS",
+            "NOT_EQUALS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleDmarcOperatorDefinition"
+    },
+    "RuleDmarcPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "QUARANTINE",
+            "REJECT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleDmarcPolicyDefinition"
+    },
+    "RuleIpEmailAttribute": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SOURCE_IP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleIpEmailAttributeDefinition"
+    },
+    "RuleIpExpression": {
+      "type": "object",
+      "properties": {
+        "Evaluate": {
+          "$ref": "#/definitions/RuleIpToEvaluate"
+        },
+        "Operator": {
+          "$ref": "#/definitions/RuleIpOperator"
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 43,
+                "minLength": 1,
+                "pattern": "^(([0-9]|.|:|/)*)$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 10,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "Evaluate",
+        "Operator",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRuleIpExpressionDefinition"
+    },
+    "RuleIpOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CIDR_MATCHES",
+            "NOT_CIDR_MATCHES"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleIpOperatorDefinition"
+    },
+    "RuleIpToEvaluate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Attribute",
+          "properties": {
+            "Attribute": {
+              "$ref": "#/definitions/RuleIpEmailAttribute"
+            }
+          },
+          "required": [
+            "Attribute"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleIpToEvaluateDefinition"
+    },
+    "RuleNumberEmailAttribute": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MESSAGE_SIZE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleNumberEmailAttributeDefinition"
+    },
+    "RuleNumberExpression": {
+      "type": "object",
+      "properties": {
+        "Evaluate": {
+          "$ref": "#/definitions/RuleNumberToEvaluate"
+        },
+        "Operator": {
+          "$ref": "#/definitions/RuleNumberOperator"
+        },
+        "Value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "Evaluate",
+        "Operator",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRuleNumberExpressionDefinition"
+    },
+    "RuleNumberOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EQUALS",
+            "NOT_EQUALS",
+            "LESS_THAN",
+            "GREATER_THAN",
+            "LESS_THAN_OR_EQUAL",
+            "GREATER_THAN_OR_EQUAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleNumberOperatorDefinition"
+    },
+    "RuleAddressListEmailAttribute": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "RECIPIENT",
+            "MAIL_FROM",
+            "SENDER",
+            "FROM",
+            "TO",
+            "CC"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleAddressListEmailAttributeDefinition"
+    },
+    "RuleNumberToEvaluate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Attribute",
+          "properties": {
+            "Attribute": {
+              "$ref": "#/definitions/RuleNumberEmailAttribute"
+            }
+          },
+          "required": [
+            "Attribute"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleNumberToEvaluateDefinition"
+    },
+    "RuleStringEmailAttribute": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MAIL_FROM",
+            "HELO",
+            "RECIPIENT",
+            "SENDER",
+            "FROM",
+            "SUBJECT",
+            "TO",
+            "CC"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleStringEmailAttributeDefinition"
+    },
+    "RuleStringExpression": {
+      "type": "object",
+      "properties": {
+        "Evaluate": {
+          "$ref": "#/definitions/RuleStringToEvaluate"
+        },
+        "Operator": {
+          "$ref": "#/definitions/RuleStringOperator"
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 4096,
+                "minLength": 1
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 10,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "Evaluate",
+        "Operator",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRuleStringExpressionDefinition"
+    },
+    "RuleStringOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EQUALS",
+            "NOT_EQUALS",
+            "STARTS_WITH",
+            "ENDS_WITH",
+            "CONTAINS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleStringOperatorDefinition"
+    },
+    "RuleStringToEvaluate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Attribute",
+          "properties": {
+            "Attribute": {
+              "$ref": "#/definitions/RuleStringEmailAttribute"
+            }
+          },
+          "required": [
+            "Attribute"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "MimeHeaderAttribute",
+          "properties": {
+            "MimeHeaderAttribute": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^X-[a-zA-Z0-9-]{1,256}$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "MimeHeaderAttribute"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Analysis",
+          "properties": {
+            "Analysis": {
+              "$ref": "#/definitions/Analysis"
+            }
+          },
+          "required": [
+            "Analysis"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "ClientCertificateAttribute",
+          "properties": {
+            "ClientCertificateAttribute": {
+              "$ref": "#/definitions/RuleClientCertificateAttribute"
+            }
+          },
+          "required": [
+            "ClientCertificateAttribute"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleStringToEvaluateDefinition"
+    },
+    "RuleClientCertificateAttribute": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CN",
+            "SAN_RFC822_NAME",
+            "SAN_DNS_NAME",
+            "SAN_DIRECTORY_NAME",
+            "SAN_UNIFORM_RESOURCE_IDENTIFIER",
+            "SAN_IP_ADDRESS",
+            "SAN_REGISTERED_ID",
+            "SERIAL_NUMBER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleClientCertificateAttributeDefinition"
+    },
+    "RuleVerdict": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "GRAY",
+            "PROCESSING_FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleVerdictDefinition"
+    },
+    "RuleVerdictAttribute": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SPF",
+            "DKIM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleVerdictAttributeDefinition"
+    },
+    "RuleVerdictExpression": {
+      "type": "object",
+      "properties": {
+        "Evaluate": {
+          "$ref": "#/definitions/RuleVerdictToEvaluate"
+        },
+        "Operator": {
+          "$ref": "#/definitions/RuleVerdictOperator"
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleVerdict"
+          },
+          "maxItems": 10,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "Evaluate",
+        "Operator",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetRuleVerdictExpressionDefinition"
+    },
+    "RuleVerdictOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EQUALS",
+            "NOT_EQUALS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleVerdictOperatorDefinition"
+    },
+    "RuleVerdictToEvaluate": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Attribute",
+          "properties": {
+            "Attribute": {
+              "$ref": "#/definitions/RuleVerdictAttribute"
+            }
+          },
+          "required": [
+            "Attribute"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Analysis",
+          "properties": {
+            "Analysis": {
+              "$ref": "#/definitions/Analysis"
+            }
+          },
+          "required": [
+            "Analysis"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerRuleSetRuleVerdictToEvaluateDefinition"
+    },
+    "S3Action": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "S3Bucket": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 62,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "S3Prefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 62,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9!_.*'()/-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "S3SseKmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9-:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "RoleArn",
+        "S3Bucket"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetS3ActionDefinition"
+    },
+    "SendAction": {
+      "type": "object",
+      "properties": {
+        "ActionFailurePolicy": {
+          "$ref": "#/definitions/ActionFailurePolicy"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^[a-zA-Z0-9:_/+=,@.#-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetSendActionDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9/_\\+=\\.:@\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9/_\\+=\\.:@\\-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerRuleSetTagDefinition"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ses:TagResource",
+      "ses:UntagResource"
+    ]
+  },
+  "properties": {
+    "RuleSetName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Rule"
+      },
+      "maxItems": 40,
+      "minItems": 0
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0
+    }
+  },
+  "required": [
+    "Rules"
+  ],
+  "readOnlyProperties": [
+    "/properties/RuleSetArn",
+    "/properties/RuleSetId"
+  ],
+  "primaryIdentifier": [
+    "/properties/RuleSetId"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSSESMailManagerRuleSetProperties"
+}

@@ -1,0 +1,424 @@
+{
+  "typeName": "AWS::Glue::Catalog",
+  "description": "Creates a catalog in the Glue Data Catalog.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSGlueCatalogTagDefinition"
+    },
+    "FederatedCatalog": {
+      "type": "object",
+      "description": "A FederatedCatalog structure that references an entity outside the Glue Data Catalog.",
+      "properties": {
+        "Identifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A unique identifier for the federated catalog."
+        },
+        "ConnectionName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the connection to an external data source."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGlueCatalogFederatedCatalogDefinition"
+    },
+    "TargetRedshiftCatalog": {
+      "type": "object",
+      "description": "A structure that describes a target catalog for resource linking.",
+      "properties": {
+        "CatalogArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the catalog resource."
+        }
+      },
+      "required": [
+        "CatalogArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSGlueCatalogTargetRedshiftCatalogDefinition"
+    },
+    "DataLakePrincipal": {
+      "type": "object",
+      "description": "The Lake Formation principal.",
+      "properties": {
+        "DataLakePrincipalIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An identifier for the Lake Formation principal."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGlueCatalogDataLakePrincipalDefinition"
+    },
+    "PrincipalPermissions": {
+      "type": "object",
+      "description": "Permissions granted to a principal.",
+      "properties": {
+        "Principal": {
+          "$ref": "#/definitions/DataLakePrincipal"
+        },
+        "Permissions": {
+          "type": "array",
+          "description": "The permissions that are granted to the principal.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ALL",
+                  "SELECT",
+                  "ALTER",
+                  "DROP",
+                  "DELETE",
+                  "INSERT",
+                  "CREATE_DATABASE",
+                  "CREATE_TABLE",
+                  "DATA_LOCATION_ACCESS"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGlueCatalogPrincipalPermissionsDefinition"
+    },
+    "CatalogProperties": {
+      "type": "object",
+      "description": "A structure that specifies data lake access properties and other custom properties.",
+      "properties": {
+        "DataLakeAccessProperties": {
+          "$ref": "#/definitions/DataLakeAccessProperties"
+        },
+        "CustomProperties": {
+          "type": "object",
+          "description": "Additional key-value properties for the catalog.",
+          "patternProperties": {
+            "^.+$": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGlueCatalogCatalogPropertiesDefinition"
+    },
+    "DataLakeAccessProperties": {
+      "type": "object",
+      "description": "Data lake access properties for the catalog.",
+      "properties": {
+        "DataLakeAccess": {
+          "type": "boolean",
+          "description": "Turns on or off data lake access for Apache Spark applications that access Amazon Redshift databases in the Data Catalog from any non-Redshift engine."
+        },
+        "DataTransferRole": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A role that will be assumed by Glue for transferring data into/out of the staging bucket during a query."
+        },
+        "KmsKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An encryption key that will be used for the staging bucket that will be created along with the catalog."
+        },
+        "CatalogType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a federated catalog type for the native catalog resource."
+        },
+        "ManagedWorkgroupName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the managed workgroup associated with the catalog."
+        },
+        "ManagedWorkgroupStatus": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The status of the managed workgroup."
+        },
+        "RedshiftDatabaseName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the Redshift database."
+        },
+        "AllowFullTableExternalDataAccess": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "True",
+                "False"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Allows third-party engines to access data in Amazon S3 locations that are registered with Lake Formation."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGlueCatalogDataLakeAccessPropertiesDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the catalog to create."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the catalog."
+    },
+    "Parameters": {
+      "type": "object",
+      "description": "A map of key-value pairs that define parameters and properties of the catalog.",
+      "patternProperties": {
+        "^.+$": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "FederatedCatalog": {
+      "$ref": "#/definitions/FederatedCatalog"
+    },
+    "TargetRedshiftCatalog": {
+      "$ref": "#/definitions/TargetRedshiftCatalog"
+    },
+    "CatalogProperties": {
+      "$ref": "#/definitions/CatalogProperties"
+    },
+    "CreateTableDefaultPermissions": {
+      "type": "array",
+      "description": "An array of PrincipalPermissions objects for default table permissions.",
+      "items": {
+        "$ref": "#/definitions/PrincipalPermissions"
+      }
+    },
+    "CreateDatabaseDefaultPermissions": {
+      "type": "array",
+      "description": "An array of PrincipalPermissions objects for default database permissions.",
+      "items": {
+        "$ref": "#/definitions/PrincipalPermissions"
+      }
+    },
+    "AllowFullTableExternalDataAccess": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "True",
+            "False"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Allows third-party engines to access data in Amazon S3 locations that are registered with Lake Formation."
+    },
+    "OverwriteChildResourcePermissionsWithDefault": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Accept",
+            "Deny"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies whether to overwrite child resource permissions with the default permissions."
+    },
+    "Tags": {
+      "type": "array",
+      "description": "An array of key-value pairs to apply to this resource.",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/CatalogId",
+    "/properties/ResourceArn",
+    "/properties/CreateTime",
+    "/properties/UpdateTime",
+    "/properties/CatalogProperties/DataLakeAccessProperties/ManagedWorkgroupName",
+    "/properties/CatalogProperties/DataLakeAccessProperties/ManagedWorkgroupStatus",
+    "/properties/CatalogProperties/DataLakeAccessProperties/RedshiftDatabaseName",
+    "/properties/CatalogProperties/CustomProperties",
+    "/properties/CreateDatabaseDefaultPermissions/*/Principal",
+    "/properties/CreateDatabaseDefaultPermissions/*/Principal/DataLakePrincipalIdentifier",
+    "/properties/CreateDatabaseDefaultPermissions/*/Permissions",
+    "/properties/CreateTableDefaultPermissions/*/Principal",
+    "/properties/CreateTableDefaultPermissions/*/Principal/DataLakePrincipalIdentifier",
+    "/properties/CreateTableDefaultPermissions/*/Permissions"
+  ],
+  "primaryIdentifier": [
+    "/properties/ResourceArn"
+  ],
+  "writeOnlyProperties": [
+    "/properties/CatalogProperties/DataLakeAccessProperties/AllowFullTableExternalDataAccess",
+    "/properties/OverwriteChildResourcePermissionsWithDefault"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "glue:TagResource",
+      "glue:UntagResource",
+      "glue:GetTags"
+    ]
+  },
+  "type": "object",
+  "title": "AWSGlueCatalogProperties"
+}

@@ -1,8 +1,26 @@
 {
   "typeName": "AWS::InspectorV2::Filter",
-  "description": "Inspector Filter resource schema. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-inspector.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-inspector.git",
+  "description": "Inspector Filter resource schema. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-inspector.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-inspector.git",
   "definitions": {
+    "FilterTagMap": {
+      "type": "object",
+      "patternProperties": {
+        "^.{2,127}$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^.{1,255}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInspectorV2FilterFilterTagMapDefinition"
+    },
     "StringComparison": {
       "oneOf": [
         {
@@ -192,10 +210,16 @@
         "Epoch": {
           "$ref": "#/definitions/NumberFilter"
         },
+        "FilePath": {
+          "$ref": "#/definitions/StringFilter"
+        },
         "Name": {
           "$ref": "#/definitions/StringFilter"
         },
         "Release": {
+          "$ref": "#/definitions/StringFilter"
+        },
+        "SourceLambdaLayerArn": {
           "$ref": "#/definitions/StringFilter"
         },
         "SourceLayerHash": {
@@ -224,6 +248,15 @@
         "AwsAccountId": {
           "$ref": "#/definitions/StringFilterList"
         },
+        "CodeVulnerabilityDetectorName": {
+          "$ref": "#/definitions/StringFilterList"
+        },
+        "CodeVulnerabilityDetectorTags": {
+          "$ref": "#/definitions/StringFilterList"
+        },
+        "CodeVulnerabilityFilePath": {
+          "$ref": "#/definitions/StringFilterList"
+        },
         "ComponentId": {
           "$ref": "#/definitions/StringFilterList"
         },
@@ -245,9 +278,6 @@
         "EcrImageHash": {
           "$ref": "#/definitions/StringFilterList"
         },
-        "EcrImageTags": {
-          "$ref": "#/definitions/StringFilterList"
-        },
         "EcrImagePushedAt": {
           "$ref": "#/definitions/DateFilterList"
         },
@@ -255,6 +285,15 @@
           "$ref": "#/definitions/StringFilterList"
         },
         "EcrImageRepositoryName": {
+          "$ref": "#/definitions/StringFilterList"
+        },
+        "EcrImageTags": {
+          "$ref": "#/definitions/StringFilterList"
+        },
+        "EpssScore": {
+          "$ref": "#/definitions/NumberFilterList"
+        },
+        "ExploitAvailable": {
           "$ref": "#/definitions/StringFilterList"
         },
         "FindingArn": {
@@ -269,8 +308,26 @@
         "FirstObservedAt": {
           "$ref": "#/definitions/DateFilterList"
         },
+        "FixAvailable": {
+          "$ref": "#/definitions/StringFilterList"
+        },
         "InspectorScore": {
           "$ref": "#/definitions/NumberFilterList"
+        },
+        "LambdaFunctionExecutionRoleArn": {
+          "$ref": "#/definitions/StringFilterList"
+        },
+        "LambdaFunctionLastModifiedAt": {
+          "$ref": "#/definitions/DateFilterList"
+        },
+        "LambdaFunctionLayers": {
+          "$ref": "#/definitions/StringFilterList"
+        },
+        "LambdaFunctionName": {
+          "$ref": "#/definitions/StringFilterList"
+        },
+        "LambdaFunctionRuntime": {
+          "$ref": "#/definitions/StringFilterList"
         },
         "LastObservedAt": {
           "$ref": "#/definitions/DateFilterList"
@@ -393,7 +450,21 @@
     "FilterAction": {
       "description": "Findings filter action.",
       "$ref": "#/definitions/FilterAction"
+    },
+    "Tags": {
+      "$ref": "#/definitions/FilterTagMap"
     }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "inspector2:TagResource",
+      "inspector2:UntagResource"
+    ]
   },
   "required": [
     "Name",

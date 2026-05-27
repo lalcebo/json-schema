@@ -1,0 +1,115 @@
+{
+  "typeName": "AWS::ECR::SigningConfiguration",
+  "description": "The AWS::ECR::SigningConfiguration resource creates or updates the signing configuration for an Amazon ECR registry.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ecr.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ecr.git",
+  "definitions": {
+    "Rule": {
+      "type": "object",
+      "properties": {
+        "SigningProfileArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "pattern": "^arn:aws(-[a-z]+)*:signer:[a-z0-9-]+:[0-9]{12}:\\/signing-profiles\\/[a-zA-Z0-9_]{2,}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS Signer signing profile ARN to use for matched repositories."
+        },
+        "RepositoryFilters": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/RepositoryFilter"
+          },
+          "description": "Optional array of repository filters. If omitted, the rule matches all repositories. If provided, must contain at least one filter. Empty arrays are not allowed."
+        }
+      },
+      "required": [
+        "SigningProfileArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSECRSigningConfigurationRuleDefinition"
+    },
+    "RepositoryFilter": {
+      "type": "object",
+      "properties": {
+        "Filter": {
+          "$ref": "#/definitions/Filter"
+        },
+        "FilterType": {
+          "$ref": "#/definitions/FilterType"
+        }
+      },
+      "description": "An array of objects representing the details of a repository filter.",
+      "required": [
+        "Filter",
+        "FilterType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSECRSigningConfigurationRepositoryFilterDefinition"
+    },
+    "Filter": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^(?:[a-z0-9*]+(?:[._-][a-z0-9*]+)*/)*[a-z0-9*]+(?:[._-][a-z0-9*]+)*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Repository name pattern (supports '*' wildcard).",
+      "title": "AWSECRSigningConfigurationFilterDefinition"
+    },
+    "FilterType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "WILDCARD_MATCH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of repository filter",
+      "title": "AWSECRSigningConfigurationFilterTypeDefinition"
+    }
+  },
+  "properties": {
+    "Rules": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 50,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Rule"
+      },
+      "description": "Array of signing rules that define which repositories should be signed and with which signing profiles."
+    }
+  },
+  "required": [
+    "Rules"
+  ],
+  "readOnlyProperties": [
+    "/properties/RegistryId"
+  ],
+  "primaryIdentifier": [
+    "/properties/RegistryId"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": false
+  },
+  "type": "object",
+  "title": "AWSECRSigningConfigurationProperties"
+}

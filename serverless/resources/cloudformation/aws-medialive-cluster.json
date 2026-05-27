@@ -1,0 +1,224 @@
+{
+  "typeName": "AWS::MediaLive::Cluster",
+  "description": "Definition of AWS::MediaLive::Cluster Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "ClusterNetworkSettings": {
+      "type": "object",
+      "description": "On premises settings which will have the interface network mappings and default Output logical interface",
+      "properties": {
+        "DefaultRoute": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Default value if the customer does not define it in channel Output API"
+        },
+        "InterfaceMappings": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/InterfaceMapping"
+          },
+          "description": "Network mappings for the cluster"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSMediaLiveClusterClusterNetworkSettingsDefinition"
+    },
+    "ClusterState": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "CREATE_FAILED",
+            "ACTIVE",
+            "DELETING",
+            "DELETED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The current state of the Cluster.",
+      "title": "AWSMediaLiveClusterClusterStateDefinition"
+    },
+    "ClusterType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ON_PREMISES",
+            "OUTPOSTS_RACK",
+            "OUTPOSTS_SERVER",
+            "EC2"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The hardware type for the cluster.",
+      "title": "AWSMediaLiveClusterClusterTypeDefinition"
+    },
+    "InterfaceMapping": {
+      "type": "object",
+      "description": "Network mappings for the cluster",
+      "properties": {
+        "LogicalInterfaceName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "logical interface name, unique in the list"
+        },
+        "NetworkId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Network Id to be associated with the logical interface name, can be duplicated in list"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSMediaLiveClusterInterfaceMappingDefinition"
+    },
+    "InterfaceNetworkMapping": {
+      "type": "object",
+      "description": "Network mappings for the cluster",
+      "properties": {
+        "LogicalInterfaceName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "logical interface name, unique in the list"
+        },
+        "NetworkId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Network Id to be associated with the logical interface name, can be duplicated in list"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSMediaLiveClusterInterfaceNetworkMappingDefinition"
+    },
+    "Tags": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSMediaLiveClusterTagsDefinition"
+    }
+  },
+  "properties": {
+    "ClusterType": {
+      "$ref": "#/definitions/ClusterType"
+    },
+    "InstanceRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:.+:iam:.+:role/.+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The IAM role your nodes will use."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The user-specified name of the Cluster to be created."
+    },
+    "NetworkSettings": {
+      "$ref": "#/definitions/ClusterNetworkSettings"
+    },
+    "Tags": {
+      "description": "A collection of key-value pairs.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tags"
+      }
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "medialive:CreateTags",
+      "medialive:DeleteTags"
+    ]
+  },
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/ChannelIds",
+    "/properties/Id",
+    "/properties/State"
+  ],
+  "createOnlyProperties": [
+    "/properties/ClusterType",
+    "/properties/InstanceRoleArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSMediaLiveClusterProperties"
+}

@@ -1,114 +1,111 @@
 {
+  "$schema": "https://schema.cloudformation.us-east-1.amazonaws.com/provider.definition.schema.v1.json",
   "typeName": "AWS::GameLift::Script",
-  "description": "Resource Type definition for AWS::GameLift::Script. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "StorageLocation": {
-      "$ref": "#/definitions/S3Location"
-    },
-    "Version": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    },
-    "Name": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    }
+  "description": "The AWS::GameLift::Script resource creates a new script record for your Realtime Servers script. Realtime scripts are JavaScript that provide configuration settings and optional custom game logic for your game. The script is deployed when you create a Realtime Servers fleet to host your game sessions. Script logic is executed during an active game session.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
+  "tagging": {
+    "taggable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "permissions": [
+      "gamelift:ListTagsForResource",
+      "gamelift:TagResource",
+      "gamelift:UntagResource"
+    ]
   },
   "definitions": {
     "Tag": {
+      "description": "A key-value pair to associate with a resource.",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length."
+        },
         "Value": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
-        },
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length."
         }
       },
       "required": [
-        "Value",
-        "Key"
+        "Key",
+        "Value"
       ],
+      "additionalProperties": false,
       "title": "AWSGameLiftScriptTagDefinition"
     },
     "S3Location": {
+      "$comment": "Contains object details present in the S3 Bucket",
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "ObjectVersion": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
         "Bucket": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "An Amazon S3 bucket identifier. This is the name of the S3 bucket."
         },
         "Key": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the zip file that contains the script files."
+        },
+        "ObjectVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the file, if object versioning is turned on for the bucket. Amazon GameLift uses this information when retrieving files from your S3 bucket. To retrieve a specific version of the file, provide an object version. To retrieve the latest version of the file, do not set this parameter."
         },
         "RoleArn": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The Amazon Resource Name (ARN) for an IAM role that allows Amazon GameLift to access the S3 bucket."
         }
       },
       "required": [
@@ -119,15 +116,76 @@
       "title": "AWSGameLiftScriptS3LocationDefinition"
     }
   },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A descriptive label that is associated with a script. Script names do not need to be unique."
+    },
+    "StorageLocation": {
+      "type": "object",
+      "description": "The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the \"key\"), and a role ARN that allows Amazon GameLift to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the ObjectVersion parameter to specify an earlier version.",
+      "$ref": "#/definitions/S3Location"
+    },
+    "Version": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The version that is associated with a script. Version strings do not need to be unique."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "NodeJsVersion": {
+      "oneOf": [
+        {
+          "pattern": "^\\d+\\.[x0-9]+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Node.js version used for execution of the Realtime script."
+    }
+  },
+  "additionalProperties": false,
   "required": [
     "StorageLocation"
   ],
-  "primaryIdentifier": [
-    "/properties/Id"
+  "createOnlyProperties": [
+    "/properties/NodeJsVersion"
   ],
   "readOnlyProperties": [
     "/properties/Id",
-    "/properties/Arn"
+    "/properties/CreationTime",
+    "/properties/Arn",
+    "/properties/SizeOnDisk"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
   ],
   "type": "object",
   "title": "AWSGameLiftScriptProperties"

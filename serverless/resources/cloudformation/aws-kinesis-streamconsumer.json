@@ -1,45 +1,116 @@
 {
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesis.git",
+  "tagging": {
+    "permissions": [
+      "kinesis:TagResource",
+      "kinesis:UntagResource",
+      "kinesis:ListTagsForResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": false
+  },
   "typeName": "AWS::Kinesis::StreamConsumer",
-  "description": "Resource Type definition for AWS::Kinesis::StreamConsumer. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "readOnlyProperties": [
+    "/properties/ConsumerARN",
+    "/properties/ConsumerStatus",
+    "/properties/ConsumerCreationTimestamp"
+  ],
+  "description": "Resource Type definition for AWS::Kinesis::StreamConsumer. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesis.git",
+  "createOnlyProperties": [
+    "/properties/ConsumerName",
+    "/properties/StreamARN",
+    "/properties/Tags"
+  ],
   "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/ConsumerARN"
+  ],
+  "definitions": {
+    "Tag": {
+      "description": "An arbitrary set of tags (key-value pairs) to associate with the Kinesis consumer.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSKinesisStreamConsumerTagDefinition"
+    }
+  },
   "properties": {
     "ConsumerName": {
       "oneOf": [
         {
-          "type": "string"
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_.-]+$",
+          "type": "string",
+          "maxLength": 128
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The name of the Kinesis Stream Consumer. For a given Kinesis data stream, each consumer must have a unique name. However, consumer names don't have to be unique across data streams."
     },
     "StreamARN": {
       "oneOf": [
         {
-          "type": "string"
+          "minLength": 1,
+          "pattern": "^arn:aws.*:kinesis:.*:\\d{12}:stream/\\S+",
+          "type": "string",
+          "maxLength": 2048
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The Amazon resource name (ARN) of the Kinesis data stream that you want to register the consumer with."
+    },
+    "Tags": {
+      "maxItems": 50,
+      "uniqueItems": false,
+      "description": "An arbitrary set of tags (key–value pairs) to associate with the Kinesis consumer.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "required": [
     "ConsumerName",
     "StreamARN"
-  ],
-  "readOnlyProperties": [
-    "/properties/ConsumerStatus",
-    "/properties/ConsumerARN",
-    "/properties/ConsumerCreationTimestamp",
-    "/properties/Id"
-  ],
-  "createOnlyProperties": [
-    "/properties/ConsumerName",
-    "/properties/StreamARN"
-  ],
-  "primaryIdentifier": [
-    "/properties/Id"
   ],
   "type": "object",
   "title": "AWSKinesisStreamConsumerProperties"

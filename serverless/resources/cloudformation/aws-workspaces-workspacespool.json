@@ -1,0 +1,236 @@
+{
+  "typeName": "AWS::WorkSpaces::WorkspacesPool",
+  "description": "Resource Type definition for AWS::WorkSpaces::WorkspacesPool. Source:- No source definition found, add manually please",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWorkspacesPoolTagDefinition"
+    },
+    "ApplicationSettingsStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DISABLED",
+            "ENABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWorkspacesPoolApplicationSettingsStatusDefinition"
+    },
+    "RunningMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ALWAYS_ON",
+            "AUTO_STOP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWorkspacesPoolRunningModeDefinition"
+    },
+    "Capacity": {
+      "type": "object",
+      "properties": {
+        "DesiredUserSessions": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "DesiredUserSessions"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWorkspacesPoolCapacityDefinition"
+    },
+    "ApplicationSettings": {
+      "type": "object",
+      "properties": {
+        "Status": {
+          "$ref": "#/definitions/ApplicationSettingsStatus"
+        },
+        "SettingsGroup": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_./()!*'-]+$",
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Status"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWorkspacesPoolApplicationSettingsDefinition"
+    },
+    "TimeoutSettings": {
+      "type": "object",
+      "properties": {
+        "DisconnectTimeoutInSeconds": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 36000
+        },
+        "IdleDisconnectTimeoutInSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 36000
+        },
+        "MaxUserDurationInSeconds": {
+          "type": "integer",
+          "minimum": 600,
+          "maximum": 432000
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWorkspacesPoolTimeoutSettingsDefinition"
+    }
+  },
+  "properties": {
+    "Capacity": {
+      "$ref": "#/definitions/Capacity"
+    },
+    "PoolName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_./() -]+$",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "BundleId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^wsb-[0-9a-z]{8,63}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DirectoryId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^wsd-[0-9a-z]{8,63}$",
+          "minLength": 10,
+          "maxLength": 65
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ApplicationSettings": {
+      "$ref": "#/definitions/ApplicationSettings"
+    },
+    "TimeoutSettings": {
+      "$ref": "#/definitions/TimeoutSettings"
+    },
+    "RunningMode": {
+      "$ref": "#/definitions/RunningMode"
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "PoolName",
+    "BundleId",
+    "DirectoryId",
+    "Capacity"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "workspaces:CreateTags",
+      "workspaces:DescribeTags",
+      "workspaces:DeleteTags"
+    ]
+  },
+  "primaryIdentifier": [
+    "/properties/PoolId"
+  ],
+  "createOnlyProperties": [
+    "/properties/PoolName"
+  ],
+  "readOnlyProperties": [
+    "/properties/PoolId",
+    "/properties/PoolArn",
+    "/properties/CreatedAt"
+  ],
+  "deprecatedProperties": [
+    "/properties/Tags",
+    "/properties/Tags/TagKey",
+    "/properties/Tags/TagValue"
+  ],
+  "type": "object",
+  "title": "AWSWorkSpacesWorkspacesPoolProperties"
+}

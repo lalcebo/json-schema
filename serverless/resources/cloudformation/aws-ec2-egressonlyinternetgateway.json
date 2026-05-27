@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EC2::EgressOnlyInternetGateway",
-  "description": "Resource Type definition for AWS::EC2::EgressOnlyInternetGateway. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2",
+  "description": "Resource Type definition for AWS::EC2::EgressOnlyInternetGateway. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2",
   "additionalProperties": false,
   "properties": {
@@ -14,9 +14,64 @@
         }
       ],
       "description": "The ID of the VPC for which to create the egress-only internet gateway."
+    },
+    "Tags": {
+      "type": "array",
+      "description": "Any tags assigned to the egress only internet gateway.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
-  "taggable": false,
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSEC2EgressOnlyInternetGatewayTagDefinition"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
+  },
   "required": [
     "VpcId"
   ],

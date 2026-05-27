@@ -1,0 +1,416 @@
+{
+  "typeName": "AWS::VerifiedPermissions::IdentitySource",
+  "description": "Definition of AWS::VerifiedPermissions::IdentitySource Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-avp",
+  "definitions": {
+    "CognitoGroupConfiguration": {
+      "type": "object",
+      "properties": {
+        "GroupEntityType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^([_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "GroupEntityType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsIdentitySourceCognitoGroupConfigurationDefinition"
+    },
+    "CognitoUserPoolConfiguration": {
+      "type": "object",
+      "properties": {
+        "UserPoolArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "minLength": 1,
+              "pattern": "^arn:[a-zA-Z0-9-]+:cognito-idp:(([a-zA-Z0-9-]+:\\d{12}:userpool/[\\w-]+_[0-9a-zA-Z]+))$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ClientIds": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1,
+                "pattern": "^.*$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 1000,
+          "minItems": 0,
+          "insertionOrder": false
+        },
+        "GroupConfiguration": {
+          "$ref": "#/definitions/CognitoGroupConfiguration"
+        }
+      },
+      "required": [
+        "UserPoolArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsIdentitySourceCognitoUserPoolConfigurationDefinition"
+    },
+    "IdentitySourceConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "CognitoUserPoolConfiguration",
+          "properties": {
+            "CognitoUserPoolConfiguration": {
+              "$ref": "#/definitions/CognitoUserPoolConfiguration"
+            }
+          },
+          "required": [
+            "CognitoUserPoolConfiguration"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "OpenIdConnectConfiguration",
+          "properties": {
+            "OpenIdConnectConfiguration": {
+              "$ref": "#/definitions/OpenIdConnectConfiguration"
+            }
+          },
+          "required": [
+            "OpenIdConnectConfiguration"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSVerifiedPermissionsIdentitySourceIdentitySourceConfigurationDefinition"
+    },
+    "IdentitySourceDetails": {
+      "type": "object",
+      "properties": {
+        "ClientIds": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1,
+                "pattern": "^.*$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 1000,
+          "minItems": 0,
+          "insertionOrder": false
+        },
+        "UserPoolArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "minLength": 1,
+              "pattern": "^arn:[a-zA-Z0-9-]+:cognito-idp:(([a-zA-Z0-9-]+:\\d{12}:userpool/[\\w-]+_[0-9a-zA-Z]+))$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DiscoveryUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^https://.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OpenIdIssuer": {
+          "$ref": "#/definitions/OpenIdIssuer"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsIdentitySourceIdentitySourceDetailsDefinition"
+    },
+    "OpenIdConnectAccessTokenConfiguration": {
+      "type": "object",
+      "properties": {
+        "PrincipalIdClaim": {
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "sub",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Audiences": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 255,
+          "minItems": 1,
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsIdentitySourceOpenIdConnectAccessTokenConfigurationDefinition"
+    },
+    "OpenIdConnectConfiguration": {
+      "type": "object",
+      "properties": {
+        "Issuer": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^https://.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EntityIdPrefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GroupConfiguration": {
+          "$ref": "#/definitions/OpenIdConnectGroupConfiguration"
+        },
+        "TokenSelection": {
+          "$ref": "#/definitions/OpenIdConnectTokenSelection"
+        }
+      },
+      "required": [
+        "Issuer",
+        "TokenSelection"
+      ],
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsIdentitySourceOpenIdConnectConfigurationDefinition"
+    },
+    "OpenIdConnectGroupConfiguration": {
+      "type": "object",
+      "properties": {
+        "GroupClaim": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GroupEntityType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^([_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "GroupClaim",
+        "GroupEntityType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsIdentitySourceOpenIdConnectGroupConfigurationDefinition"
+    },
+    "OpenIdConnectIdentityTokenConfiguration": {
+      "type": "object",
+      "properties": {
+        "PrincipalIdClaim": {
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "sub",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ClientIds": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1,
+                "pattern": "^.*$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 1000,
+          "minItems": 0,
+          "insertionOrder": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsIdentitySourceOpenIdConnectIdentityTokenConfigurationDefinition"
+    },
+    "OpenIdConnectTokenSelection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "AccessTokenOnly",
+          "properties": {
+            "AccessTokenOnly": {
+              "$ref": "#/definitions/OpenIdConnectAccessTokenConfiguration"
+            }
+          },
+          "required": [
+            "AccessTokenOnly"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "IdentityTokenOnly",
+          "properties": {
+            "IdentityTokenOnly": {
+              "$ref": "#/definitions/OpenIdConnectIdentityTokenConfiguration"
+            }
+          },
+          "required": [
+            "IdentityTokenOnly"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSVerifiedPermissionsIdentitySourceOpenIdConnectTokenSelectionDefinition"
+    },
+    "OpenIdIssuer": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "COGNITO"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSVerifiedPermissionsIdentitySourceOpenIdIssuerDefinition"
+    }
+  },
+  "properties": {
+    "Configuration": {
+      "$ref": "#/definitions/IdentitySourceConfiguration"
+    },
+    "PolicyStoreId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "PrincipalEntityType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^.*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "Configuration",
+    "PolicyStoreId"
+  ],
+  "readOnlyProperties": [
+    "/properties/Details",
+    "/properties/IdentitySourceId"
+  ],
+  "createOnlyProperties": [
+    "/properties/PolicyStoreId"
+  ],
+  "deprecatedProperties": [
+    "/properties/Details"
+  ],
+  "primaryIdentifier": [
+    "/properties/IdentitySourceId",
+    "/properties/PolicyStoreId"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-avp",
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSVerifiedPermissionsIdentitySourceProperties"
+}

@@ -1,0 +1,221 @@
+{
+  "typeName": "AWS::KafkaConnect::CustomPlugin",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSKafkaConnectCustomPluginTagDefinition"
+    },
+    "CustomPluginFileDescription": {
+      "description": "Details about the custom plugin file.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FileMd5": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The hex-encoded MD5 checksum of the custom plugin file. You can use it to validate the file."
+        },
+        "FileSize": {
+          "description": "The size in bytes of the custom plugin file. You can use it to validate the file.",
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "AWSKafkaConnectCustomPluginCustomPluginFileDescriptionDefinition"
+    },
+    "CustomPluginLocation": {
+      "description": "Information about the location of a custom plugin.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3Location": {
+          "$ref": "#/definitions/S3Location"
+        }
+      },
+      "required": [
+        "S3Location"
+      ],
+      "title": "AWSKafkaConnectCustomPluginCustomPluginLocationDefinition"
+    },
+    "S3Location": {
+      "description": "The S3 bucket Amazon Resource Name (ARN), file key, and object version of the plugin file stored in Amazon S3.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BucketArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of an S3 bucket."
+        },
+        "FileKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The file key for an object in an S3 bucket."
+        },
+        "ObjectVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of an object in an S3 bucket."
+        }
+      },
+      "required": [
+        "BucketArn",
+        "FileKey"
+      ],
+      "title": "AWSKafkaConnectCustomPluginS3LocationDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the custom plugin."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A summary description of the custom plugin."
+    },
+    "ContentType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "JAR",
+            "ZIP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of the plugin file."
+    },
+    "Location": {
+      "$ref": "#/definitions/CustomPluginLocation"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "ContentType",
+    "Location"
+  ],
+  "primaryIdentifier": [
+    "/properties/CustomPluginArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Name"
+    ]
+  ],
+  "readOnlyProperties": [
+    "/properties/CustomPluginArn",
+    "/properties/Revision",
+    "/properties/FileDescription"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Description",
+    "/properties/ContentType",
+    "/properties/Location"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "kafkaconnect:ListTagsForResource",
+      "kafkaconnect:UntagResource",
+      "kafkaconnect:TagResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSKafkaConnectCustomPluginProperties"
+}

@@ -1,0 +1,173 @@
+{
+  "typeName": "AWS::Lightsail::Domain",
+  "description": "Resource Type definition for AWS::Lightsail::Domain. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-lightsail.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-lightsail.git",
+  "additionalProperties": false,
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLightsailDomainTagDefinition"
+    },
+    "DomainEntry": {
+      "type": "object",
+      "description": "Describes the domain recordset entry (e.g., A record, CNAME record, TXT record, etc.)",
+      "properties": {
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the domain recordset entry."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the domain entry."
+        },
+        "Target": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The target AWS name server (e.g., ns-111.awsdns-11.com)."
+        },
+        "IsAlias": {
+          "type": "boolean",
+          "description": "When true, specifies whether the domain entry is an alias used by the Lightsail load balancer, Lightsail container service, Lightsail content delivery network (CDN) distribution, or another AWS resource. You can include an alias (A type) record in your request, which points to the DNS name of a load balancer, container service, CDN distribution, or other AWS resource and routes traffic to that resource."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "A",
+                "AAAA",
+                "CNAME",
+                "MX",
+                "NS",
+                "SOA",
+                "SRV",
+                "TXT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of domain entry (e.g., A, CNAME, MX, NS, SOA, SRV, TXT)."
+        }
+      },
+      "required": [
+        "Name",
+        "Type",
+        "Target"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLightsailDomainDomainEntryDefinition"
+    }
+  },
+  "properties": {
+    "DomainName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the domain to manage in Lightsail."
+    },
+    "DomainEntries": {
+      "description": "An array of key-value pairs containing information about the domain entries.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/DomainEntry"
+      }
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "DomainName"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainName"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/SupportCode",
+    "/properties/CreatedAt",
+    "/properties/Location",
+    "/properties/ResourceType",
+    "/properties/DomainEntries/*/Id"
+  ],
+  "createOnlyProperties": [
+    "/properties/DomainName"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "lightsail:TagResource",
+      "lightsail:UntagResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSLightsailDomainProperties"
+}

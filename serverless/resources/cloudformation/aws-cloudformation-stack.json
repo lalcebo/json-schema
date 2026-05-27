@@ -1,11 +1,58 @@
 {
   "typeName": "AWS::CloudFormation::Stack",
-  "description": "Resource Type definition for AWS::CloudFormation::Stack. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "The AWS::CloudFormation::Stack resource nests a stack as a resource in a top-level template.. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
+    "Capabilities": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "CAPABILITY_IAM",
+              "CAPABILITY_NAMED_IAM",
+              "CAPABILITY_AUTO_EXPAND"
+            ]
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "RoleARN": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DisableRollback": {
+      "type": "boolean"
+    },
+    "EnableTerminationProtection": {
+      "type": "boolean"
+    },
     "NotificationARNs": {
       "type": "array",
-      "uniqueItems": true,
+      "uniqueItems": false,
       "items": {
         "oneOf": [
           {
@@ -15,10 +62,12 @@
             "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
           }
         ]
-      }
+      },
+      "maxItems": 5
     },
     "Parameters": {
       "type": "object",
+      "additionalProperties": false,
       "patternProperties": {
         "[a-zA-Z0-9]+": {
           "oneOf": [
@@ -32,14 +81,7 @@
         }
       }
     },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    },
-    "TemplateURL": {
+    "StackName": {
       "oneOf": [
         {
           "type": "string"
@@ -49,8 +91,59 @@
         }
       ]
     },
+    "StackPolicyBody": {
+      "type": "object"
+    },
+    "StackPolicyURL": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "StackStatusReason": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 50
+    },
+    "TemplateBody": {
+      "type": [
+        "object",
+        "string"
+      ]
+    },
+    "TemplateURL": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
     "TimeoutInMinutes": {
-      "type": "integer"
+      "type": "integer",
+      "minimum": 1
     }
   },
   "definitions": {
@@ -84,17 +177,90 @@
         "Key"
       ],
       "title": "AWSCloudFormationStackTagDefinition"
+    },
+    "Output": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExportName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OutputKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OutputValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSCloudFormationStackOutputDefinition"
     }
   },
   "required": [
-    "TemplateURL"
-  ],
-  "primaryIdentifier": [
-    "/properties/Id"
+    "StackName"
   ],
   "readOnlyProperties": [
-    "/properties/Id"
+    "/properties/StackId",
+    "/properties/StackStatus",
+    "/properties/CreationTime",
+    "/properties/RootId",
+    "/properties/ParentId",
+    "/properties/ChangeSetId",
+    "/properties/Outputs",
+    "/properties/LastUpdateTime"
   ],
+  "writeOnlyProperties": [
+    "/properties/TemplateURL",
+    "/properties/StackPolicyURL"
+  ],
+  "createOnlyProperties": [
+    "/properties/StackName"
+  ],
+  "primaryIdentifier": [
+    "/properties/StackId"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/StackName"
+    ]
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags"
+  },
   "type": "object",
   "title": "AWSCloudFormationStackProperties"
 }

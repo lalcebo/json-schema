@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Batch::SchedulingPolicy",
-  "description": "Resource Type schema for AWS::Batch::SchedulingPolicy. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-batch.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-batch.git",
+  "description": "Resource Type definition for AWS::Batch::SchedulingPolicy. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-batch.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-batch.git",
   "definitions": {
     "ResourceArn": {
@@ -14,6 +14,27 @@
       ],
       "description": "ARN of the Scheduling Policy.",
       "title": "AWSBatchSchedulingPolicyResourceArnDefinition"
+    },
+    "QuotaSharePolicy": {
+      "description": "Quota Share Policy for the Job Queue.",
+      "type": "object",
+      "properties": {
+        "IdleResourceAssignmentStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FIFO"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBatchSchedulingPolicyQuotaSharePolicyDefinition"
     },
     "FairsharePolicy": {
       "description": "Fair Share Policy for the Job Queue.",
@@ -82,6 +103,9 @@
     "FairsharePolicy": {
       "$ref": "#/definitions/FairsharePolicy"
     },
+    "QuotaSharePolicy": {
+      "$ref": "#/definitions/QuotaSharePolicy"
+    },
     "Tags": {
       "type": "object",
       "description": "A key-value pair to associate with a resource.",
@@ -104,16 +128,19 @@
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "Batch:TagResource",
+      "Batch:UntagResource"
+    ]
   },
   "primaryIdentifier": [
     "/properties/Arn"
   ],
   "createOnlyProperties": [
-    "/properties/Name",
-    "/properties/Tags"
+    "/properties/Name"
   ],
   "readOnlyProperties": [
     "/properties/Arn"

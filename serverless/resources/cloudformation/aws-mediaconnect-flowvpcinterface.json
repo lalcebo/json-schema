@@ -1,12 +1,46 @@
 {
   "typeName": "AWS::MediaConnect::FlowVpcInterface",
-  "description": "Resource schema for AWS::MediaConnect::FlowVpcInterface. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediaconnect.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediaconnect.git",
+  "description": "Resource schema for AWS::MediaConnect::FlowVpcInterface. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediaconnect.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediaconnect.git",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaConnectFlowVpcInterfaceTagDefinition"
+    }
+  },
   "properties": {
     "FlowArn": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "pattern": "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:flow:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -28,13 +62,14 @@
     "RoleArn": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "pattern": "^arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "Role Arn MediaConnect can assumes to create ENIs in customer's account."
+      "description": "Role Arn MediaConnect can assume to create ENIs in customer's account."
     },
     "SecurityGroupIds": {
       "type": "array",
@@ -60,6 +95,15 @@
         }
       ],
       "description": "Subnet must be in the AZ of the Flow"
+    },
+    "Tags": {
+      "type": "array",
+      "description": "Key-value pairs that can be used to tag and organize this VPC network interface.",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "additionalProperties": false,
@@ -81,6 +125,18 @@
     "/properties/FlowArn",
     "/properties/Name"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "mediaconnect:TagResource",
+      "mediaconnect:UntagResource",
+      "mediaconnect:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSMediaConnectFlowVpcInterfaceProperties"
 }

@@ -1,0 +1,327 @@
+{
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-pcs.git",
+  "tagging": {
+    "permissions": [
+      "pcs:TagResource",
+      "pcs:ListTagsForResource",
+      "pcs:UntagResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "typeName": "AWS::PCS::ComputeNodeGroup",
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/ErrorInfo",
+    "/properties/Id",
+    "/properties/Status"
+  ],
+  "description": "AWS::PCS::ComputeNodeGroup resource creates an AWS PCS compute node group.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-pcs.git",
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/ClusterId",
+    "/properties/InstanceConfigs"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "definitions": {
+    "InstanceConfig": {
+      "description": "An EC2 instance configuration AWS PCS uses to launch compute nodes.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "InstanceType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The EC2 instance type that AWS PCS can provision in the compute node group."
+        }
+      },
+      "title": "AWSPCSComputeNodeGroupInstanceConfigDefinition"
+    },
+    "ErrorInfo": {
+      "description": "An error that occurred during resource provisioning.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The detailed error information."
+        },
+        "Code": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The short-form error code."
+        }
+      },
+      "title": "AWSPCSComputeNodeGroupErrorInfoDefinition"
+    },
+    "SubnetId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A VPC subnet ID.",
+      "title": "AWSPCSComputeNodeGroupSubnetIdDefinition"
+    },
+    "SlurmCustomSetting": {
+      "description": "Additional settings that directly map to Slurm settings.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ParameterValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the configured Slurm setting."
+        },
+        "ParameterName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS PCS supports configuration of the following Slurm parameters for compute node groups: Weight and RealMemory."
+        }
+      },
+      "required": [
+        "ParameterName",
+        "ParameterValue"
+      ],
+      "title": "AWSPCSComputeNodeGroupSlurmCustomSettingDefinition"
+    }
+  },
+  "required": [
+    "ClusterId",
+    "CustomLaunchTemplate",
+    "IamInstanceProfileArn",
+    "InstanceConfigs",
+    "ScalingConfiguration",
+    "SubnetIds"
+  ],
+  "properties": {
+    "ClusterId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the cluster of the compute node group."
+    },
+    "SpotOptions": {
+      "description": "Additional configuration when you specify SPOT as the purchase option.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "AllocationStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "lowest-price",
+                "capacity-optimized",
+                "price-capacity-optimized"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon EC2 allocation strategy AWS PCS uses to provision EC2 instances. AWS PCS supports lowest price, capacity optimized, and price capacity optimized. If you don't provide this option, it defaults to price capacity optimized."
+        }
+      }
+    },
+    "SlurmConfiguration": {
+      "description": "Additional options related to the Slurm scheduler.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SlurmCustomSettings": {
+          "description": "Additional Slurm-specific configuration that directly maps to Slurm settings.",
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SlurmCustomSetting"
+          }
+        }
+      }
+    },
+    "SubnetIds": {
+      "description": "The list of subnet IDs where instances are provisioned by the compute node group. The subnets must be in the same VPC as the cluster.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SubnetId"
+      }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name that identifies the compute node group."
+    },
+    "ScalingConfiguration": {
+      "description": "Specifies the boundaries of the compute node group auto scaling.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "MaxInstanceCount": {
+          "description": "The upper bound of the number of instances allowed in the compute fleet.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "MinInstanceCount": {
+          "description": "The lower bound of the number of instances allowed in the compute fleet.",
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "MaxInstanceCount",
+        "MinInstanceCount"
+      ]
+    },
+    "InstanceConfigs": {
+      "description": "A list of EC2 instance configurations that AWS PCS can provision in the compute node group.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/InstanceConfig"
+      }
+    },
+    "PurchaseOption": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ONDEMAND",
+            "SPOT",
+            "CAPACITY_BLOCK",
+            "INTERRUPTIBLE_CAPACITY_RESERVATION"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies how EC2 instances are purchased on your behalf. AWS PCS supports On-Demand, Spot, Capacity Block, and Interruptible Capacity Reservation instances. For more information, see Instance purchasing options in the Amazon Elastic Compute Cloud User Guide. If you don't provide this option, it defaults to On-Demand."
+    },
+    "CustomLaunchTemplate": {
+      "description": "An Amazon EC2 launch template AWS PCS uses to launch compute nodes.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The version of the EC2 launch template to use to provision instances."
+        },
+        "TemplateId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the EC2 launch template to use to provision instances."
+        }
+      },
+      "required": [
+        "Version"
+      ]
+    },
+    "Tags": {
+      "patternProperties": {
+        "^.+$": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "description": "1 or more tags added to the resource. Each tag consists of a tag key and tag value. The tag value is optional and can be an empty string.",
+      "additionalProperties": false
+    },
+    "AmiId": {
+      "oneOf": [
+        {
+          "pattern": "^ami-[a-z0-9]+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon Machine Image (AMI) that AWS PCS uses to launch instances. If not provided, AWS PCS uses the AMI ID specified in the custom launch template."
+    },
+    "IamInstanceProfileArn": {
+      "oneOf": [
+        {
+          "pattern": "^arn:aws([a-zA-Z-]{0,10})?:iam::[0-9]{12}:instance-profile/.{1,128}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the IAM instance profile used to pass an IAM role when launching EC2 instances. The role contained in your instance profile must have pcs:RegisterComputeNodeGroupInstance permissions attached to provision instances correctly."
+    }
+  },
+  "type": "object",
+  "title": "AWSPCSComputeNodeGroupProperties"
+}

@@ -1,0 +1,388 @@
+{
+  "typeName": "AWS::BedrockAgentCore::CodeInterpreterCustom",
+  "description": "Resource definition for AWS::BedrockAgentCore::CodeInterpreterCustom. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "CodeInterpreterId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The id of the code interpreter.",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCodeInterpreterIdDefinition"
+    },
+    "CodeInterpreterArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):bedrock-agentcore:[a-z0-9-]+:(aws|[0-9]{12}):code-interpreter(-custom)?\\/(aws\\.codeinterpreter\\.v1|[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of a CodeInterpreter resource.",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCodeInterpreterArnDefinition"
+    },
+    "CodeInterpreterNetworkMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "SANDBOX",
+            "VPC"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Network modes supported by code interpreter",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCodeInterpreterNetworkModeDefinition"
+    },
+    "CodeInterpreterNetworkConfiguration": {
+      "type": "object",
+      "properties": {
+        "NetworkMode": {
+          "$ref": "#/definitions/CodeInterpreterNetworkMode",
+          "default": "SANDBOX"
+        },
+        "VpcConfig": {
+          "$ref": "#/definitions/VpcConfig"
+        }
+      },
+      "required": [
+        "NetworkMode"
+      ],
+      "additionalProperties": false,
+      "description": "Network configuration for code interpreter",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCodeInterpreterNetworkConfigurationDefinition"
+    },
+    "SandboxName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the sandbox.",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomSandboxNameDefinition"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Description of the code interpreter.",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomDescriptionDefinition"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):iam::[0-9]{12}:role/.+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the IAM role.",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomRoleArnDefinition"
+    },
+    "CodeInterpreterStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "CREATE_FAILED",
+            "READY",
+            "DELETING",
+            "DELETE_FAILED",
+            "DELETED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Status of Code interpreter",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCodeInterpreterStatusDefinition"
+    },
+    "CodeInterpreterSummary": {
+      "type": "object",
+      "properties": {
+        "CodeInterpreterId": {
+          "$ref": "#/definitions/CodeInterpreterId"
+        },
+        "CodeInterpreterArn": {
+          "$ref": "#/definitions/CodeInterpreterArn"
+        },
+        "Name": {
+          "$ref": "#/definitions/SandboxName"
+        },
+        "Description": {
+          "$ref": "#/definitions/Description"
+        },
+        "Status": {
+          "$ref": "#/definitions/CodeInterpreterStatus"
+        },
+        "CreatedAt": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LastUpdatedAt": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "CodeInterpreterId",
+        "CodeInterpreterArn",
+        "Status",
+        "CreatedAt"
+      ],
+      "additionalProperties": false,
+      "description": "Code Interpreter",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCodeInterpreterSummaryDefinition"
+    },
+    "CodeInterpreterSummaries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CodeInterpreterSummary"
+      },
+      "description": "List of code interpreters",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCodeInterpreterSummariesDefinition"
+    },
+    "VpcConfig": {
+      "type": "object",
+      "description": "Network mode configuration for VPC",
+      "properties": {
+        "SecurityGroups": {
+          "$ref": "#/definitions/SecurityGroups"
+        },
+        "Subnets": {
+          "$ref": "#/definitions/Subnets"
+        }
+      },
+      "required": [
+        "SecurityGroups",
+        "Subnets"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomVpcConfigDefinition"
+    },
+    "SecurityGroups": {
+      "type": "array",
+      "description": "Security groups for VPC",
+      "minItems": 1,
+      "maxItems": 16,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SecurityGroupId"
+      },
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomSecurityGroupsDefinition"
+    },
+    "SecurityGroupId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^sg-[0-9a-zA-Z]{8,17}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Security group id",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomSecurityGroupIdDefinition"
+    },
+    "Subnets": {
+      "type": "array",
+      "description": "Subnets for VPC",
+      "minItems": 1,
+      "maxItems": 16,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SubnetId"
+      },
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomSubnetsDefinition"
+    },
+    "SubnetId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^subnet-[0-9a-zA-Z]{8,17}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Subnet id",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomSubnetIdDefinition"
+    },
+    "TagsMap": {
+      "type": "object",
+      "description": "A map of tag keys and values",
+      "patternProperties": {
+        "^[a-zA-Z0-9\\s._:/=+@-]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Value of a tag"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomTagsMapDefinition"
+    },
+    "CertificateLocation": {
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:(aws(?:-cn|-us-gov|-iso(?:-[bef])?)?):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=.@-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Secrets Manager secret ARN."
+        }
+      },
+      "required": [
+        "SecretArn"
+      ],
+      "additionalProperties": false,
+      "description": "Certificate location in Secrets Manager.",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCertificateLocationDefinition"
+    },
+    "Certificate": {
+      "type": "object",
+      "properties": {
+        "CertificateLocation": {
+          "$ref": "#/definitions/CertificateLocation",
+          "description": "Certificate location in Secrets Manager."
+        }
+      },
+      "required": [
+        "CertificateLocation"
+      ],
+      "additionalProperties": false,
+      "description": "A root CA certificate configuration.",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCertificateDefinition"
+    },
+    "CertificateList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Certificate"
+      },
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 10,
+      "description": "List of root CA certificates.",
+      "title": "AWSBedrockAgentCoreCodeInterpreterCustomCertificateListDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "$ref": "#/definitions/SandboxName",
+      "description": "The name of the code interpreter."
+    },
+    "Description": {
+      "$ref": "#/definitions/Description",
+      "description": "The description of the code interpreter."
+    },
+    "ExecutionRoleArn": {
+      "$ref": "#/definitions/RoleArn",
+      "description": "The ARN of the IAM role that the code interpreter uses to access resources."
+    },
+    "NetworkConfiguration": {
+      "$ref": "#/definitions/CodeInterpreterNetworkConfiguration",
+      "description": "Network configuration for code interpreter."
+    },
+    "Certificates": {
+      "$ref": "#/definitions/CertificateList",
+      "description": "List of root CA certificates in PEM format."
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagsMap"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "NetworkConfiguration"
+  ],
+  "readOnlyProperties": [
+    "/properties/CodeInterpreterId",
+    "/properties/CodeInterpreterArn",
+    "/properties/Status",
+    "/properties/FailureReason",
+    "/properties/CreatedAt",
+    "/properties/LastUpdatedAt"
+  ],
+  "primaryIdentifier": [
+    "/properties/CodeInterpreterId"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/CodeInterpreterArn"
+    ]
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Description",
+    "/properties/NetworkConfiguration",
+    "/properties/Certificates",
+    "/properties/ExecutionRoleArn"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": false,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "bedrock-agentcore:TagResource",
+      "bedrock-agentcore:UntagResource",
+      "bedrock-agentcore:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSBedrockAgentCoreCodeInterpreterCustomProperties"
+}

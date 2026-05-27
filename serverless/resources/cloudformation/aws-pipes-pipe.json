@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Pipes::Pipe",
-  "description": "Definition of AWS::Pipes::Pipe Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::Pipes::Pipe Resource Type. Source:- No source definition found, add manually please",
   "definitions": {
     "AssignPublicIp": {
       "oneOf": [
@@ -28,7 +28,7 @@
                 "type": "string",
                 "maxLength": 1024,
                 "minLength": 1,
-                "pattern": "^subnet-[0-9a-z]*$"
+                "pattern": "^subnet-[0-9a-z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
               },
               {
                 "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -46,7 +46,7 @@
                 "type": "string",
                 "maxLength": 1024,
                 "minLength": 1,
-                "pattern": "^sg-[0-9a-zA-Z]*$"
+                "pattern": "^sg-[0-9a-zA-Z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
               },
               {
                 "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -287,6 +287,26 @@
       "additionalProperties": false,
       "title": "AWSPipesPipeCapacityProviderStrategyItemDefinition"
     },
+    "CloudwatchLogsLogDestination": {
+      "type": "object",
+      "properties": {
+        "LogGroupArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1600,
+              "minLength": 1,
+              "pattern": "^(^arn:aws([a-z]|\\-)*:logs:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):log-group:.+)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSPipesPipeCloudwatchLogsLogDestinationDefinition"
+    },
     "DeadLetterConfig": {
       "type": "object",
       "properties": {
@@ -296,7 +316,7 @@
               "type": "string",
               "maxLength": 1600,
               "minLength": 1,
-              "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$"
+              "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -306,6 +326,59 @@
       },
       "additionalProperties": false,
       "title": "AWSPipesPipeDeadLetterConfigDefinition"
+    },
+    "DimensionMapping": {
+      "type": "object",
+      "properties": {
+        "DimensionValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DimensionValueType": {
+          "$ref": "#/definitions/DimensionValueType"
+        },
+        "DimensionName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DimensionName",
+        "DimensionValue",
+        "DimensionValueType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSPipesPipeDimensionMappingDefinition"
+    },
+    "DimensionValueType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "VARCHAR"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPipesPipeDimensionValueTypeDefinition"
     },
     "DynamoDBStreamStartPosition": {
       "oneOf": [
@@ -554,7 +627,7 @@
               "type": "string",
               "maxLength": 1600,
               "minLength": 1,
-              "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$"
+              "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -583,7 +656,7 @@
               "type": "string",
               "maxLength": 1600,
               "minLength": 1,
-              "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$"
+              "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -593,6 +666,23 @@
       },
       "additionalProperties": false,
       "title": "AWSPipesPipeEcsTaskOverrideDefinition"
+    },
+    "EpochTimeUnit": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MILLISECONDS",
+            "SECONDS",
+            "MICROSECONDS",
+            "NANOSECONDS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPipesPipeEpochTimeUnitDefinition"
     },
     "Filter": {
       "type": "object",
@@ -628,16 +718,36 @@
       "additionalProperties": false,
       "title": "AWSPipesPipeFilterCriteriaDefinition"
     },
+    "FirehoseLogDestination": {
+      "type": "object",
+      "properties": {
+        "DeliveryStreamArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1600,
+              "minLength": 1,
+              "pattern": "^(^arn:aws([a-z]|\\-)*:firehose:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):deliverystream/.+)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSPipesPipeFirehoseLogDestinationDefinition"
+    },
     "HeaderParametersMap": {
       "type": "object",
       "patternProperties": {
-        "^[!#$%&'*+-.^_`|~0-9a-zA-Z]+$": {
+        "^[!#$%&'*+-.^_`|~0-9a-zA-Z]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$": {
           "oneOf": [
             {
               "type": "string",
               "maxLength": 512,
               "minLength": 0,
-              "pattern": "^[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*$"
+              "pattern": "^[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -647,6 +757,20 @@
       },
       "additionalProperties": false,
       "title": "AWSPipesPipeHeaderParametersMapDefinition"
+    },
+    "IncludeExecutionDataOption": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ALL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPipesPipeIncludeExecutionDataOptionDefinition"
     },
     "KinesisStreamStartPosition": {
       "oneOf": [
@@ -680,6 +804,23 @@
       ],
       "title": "AWSPipesPipeLaunchTypeDefinition"
     },
+    "LogLevel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OFF",
+            "ERROR",
+            "INFO",
+            "TRACE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPipesPipeLogLevelDefinition"
+    },
     "MQBrokerAccessCredentials": {
       "oneOf": [
         {
@@ -692,7 +833,7 @@
                   "type": "string",
                   "maxLength": 1600,
                   "minLength": 1,
-                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
                 },
                 {
                   "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -721,7 +862,7 @@
                   "type": "string",
                   "maxLength": 1600,
                   "minLength": 1,
-                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
                 },
                 {
                   "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -745,7 +886,7 @@
                   "type": "string",
                   "maxLength": 1600,
                   "minLength": 1,
-                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
                 },
                 {
                   "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -776,6 +917,94 @@
         }
       ],
       "title": "AWSPipesPipeMSKStartPositionDefinition"
+    },
+    "MeasureValueType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DOUBLE",
+            "BIGINT",
+            "VARCHAR",
+            "BOOLEAN",
+            "TIMESTAMP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPipesPipeMeasureValueTypeDefinition"
+    },
+    "MultiMeasureAttributeMapping": {
+      "type": "object",
+      "properties": {
+        "MeasureValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MeasureValueType": {
+          "$ref": "#/definitions/MeasureValueType"
+        },
+        "MultiMeasureAttributeName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "MeasureValue",
+        "MeasureValueType",
+        "MultiMeasureAttributeName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSPipesPipeMultiMeasureAttributeMappingDefinition"
+    },
+    "MultiMeasureMapping": {
+      "type": "object",
+      "properties": {
+        "MultiMeasureName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MultiMeasureAttributeMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MultiMeasureAttributeMapping"
+          },
+          "maxItems": 256,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "MultiMeasureAttributeMappings",
+        "MultiMeasureName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSPipesPipeMultiMeasureMappingDefinition"
     },
     "NetworkConfiguration": {
       "type": "object",
@@ -810,15 +1039,13 @@
             "oneOf": [
               {
                 "type": "string",
-                "pattern": "^(?!\\s*$).+$"
+                "pattern": "^(?!\\s*$).+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
               },
               {
                 "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
               }
             ]
-          },
-          "maxItems": 1,
-          "minItems": 0
+          }
         },
         "HeaderParameters": {
           "$ref": "#/definitions/HeaderParametersMap"
@@ -836,7 +1063,9 @@
         "InputTemplate": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "maxLength": 8192,
+              "minLength": 0
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -849,6 +1078,32 @@
       },
       "additionalProperties": false,
       "title": "AWSPipesPipePipeEnrichmentParametersDefinition"
+    },
+    "PipeLogConfiguration": {
+      "type": "object",
+      "properties": {
+        "S3LogDestination": {
+          "$ref": "#/definitions/S3LogDestination"
+        },
+        "FirehoseLogDestination": {
+          "$ref": "#/definitions/FirehoseLogDestination"
+        },
+        "CloudwatchLogsLogDestination": {
+          "$ref": "#/definitions/CloudwatchLogsLogDestination"
+        },
+        "Level": {
+          "$ref": "#/definitions/LogLevel"
+        },
+        "IncludeExecutionData": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IncludeExecutionDataOption"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSPipesPipePipeLogConfigurationDefinition"
     },
     "PipeSourceActiveMQBrokerParameters": {
       "type": "object",
@@ -892,7 +1147,7 @@
       "properties": {
         "BatchSize": {
           "type": "integer",
-          "maximum": 1000,
+          "maximum": 10000,
           "minimum": 1
         },
         "DeadLetterConfig": {
@@ -1188,7 +1443,7 @@
               "type": "string",
               "maxLength": 1600,
               "minLength": 1,
-              "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+              "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1238,7 +1493,11 @@
             "CREATE_FAILED",
             "UPDATE_FAILED",
             "START_FAILED",
-            "STOP_FAILED"
+            "STOP_FAILED",
+            "DELETE_FAILED",
+            "CREATE_ROLLBACK_FAILED",
+            "DELETE_ROLLBACK_FAILED",
+            "UPDATE_ROLLBACK_FAILED"
           ]
         },
         {
@@ -1339,7 +1598,7 @@
               "type": "string",
               "maxLength": 1600,
               "minLength": 1,
-              "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$"
+              "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1473,7 +1732,7 @@
               "type": "string",
               "maxLength": 256,
               "minLength": 1,
-              "pattern": "(?=[/\\.\\-_A-Za-z0-9]+)((?!aws\\.).*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)"
+              "pattern": "(?=[/\\.\\-_A-Za-z0-9]+)((?!aws\\.).*)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1488,7 +1747,7 @@
                 "type": "string",
                 "maxLength": 1600,
                 "minLength": 1,
-                "pattern": "^arn:aws([a-z]|\\-)*:(.*)|^\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*$"
+                "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
               },
               {
                 "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1504,7 +1763,7 @@
               "type": "string",
               "maxLength": 256,
               "minLength": 1,
-              "pattern": "^\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*$"
+              "pattern": "^\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1524,15 +1783,13 @@
             "oneOf": [
               {
                 "type": "string",
-                "pattern": "^(?!\\s*$).+$"
+                "pattern": "^(?!\\s*$).+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
               },
               {
                 "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
               }
             ]
-          },
-          "maxItems": 1,
-          "minItems": 0
+          }
         },
         "HeaderParameters": {
           "$ref": "#/definitions/HeaderParametersMap"
@@ -1597,7 +1854,9 @@
         "InputTemplate": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "maxLength": 8192,
+              "minLength": 0
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1636,6 +1895,9 @@
         },
         "CloudWatchLogsParameters": {
           "$ref": "#/definitions/PipeTargetCloudWatchLogsParameters"
+        },
+        "TimestreamParameters": {
+          "$ref": "#/definitions/PipeTargetTimestreamParameters"
         }
       },
       "additionalProperties": false,
@@ -1650,7 +1912,7 @@
               "type": "string",
               "maxLength": 1600,
               "minLength": 1,
-              "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+              "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1716,6 +1978,7 @@
             ],
             "description": "A single Redshift SQL"
           },
+          "maxItems": 40,
           "minItems": 1,
           "description": "A list of SQLs."
         }
@@ -1782,6 +2045,84 @@
       },
       "additionalProperties": false,
       "title": "AWSPipesPipePipeTargetStateMachineParametersDefinition"
+    },
+    "PipeTargetTimestreamParameters": {
+      "type": "object",
+      "properties": {
+        "TimeValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EpochTimeUnit": {
+          "$ref": "#/definitions/EpochTimeUnit"
+        },
+        "TimeFieldType": {
+          "$ref": "#/definitions/TimeFieldType"
+        },
+        "TimestampFormat": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "VersionValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DimensionMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DimensionMapping"
+          },
+          "maxItems": 128,
+          "minItems": 1
+        },
+        "SingleMeasureMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SingleMeasureMapping"
+          },
+          "maxItems": 8192,
+          "minItems": 0
+        },
+        "MultiMeasureMappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MultiMeasureMapping"
+          },
+          "maxItems": 1024,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "DimensionMappings",
+        "TimeValue",
+        "VersionValue"
+      ],
+      "additionalProperties": false,
+      "title": "AWSPipesPipePipeTargetTimestreamParametersDefinition"
     },
     "PlacementConstraint": {
       "type": "object",
@@ -1875,13 +2216,13 @@
     "QueryStringParametersMap": {
       "type": "object",
       "patternProperties": {
-        "^[^\\x00-\\x1F\\x7F]+$": {
+        "^[^\\x00-\\x1F\\x7F]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$": {
           "oneOf": [
             {
               "type": "string",
               "maxLength": 512,
               "minLength": 0,
-              "pattern": "^[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+$"
+              "pattern": "^[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1907,6 +2248,62 @@
       ],
       "title": "AWSPipesPipeRequestedPipeStateDefinition"
     },
+    "S3LogDestination": {
+      "type": "object",
+      "properties": {
+        "BucketName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Prefix": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BucketOwner": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OutputFormat": {
+          "$ref": "#/definitions/S3OutputFormat"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSPipesPipeS3LogDestinationDefinition"
+    },
+    "S3OutputFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "json",
+            "plain",
+            "w3c"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPipesPipeS3OutputFormatDefinition"
+    },
     "SageMakerPipelineParameter": {
       "type": "object",
       "properties": {
@@ -1916,7 +2313,7 @@
               "type": "string",
               "maxLength": 256,
               "minLength": 1,
-              "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+              "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1955,7 +2352,7 @@
                   "type": "string",
                   "maxLength": 1600,
                   "minLength": 1,
-                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
                 },
                 {
                   "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -1979,7 +2376,7 @@
                   "type": "string",
                   "maxLength": 1600,
                   "minLength": 1,
-                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
                 },
                 {
                   "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -2003,7 +2400,7 @@
                   "type": "string",
                   "maxLength": 1600,
                   "minLength": 1,
-                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
                 },
                 {
                   "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -2027,7 +2424,7 @@
                   "type": "string",
                   "maxLength": 1600,
                   "minLength": 1,
-                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:[a-z0-9-.]+:.*)|(\\$(\\.[\\w_-]+(\\[(\\d+|\\*)\\])*)*)$"
+                  "pattern": "^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
                 },
                 {
                   "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -2104,6 +2501,45 @@
       ],
       "title": "AWSPipesPipeSelfManagedKafkaStartPositionDefinition"
     },
+    "SingleMeasureMapping": {
+      "type": "object",
+      "properties": {
+        "MeasureValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MeasureValueType": {
+          "$ref": "#/definitions/MeasureValueType"
+        },
+        "MeasureName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "MeasureName",
+        "MeasureValue",
+        "MeasureValueType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSPipesPipeSingleMeasureMappingDefinition"
+    },
     "Tag": {
       "type": "object",
       "properties": {
@@ -2159,6 +2595,21 @@
       },
       "additionalProperties": false,
       "title": "AWSPipesPipeTagMapDefinition"
+    },
+    "TimeFieldType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EPOCH",
+            "TIMESTAMP_FORMAT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPipesPipeTimeFieldTypeDefinition"
     }
   },
   "properties": {
@@ -2183,7 +2634,8 @@
         {
           "type": "string",
           "maxLength": 1600,
-          "minLength": 0
+          "minLength": 0,
+          "pattern": "^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -2192,6 +2644,21 @@
     },
     "EnrichmentParameters": {
       "$ref": "#/definitions/PipeEnrichmentParameters"
+    },
+    "KmsKeyIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "LogConfiguration": {
+      "$ref": "#/definitions/PipeLogConfiguration"
     },
     "Name": {
       "oneOf": [
@@ -2211,7 +2678,8 @@
         {
           "type": "string",
           "maxLength": 1600,
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z0-9+=,.@\\-_/]+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -2223,7 +2691,8 @@
         {
           "type": "string",
           "maxLength": 1600,
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^smk://(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -2241,7 +2710,8 @@
         {
           "type": "string",
           "maxLength": 1600,
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -2276,10 +2746,10 @@
     "/properties/SourceParameters/ManagedStreamingKafkaParameters/TopicName",
     "/properties/SourceParameters/ManagedStreamingKafkaParameters/StartingPosition",
     "/properties/SourceParameters/ManagedStreamingKafkaParameters/ConsumerGroupID",
-    "/properties/SourceParameters/SelfManagedApacheKafkaParameters/TopicName",
-    "/properties/SourceParameters/SelfManagedApacheKafkaParameters/StartingPosition",
-    "/properties/SourceParameters/SelfManagedApacheKafkaParameters/AdditionalBootstrapServers",
-    "/properties/SourceParameters/SelfManagedApacheKafkaParameters/ConsumerGroupID"
+    "/properties/SourceParameters/SelfManagedKafkaParameters/TopicName",
+    "/properties/SourceParameters/SelfManagedKafkaParameters/StartingPosition",
+    "/properties/SourceParameters/SelfManagedKafkaParameters/AdditionalBootstrapServers",
+    "/properties/SourceParameters/SelfManagedKafkaParameters/ConsumerGroupID"
   ],
   "primaryIdentifier": [
     "/properties/Name"
@@ -2298,7 +2768,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "pipes:TagResource",
+      "pipes:UntagResource",
+      "pipes:ListTagsForResource"
+    ]
   },
   "additionalProperties": false,
   "type": "object",

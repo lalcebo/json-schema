@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Rekognition::Project",
-  "description": "The AWS::Rekognition::Project type creates an Amazon Rekognition CustomLabels Project. A project is a grouping of the resources needed to create and manage Dataset and ProjectVersions.. Source:- https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/cp-manage-project.html. Source:- https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/cp-manage-project.html",
+  "description": "The AWS::Rekognition::Project type creates an Amazon Rekognition CustomLabels Project. A project is a grouping of the resources needed to create and manage Dataset and ProjectVersions.. Source:- https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/cp-manage-project.html",
   "sourceUrl": "https://docs.aws.amazon.com/rekognition/latest/customlabels-dg/cp-manage-project.html",
   "definitions": {
     "Arn": {
@@ -30,11 +30,60 @@
       ],
       "description": "The name of the project",
       "title": "AWSRekognitionProjectProjectNameDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "\\A(?!aws:)[a-zA-Z0-9+\\-=\\._\\:\\/@]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "\\A[a-zA-Z0-9+\\-=\\._\\:\\/@]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSRekognitionProjectTagDefinition"
     }
   },
   "properties": {
     "ProjectName": {
       "$ref": "#/definitions/ProjectName"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "additionalProperties": false,
@@ -50,6 +99,18 @@
   "primaryIdentifier": [
     "/properties/ProjectName"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "rekognition:ListTagsForResource",
+      "rekognition:TagResource",
+      "rekognition:UntagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSRekognitionProjectProperties"
 }

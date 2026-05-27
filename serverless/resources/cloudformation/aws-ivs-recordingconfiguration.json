@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IVS::RecordingConfiguration",
-  "description": "Resource Type definition for AWS::IVS::RecordingConfiguration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Resource Type definition for AWS::IVS::RecordingConfiguration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Tag": {
@@ -17,19 +17,21 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         },
         "Value": {
           "oneOf": [
             {
               "type": "string",
-              "minLength": 1,
+              "minLength": 0,
               "maxLength": 256
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
       "required": [
@@ -47,9 +49,7 @@
           "$ref": "#/definitions/S3DestinationConfiguration"
         }
       },
-      "required": [
-        "S3"
-      ],
+      "required": [],
       "title": "AWSIVSRecordingConfigurationDestinationConfigurationDefinition"
     },
     "S3DestinationConfiguration": {
@@ -88,7 +88,8 @@
               "enum": [
                 "INTERVAL",
                 "DISABLED"
-              ]
+              ],
+              "default": "INTERVAL"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -97,16 +98,104 @@
           "description": "Thumbnail Recording Mode, which determines whether thumbnails are recorded at an interval or are disabled."
         },
         "TargetIntervalSeconds": {
-          "description": "Thumbnail recording Target Interval Seconds defines the interval at which thumbnails are recorded. This field is required if RecordingMode is INTERVAL.",
+          "description": "Target Interval Seconds defines the interval at which thumbnails are recorded. This field is required if RecordingMode is INTERVAL.",
           "type": "integer",
-          "minimum": 5,
-          "maximum": 60
+          "minimum": 1,
+          "maximum": 60,
+          "default": 60
+        },
+        "Resolution": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FULL_HD",
+                "HD",
+                "SD",
+                "LOWEST_RESOLUTION"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Resolution indicates the desired resolution of recorded thumbnails."
+        },
+        "Storage": {
+          "description": "Storage indicates the format in which thumbnails are recorded.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "minItems": 0,
+          "maxItems": 2,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "SEQUENTIAL",
+                  "LATEST"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         }
       },
-      "required": [
-        "RecordingMode"
-      ],
+      "required": [],
       "title": "AWSIVSRecordingConfigurationThumbnailConfigurationDefinition"
+    },
+    "RenditionConfiguration": {
+      "description": "Rendition Configuration describes which renditions should be recorded for a stream.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RenditionSelection": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ALL",
+                "NONE",
+                "CUSTOM"
+              ],
+              "default": "ALL"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Resolution Selection indicates which set of renditions are recorded for a stream."
+        },
+        "Renditions": {
+          "description": "Renditions indicates which renditions are recorded for a stream.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "minItems": 0,
+          "maxItems": 4,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "FULL_HD",
+                  "HD",
+                  "SD",
+                  "LOWEST_RESOLUTION"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [],
+      "title": "AWSIVSRecordingConfigurationRenditionConfigurationDefinition"
     }
   },
   "properties": {
@@ -146,9 +235,24 @@
     },
     "ThumbnailConfiguration": {
       "$ref": "#/definitions/ThumbnailConfiguration"
+    },
+    "RenditionConfiguration": {
+      "$ref": "#/definitions/RenditionConfiguration"
     }
   },
   "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ivs:TagResource",
+      "ivs:UntagResource",
+      "ivs:ListTagsForResource"
+    ]
+  },
   "required": [
     "DestinationConfiguration"
   ],
@@ -167,7 +271,12 @@
     "/properties/RecordingReconnectWindowSeconds",
     "/properties/ThumbnailConfiguration",
     "/properties/ThumbnailConfiguration/RecordingMode",
-    "/properties/ThumbnailConfiguration/TargetIntervalSeconds"
+    "/properties/ThumbnailConfiguration/TargetIntervalSeconds",
+    "/properties/ThumbnailConfiguration/Storage",
+    "/properties/ThumbnailConfiguration/Resolution",
+    "/properties/RenditionConfiguration",
+    "/properties/RenditionConfiguration/RenditionSelection",
+    "/properties/RenditionConfiguration/Renditions"
   ],
   "type": "object",
   "title": "AWSIVSRecordingConfigurationProperties"

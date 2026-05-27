@@ -1,6 +1,7 @@
 {
   "typeName": "AWS::Glue::Database",
-  "description": "Resource Type definition for AWS::Glue::Database. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Glue::Database. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue.git",
   "additionalProperties": false,
   "properties": {
     "CatalogId": {
@@ -11,15 +12,29 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The AWS account ID for the account in which to create the catalog object."
     },
     "DatabaseInput": {
-      "$ref": "#/definitions/DatabaseInput"
+      "$ref": "#/definitions/DatabaseInput",
+      "description": "The metadata for the database."
+    },
+    "DatabaseName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the database. For hive compatibility, this is folded to lowercase when it is store."
     }
   },
   "definitions": {
     "DatabaseIdentifier": {
       "type": "object",
+      "description": "A structure that describes a target database for resource linking.",
       "additionalProperties": false,
       "properties": {
         "DatabaseName": {
@@ -30,7 +45,19 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the catalog database."
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Region of the target database."
         },
         "CatalogId": {
           "oneOf": [
@@ -40,18 +67,22 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The ID of the Data Catalog in which the database resides."
         }
       },
       "title": "AWSGlueDatabaseDatabaseIdentifierDefinition"
     },
     "PrincipalPrivileges": {
       "type": "object",
+      "description": "The permissions granted to a principal.",
       "additionalProperties": false,
       "properties": {
         "Permissions": {
           "type": "array",
+          "description": "The permissions that are granted to the principal.",
           "uniqueItems": false,
+          "insertionOrder": false,
           "items": {
             "oneOf": [
               {
@@ -64,13 +95,15 @@
           }
         },
         "Principal": {
-          "$ref": "#/definitions/DataLakePrincipal"
+          "$ref": "#/definitions/DataLakePrincipal",
+          "description": "The principal who is granted permissions."
         }
       },
       "title": "AWSGlueDatabasePrincipalPrivilegesDefinition"
     },
     "DataLakePrincipal": {
       "type": "object",
+      "description": "The AWS Lake Formation principal.",
       "additionalProperties": false,
       "properties": {
         "DataLakePrincipalIdentifier": {
@@ -81,13 +114,15 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "An identifier for the AWS Lake Formation principal."
         }
       },
       "title": "AWSGlueDatabaseDataLakePrincipalDefinition"
     },
     "FederatedDatabase": {
       "type": "object",
+      "description": "A FederatedDatabase structure that references an entity outside the AWS Glue Data Catalog.",
       "additionalProperties": false,
       "properties": {
         "ConnectionName": {
@@ -98,7 +133,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the connection to the external metastore."
         },
         "Identifier": {
           "oneOf": [
@@ -108,13 +144,15 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "A unique identifier for the federated database."
         }
       },
       "title": "AWSGlueDatabaseFederatedDatabaseDefinition"
     },
     "DatabaseInput": {
       "type": "object",
+      "description": "The structure used to create or update a database.",
       "additionalProperties": false,
       "properties": {
         "LocationUri": {
@@ -125,13 +163,17 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The location of the database (for example, an HDFS path)."
         },
         "CreateTableDefaultPermissions": {
           "type": "array",
+          "description": "Creates a set of default permissions on the table for principals. Used by AWS Lake Formation. Not used in the normal course of AWS Glue operations.",
           "uniqueItems": false,
+          "insertionOrder": false,
           "items": {
-            "$ref": "#/definitions/PrincipalPrivileges"
+            "$ref": "#/definitions/PrincipalPrivileges",
+            "description": "The permissions granted to a principal."
           }
         },
         "Description": {
@@ -142,16 +184,20 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "A description of the database."
         },
         "Parameters": {
-          "type": "object"
+          "type": "object",
+          "description": "These key-value pairs define parameters and properties of the database."
         },
         "TargetDatabase": {
-          "$ref": "#/definitions/DatabaseIdentifier"
+          "$ref": "#/definitions/DatabaseIdentifier",
+          "description": "A DatabaseIdentifier structure that describes a target database for resource linking."
         },
         "FederatedDatabase": {
-          "$ref": "#/definitions/FederatedDatabase"
+          "$ref": "#/definitions/FederatedDatabase",
+          "description": "A FederatedDatabase structure that references an entity outside the AWS Glue Data Catalog."
         },
         "Name": {
           "oneOf": [
@@ -161,24 +207,28 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The name of the database. For hive compatibility, this is folded to lowercase when it is stored."
         }
       },
       "title": "AWSGlueDatabaseDatabaseInputDefinition"
     }
+  },
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
   },
   "required": [
     "DatabaseInput",
     "CatalogId"
   ],
   "createOnlyProperties": [
-    "/properties/CatalogId"
+    "/properties/DatabaseName"
   ],
   "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id"
+    "/properties/DatabaseName"
   ],
   "type": "object",
   "title": "AWSGlueDatabaseProperties"

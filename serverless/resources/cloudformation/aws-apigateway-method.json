@@ -1,27 +1,81 @@
 {
-  "typeName": "AWS::ApiGateway::Method",
-  "description": "Resource Type definition for AWS::ApiGateway::Method. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-apigateway.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-apigateway.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-apigateway.git",
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "typeName": "AWS::ApiGateway::Method",
+  "description": "The ``AWS::ApiGateway::Method`` resource creates API Gateway methods that define the parameters and body that clients must send in their requests.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-apigateway.git",
+  "createOnlyProperties": [
+    "/properties/RestApiId",
+    "/properties/ResourceId",
+    "/properties/HttpMethod"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/RestApiId",
+    "/properties/ResourceId",
+    "/properties/HttpMethod"
+  ],
   "definitions": {
-    "Integration": {
-      "type": "object",
+    "MethodResponse": {
+      "description": "",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "CacheKeyParameters": {
-          "description": "A list of request parameters whose values API Gateway caches.",
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
+        "ResponseParameters": {
+          "patternProperties": {
+            "[a-zA-Z0-9]+": {
+              "type": [
+                "boolean",
+                "string"
+              ]
+            }
+          },
+          "description": "",
+          "additionalProperties": false,
+          "type": "object"
         },
+        "StatusCode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResponseModels": {
+          "patternProperties": {
+            "[a-zA-Z0-9]+": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "description": "",
+          "additionalProperties": false,
+          "type": "object"
+        }
+      },
+      "required": [
+        "StatusCode"
+      ],
+      "title": "AWSApiGatewayMethodMethodResponseDefinition"
+    },
+    "Integration": {
+      "description": "``Integration`` is a property of the [AWS::ApiGateway::Method](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html) resource that specifies information about the target backend that a method calls.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
         "CacheNamespace": {
           "oneOf": [
             {
@@ -30,19 +84,7 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "An API-specific tag group of related cached parameters."
-        },
-        "ConnectionId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The ID of the VpcLink used for the integration when connectionType=VPC_LINK, otherwise undefined."
+          ]
         },
         "ConnectionType": {
           "oneOf": [
@@ -56,34 +98,15 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "The type of the network connection to the integration endpoint."
+          ]
         },
-        "ContentHandling": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": [
-                "CONVERT_TO_BINARY",
-                "CONVERT_TO_TEXT"
-              ]
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "Specifies how to handle request payload content type conversions."
-        },
-        "Credentials": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The credentials that are required for the integration."
+        "IntegrationResponses": {
+          "uniqueItems": true,
+          "description": "",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IntegrationResponse"
+          }
         },
         "IntegrationHttpMethod": {
           "oneOf": [
@@ -93,16 +116,32 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "The integration's HTTP method type."
+          ]
         },
-        "IntegrationResponses": {
-          "description": "The response that API Gateway provides after a method's backend completes processing a request.",
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/definitions/IntegrationResponse"
-          }
+        "ResponseTransferMode": {
+          "oneOf": [
+            {
+              "default": "BUFFERED",
+              "type": "string",
+              "enum": [
+                "BUFFERED",
+                "STREAM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Uri": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "PassthroughBehavior": {
           "oneOf": [
@@ -117,13 +156,9 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "Indicates when API Gateway passes requests to the targeted backend."
+          ]
         },
         "RequestParameters": {
-          "description": "The request parameters that API Gateway sends with the backend request.",
-          "type": "object",
-          "additionalProperties": false,
           "patternProperties": {
             "[a-zA-Z0-9]+": {
               "oneOf": [
@@ -135,30 +170,20 @@
                 }
               ]
             }
-          }
-        },
-        "RequestTemplates": {
-          "description": "A map of Apache Velocity templates that are applied on the request payload.",
-          "type": "object",
+          },
+          "description": "",
           "additionalProperties": false,
-          "patternProperties": {
-            "[a-zA-Z0-9]+": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-                }
-              ]
-            }
-          }
+          "type": "object"
         },
-        "TimeoutInMillis": {
-          "description": "Custom timeout between 50 and 29,000 milliseconds.",
-          "type": "integer",
-          "minimum": 50,
-          "maximum": 29000
+        "ConnectionId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Type": {
           "oneOf": [
@@ -175,10 +200,24 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "The type of backend that your method is running."
+          ]
         },
-        "Uri": {
+        "CacheKeyParameters": {
+          "uniqueItems": true,
+          "description": "",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "IntegrationTarget": {
           "oneOf": [
             {
               "type": "string"
@@ -186,67 +225,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "The Uniform Resource Identifier (URI) for the integration."
-        }
-      },
-      "required": [
-        "Type"
-      ],
-      "title": "AWSApiGatewayMethodIntegrationDefinition"
-    },
-    "MethodResponse": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "ResponseModels": {
-          "description": "The resources used for the response's content type. Specify response models as key-value pairs (string-to-string maps), with a content type as the key and a Model resource name as the value.",
-          "type": "object",
-          "additionalProperties": false,
-          "patternProperties": {
-            "[a-zA-Z0-9]+": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-                }
-              ]
-            }
-          }
+          ]
         },
-        "ResponseParameters": {
-          "description": "Response parameters that API Gateway sends to the client that called a method. Specify response parameters as key-value pairs (string-to-Boolean maps), with a destination as the key and a Boolean as the value.",
-          "type": "object",
-          "additionalProperties": false,
-          "patternProperties": {
-            "[a-zA-Z0-9]+": {
-              "type": "boolean"
-            }
-          }
-        },
-        "StatusCode": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The method response's status code, which you map to an IntegrationResponse."
-        }
-      },
-      "required": [
-        "StatusCode"
-      ],
-      "title": "AWSApiGatewayMethodMethodResponseDefinition"
-    },
-    "IntegrationResponse": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
         "ContentHandling": {
           "oneOf": [
             {
@@ -259,13 +239,9 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "Specifies how to handle request payload content type conversions."
+          ]
         },
-        "ResponseParameters": {
-          "description": "The response parameters from the backend response that API Gateway sends to the method response.",
-          "type": "object",
-          "additionalProperties": false,
+        "RequestTemplates": {
           "patternProperties": {
             "[a-zA-Z0-9]+": {
               "oneOf": [
@@ -277,12 +253,38 @@
                 }
               ]
             }
-          }
+          },
+          "description": "",
+          "additionalProperties": false,
+          "type": "object"
         },
+        "TimeoutInMillis": {
+          "description": "",
+          "type": "integer",
+          "minimum": 50
+        },
+        "Credentials": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "title": "AWSApiGatewayMethodIntegrationDefinition"
+    },
+    "IntegrationResponse": {
+      "description": "``IntegrationResponse`` is a property of the [Amazon API Gateway Method Integration](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html) property type that specifies the response that API Gateway sends after a method's backend finishes processing a request.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
         "ResponseTemplates": {
-          "description": "The templates that are used to transform the integration response body. Specify templates as key-value pairs (string-to-string mappings), with a content type as the key and a template as the value.",
-          "type": "object",
-          "additionalProperties": false,
           "patternProperties": {
             "[a-zA-Z0-9]+": {
               "oneOf": [
@@ -294,7 +296,10 @@
                 }
               ]
             }
-          }
+          },
+          "description": "",
+          "additionalProperties": false,
+          "type": "object"
         },
         "SelectionPattern": {
           "oneOf": [
@@ -304,8 +309,38 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "A regular expression that specifies which error strings or status codes from the backend map to the integration response."
+          ]
+        },
+        "ContentHandling": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CONVERT_TO_BINARY",
+                "CONVERT_TO_TEXT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResponseParameters": {
+          "patternProperties": {
+            "[a-zA-Z0-9]+": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "description": "",
+          "additionalProperties": false,
+          "type": "object"
         },
         "StatusCode": {
           "oneOf": [
@@ -315,8 +350,7 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "The status code that API Gateway uses to map the integration response to a MethodResponse status code."
+          ]
         }
       },
       "required": [
@@ -326,12 +360,49 @@
     }
   },
   "properties": {
-    "ApiKeyRequired": {
-      "description": "Indicates whether the method requires clients to submit a valid API key.",
-      "type": "boolean"
+    "Integration": {
+      "description": "",
+      "$ref": "#/definitions/Integration"
+    },
+    "OperationName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "RequestModels": {
+      "patternProperties": {
+        "[a-zA-Z0-9]+": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "description": "",
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "RestApiId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "AuthorizationScopes": {
-      "description": "A list of authorization scopes configured on the method.",
+      "description": "",
       "type": "array",
       "items": {
         "oneOf": [
@@ -344,22 +415,36 @@
         ]
       }
     },
-    "AuthorizationType": {
+    "RequestValidatorId": {
       "oneOf": [
         {
-          "type": "string",
-          "enum": [
-            "NONE",
-            "AWS_IAM",
-            "CUSTOM",
-            "COGNITO_USER_POOLS"
-          ]
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ],
-      "description": "The method's authorization type."
+      ]
+    },
+    "RequestParameters": {
+      "patternProperties": {
+        "[a-zA-Z0-9]+": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        }
+      },
+      "description": "",
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "MethodResponses": {
+      "uniqueItems": true,
+      "description": "",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/MethodResponse"
+      }
     },
     "AuthorizerId": {
       "oneOf": [
@@ -369,80 +454,7 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ],
-      "description": "The identifier of the authorizer to use on this method."
-    },
-    "HttpMethod": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The backend system that the method calls when it receives a request."
-    },
-    "Integration": {
-      "description": "The backend system that the method calls when it receives a request.",
-      "$ref": "#/definitions/Integration"
-    },
-    "MethodResponses": {
-      "description": "The responses that can be sent to the client who calls the method.",
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/MethodResponse"
-      }
-    },
-    "OperationName": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "A friendly operation name for the method."
-    },
-    "RequestModels": {
-      "description": "The resources that are used for the request's content type. Specify request models as key-value pairs (string-to-string mapping), with a content type as the key and a Model resource name as the value.",
-      "type": "object",
-      "additionalProperties": false,
-      "patternProperties": {
-        "[a-zA-Z0-9]+": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      }
-    },
-    "RequestParameters": {
-      "description": "The request parameters that API Gateway accepts. Specify request parameters as key-value pairs (string-to-Boolean mapping), with a source as the key and a Boolean as the value.",
-      "type": "object",
-      "additionalProperties": false,
-      "patternProperties": {
-        "[a-zA-Z0-9]+": {
-          "type": "boolean"
-        }
-      }
-    },
-    "RequestValidatorId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The ID of the associated request validator."
+      ]
     },
     "ResourceId": {
       "oneOf": [
@@ -452,10 +464,13 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ],
-      "description": "The ID of an API Gateway resource."
+      ]
     },
-    "RestApiId": {
+    "ApiKeyRequired": {
+      "description": "",
+      "type": "boolean"
+    },
+    "AuthorizationType": {
       "oneOf": [
         {
           "type": "string"
@@ -464,31 +479,24 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The ID of the RestApi resource in which API Gateway creates the method."
+      "description": "The method's authorization type. This parameter is required. For valid values, see [Method](https://docs.aws.amazon.com/apigateway/latest/api/API_Method.html) in the *API Gateway API Reference*.\n  If you specify the ``AuthorizerId`` property, specify ``CUSTOM`` or ``COGNITO_USER_POOLS`` for this property."
+    },
+    "HttpMethod": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     }
   },
-  "additionalProperties": false,
   "required": [
     "RestApiId",
     "ResourceId",
     "HttpMethod"
   ],
-  "primaryIdentifier": [
-    "/properties/RestApiId",
-    "/properties/ResourceId",
-    "/properties/HttpMethod"
-  ],
-  "createOnlyProperties": [
-    "/properties/RestApiId",
-    "/properties/ResourceId",
-    "/properties/HttpMethod"
-  ],
-  "tagging": {
-    "taggable": false,
-    "tagOnCreate": false,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": false
-  },
   "type": "object",
   "title": "AWSApiGatewayMethodProperties"
 }

@@ -1,30 +1,45 @@
 {
-  "typeName": "AWS::Redshift::EventSubscription",
-  "description": "The `AWS::Redshift::EventSubscription` resource creates an Amazon Redshift Event Subscription.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
+  "tagging": {
+    "permissions": [
+      "redshift:DescribeTags",
+      "redshift:CreateTags",
+      "redshift:DeleteTags"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": false
+  },
+  "typeName": "AWS::Redshift::EventSubscription",
+  "readOnlyProperties": [
+    "/properties/CustomerAwsId",
+    "/properties/CustSubscriptionId",
+    "/properties/Status",
+    "/properties/SubscriptionCreationTime",
+    "/properties/SourceIdsList",
+    "/properties/EventCategoriesList"
+  ],
+  "description": "The `AWS::Redshift::EventSubscription` resource creates an Amazon Redshift Event Subscription.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
+  "createOnlyProperties": [
+    "/properties/SubscriptionName"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/SubscriptionName"
+  ],
   "definitions": {
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
+      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
-        },
         "Value": {
           "oneOf": [
             {
-              "type": "string",
               "minLength": 0,
+              "type": "string",
               "maxLength": 256
             },
             {
@@ -32,40 +47,29 @@
             }
           ],
           "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
       "required": [
         "Key",
         "Value"
       ],
-      "additionalProperties": false,
       "title": "AWSRedshiftEventSubscriptionTagDefinition"
     }
   },
   "properties": {
-    "SubscriptionName": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^(?=^[a-z][a-z0-9]*(-[a-z0-9]+)*$).{1,255}$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The name of the Amazon Redshift event notification subscription"
-    },
-    "SnsTopicArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The Amazon Resource Name (ARN) of the Amazon SNS topic used to transmit the event notifications."
-    },
     "SourceType": {
       "oneOf": [
         {
@@ -84,26 +88,11 @@
       ],
       "description": "The type of source that will be generating the events."
     },
-    "SourceIds": {
-      "description": "A list of one or more identifiers of Amazon Redshift source objects.",
-      "type": "array",
-      "insertionOrder": false,
-      "items": {
-        "oneOf": [
-          {
-            "type": "string"
-          },
-          {
-            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-          }
-        ]
-      }
-    },
     "EventCategories": {
-      "description": "Specifies the Amazon Redshift event categories to be published by the event notification subscription.",
-      "type": "array",
-      "insertionOrder": false,
       "uniqueItems": true,
+      "description": "Specifies the Amazon Redshift event categories to be published by the event notification subscription.",
+      "insertionOrder": false,
+      "type": "array",
       "items": {
         "oneOf": [
           {
@@ -122,6 +111,10 @@
         ]
       }
     },
+    "Enabled": {
+      "description": "A boolean value; set to true to activate the subscription, and set to false to create the subscription but not activate it.",
+      "type": "boolean"
+    },
     "Severity": {
       "oneOf": [
         {
@@ -137,44 +130,55 @@
       ],
       "description": "Specifies the Amazon Redshift event severity to be published by the event notification subscription."
     },
-    "Enabled": {
-      "description": "A boolean value; set to true to activate the subscription, and set to false to create the subscription but not activate it.",
-      "type": "boolean"
+    "SubscriptionName": {
+      "oneOf": [
+        {
+          "pattern": "^(?=^[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*$).{1,255}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the Amazon Redshift event notification subscription"
+    },
+    "SourceIds": {
+      "description": "A list of one or more identifiers of Amazon Redshift source objects.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "SnsTopicArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the Amazon SNS topic used to transmit the event notifications."
     },
     "Tags": {
       "description": "An array of key-value pairs to apply to this resource.",
-      "type": "array",
       "insertionOrder": false,
+      "type": "array",
       "items": {
         "$ref": "#/definitions/Tag"
       }
     }
   },
-  "tagging": {
-    "taggable": true
-  },
-  "additionalProperties": false,
   "required": [
     "SubscriptionName"
-  ],
-  "primaryIdentifier": [
-    "/properties/SubscriptionName"
-  ],
-  "createOnlyProperties": [
-    "/properties/SubscriptionName"
-  ],
-  "readOnlyProperties": [
-    "/properties/CustomerAwsId",
-    "/properties/CustSubscriptionId",
-    "/properties/Status",
-    "/properties/SubscriptionCreationTime",
-    "/properties/SourceIdsList",
-    "/properties/EventCategoriesList"
-  ],
-  "writeOnlyProperties": [
-    "/properties/Tags",
-    "/properties/Tags/*/Key",
-    "/properties/Tags/*/Value"
   ],
   "type": "object",
   "title": "AWSRedshiftEventSubscriptionProperties"

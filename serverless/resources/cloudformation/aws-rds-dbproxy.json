@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::RDS::DBProxy",
-  "description": "Resource schema for AWS::RDS::DBProxy. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Resource schema for AWS::RDS::DBProxy. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "AuthFormat": {
@@ -64,6 +64,7 @@
               "type": "string",
               "enum": [
                 "MYSQL_NATIVE_PASSWORD",
+                "MYSQL_CACHING_SHA2_PASSWORD",
                 "POSTGRES_SCRAM_SHA_256",
                 "POSTGRES_MD5",
                 "SQL_SERVER_AUTHENTICATION"
@@ -138,6 +139,37 @@
       "description": "Whether the proxy includes detailed information about SQL statements in its logs.",
       "type": "boolean"
     },
+    "DefaultAuthScheme": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IAM_AUTH",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The default authentication scheme that the proxy uses for client connections to the proxy and connections from the proxy to the underlying database."
+    },
+    "EndpointNetworkType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "IPV6",
+            "DUAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The network type of the DB proxy endpoint. The network type determines the IP version that the proxy endpoint supports."
+    },
     "EngineFamily": {
       "oneOf": [
         {
@@ -181,6 +213,21 @@
         "$ref": "#/definitions/TagFormat"
       }
     },
+    "TargetConnectionNetworkType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "IPV6"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The network type that the proxy uses to connect to the target database. The network type determines the IP version that the proxy uses for connections to the database."
+    },
     "VpcSecurityGroupIds": {
       "description": "VPC security group IDs to associate with the new proxy.",
       "type": "array",
@@ -216,12 +263,14 @@
   },
   "additionalProperties": false,
   "required": [
-    "Auth",
     "DBProxyName",
     "EngineFamily",
     "RoleArn",
     "VpcSubnetIds"
   ],
+  "propertyTransform": {
+    "/properties/DBProxyName": "$lowercase(DBProxyName)"
+  },
   "readOnlyProperties": [
     "/properties/DBProxyArn",
     "/properties/Endpoint",
@@ -230,8 +279,22 @@
   "createOnlyProperties": [
     "/properties/DBProxyName",
     "/properties/EngineFamily",
+    "/properties/EndpointNetworkType",
+    "/properties/TargetConnectionNetworkType",
     "/properties/VpcSubnetIds"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "rds:AddTagsToResource",
+      "rds:RemoveTagsFromResource",
+      "rds:ListTagsForResource"
+    ]
+  },
   "primaryIdentifier": [
     "/properties/DBProxyName"
   ],

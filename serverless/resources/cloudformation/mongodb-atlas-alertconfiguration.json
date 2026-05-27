@@ -1,7 +1,7 @@
 {
   "typeName": "MongoDB::Atlas::AlertConfiguration",
-  "description": "Returns and edits the conditions that trigger alerts and how MongoDB Cloud notifies users. This collection remains under revision and may change. Refer to the legacy documentation for this collection in the following link.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Returns and edits the conditions that trigger alerts and how MongoDB Cloud notifies users. This collection remains under revision and may change. Refer to the legacy documentation for this collection in the following link.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/alert-configuration",
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/alert-configuration",
   "additionalProperties": false,
   "definitions": {
     "AlertConfigView": {
@@ -180,8 +180,7 @@
             {
               "type": "string",
               "maxLength": 64,
-              "minLength": 1,
-              "pattern": "^([a-zA-Z0-9]([a-zA-Z0-9-]){0,21}(?<!-)([\\w]{0,42}))$"
+              "minLength": 1
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -358,6 +357,28 @@
     "IntegerThresholdView": {
       "type": "object",
       "properties": {
+        "MetricName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Human-readable label that identifies the metric against which MongoDB Cloud checks the configured threshold."
+        },
+        "Mode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indicates how MongoDB Cloud computes the current metric value (e.g., AVERAGE)."
+        },
         "Operator": {
           "oneOf": [
             {
@@ -406,7 +427,10 @@
                 "PORT",
                 "REPLICA_SET_NAME",
                 "SHARD_NAME",
-                "TYPE_NAME"
+                "TYPE_NAME",
+                "APPLICATION_ID",
+                "INSTANCE_NAME",
+                "PROCESSOR_NAME"
               ]
             },
             {
@@ -567,7 +591,7 @@
           "description": "Datadog region that indicates which API Uniform Resource Locator (URL) to use. The resource requires this parameter when '\"notifications.typeName\" : \"DATADOG\"'."
         },
         "DelayMin": {
-          "type": "number",
+          "type": "integer",
           "description": "Number of minutes that MongoDB Cloud waits after detecting an alert condition before it sends out the first notification."
         },
         "EmailAddress": {
@@ -584,31 +608,6 @@
         "EmailEnabled": {
           "type": "boolean",
           "description": "Flag that indicates whether MongoDB Cloud should send email notifications. The resource requires this parameter when one of the following values have been set:\n\n- '\"notifications.typeName\" : \"ORG\"'\n- '\"notifications.typeName\" : \"GROUP\"'\n- '\"notifications.typeName\" : \"USER\"'"
-        },
-        "FlowName": {
-          "oneOf": [
-            {
-              "type": "string",
-              "maxLength": 100,
-              "minLength": 1,
-              "pattern": "^([a-z\\-]+)$"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "Flowdock flow name to which MongoDB Cloud sends alert notifications. This name appears after the organization name in the Uniform Resource Locator (URL) path: 'www.flowdock.com/app/<organization-name>/<flow-name>'. The resource requires this parameter when '\"notifications.typeName\" : \"FLOWDOCK\"'."
-        },
-        "FlowdockApiToken": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "Flowdock API token that MongoDB Cloud needs to send alert notifications to Flowdock. The resource requires this parameter when '\"notifications.typeName\" : \"FLOWDOCK\"'. If the token later becomes invalid, MongoDB Cloud sends an email to the project owners. If the token remains invalid, MongoDB Cloud removes the token."
         },
         "IntervalMin": {
           "type": "number",
@@ -866,6 +865,34 @@
             }
           ],
           "description": "Your webhook URL."
+        },
+        "NotifierId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 24,
+              "minLength": 24,
+              "pattern": "^([a-f0-9]{24})$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Unique 24-hexadecimal digit string that identifies the notifier to use for this alert configuration."
+        },
+        "IntegrationId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 24,
+              "minLength": 24,
+              "pattern": "^([a-f0-9]{24})$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Unique 24-hexadecimal digit string that identifies the third party integration to use for this alert configuration."
         }
       },
       "additionalProperties": false,
@@ -999,6 +1026,17 @@
         }
       ],
       "description": "Human-readable label that displays the alert type."
+    },
+    "SeverityOverride": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Degree of seriousness given to this alert. This value overrides the default severity level for the alert."
     }
   },
   "readOnlyProperties": [
@@ -1015,13 +1053,18 @@
     "/properties/Notifications",
     "/properties/MetricThreshold",
     "/properties/Threshold",
-    "/properties/TypeName"
+    "/properties/TypeName",
+    "/properties/SeverityOverride"
   ],
   "primaryIdentifier": [
     "/properties/ProjectId",
     "/properties/Profile",
     "/properties/Id"
   ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/alert-configuration/README.md",
+  "tagging": {
+    "taggable": false
+  },
   "type": "object",
   "title": "MongoDBAtlasAlertConfigurationProperties"
 }

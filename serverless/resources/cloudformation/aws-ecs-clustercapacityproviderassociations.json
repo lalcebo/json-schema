@@ -1,21 +1,32 @@
 {
-  "typeName": "AWS::ECS::ClusterCapacityProviderAssociations",
-  "description": "Associate a set of ECS Capacity Providers with a specified ECS Cluster. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "tagging": {
+    "tagOnCreate": false,
+    "taggable": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "typeName": "AWS::ECS::ClusterCapacityProviderAssociations",
+  "description": "Associate a set of ECS Capacity Providers with a specified ECS Cluster. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "createOnlyProperties": [
+    "/properties/Cluster"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Cluster"
+  ],
   "definitions": {
-    "CapacityProviders": {
+    "DefaultCapacityProviderStrategy": {
       "description": "List of capacity providers to associate with the cluster",
       "type": "array",
       "items": {
-        "$ref": "#/definitions/CapacityProvider"
+        "$ref": "#/definitions/CapacityProviderStrategy"
       },
-      "uniqueItems": true,
-      "title": "AWSECSClusterCapacityProviderAssociationsCapacityProvidersDefinition"
+      "title": "AWSECSClusterCapacityProviderAssociationsDefaultCapacityProviderStrategyDefinition"
     },
     "CapacityProvider": {
       "oneOf": [
         {
-          "type": "string",
           "anyOf": [
             {
               "type": "string",
@@ -25,11 +36,12 @@
               ]
             },
             {
-              "type": "string",
               "minLength": 1,
+              "type": "string",
               "maxLength": 2048
             }
-          ]
+          ],
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -38,11 +50,20 @@
       "description": "If using ec2 auto-scaling, the name of the associated capacity provider. Otherwise FARGATE, FARGATE_SPOT.",
       "title": "AWSECSClusterCapacityProviderAssociationsCapacityProviderDefinition"
     },
+    "CapacityProviders": {
+      "uniqueItems": true,
+      "description": "List of capacity providers to associate with the cluster",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CapacityProvider"
+      },
+      "title": "AWSECSClusterCapacityProviderAssociationsCapacityProvidersDefinition"
+    },
     "Cluster": {
       "oneOf": [
         {
-          "type": "string",
           "minLength": 1,
+          "type": "string",
           "maxLength": 2048
         },
         {
@@ -52,61 +73,45 @@
       "description": "The name of the cluster",
       "title": "AWSECSClusterCapacityProviderAssociationsClusterDefinition"
     },
-    "DefaultCapacityProviderStrategy": {
-      "description": "List of capacity providers to associate with the cluster",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/CapacityProviderStrategy"
-      },
-      "title": "AWSECSClusterCapacityProviderAssociationsDefaultCapacityProviderStrategyDefinition"
-    },
     "CapacityProviderStrategy": {
+      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "Base": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 100000
-        },
-        "Weight": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 1000
-        },
         "CapacityProvider": {
           "$ref": "#/definitions/CapacityProvider"
+        },
+        "Base": {
+          "maximum": 100000,
+          "type": "integer",
+          "minimum": 0
+        },
+        "Weight": {
+          "maximum": 1000,
+          "type": "integer",
+          "minimum": 0
         }
       },
       "required": [
         "CapacityProvider"
       ],
-      "additionalProperties": false,
       "title": "AWSECSClusterCapacityProviderAssociationsCapacityProviderStrategyDefinition"
     }
   },
-  "additionalProperties": false,
+  "required": [
+    "Cluster",
+    "DefaultCapacityProviderStrategy"
+  ],
   "properties": {
+    "DefaultCapacityProviderStrategy": {
+      "$ref": "#/definitions/DefaultCapacityProviderStrategy"
+    },
     "CapacityProviders": {
       "$ref": "#/definitions/CapacityProviders"
     },
     "Cluster": {
       "$ref": "#/definitions/Cluster"
-    },
-    "DefaultCapacityProviderStrategy": {
-      "$ref": "#/definitions/DefaultCapacityProviderStrategy"
     }
   },
-  "required": [
-    "CapacityProviders",
-    "Cluster",
-    "DefaultCapacityProviderStrategy"
-  ],
-  "createOnlyProperties": [
-    "/properties/Cluster"
-  ],
-  "primaryIdentifier": [
-    "/properties/Cluster"
-  ],
   "type": "object",
   "title": "AWSECSClusterCapacityProviderAssociationsProperties"
 }

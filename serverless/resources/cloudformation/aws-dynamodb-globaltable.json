@@ -1,134 +1,55 @@
 {
   "typeName": "AWS::DynamoDB::GlobalTable",
-  "description": "Version: None. Resource Type definition for AWS::DynamoDB::GlobalTable. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "AttributeDefinitions": {
-      "type": "array",
-      "uniqueItems": true,
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/AttributeDefinition"
-      },
-      "minItems": 1
-    },
-    "BillingMode": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "GlobalSecondaryIndexes": {
-      "type": "array",
-      "uniqueItems": true,
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/GlobalSecondaryIndex"
-      }
-    },
-    "KeySchema": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/KeySchema"
-      },
-      "minItems": 1,
-      "maxItems": 2
-    },
-    "LocalSecondaryIndexes": {
-      "type": "array",
-      "uniqueItems": true,
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/LocalSecondaryIndex"
-      }
-    },
-    "WriteProvisionedThroughputSettings": {
-      "$ref": "#/definitions/WriteProvisionedThroughputSettings"
-    },
-    "Replicas": {
-      "type": "array",
-      "uniqueItems": true,
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/ReplicaSpecification"
-      },
-      "minItems": 1
-    },
-    "SSESpecification": {
-      "$ref": "#/definitions/SSESpecification"
-    },
-    "StreamSpecification": {
-      "$ref": "#/definitions/StreamSpecification"
-    },
-    "TableName": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "TimeToLiveSpecification": {
-      "$ref": "#/definitions/TimeToLiveSpecification"
-    }
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/StreamArn",
+    "/properties/TableId"
+  ],
+  "description": "Version: None. Resource Type definition for AWS::DynamoDB::GlobalTable. Source:- No source definition found, add manually please",
+  "createOnlyProperties": [
+    "/properties/TableName"
+  ],
+  "primaryIdentifier": [
+    "/properties/TableName"
+  ],
+  "required": [
+    "Replicas"
+  ],
+  "conditionalCreateOnlyProperties": [
+    "/properties/LocalSecondaryIndexes",
+    "/properties/GlobalTableSourceArn",
+    "/properties/KeySchema"
+  ],
+  "propertyTransform": {
+    "/properties/Replicas/*/GlobalTableSettingsReplicationMode": "GlobalTableSettingsReplicationMode $OR ($exists(GlobalTableSettingsReplicationMode) ? null : \"DISABLED\") $OR ($exists(GlobalTableSettingsReplicationMode) ? null : \"ENABLED_WITH_OVERRIDES\")",
+    "/properties/Replicas/*/SSESpecification/KMSMasterKeyId": "$split(KMSMasterKeyId, '/')[-1]"
   },
+  "additionalIdentifiers": [
+    [
+      "/properties/Arn"
+    ],
+    [
+      "/properties/StreamArn"
+    ]
+  ],
+  "writeOnlyProperties": [
+    "/properties/Replicas/*/ReadProvisionedThroughputSettings/ReadCapacityAutoScalingSettings/SeedCapacity",
+    "/properties/Replicas/*/GlobalSecondaryIndexes/*/ReadProvisionedThroughputSettings/ReadCapacityAutoScalingSettings/SeedCapacity",
+    "/properties/WriteProvisionedThroughputSettings/WriteCapacityAutoScalingSettings/SeedCapacity",
+    "/properties/GlobalSecondaryIndexes/*/WriteProvisionedThroughputSettings/WriteCapacityAutoScalingSettings/SeedCapacity",
+    "/properties/GlobalTableSourceArn"
+  ],
+  "additionalProperties": false,
   "definitions": {
-    "StreamSpecification": {
-      "type": "object",
+    "LocalSecondaryIndex": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "StreamViewType": {
+        "IndexName": {
           "oneOf": [
             {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "StreamViewType"
-      ],
-      "title": "AWSDynamoDBGlobalTableStreamSpecificationDefinition"
-    },
-    "KinesisStreamSpecification": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "StreamArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "StreamArn"
-      ],
-      "title": "AWSDynamoDBGlobalTableKinesisStreamSpecificationDefinition"
-    },
-    "KeySchema": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "AttributeName": {
-          "oneOf": [
-            {
+              "minLength": 3,
               "type": "string",
-              "minLength": 1,
               "maxLength": 255
             },
             {
@@ -136,37 +57,66 @@
             }
           ]
         },
-        "KeyType": {
+        "Projection": {
+          "$ref": "#/definitions/Projection"
+        },
+        "KeySchema": {
+          "maxItems": 2,
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeySchema"
+          }
+        }
+      },
+      "required": [
+        "IndexName",
+        "Projection",
+        "KeySchema"
+      ],
+      "title": "AWSDynamoDBGlobalTableLocalSecondaryIndexDefinition"
+    },
+    "ReplicaSpecification": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SSESpecification": {
+          "$ref": "#/definitions/ReplicaSSESpecification"
+        },
+        "KinesisStreamSpecification": {
+          "$ref": "#/definitions/KinesisStreamSpecification"
+        },
+        "ContributorInsightsSpecification": {
+          "$ref": "#/definitions/ContributorInsightsSpecification"
+        },
+        "GlobalTableSettingsReplicationMode": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
-        }
-      },
-      "required": [
-        "KeyType",
-        "AttributeName"
-      ],
-      "title": "AWSDynamoDBGlobalTableKeySchemaDefinition"
-    },
-    "PointInTimeRecoverySpecification": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "PointInTimeRecoveryEnabled": {
-          "type": "boolean"
-        }
-      },
-      "title": "AWSDynamoDBGlobalTablePointInTimeRecoverySpecificationDefinition"
-    },
-    "ReplicaSpecification": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
+        },
+        "PointInTimeRecoverySpecification": {
+          "$ref": "#/definitions/PointInTimeRecoverySpecification"
+        },
+        "ReplicaStreamSpecification": {
+          "$ref": "#/definitions/ReplicaStreamSpecification"
+        },
+        "GlobalSecondaryIndexes": {
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReplicaGlobalSecondaryIndexSpecification"
+          }
+        },
         "Region": {
           "oneOf": [
             {
@@ -177,19 +127,11 @@
             }
           ]
         },
-        "GlobalSecondaryIndexes": {
-          "type": "array",
-          "uniqueItems": true,
-          "insertionOrder": false,
-          "items": {
-            "$ref": "#/definitions/ReplicaGlobalSecondaryIndexSpecification"
-          }
+        "ResourcePolicy": {
+          "$ref": "#/definitions/ResourcePolicy"
         },
-        "ContributorInsightsSpecification": {
-          "$ref": "#/definitions/ContributorInsightsSpecification"
-        },
-        "PointInTimeRecoverySpecification": {
-          "$ref": "#/definitions/PointInTimeRecoverySpecification"
+        "ReadProvisionedThroughputSettings": {
+          "$ref": "#/definitions/ReadProvisionedThroughputSettings"
         },
         "TableClass": {
           "oneOf": [
@@ -204,22 +146,16 @@
         "DeletionProtectionEnabled": {
           "type": "boolean"
         },
-        "SSESpecification": {
-          "$ref": "#/definitions/ReplicaSSESpecification"
-        },
         "Tags": {
-          "type": "array",
-          "insertionOrder": false,
           "uniqueItems": true,
+          "insertionOrder": false,
+          "type": "array",
           "items": {
             "$ref": "#/definitions/Tag"
           }
         },
-        "ReadProvisionedThroughputSettings": {
-          "$ref": "#/definitions/ReadProvisionedThroughputSettings"
-        },
-        "KinesisStreamSpecification": {
-          "$ref": "#/definitions/KinesisStreamSpecification"
+        "ReadOnDemandThroughputSettings": {
+          "$ref": "#/definitions/ReadOnDemandThroughputSettings"
         }
       },
       "required": [
@@ -227,11 +163,11 @@
       ],
       "title": "AWSDynamoDBGlobalTableReplicaSpecificationDefinition"
     },
-    "TimeToLiveSpecification": {
-      "type": "object",
+    "AttributeDefinition": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "AttributeName": {
+        "AttributeType": {
           "oneOf": [
             {
               "type": "string"
@@ -241,24 +177,87 @@
             }
           ]
         },
-        "Enabled": {
-          "type": "boolean"
+        "AttributeName": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
-        "Enabled"
+        "AttributeName",
+        "AttributeType"
       ],
-      "title": "AWSDynamoDBGlobalTableTimeToLiveSpecificationDefinition"
+      "title": "AWSDynamoDBGlobalTableAttributeDefinition"
     },
-    "LocalSecondaryIndex": {
-      "type": "object",
+    "Projection": {
       "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "NonKeyAttributes": {
+          "maxItems": 20,
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "ProjectionType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSDynamoDBGlobalTableProjectionDefinition"
+    },
+    "PointInTimeRecoverySpecification": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PointInTimeRecoveryEnabled": {
+          "type": "boolean"
+        },
+        "RecoveryPeriodInDays": {
+          "maximum": 35,
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "dependencies": {
+        "RecoveryPeriodInDays": [
+          "PointInTimeRecoveryEnabled"
+        ]
+      },
+      "title": "AWSDynamoDBGlobalTablePointInTimeRecoverySpecificationDefinition"
+    },
+    "ReplicaGlobalSecondaryIndexSpecification": {
+      "additionalProperties": false,
+      "type": "object",
       "properties": {
         "IndexName": {
           "oneOf": [
             {
-              "type": "string",
               "minLength": 3,
+              "type": "string",
               "maxLength": 255
             },
             {
@@ -266,34 +265,30 @@
             }
           ]
         },
-        "KeySchema": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/definitions/KeySchema"
-          },
-          "maxItems": 2
+        "ContributorInsightsSpecification": {
+          "$ref": "#/definitions/ContributorInsightsSpecification"
         },
-        "Projection": {
-          "$ref": "#/definitions/Projection"
+        "ReadProvisionedThroughputSettings": {
+          "$ref": "#/definitions/ReadProvisionedThroughputSettings"
+        },
+        "ReadOnDemandThroughputSettings": {
+          "$ref": "#/definitions/ReadOnDemandThroughputSettings"
         }
       },
       "required": [
-        "IndexName",
-        "Projection",
-        "KeySchema"
+        "IndexName"
       ],
-      "title": "AWSDynamoDBGlobalTableLocalSecondaryIndexDefinition"
+      "title": "AWSDynamoDBGlobalTableReplicaGlobalSecondaryIndexSpecificationDefinition"
     },
     "GlobalSecondaryIndex": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "IndexName": {
           "oneOf": [
             {
-              "type": "string",
               "minLength": 3,
+              "type": "string",
               "maxLength": 255
             },
             {
@@ -301,20 +296,32 @@
             }
           ]
         },
-        "KeySchema": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/definitions/KeySchema"
-          },
-          "minItems": 1,
-          "maxItems": 2
-        },
         "Projection": {
           "$ref": "#/definitions/Projection"
+        },
+        "KeySchema": {
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeySchema"
+          }
+        },
+        "WarmThroughput": {
+          "$ref": "#/definitions/WarmThroughput"
+        },
+        "ReadProvisionedThroughputSettings": {
+          "$ref": "#/definitions/GlobalReadProvisionedThroughputSettings"
         },
         "WriteProvisionedThroughputSettings": {
           "$ref": "#/definitions/WriteProvisionedThroughputSettings"
+        },
+        "ReadOnDemandThroughputSettings": {
+          "$ref": "#/definitions/ReadOnDemandThroughputSettings"
+        },
+        "WriteOnDemandThroughputSettings": {
+          "$ref": "#/definitions/WriteOnDemandThroughputSettings"
         }
       },
       "required": [
@@ -324,9 +331,71 @@
       ],
       "title": "AWSDynamoDBGlobalTableGlobalSecondaryIndexDefinition"
     },
-    "SSESpecification": {
-      "type": "object",
+    "WriteProvisionedThroughputSettings": {
       "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "WriteCapacityAutoScalingSettings": {
+          "$ref": "#/definitions/CapacityAutoScalingSettings"
+        }
+      },
+      "title": "AWSDynamoDBGlobalTableWriteProvisionedThroughputSettingsDefinition"
+    },
+    "WriteOnDemandThroughputSettings": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "MaxWriteRequestUnits": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "title": "AWSDynamoDBGlobalTableWriteOnDemandThroughputSettingsDefinition"
+    },
+    "ReplicaStreamSpecification": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ResourcePolicy": {
+          "$ref": "#/definitions/ResourcePolicy"
+        }
+      },
+      "required": [
+        "ResourcePolicy"
+      ],
+      "title": "AWSDynamoDBGlobalTableReplicaStreamSpecificationDefinition"
+    },
+    "GlobalTableWitness": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSDynamoDBGlobalTableGlobalTableWitnessDefinition"
+    },
+    "ReadOnDemandThroughputSettings": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "MaxReadRequestUnits": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "title": "AWSDynamoDBGlobalTableReadOnDemandThroughputSettingsDefinition"
+    },
+    "SSESpecification": {
+      "additionalProperties": false,
+      "type": "object",
       "properties": {
         "SSEEnabled": {
           "type": "boolean"
@@ -347,13 +416,193 @@
       ],
       "title": "AWSDynamoDBGlobalTableSSESpecificationDefinition"
     },
-    "ReplicaSSESpecification": {
-      "type": "object",
+    "KinesisStreamSpecification": {
       "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ApproximateCreationDateTimePrecision": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MICROSECOND",
+                "MILLISECOND"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StreamArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "StreamArn"
+      ],
+      "title": "AWSDynamoDBGlobalTableKinesisStreamSpecificationDefinition"
+    },
+    "StreamSpecification": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "StreamViewType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "StreamViewType"
+      ],
+      "title": "AWSDynamoDBGlobalTableStreamSpecificationDefinition"
+    },
+    "ContributorInsightsSpecification": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Mode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ACCESSED_AND_THROTTLED_KEYS",
+                "THROTTLED_KEYS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enabled"
+      ],
+      "title": "AWSDynamoDBGlobalTableContributorInsightsSpecificationDefinition"
+    },
+    "CapacityAutoScalingSettings": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "MinCapacity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "SeedCapacity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "$ref": "#/definitions/TargetTrackingScalingPolicyConfiguration"
+        },
+        "MaxCapacity": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "MinCapacity",
+        "MaxCapacity",
+        "TargetTrackingScalingPolicyConfiguration"
+      ],
+      "title": "AWSDynamoDBGlobalTableCapacityAutoScalingSettingsDefinition"
+    },
+    "WarmThroughput": {
+      "anyOf": [
+        {
+          "required": [
+            "ReadUnitsPerSecond"
+          ]
+        },
+        {
+          "required": [
+            "WriteUnitsPerSecond"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ReadUnitsPerSecond": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "WriteUnitsPerSecond": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "title": "AWSDynamoDBGlobalTableWarmThroughputDefinition"
+    },
+    "TargetTrackingScalingPolicyConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ScaleOutCooldown": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "TargetValue": {
+          "format": "double",
+          "type": "number"
+        },
+        "DisableScaleIn": {
+          "type": "boolean"
+        },
+        "ScaleInCooldown": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "TargetValue"
+      ],
+      "title": "AWSDynamoDBGlobalTableTargetTrackingScalingPolicyConfigurationDefinition"
+    },
+    "ReplicaSSESpecification": {
+      "additionalProperties": false,
+      "type": "object",
       "properties": {
         "KMSMasterKeyId": {
           "oneOf": [
             {
+              "anyOf": [
+                {
+                  "relationshipRef": {
+                    "typeName": "AWS::KMS::Key",
+                    "propertyPath": "/properties/Arn"
+                  }
+                },
+                {
+                  "relationshipRef": {
+                    "typeName": "AWS::KMS::Key",
+                    "propertyPath": "/properties/KeyId"
+                  }
+                },
+                {
+                  "relationshipRef": {
+                    "typeName": "AWS::KMS::Alias",
+                    "propertyPath": "/properties/AliasName"
+                  }
+                }
+              ],
               "type": "string"
             },
             {
@@ -367,26 +616,39 @@
       ],
       "title": "AWSDynamoDBGlobalTableReplicaSSESpecificationDefinition"
     },
-    "AttributeDefinition": {
-      "type": "object",
+    "ResourcePolicy": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "AttributeName": {
+        "PolicyDocument": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "PolicyDocument"
+      ],
+      "title": "AWSDynamoDBGlobalTableResourcePolicyDefinition"
+    },
+    "KeySchema": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "KeyType": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 255
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
         },
-        "AttributeType": {
+        "AttributeName": {
           "oneOf": [
             {
-              "type": "string"
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 255
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -395,16 +657,16 @@
         }
       },
       "required": [
-        "AttributeName",
-        "AttributeType"
+        "KeyType",
+        "AttributeName"
       ],
-      "title": "AWSDynamoDBGlobalTableAttributeDefinition"
+      "title": "AWSDynamoDBGlobalTableKeySchemaDefinition"
     },
     "Tag": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "Key": {
+        "Value": {
           "oneOf": [
             {
               "type": "string"
@@ -414,7 +676,7 @@
             }
           ]
         },
-        "Value": {
+        "Key": {
           "oneOf": [
             {
               "type": "string"
@@ -431,83 +693,9 @@
       ],
       "title": "AWSDynamoDBGlobalTableTagDefinition"
     },
-    "Projection": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "NonKeyAttributes": {
-          "type": "array",
-          "uniqueItems": true,
-          "insertionOrder": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          },
-          "maxItems": 20
-        },
-        "ProjectionType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "title": "AWSDynamoDBGlobalTableProjectionDefinition"
-    },
-    "ReplicaGlobalSecondaryIndexSpecification": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "IndexName": {
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 3,
-              "maxLength": 255
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ContributorInsightsSpecification": {
-          "$ref": "#/definitions/ContributorInsightsSpecification"
-        },
-        "ReadProvisionedThroughputSettings": {
-          "$ref": "#/definitions/ReadProvisionedThroughputSettings"
-        }
-      },
-      "required": [
-        "IndexName"
-      ],
-      "title": "AWSDynamoDBGlobalTableReplicaGlobalSecondaryIndexSpecificationDefinition"
-    },
-    "ContributorInsightsSpecification": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Enabled": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "Enabled"
-      ],
-      "title": "AWSDynamoDBGlobalTableContributorInsightsSpecificationDefinition"
-    },
     "ReadProvisionedThroughputSettings": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "ReadCapacityUnits": {
           "type": "integer",
@@ -519,95 +707,164 @@
       },
       "title": "AWSDynamoDBGlobalTableReadProvisionedThroughputSettingsDefinition"
     },
-    "WriteProvisionedThroughputSettings": {
-      "type": "object",
+    "TimeToLiveSpecification": {
       "additionalProperties": false,
-      "properties": {
-        "WriteCapacityAutoScalingSettings": {
-          "$ref": "#/definitions/CapacityAutoScalingSettings"
-        }
-      },
-      "title": "AWSDynamoDBGlobalTableWriteProvisionedThroughputSettingsDefinition"
-    },
-    "CapacityAutoScalingSettings": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "MinCapacity": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "MaxCapacity": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "SeedCapacity": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "TargetTrackingScalingPolicyConfiguration": {
-          "$ref": "#/definitions/TargetTrackingScalingPolicyConfiguration"
-        }
-      },
-      "required": [
-        "MinCapacity",
-        "MaxCapacity",
-        "TargetTrackingScalingPolicyConfiguration"
-      ],
-      "title": "AWSDynamoDBGlobalTableCapacityAutoScalingSettingsDefinition"
-    },
-    "TargetTrackingScalingPolicyConfiguration": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "DisableScaleIn": {
+        "Enabled": {
           "type": "boolean"
         },
-        "ScaleInCooldown": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "ScaleOutCooldown": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "TargetValue": {
-          "type": "number",
-          "format": "double"
+        "AttributeName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
-        "TargetValue"
+        "Enabled"
       ],
-      "title": "AWSDynamoDBGlobalTableTargetTrackingScalingPolicyConfigurationDefinition"
+      "title": "AWSDynamoDBGlobalTableTimeToLiveSpecificationDefinition"
+    },
+    "GlobalReadProvisionedThroughputSettings": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ReadCapacityUnits": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "title": "AWSDynamoDBGlobalTableGlobalReadProvisionedThroughputSettingsDefinition"
     }
   },
-  "required": [
-    "KeySchema",
-    "AttributeDefinitions",
-    "Replicas"
-  ],
-  "readOnlyProperties": [
-    "/properties/Arn",
-    "/properties/StreamArn",
-    "/properties/TableId"
-  ],
-  "createOnlyProperties": [
-    "/properties/LocalSecondaryIndexes",
-    "/properties/TableName",
-    "/properties/KeySchema"
-  ],
-  "primaryIdentifier": [
-    "/properties/TableName"
-  ],
-  "additionalIdentifiers": [
-    [
-      "/properties/Arn"
-    ],
-    [
-      "/properties/StreamArn"
-    ]
-  ],
+  "properties": {
+    "MultiRegionConsistency": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EVENTUAL",
+            "STRONG"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "SSESpecification": {
+      "$ref": "#/definitions/SSESpecification"
+    },
+    "StreamSpecification": {
+      "$ref": "#/definitions/StreamSpecification"
+    },
+    "WarmThroughput": {
+      "$ref": "#/definitions/WarmThroughput"
+    },
+    "Replicas": {
+      "minItems": 1,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ReplicaSpecification"
+      }
+    },
+    "WriteProvisionedThroughputSettings": {
+      "$ref": "#/definitions/WriteProvisionedThroughputSettings"
+    },
+    "GlobalTableSourceArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "WriteOnDemandThroughputSettings": {
+      "$ref": "#/definitions/WriteOnDemandThroughputSettings"
+    },
+    "GlobalTableWitnesses": {
+      "minItems": 1,
+      "maxItems": 1,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/GlobalTableWitness"
+      }
+    },
+    "TableName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "AttributeDefinitions": {
+      "minItems": 1,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AttributeDefinition"
+      }
+    },
+    "BillingMode": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "GlobalSecondaryIndexes": {
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/GlobalSecondaryIndex"
+      }
+    },
+    "KeySchema": {
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/KeySchema"
+      }
+    },
+    "LocalSecondaryIndexes": {
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LocalSecondaryIndex"
+      }
+    },
+    "ReadProvisionedThroughputSettings": {
+      "$ref": "#/definitions/GlobalReadProvisionedThroughputSettings"
+    },
+    "ReadOnDemandThroughputSettings": {
+      "$ref": "#/definitions/ReadOnDemandThroughputSettings"
+    },
+    "TimeToLiveSpecification": {
+      "$ref": "#/definitions/TimeToLiveSpecification"
+    }
+  },
   "type": "object",
   "title": "AWSDynamoDBGlobalTableProperties"
 }

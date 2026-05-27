@@ -1,102 +1,250 @@
 {
-  "typeName": "AWS::EC2::EC2Fleet",
-  "description": "Resource Type definition for AWS::EC2::EC2Fleet. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "TargetCapacitySpecification": {
-      "$ref": "#/definitions/TargetCapacitySpecificationRequest"
-    },
-    "OnDemandOptions": {
-      "$ref": "#/definitions/OnDemandOptionsRequest"
-    },
-    "Type": {
-      "oneOf": [
-        {
-          "type": "string",
-          "enum": [
-            "maintain",
-            "request",
-            "instant"
-          ]
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ExcessCapacityTerminationPolicy": {
-      "oneOf": [
-        {
-          "type": "string",
-          "enum": [
-            "termination",
-            "no-termination"
-          ]
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "TagSpecifications": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/TagSpecification"
-      }
-    },
-    "SpotOptions": {
-      "$ref": "#/definitions/SpotOptionsRequest"
-    },
-    "ValidFrom": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ReplaceUnhealthyInstances": {
-      "type": "boolean"
-    },
-    "LaunchTemplateConfigs": {
-      "type": "array",
-      "uniqueItems": false,
-      "maxItems": 50,
-      "items": {
-        "$ref": "#/definitions/FleetLaunchTemplateConfigRequest"
-      }
-    },
-    "TerminateInstancesWithExpiration": {
-      "type": "boolean"
-    },
-    "ValidUntil": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Context": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    }
+  "tagging": {
+    "taggable": false
   },
+  "typeName": "AWS::EC2::EC2Fleet",
+  "readOnlyProperties": [
+    "/properties/FleetId"
+  ],
+  "description": "Resource Type definition for AWS::EC2::EC2Fleet. Source:- https://github.com/aws-cloudformation",
+  "createOnlyProperties": [
+    "/properties/LaunchTemplateConfigs",
+    "/properties/OnDemandOptions",
+    "/properties/ReservedCapacityOptions",
+    "/properties/ReplaceUnhealthyInstances",
+    "/properties/SpotOptions",
+    "/properties/TagSpecifications",
+    "/properties/TerminateInstancesWithExpiration",
+    "/properties/Type",
+    "/properties/ValidFrom",
+    "/properties/ValidUntil",
+    "/properties/TargetCapacitySpecification/TargetCapacityUnitType",
+    "/properties/TargetCapacitySpecification/DefaultTargetCapacityType"
+  ],
+  "primaryIdentifier": [
+    "/properties/FleetId"
+  ],
+  "required": [
+    "TargetCapacitySpecification",
+    "LaunchTemplateConfigs"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation",
+  "writeOnlyProperties": [
+    "/properties/LaunchTemplateConfigs/*/Overrides/*/Placement/HostResourceGroupArn",
+    "/properties/LaunchTemplateConfigs/*/Overrides/*/Placement/Affinity",
+    "/properties/LaunchTemplateConfigs/*/Overrides/*/Placement/SpreadDomain",
+    "/properties/LaunchTemplateConfigs/*/Overrides/*/Placement/AvailabilityZone",
+    "/properties/LaunchTemplateConfigs/*/Overrides/*/Placement/PartitionNumber",
+    "/properties/LaunchTemplateConfigs/*/Overrides/*/Placement/HostId",
+    "/properties/LaunchTemplateConfigs/*/Overrides/*/Placement/Tenancy"
+  ],
+  "additionalProperties": false,
   "definitions": {
-    "OnDemandOptionsRequest": {
-      "type": "object",
+    "TargetCapacitySpecificationRequest": {
       "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "DefaultTargetCapacityType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "on-demand",
+                "spot",
+                "capacity-block",
+                "reserved-capacity"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TotalTargetCapacity": {
+          "type": "integer"
+        },
+        "OnDemandTargetCapacity": {
+          "type": "integer"
+        },
+        "SpotTargetCapacity": {
+          "type": "integer"
+        },
+        "TargetCapacityUnitType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "vcpu",
+                "memory-mib",
+                "units"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "TotalTargetCapacity"
+      ],
+      "title": "AWSEC2EC2FleetTargetCapacitySpecificationRequestDefinition"
+    },
+    "FleetLaunchTemplateSpecificationRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "LaunchTemplateName": {
+          "oneOf": [
+            {
+              "minLength": 3,
+              "pattern": "[a-zA-Z0-9\\(\\)\\.\\-/_]+",
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LaunchTemplateId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LaunchTemplateSpecificationUserData": {
+          "oneOf": [
+            {
+              "format": "password",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Version"
+      ],
+      "title": "AWSEC2EC2FleetFleetLaunchTemplateSpecificationRequestDefinition"
+    },
+    "MemoryGiBPerVCpuRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "number"
+        },
+        "Max": {
+          "type": "number"
+        }
+      },
+      "title": "AWSEC2EC2FleetMemoryGiBPerVCpuRequestDefinition"
+    },
+    "CapacityReservationOptionsRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "UsageStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "use-capacity-reservations-first"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEC2EC2FleetCapacityReservationOptionsRequestDefinition"
+    },
+    "TotalLocalStorageGBRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "number"
+        },
+        "Max": {
+          "type": "number"
+        }
+      },
+      "title": "AWSEC2EC2FleetTotalLocalStorageGBRequestDefinition"
+    },
+    "NetworkBandwidthGbpsRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "number"
+        },
+        "Max": {
+          "type": "number"
+        }
+      },
+      "title": "AWSEC2EC2FleetNetworkBandwidthGbpsRequestDefinition"
+    },
+    "VCpuCountRangeRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSEC2EC2FleetVCpuCountRangeRequestDefinition"
+    },
+    "BaselineEbsBandwidthMbpsRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSEC2EC2FleetBaselineEbsBandwidthMbpsRequestDefinition"
+    },
+    "NetworkInterfaceCountRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSEC2EC2FleetNetworkInterfaceCountRequestDefinition"
+    },
+    "OnDemandOptionsRequest": {
+      "additionalProperties": false,
+      "type": "object",
       "properties": {
         "SingleAvailabilityZone": {
           "type": "boolean"
@@ -134,12 +282,9 @@
       "title": "AWSEC2EC2FleetOnDemandOptionsRequestDefinition"
     },
     "SpotOptionsRequest": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "MaintenanceStrategies": {
-          "$ref": "#/definitions/MaintenanceStrategies"
-        },
         "SingleAvailabilityZone": {
           "type": "boolean"
         },
@@ -180,6 +325,9 @@
             }
           ]
         },
+        "MaintenanceStrategies": {
+          "$ref": "#/definitions/MaintenanceStrategies"
+        },
         "InstanceInterruptionBehavior": {
           "oneOf": [
             {
@@ -201,100 +349,9 @@
       },
       "title": "AWSEC2EC2FleetSpotOptionsRequestDefinition"
     },
-    "TargetCapacitySpecificationRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "DefaultTargetCapacityType": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": [
-                "on-demand",
-                "spot"
-              ]
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "TargetCapacityUnitType": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": [
-                "vcpu",
-                "memory-mib",
-                "units"
-              ]
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "TotalTargetCapacity": {
-          "type": "integer"
-        },
-        "OnDemandTargetCapacity": {
-          "type": "integer"
-        },
-        "SpotTargetCapacity": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "TotalTargetCapacity"
-      ],
-      "title": "AWSEC2EC2FleetTargetCapacitySpecificationRequestDefinition"
-    },
-    "FleetLaunchTemplateSpecificationRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "LaunchTemplateName": {
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 3,
-              "maxLength": 128,
-              "pattern": "[a-zA-Z0-9\\(\\)\\.\\-/_]+"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "LaunchTemplateId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Version": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Version"
-      ],
-      "title": "AWSEC2EC2FleetFleetLaunchTemplateSpecificationRequestDefinition"
-    },
     "Placement": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "GroupName": {
           "oneOf": [
@@ -372,57 +429,11 @@
       },
       "title": "AWSEC2EC2FleetPlacementDefinition"
     },
-    "FleetLaunchTemplateConfigRequest": {
-      "type": "object",
+    "PerformanceFactorReferenceRequest": {
       "additionalProperties": false,
-      "properties": {
-        "LaunchTemplateSpecification": {
-          "$ref": "#/definitions/FleetLaunchTemplateSpecificationRequest"
-        },
-        "Overrides": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "$ref": "#/definitions/FleetLaunchTemplateOverridesRequest"
-          }
-        }
-      },
-      "title": "AWSEC2EC2FleetFleetLaunchTemplateConfigRequestDefinition"
-    },
-    "CapacityReservationOptionsRequest": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "UsageStrategy": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": [
-                "use-capacity-reservations-first"
-              ]
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "title": "AWSEC2EC2FleetCapacityReservationOptionsRequestDefinition"
-    },
-    "FleetLaunchTemplateOverridesRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "WeightedCapacity": {
-          "type": "number"
-        },
-        "Placement": {
-          "$ref": "#/definitions/Placement"
-        },
-        "Priority": {
-          "type": "number"
-        },
-        "AvailabilityZone": {
+        "InstanceFamily": {
           "oneOf": [
             {
               "type": "string"
@@ -431,6 +442,117 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        }
+      },
+      "title": "AWSEC2EC2FleetPerformanceFactorReferenceRequestDefinition"
+    },
+    "CpuPerformanceFactorRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "References": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PerformanceFactorReferenceRequest"
+          }
+        }
+      },
+      "title": "AWSEC2EC2FleetCpuPerformanceFactorRequestDefinition"
+    },
+    "MaintenanceStrategies": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "CapacityRebalance": {
+          "$ref": "#/definitions/CapacityRebalance"
+        }
+      },
+      "title": "AWSEC2EC2FleetMaintenanceStrategiesDefinition"
+    },
+    "BlockDeviceMapping": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Ebs": {
+          "$ref": "#/definitions/EbsBlockDevice"
+        },
+        "NoDevice": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "VirtualName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DeviceName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEC2EC2FleetBlockDeviceMappingDefinition"
+    },
+    "NetworkInterfaceSpecificationRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PrivateIpAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PrivateIpAddresses": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PrivateIpAddressSpecificationRequest"
+          }
+        },
+        "SecondaryPrivateIpAddressCount": {
+          "type": "integer"
+        },
+        "DeviceIndex": {
+          "type": "integer"
+        },
+        "Ipv6Addresses": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ipv6AddressRequest"
+          }
         },
         "SubnetId": {
           "oneOf": [
@@ -442,7 +564,13 @@
             }
           ]
         },
-        "InstanceType": {
+        "AssociatePublicIpAddress": {
+          "type": "boolean"
+        },
+        "NetworkCardIndex": {
+          "type": "integer"
+        },
+        "NetworkInterfaceId": {
           "oneOf": [
             {
               "type": "string"
@@ -452,8 +580,229 @@
             }
           ]
         },
+        "InterfaceType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Groups": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Ipv6AddressCount": {
+          "type": "integer"
+        },
+        "DeleteOnTermination": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSEC2EC2FleetNetworkInterfaceSpecificationRequestDefinition"
+    },
+    "ReservedCapacityOptionsRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ReservationTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "interruptible-capacity-reservation"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSEC2EC2FleetReservedCapacityOptionsRequestDefinition"
+    },
+    "AcceleratorCountRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSEC2EC2FleetAcceleratorCountRequestDefinition"
+    },
+    "CapacityRebalance": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "TerminationDelay": {
+          "type": "integer"
+        },
+        "ReplacementStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "launch",
+                "launch-before-terminate"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEC2EC2FleetCapacityRebalanceDefinition"
+    },
+    "IamInstanceProfileSpecification": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEC2EC2FleetIamInstanceProfileSpecificationDefinition"
+    },
+    "FleetLaunchTemplateConfigRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "LaunchTemplateSpecification": {
+          "$ref": "#/definitions/FleetLaunchTemplateSpecificationRequest"
+        },
+        "Overrides": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FleetLaunchTemplateOverridesRequest"
+          }
+        }
+      },
+      "title": "AWSEC2EC2FleetFleetLaunchTemplateConfigRequestDefinition"
+    },
+    "FleetLaunchTemplateOverridesRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "MetadataOptions": {
+          "$ref": "#/definitions/InstanceMetadataOptionsRequest"
+        },
+        "Priority": {
+          "type": "number"
+        },
+        "AvailabilityZoneId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BlockDeviceMappings": {
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlockDeviceMapping"
+          }
+        },
+        "AvailabilityZone": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IamInstanceProfile": {
+          "$ref": "#/definitions/IamInstanceProfileSpecification"
+        },
+        "SubnetId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KeyName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "WeightedCapacity": {
+          "type": "number"
+        },
+        "Placement": {
+          "$ref": "#/definitions/Placement"
+        },
+        "NetworkInterfaces": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NetworkInterfaceSpecificationRequest"
+          }
+        },
         "InstanceRequirements": {
           "$ref": "#/definitions/InstanceRequirementsRequest"
+        },
+        "InstanceType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "MaxPrice": {
           "oneOf": [
@@ -468,40 +817,285 @@
       },
       "title": "AWSEC2EC2FleetFleetLaunchTemplateOverridesRequestDefinition"
     },
-    "Tag": {
-      "type": "object",
+    "InstanceRequirementsRequest": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "Value": {
+        "InstanceGenerations": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "current",
+                  "previous"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "RequireEncryptionInTransit": {
+          "type": "boolean"
+        },
+        "MemoryGiBPerVCpu": {
+          "$ref": "#/definitions/MemoryGiBPerVCpuRequest"
+        },
+        "AcceleratorTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "gpu",
+                  "fpga",
+                  "inference",
+                  "media"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "VCpuCount": {
+          "$ref": "#/definitions/VCpuCountRangeRequest"
+        },
+        "AcceleratorManufacturers": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "amazon-web-services",
+                  "amd",
+                  "habana",
+                  "nvidia",
+                  "xilinx"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "LocalStorage": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "included",
+                "required",
+                "excluded"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
         },
-        "Key": {
+        "CpuManufacturers": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "intel",
+                  "amd",
+                  "amazon-web-services",
+                  "apple"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "BareMetal": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "included",
+                "required",
+                "excluded"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "RequireHibernateSupport": {
+          "type": "boolean"
+        },
+        "MaxSpotPriceAsPercentageOfOptimalOnDemandPrice": {
+          "type": "integer"
+        },
+        "OnDemandMaxPricePercentageOverLowestPrice": {
+          "type": "integer"
+        },
+        "MemoryMiB": {
+          "$ref": "#/definitions/MemoryMiBRequest"
+        },
+        "LocalStorageTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "hdd",
+                  "ssd"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "NetworkInterfaceCount": {
+          "$ref": "#/definitions/NetworkInterfaceCountRequest"
+        },
+        "ExcludedInstanceTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "minLength": 1,
+                "pattern": "[a-zA-Z0-9\\.\\*]+",
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AllowedInstanceTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "minLength": 1,
+                "pattern": "[a-zA-Z0-9\\.\\*]+",
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "NetworkBandwidthGbps": {
+          "$ref": "#/definitions/NetworkBandwidthGbpsRequest"
+        },
+        "AcceleratorCount": {
+          "$ref": "#/definitions/AcceleratorCountRequest"
+        },
+        "BaselinePerformanceFactors": {
+          "$ref": "#/definitions/BaselinePerformanceFactorsRequest"
+        },
+        "SpotMaxPricePercentageOverLowestPrice": {
+          "type": "integer"
+        },
+        "BaselineEbsBandwidthMbps": {
+          "$ref": "#/definitions/BaselineEbsBandwidthMbpsRequest"
+        },
+        "AcceleratorNames": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "a10g",
+                  "a100",
+                  "h100",
+                  "inferentia",
+                  "k520",
+                  "k80",
+                  "m60",
+                  "radeon-pro-v520",
+                  "t4",
+                  "t4g",
+                  "vu9p",
+                  "v100",
+                  "l40s",
+                  "l4",
+                  "gaudi-hl-205",
+                  "inferentia2",
+                  "trainium",
+                  "trainium2",
+                  "u30"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AcceleratorTotalMemoryMiB": {
+          "$ref": "#/definitions/AcceleratorTotalMemoryMiBRequest"
+        },
+        "BurstablePerformance": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "included",
+                "required",
+                "excluded"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TotalLocalStorageGB": {
+          "$ref": "#/definitions/TotalLocalStorageGBRequest"
         }
       },
-      "required": [
-        "Value",
-        "Key"
-      ],
-      "title": "AWSEC2EC2FleetTagDefinition"
+      "title": "AWSEC2EC2FleetInstanceRequirementsRequestDefinition"
+    },
+    "MemoryMiBRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSEC2EC2FleetMemoryMiBRequestDefinition"
     },
     "TagSpecification": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "ResourceType": {
           "oneOf": [
@@ -563,8 +1157,8 @@
           ]
         },
         "Tags": {
-          "type": "array",
           "uniqueItems": false,
+          "type": "array",
           "items": {
             "$ref": "#/definitions/Tag"
           }
@@ -572,354 +1166,36 @@
       },
       "title": "AWSEC2EC2FleetTagSpecificationDefinition"
     },
-    "InstanceRequirementsRequest": {
-      "type": "object",
+    "BaselinePerformanceFactorsRequest": {
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "VCpuCount": {
-          "$ref": "#/definitions/VCpuCountRangeRequest"
-        },
-        "MemoryMiB": {
-          "$ref": "#/definitions/MemoryMiBRequest"
-        },
-        "CpuManufacturers": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "intel",
-                  "amd",
-                  "amazon-web-services"
-                ]
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "MemoryGiBPerVCpu": {
-          "$ref": "#/definitions/MemoryGiBPerVCpuRequest"
-        },
-        "AllowedInstanceTypes": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 30,
-                "pattern": "[a-zA-Z0-9\\.\\*]+"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "ExcludedInstanceTypes": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 30,
-                "pattern": "[a-zA-Z0-9\\.\\*]+"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "InstanceGenerations": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "current",
-                  "previous"
-                ]
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "SpotMaxPricePercentageOverLowestPrice": {
-          "type": "integer"
-        },
-        "OnDemandMaxPricePercentageOverLowestPrice": {
-          "type": "integer"
-        },
-        "BareMetal": {
+        "Cpu": {
+          "$ref": "#/definitions/CpuPerformanceFactorRequest"
+        }
+      },
+      "title": "AWSEC2EC2FleetBaselinePerformanceFactorsRequestDefinition"
+    },
+    "Ipv6AddressRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Ipv6Address": {
           "oneOf": [
             {
-              "type": "string",
-              "enum": [
-                "included",
-                "required",
-                "excluded"
-              ]
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
-        },
-        "BurstablePerformance": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": [
-                "included",
-                "required",
-                "excluded"
-              ]
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RequireHibernateSupport": {
-          "type": "boolean"
-        },
-        "NetworkBandwidthGbps": {
-          "$ref": "#/definitions/NetworkBandwidthGbpsRequest"
-        },
-        "NetworkInterfaceCount": {
-          "$ref": "#/definitions/NetworkInterfaceCountRequest"
-        },
-        "LocalStorage": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": [
-                "included",
-                "required",
-                "excluded"
-              ]
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "LocalStorageTypes": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "hdd",
-                  "ssd"
-                ]
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "TotalLocalStorageGB": {
-          "$ref": "#/definitions/TotalLocalStorageGBRequest"
-        },
-        "BaselineEbsBandwidthMbps": {
-          "$ref": "#/definitions/BaselineEbsBandwidthMbpsRequest"
-        },
-        "AcceleratorTypes": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "gpu",
-                  "fpga",
-                  "inference"
-                ]
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "AcceleratorCount": {
-          "$ref": "#/definitions/AcceleratorCountRequest"
-        },
-        "AcceleratorManufacturers": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "nvidia",
-                  "amd",
-                  "amazon-web-services",
-                  "xilinx"
-                ]
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "AcceleratorNames": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "a100",
-                  "v100",
-                  "k80",
-                  "t4",
-                  "m60",
-                  "radeon-pro-v520",
-                  "vu9p",
-                  "inferentia",
-                  "k520"
-                ]
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "AcceleratorTotalMemoryMiB": {
-          "$ref": "#/definitions/AcceleratorTotalMemoryMiBRequest"
         }
       },
-      "title": "AWSEC2EC2FleetInstanceRequirementsRequestDefinition"
-    },
-    "VCpuCountRangeRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Min": {
-          "type": "integer"
-        },
-        "Max": {
-          "type": "integer"
-        }
-      },
-      "title": "AWSEC2EC2FleetVCpuCountRangeRequestDefinition"
-    },
-    "MemoryMiBRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Min": {
-          "type": "integer"
-        },
-        "Max": {
-          "type": "integer"
-        }
-      },
-      "title": "AWSEC2EC2FleetMemoryMiBRequestDefinition"
-    },
-    "MemoryGiBPerVCpuRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Min": {
-          "type": "number"
-        },
-        "Max": {
-          "type": "number"
-        }
-      },
-      "title": "AWSEC2EC2FleetMemoryGiBPerVCpuRequestDefinition"
-    },
-    "NetworkBandwidthGbpsRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Min": {
-          "type": "number"
-        },
-        "Max": {
-          "type": "number"
-        }
-      },
-      "title": "AWSEC2EC2FleetNetworkBandwidthGbpsRequestDefinition"
-    },
-    "NetworkInterfaceCountRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Min": {
-          "type": "integer"
-        },
-        "Max": {
-          "type": "integer"
-        }
-      },
-      "title": "AWSEC2EC2FleetNetworkInterfaceCountRequestDefinition"
-    },
-    "TotalLocalStorageGBRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Min": {
-          "type": "number"
-        },
-        "Max": {
-          "type": "number"
-        }
-      },
-      "title": "AWSEC2EC2FleetTotalLocalStorageGBRequestDefinition"
-    },
-    "BaselineEbsBandwidthMbpsRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Min": {
-          "type": "integer"
-        },
-        "Max": {
-          "type": "integer"
-        }
-      },
-      "title": "AWSEC2EC2FleetBaselineEbsBandwidthMbpsRequestDefinition"
-    },
-    "AcceleratorCountRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Min": {
-          "type": "integer"
-        },
-        "Max": {
-          "type": "integer"
-        }
-      },
-      "title": "AWSEC2EC2FleetAcceleratorCountRequestDefinition"
+      "title": "AWSEC2EC2FleetIpv6AddressRequestDefinition"
     },
     "AcceleratorTotalMemoryMiBRequest": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Min": {
           "type": "integer"
@@ -930,27 +1206,32 @@
       },
       "title": "AWSEC2EC2FleetAcceleratorTotalMemoryMiBRequestDefinition"
     },
-    "MaintenanceStrategies": {
-      "type": "object",
+    "EbsBlockDevice": {
       "additionalProperties": false,
-      "properties": {
-        "CapacityRebalance": {
-          "$ref": "#/definitions/CapacityRebalance"
-        }
-      },
-      "title": "AWSEC2EC2FleetMaintenanceStrategiesDefinition"
-    },
-    "CapacityRebalance": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
-        "ReplacementStrategy": {
+        "SnapshotId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "VolumeType": {
           "oneOf": [
             {
               "type": "string",
               "enum": [
-                "launch",
-                "launch-before-terminate"
+                "gp2",
+                "gp3",
+                "io1",
+                "io2",
+                "sc1",
+                "st1",
+                "standard"
               ]
             },
             {
@@ -958,34 +1239,215 @@
             }
           ]
         },
-        "TerminationDelay": {
+        "KmsKeyId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Encrypted": {
+          "type": "boolean"
+        },
+        "Iops": {
           "type": "integer"
+        },
+        "VolumeSize": {
+          "type": "integer"
+        },
+        "DeleteOnTermination": {
+          "type": "boolean"
         }
       },
-      "title": "AWSEC2EC2FleetCapacityRebalanceDefinition"
+      "title": "AWSEC2EC2FleetEbsBlockDeviceDefinition"
+    },
+    "InstanceMetadataOptionsRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "HttpPutResponseHopLimit": {
+          "type": "integer"
+        },
+        "HttpTokens": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "optional",
+                "required"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HttpEndpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "disabled",
+                "enabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEC2EC2FleetInstanceMetadataOptionsRequestDefinition"
+    },
+    "PrivateIpAddressSpecificationRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PrivateIpAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Primary": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSEC2EC2FleetPrivateIpAddressSpecificationRequestDefinition"
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSEC2EC2FleetTagDefinition"
     }
   },
-  "required": [
-    "TargetCapacitySpecification",
-    "LaunchTemplateConfigs"
-  ],
-  "createOnlyProperties": [
-    "/properties/LaunchTemplateConfigs",
-    "/properties/OnDemandOptions",
-    "/properties/ReplaceUnhealthyInstances",
-    "/properties/SpotOptions",
-    "/properties/TagSpecifications",
-    "/properties/TerminateInstancesWithExpiration",
-    "/properties/Type",
-    "/properties/ValidFrom",
-    "/properties/ValidUntil"
-  ],
-  "primaryIdentifier": [
-    "/properties/FleetId"
-  ],
-  "readOnlyProperties": [
-    "/properties/FleetId"
-  ],
+  "properties": {
+    "Context": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "TargetCapacitySpecification": {
+      "$ref": "#/definitions/TargetCapacitySpecificationRequest"
+    },
+    "OnDemandOptions": {
+      "$ref": "#/definitions/OnDemandOptionsRequest"
+    },
+    "ExcessCapacityTerminationPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "termination",
+            "no-termination"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "TagSpecifications": {
+      "uniqueItems": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TagSpecification"
+      }
+    },
+    "SpotOptions": {
+      "$ref": "#/definitions/SpotOptionsRequest"
+    },
+    "LaunchTemplateConfigs": {
+      "maxItems": 50,
+      "uniqueItems": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FleetLaunchTemplateConfigRequest"
+      }
+    },
+    "TerminateInstancesWithExpiration": {
+      "type": "boolean"
+    },
+    "ValidUntil": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "maintain",
+            "request",
+            "instant"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ReservedCapacityOptions": {
+      "$ref": "#/definitions/ReservedCapacityOptionsRequest"
+    },
+    "ValidFrom": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ReplaceUnhealthyInstances": {
+      "type": "boolean"
+    }
+  },
   "type": "object",
   "title": "AWSEC2EC2FleetProperties"
 }

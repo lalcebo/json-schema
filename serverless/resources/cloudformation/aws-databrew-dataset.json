@@ -1,8 +1,7 @@
 {
   "typeName": "AWS::DataBrew::Dataset",
-  "description": "Resource schema for AWS::DataBrew::Dataset.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-databrew.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-databrew.git",
+  "description": "Resource schema for AWS::DataBrew::Dataset.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-databrew.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-databrew.git",
-  "taggable": true,
   "properties": {
     "Name": {
       "oneOf": [
@@ -42,6 +41,22 @@
     "Input": {
       "description": "Input",
       "$ref": "#/definitions/Input"
+    },
+    "Source": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "S3",
+            "DATA-CATALOG",
+            "DATABASE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Source type of the dataset"
     },
     "PathOptions": {
       "description": "PathOptions",
@@ -198,6 +213,9 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "BucketOwner": {
+          "$ref": "#/definitions/BucketOwner"
         }
       },
       "additionalProperties": false,
@@ -312,6 +330,20 @@
       },
       "additionalProperties": false,
       "title": "AWSDataBrewDatasetMetadataDefinition"
+    },
+    "BucketOwner": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 12
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Bucket owner",
+      "title": "AWSDataBrewDatasetBucketOwnerDefinition"
     },
     "PathOptions": {
       "description": "Path options for dataset",
@@ -616,9 +648,20 @@
     "/properties/Name"
   ],
   "createOnlyProperties": [
-    "/properties/Name",
-    "/properties/Tags"
+    "/properties/Name"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "databrew:TagResource",
+      "databrew:UntagResource",
+      "databrew:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSDataBrewDatasetProperties"
 }

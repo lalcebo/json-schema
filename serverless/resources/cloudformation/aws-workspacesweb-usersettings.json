@@ -1,0 +1,620 @@
+{
+  "typeName": "AWS::WorkSpacesWeb::UserSettings",
+  "description": "Definition of AWS::WorkSpacesWeb::UserSettings Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "BrandingConfiguration": {
+      "type": "object",
+      "properties": {
+        "Logo": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(^s3://[a-z0-9][a-z0-9\\.\\-]{1,61}[a-z0-9]/.+$)|(^(?=(.{4})*$)[A-Za-z0-9+/]*={0,2}$)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Wallpaper": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(^s3://[a-z0-9][a-z0-9\\.\\-]{1,61}[a-z0-9]/.+$)|(^(?=(.{4})*$)[A-Za-z0-9+/]*={0,2}$)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Favicon": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(^s3://[a-z0-9][a-z0-9\\.\\-]{1,61}[a-z0-9]/.+$)|(^(?=(.{4})*$)[A-Za-z0-9+/]*={0,2}$)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LogoMetadata": {
+          "$ref": "#/definitions/ImageMetadata"
+        },
+        "WallpaperMetadata": {
+          "$ref": "#/definitions/ImageMetadata"
+        },
+        "FaviconMetadata": {
+          "$ref": "#/definitions/ImageMetadata"
+        },
+        "LocalizedStrings": {
+          "$ref": "#/definitions/LocalizedBrandingStringMap"
+        },
+        "ColorTheme": {
+          "$ref": "#/definitions/ColorTheme"
+        },
+        "TermsOfService": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 153600
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsBrandingConfigurationDefinition"
+    },
+    "CookieSpecification": {
+      "type": "object",
+      "properties": {
+        "Domain": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 253,
+              "minLength": 0,
+              "pattern": "^(\\.?)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)*[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4096,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Path": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 0,
+              "pattern": "^/(\\S)*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Domain"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsCookieSpecificationDefinition"
+    },
+    "CookieSynchronizationConfiguration": {
+      "type": "object",
+      "properties": {
+        "Allowlist": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CookieSpecification"
+          },
+          "maxItems": 10,
+          "minItems": 0,
+          "insertionOrder": false
+        },
+        "Blocklist": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CookieSpecification"
+          },
+          "maxItems": 10,
+          "minItems": 0,
+          "insertionOrder": false
+        }
+      },
+      "required": [
+        "Allowlist"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsCookieSynchronizationConfigurationDefinition"
+    },
+    "EnabledType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Disabled",
+            "Enabled"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebUserSettingsEnabledTypeDefinition"
+    },
+    "EncryptionContextMap": {
+      "type": "object",
+      "patternProperties": {
+        "^[\\s\\S]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 131072,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsEncryptionContextMapDefinition"
+    },
+    "ColorTheme": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Light",
+            "Dark"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebUserSettingsColorThemeDefinition"
+    },
+    "ImageMetadata": {
+      "type": "object",
+      "properties": {
+        "MimeType": {
+          "$ref": "#/definitions/MimeType"
+        },
+        "FileExtension": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 131072,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LastUploadTimestamp": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FileExtension",
+        "LastUploadTimestamp",
+        "MimeType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsImageMetadataDefinition"
+    },
+    "Locale": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "de-DE",
+            "en-US",
+            "es-ES",
+            "fr-FR",
+            "id-ID",
+            "it-IT",
+            "ja-JP",
+            "ko-KR",
+            "pt-BR",
+            "zh-CN",
+            "zh-TW"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebUserSettingsLocaleDefinition"
+    },
+    "LocalizedBrandingStringMap": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "$ref": "#/definitions/LocalizedBrandingStrings"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsLocalizedBrandingStringMapDefinition"
+    },
+    "LocalizedBrandingStrings": {
+      "type": "object",
+      "properties": {
+        "BrowserTabTitle": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[^<>&'`~\\\\]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "WelcomeText": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[^<>&'`~\\\\]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoginTitle": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[^<>&'`~\\\\]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoginDescription": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[^<>&'`~\\\\]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoginButtonText": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[^<>&'`~\\\\]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ContactLink": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(https?://|mailto:).*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ContactButtonText": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[^<>&'`~\\\\]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoadingText": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[^<>&'`~\\\\]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "BrowserTabTitle",
+        "WelcomeText"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsLocalizedBrandingStringsDefinition"
+    },
+    "MaxDisplayResolution": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "size4096X2160",
+            "size3840X2160",
+            "size3440X1440",
+            "size2560X1440",
+            "size1920X1080",
+            "size1280X720",
+            "size1024X768",
+            "size800X600"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebUserSettingsMaxDisplayResolutionDefinition"
+    },
+    "MimeType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/x-icon"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebUserSettingsMimeTypeDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsTagDefinition"
+    },
+    "ToolbarConfiguration": {
+      "type": "object",
+      "properties": {
+        "ToolbarType": {
+          "$ref": "#/definitions/ToolbarType"
+        },
+        "VisualMode": {
+          "$ref": "#/definitions/VisualMode"
+        },
+        "HiddenToolbarItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ToolbarItem"
+          }
+        },
+        "MaxDisplayResolution": {
+          "$ref": "#/definitions/MaxDisplayResolution"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebUserSettingsToolbarConfigurationDefinition"
+    },
+    "ToolbarItem": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Windows",
+            "DualMonitor",
+            "FullScreen",
+            "Webcam",
+            "Microphone"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebUserSettingsToolbarItemDefinition"
+    },
+    "ToolbarType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Floating",
+            "Docked"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebUserSettingsToolbarTypeDefinition"
+    },
+    "VisualMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Dark",
+            "Light"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebUserSettingsVisualModeDefinition"
+    }
+  },
+  "properties": {
+    "AdditionalEncryptionContext": {
+      "$ref": "#/definitions/EncryptionContextMap"
+    },
+    "BrandingConfiguration": {
+      "$ref": "#/definitions/BrandingConfiguration"
+    },
+    "CookieSynchronizationConfiguration": {
+      "$ref": "#/definitions/CookieSynchronizationConfiguration"
+    },
+    "CopyAllowed": {
+      "$ref": "#/definitions/EnabledType"
+    },
+    "CustomerManagedKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:[\\w+=\\/,.@-]+:kms:[a-zA-Z0-9\\-]*:[a-zA-Z0-9]{1,12}:key\\/[a-zA-Z0-9-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DisconnectTimeoutInMinutes": {
+      "type": "number",
+      "default": null,
+      "maximum": 600,
+      "minimum": 1
+    },
+    "DownloadAllowed": {
+      "$ref": "#/definitions/EnabledType"
+    },
+    "IdleDisconnectTimeoutInMinutes": {
+      "type": "number",
+      "default": null,
+      "maximum": 60,
+      "minimum": 0
+    },
+    "PasteAllowed": {
+      "$ref": "#/definitions/EnabledType"
+    },
+    "PrintAllowed": {
+      "$ref": "#/definitions/EnabledType"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0,
+      "insertionOrder": false
+    },
+    "ToolbarConfiguration": {
+      "$ref": "#/definitions/ToolbarConfiguration"
+    },
+    "UploadAllowed": {
+      "$ref": "#/definitions/EnabledType"
+    },
+    "DeepLinkAllowed": {
+      "$ref": "#/definitions/EnabledType"
+    },
+    "WebAuthnAllowed": {
+      "$ref": "#/definitions/EnabledType"
+    }
+  },
+  "required": [
+    "CopyAllowed",
+    "DownloadAllowed",
+    "PasteAllowed",
+    "PrintAllowed",
+    "UploadAllowed"
+  ],
+  "writeOnlyProperties": [
+    "/properties/BrandingConfiguration/Logo",
+    "/properties/BrandingConfiguration/Favicon",
+    "/properties/BrandingConfiguration/Wallpaper"
+  ],
+  "readOnlyProperties": [
+    "/properties/AssociatedPortalArns",
+    "/properties/UserSettingsArn",
+    "/properties/BrandingConfiguration/LogoMetadata",
+    "/properties/BrandingConfiguration/FaviconMetadata",
+    "/properties/BrandingConfiguration/WallpaperMetadata"
+  ],
+  "primaryIdentifier": [
+    "/properties/UserSettingsArn"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": true,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "workspaces-web:UntagResource",
+      "workspaces-web:ListTagsForResource",
+      "workspaces-web:TagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSWorkSpacesWebUserSettingsProperties"
+}

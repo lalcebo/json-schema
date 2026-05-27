@@ -1,7 +1,7 @@
 {
   "typeName": "AWS::Events::EventBus",
-  "description": "Resource Type definition for AWS::Events::EventBus. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
+  "description": "Resource type definition for AWS::Events::EventBus. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-events",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-events",
   "properties": {
     "EventSourceName": {
       "oneOf": [
@@ -11,14 +11,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/TagEntry"
-      }
+      ],
+      "description": "If you are creating a partner event bus, this specifies the partner event source that the new event bus will be matched with."
     },
     "Name": {
       "oneOf": [
@@ -28,15 +22,137 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
+      ],
+      "description": "The name of the event bus."
+    },
+    "Tags": {
+      "description": "Any tags assigned to the event bus.",
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the event bus."
+    },
+    "KmsKeyIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Kms Key Identifier used to encrypt events at rest in the event bus."
+    },
+    "Policy": {
+      "description": "A JSON string that describes the permission policy statement for the event bus.",
+      "type": [
+        "object",
+        "string"
       ]
-    }
-  },
-  "definitions": {
-    "TagEntry": {
+    },
+    "DeadLetterConfig": {
+      "description": "Dead Letter Queue for the event bus.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Value": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "LogConfig": {
+      "description": "The logging configuration settings for vended logs.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IncludeDetail": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FULL",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Configures whether or not to include event detail, input transformer details, target properties, and target input in the applicable log messages."
+        },
+        "Level": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "INFO",
+                "ERROR",
+                "TRACE",
+                "OFF"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Configures the log level of the EventBus and determines which log messages are sent to Ingestion Hub for delivery."
+        }
+      }
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "events:UntagResource",
+      "events:TagResource",
+      "events:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "writeOnlyProperties": [
+    "/properties/EventSourceName"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
           "oneOf": [
             {
               "type": "string"
@@ -46,7 +162,7 @@
             }
           ]
         },
-        "Key": {
+        "Value": {
           "oneOf": [
             {
               "type": "string"
@@ -61,24 +177,9 @@
         "Value",
         "Key"
       ],
-      "title": "AWSEventsEventBusTagEntryDefinition"
+      "title": "AWSEventsEventBusTagDefinition"
     }
   },
-  "required": [
-    "Name"
-  ],
-  "createOnlyProperties": [
-    "/properties/Name",
-    "/properties/EventSourceName"
-  ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id",
-    "/properties/Policy",
-    "/properties/Arn"
-  ],
   "type": "object",
   "title": "AWSEventsEventBusProperties"
 }

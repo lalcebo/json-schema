@@ -1,10 +1,18 @@
 {
   "typeName": "AWS::EC2::SpotFleet",
-  "description": "Resource Type definition for AWS::EC2::SpotFleet. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::EC2::SpotFleet. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "SpotFleetRequestConfigData": {
       "$ref": "#/definitions/SpotFleetRequestConfigData"
+    },
+    "Tags": {
+      "type": "array",
+      "description": "The tags to specify in SpotFleetRequestConfigData",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "definitions": {
@@ -603,6 +611,16 @@
             }
           ]
         },
+        "AvailabilityZoneId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "InstanceType": {
           "oneOf": [
             {
@@ -661,6 +679,16 @@
       "additionalProperties": false,
       "properties": {
         "AvailabilityZone": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AvailabilityZoneId": {
           "oneOf": [
             {
               "type": "string"
@@ -1020,7 +1048,8 @@
                 "enum": [
                   "intel",
                   "amd",
-                  "amazon-web-services"
+                  "amazon-web-services",
+                  "apple"
                 ]
               },
               {
@@ -1088,6 +1117,9 @@
           "type": "integer"
         },
         "OnDemandMaxPricePercentageOverLowestPrice": {
+          "type": "integer"
+        },
+        "MaxSpotPriceAsPercentageOfOptimalOnDemandPrice": {
           "type": "integer"
         },
         "BareMetal": {
@@ -1178,7 +1210,8 @@
                 "enum": [
                   "gpu",
                   "fpga",
-                  "inference"
+                  "inference",
+                  "media"
                 ]
               },
               {
@@ -1198,9 +1231,10 @@
               {
                 "type": "string",
                 "enum": [
-                  "nvidia",
-                  "amd",
                   "amazon-web-services",
+                  "amd",
+                  "habana",
+                  "nvidia",
                   "xilinx"
                 ]
               },
@@ -1218,15 +1252,25 @@
               {
                 "type": "string",
                 "enum": [
+                  "a10g",
                   "a100",
-                  "v100",
+                  "h100",
+                  "inferentia",
+                  "k520",
                   "k80",
-                  "t4",
                   "m60",
                   "radeon-pro-v520",
+                  "t4",
+                  "t4g",
                   "vu9p",
-                  "inferentia",
-                  "k520"
+                  "v100",
+                  "l40s",
+                  "l4",
+                  "gaudi-hl-205",
+                  "inferentia2",
+                  "trainium",
+                  "trainium2",
+                  "u30"
                 ]
               },
               {
@@ -1237,6 +1281,12 @@
         },
         "AcceleratorTotalMemoryMiB": {
           "$ref": "#/definitions/AcceleratorTotalMemoryMiBRequest"
+        },
+        "BaselinePerformanceFactors": {
+          "$ref": "#/definitions/BaselinePerformanceFactorsRequest"
+        },
+        "RequireEncryptionInTransit": {
+          "type": "boolean"
         }
       },
       "title": "AWSEC2SpotFleetInstanceRequirementsRequestDefinition"
@@ -1357,6 +1407,47 @@
         }
       },
       "title": "AWSEC2SpotFleetAcceleratorTotalMemoryMiBRequestDefinition"
+    },
+    "BaselinePerformanceFactorsRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Cpu": {
+          "$ref": "#/definitions/CpuPerformanceFactorRequest"
+        }
+      },
+      "title": "AWSEC2SpotFleetBaselinePerformanceFactorsRequestDefinition"
+    },
+    "CpuPerformanceFactorRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "References": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/PerformanceFactorReferenceRequest"
+          }
+        }
+      },
+      "title": "AWSEC2SpotFleetCpuPerformanceFactorRequestDefinition"
+    },
+    "PerformanceFactorReferenceRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InstanceFamily": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSEC2SpotFleetPerformanceFactorReferenceRequestDefinition"
     }
   },
   "required": [
@@ -1386,9 +1477,16 @@
   "readOnlyProperties": [
     "/properties/Id"
   ],
+  "writeOnlyProperties": [
+    "/properties/SpotFleetRequestConfigData/TagSpecifications",
+    "/properties/SpotFleetRequestConfigData/LaunchSpecifications/*/NetworkInterfaces/*/Groups"
+  ],
   "primaryIdentifier": [
     "/properties/Id"
   ],
+  "tagging": {
+    "taggable": false
+  },
   "type": "object",
   "title": "AWSEC2SpotFleetProperties"
 }

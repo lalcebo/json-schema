@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::SageMaker::FeatureGroup",
-  "description": "Resource Type definition for AWS::SageMaker::FeatureGroup. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::SageMaker::FeatureGroup. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "FeatureGroupName": {
@@ -49,6 +49,7 @@
       "type": "array",
       "description": "An Array of Feature Definition",
       "uniqueItems": false,
+      "insertionOrder": false,
       "minItems": 1,
       "maxItems": 2500,
       "items": {
@@ -64,6 +65,12 @@
         },
         "EnableOnlineStore": {
           "type": "boolean"
+        },
+        "StorageType": {
+          "$ref": "#/definitions/StorageType"
+        },
+        "TtlDuration": {
+          "$ref": "#/definitions/TtlDuration"
         }
       }
     },
@@ -87,6 +94,9 @@
       "required": [
         "S3StorageConfig"
       ]
+    },
+    "ThroughputConfig": {
+      "$ref": "#/definitions/ThroughputConfig"
     },
     "RoleArn": {
       "oneOf": [
@@ -118,6 +128,7 @@
       "type": "array",
       "description": "An array of key-value pair to apply to this resource.",
       "uniqueItems": false,
+      "insertionOrder": false,
       "maxItems": 50,
       "items": {
         "$ref": "#/definitions/Tag"
@@ -175,6 +186,59 @@
         }
       ],
       "title": "AWSSageMakerFeatureGroupKmsKeyIdDefinition"
+    },
+    "StorageType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Standard",
+            "InMemory"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSageMakerFeatureGroupStorageTypeDefinition"
+    },
+    "TtlDuration": {
+      "type": "object",
+      "description": "TTL configuration of the feature group",
+      "additionalProperties": false,
+      "properties": {
+        "Unit": {
+          "$ref": "#/definitions/Unit"
+        },
+        "Value": {
+          "$ref": "#/definitions/Value"
+        }
+      },
+      "title": "AWSSageMakerFeatureGroupTtlDurationDefinition"
+    },
+    "Unit": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Seconds",
+            "Minutes",
+            "Hours",
+            "Days",
+            "Weeks"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unit of ttl configuration",
+      "title": "AWSSageMakerFeatureGroupUnitDefinition"
+    },
+    "Value": {
+      "type": "integer",
+      "description": "Value of ttl configuration",
+      "title": "AWSSageMakerFeatureGroupValueDefinition"
     },
     "OnlineStoreSecurityConfig": {
       "type": "object",
@@ -278,6 +342,43 @@
       "description": "Format for the offline store feature group. Iceberg is the optimal format for feature groups shared between offline and online stores.",
       "title": "AWSSageMakerFeatureGroupTableFormatDefinition"
     },
+    "ThroughputMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OnDemand",
+            "Provisioned"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Throughput mode configuration of the feature group",
+      "title": "AWSSageMakerFeatureGroupThroughputModeDefinition"
+    },
+    "ThroughputConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ThroughputMode": {
+          "$ref": "#/definitions/ThroughputMode"
+        },
+        "ProvisionedReadCapacityUnits": {
+          "type": "integer",
+          "description": "For provisioned feature groups with online store enabled, this indicates the read throughput you are billed for and can consume without throttling."
+        },
+        "ProvisionedWriteCapacityUnits": {
+          "type": "integer",
+          "description": "For provisioned feature groups, this indicates the write throughput you are billed for and can consume without throttling."
+        }
+      },
+      "required": [
+        "ThroughputMode"
+      ],
+      "title": "AWSSageMakerFeatureGroupThroughputConfigDefinition"
+    },
     "Tag": {
       "type": "object",
       "description": "A key-value pair to associate with a resource.",
@@ -321,7 +422,9 @@
     "/properties/FeatureGroupName",
     "/properties/RecordIdentifierFeatureName",
     "/properties/EventTimeFeatureName",
-    "/properties/OnlineStoreConfig",
+    "/properties/OnlineStoreConfig/SecurityConfig",
+    "/properties/OnlineStoreConfig/EnableOnlineStore",
+    "/properties/OnlineStoreConfig/StorageType",
     "/properties/OfflineStoreConfig",
     "/properties/RoleArn",
     "/properties/Description",
@@ -332,10 +435,20 @@
   ],
   "readOnlyProperties": [
     "/properties/CreationTime",
-    "/properties/FeatureGroupStatus",
-    "/properties/FailureReason",
-    "/properties/OfflineStoreStatus"
+    "/properties/FeatureGroupStatus"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "sagemaker:AddTags",
+      "sagemaker:ListTags",
+      "sagemaker:DeleteTags"
+    ]
+  },
   "type": "object",
   "title": "AWSSageMakerFeatureGroupProperties"
 }

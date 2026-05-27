@@ -1,8 +1,45 @@
 {
   "typeName": "AWS::OSIS::Pipeline",
-  "description": "An OpenSearch Ingestion Service Data Prepper pipeline running Data Prepper.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-osis.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-osis.git",
+  "description": "An OpenSearch Ingestion Service Data Prepper pipeline running Data Prepper.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-osis.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-osis.git",
   "definitions": {
+    "BufferOptions": {
+      "description": "Key-value pairs to configure buffering.",
+      "type": "object",
+      "properties": {
+        "PersistentBufferEnabled": {
+          "type": "boolean",
+          "description": "Whether persistent buffering should be enabled."
+        }
+      },
+      "required": [
+        "PersistentBufferEnabled"
+      ],
+      "additionalProperties": false,
+      "title": "AWSOSISPipelineBufferOptionsDefinition"
+    },
+    "EncryptionAtRestOptions": {
+      "description": "Key-value pairs to configure encryption at rest.",
+      "type": "object",
+      "properties": {
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The KMS key to use for encrypting data. By default an AWS owned key is used"
+        }
+      },
+      "required": [
+        "KmsKeyArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSOSISPipelineEncryptionAtRestOptionsDefinition"
+    },
     "LogPublishingOptions": {
       "description": "Key-value pairs to configure log publishing.",
       "type": "object",
@@ -29,6 +66,9 @@
               ]
             }
           },
+          "required": [
+            "LogGroup"
+          ],
           "additionalProperties": false
         }
       },
@@ -112,8 +152,53 @@
               }
             ]
           }
+        },
+        "VpcEndpointManagement": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CUSTOMER",
+                "SERVICE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Defines whether you or Amazon OpenSearch Ingestion service create and manage the VPC endpoint configured for the pipeline."
+        },
+        "VpcAttachmentOptions": {
+          "type": "object",
+          "description": "Options for attaching a VPC to the pipeline.",
+          "properties": {
+            "AttachToVpc": {
+              "type": "boolean",
+              "description": "Whether the pipeline should be attached to the provided VPC"
+            },
+            "CidrBlock": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/(3[0-2]|[12]?[0-9])$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The CIDR block to be reserved for OpenSearch Ingestion to create elastic network interfaces (ENIs)."
+            }
+          },
+          "required": [
+            "AttachToVpc",
+            "CidrBlock"
+          ],
+          "additionalProperties": false
         }
       },
+      "required": [
+        "SubnetIds"
+      ],
       "additionalProperties": false,
       "title": "AWSOSISPipelineVpcOptionsDefinition"
     },
@@ -149,36 +234,55 @@
       },
       "additionalProperties": false,
       "title": "AWSOSISPipelineVpcEndpointDefinition"
+    },
+    "ResourcePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Policy": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "Policy"
+      ],
+      "title": "AWSOSISPipelineResourcePolicyDefinition"
     }
   },
   "properties": {
+    "BufferOptions": {
+      "$ref": "#/definitions/BufferOptions"
+    },
+    "EncryptionAtRestOptions": {
+      "$ref": "#/definitions/EncryptionAtRestOptions"
+    },
     "LogPublishingOptions": {
       "$ref": "#/definitions/LogPublishingOptions"
     },
     "MaxUnits": {
-      "description": "The maximum pipeline capacity, in Ingestion Compute Units (ICUs).",
+      "description": "The maximum pipeline capacity, in Ingestion OpenSearch Compute Units (OCUs).",
       "type": "integer",
       "minimum": 1,
-      "maximum": 24
+      "maximum": 384
     },
     "MinUnits": {
-      "description": "The minimum pipeline capacity, in Ingestion Compute Units (ICUs).",
+      "description": "The minimum pipeline capacity, in Ingestion OpenSearch Compute Units (OCUs).",
       "type": "integer",
       "minimum": 1,
-      "maximum": 24
+      "maximum": 384
     },
     "PipelineConfigurationBody": {
       "oneOf": [
         {
           "type": "string",
           "minLength": 1,
-          "maxLength": 12000
+          "maxLength": 100000
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The Data Prepper pipeline configuration in YAML format."
+      "description": "The Data Prepper pipeline configuration."
     },
     "PipelineName": {
       "oneOf": [
@@ -205,6 +309,23 @@
     },
     "VpcOptions": {
       "$ref": "#/definitions/VpcOptions"
+    },
+    "PipelineRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "^arn:(aws|aws\\-cn|aws\\-us\\-gov|aws\\-iso|aws\\-iso\\-b|aws\\-iso\\-e|aws\\-iso\\-f):iam::[0-9]+:role\\/.*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Pipeline Role (ARN) for the pipeline."
+    },
+    "ResourcePolicy": {
+      "$ref": "#/definitions/ResourcePolicy"
     }
   },
   "additionalProperties": false,
@@ -217,7 +338,8 @@
   "readOnlyProperties": [
     "/properties/PipelineArn",
     "/properties/IngestEndpointUrls",
-    "/properties/VpcEndpoints"
+    "/properties/VpcEndpoints",
+    "/properties/VpcEndpointService"
   ],
   "writeOnlyProperties": [
     "/properties/VpcOptions"
@@ -233,7 +355,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "osis:TagResource",
+      "osis:UntagResource",
+      "osis:ListTagsForResource"
+    ]
   },
   "type": "object",
   "title": "AWSOSISPipelineProperties"

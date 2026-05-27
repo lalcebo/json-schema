@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::AppFlow::Flow",
-  "description": "Resource schema for AWS::AppFlow::Flow.. Source:- https://docs.aws.amazon.com/appflow/latest/userguide/what-is-appflow.html. Source:- https://docs.aws.amazon.com/appflow/latest/userguide/what-is-appflow.html",
+  "description": "Resource schema for AWS::AppFlow::Flow.. Source:- https://docs.aws.amazon.com/appflow/latest/userguide/what-is-appflow.html",
   "sourceUrl": "https://docs.aws.amazon.com/appflow/latest/userguide/what-is-appflow.html",
   "additionalProperties": false,
   "properties": {
@@ -55,7 +55,8 @@
           "type": "string",
           "enum": [
             "Active",
-            "Suspended"
+            "Suspended",
+            "Draft"
           ]
         },
         {
@@ -216,8 +217,7 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/TaskPropertiesObject"
-          },
-          "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -1109,6 +1109,12 @@
       "properties": {
         "ObjectPath": {
           "$ref": "#/definitions/Object"
+        },
+        "parallelismConfig": {
+          "$ref": "#/definitions/SAPODataParallelismConfig"
+        },
+        "paginationConfig": {
+          "$ref": "#/definitions/SAPODataPaginationConfig"
         }
       },
       "required": [
@@ -1250,6 +1256,43 @@
         },
         "CustomProperties": {
           "$ref": "#/definitions/CustomProperties"
+        },
+        "DataTransferApi": {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "[\\w/-]+"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Type": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "SYNC",
+                    "ASYNC",
+                    "AUTOMATIC"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Type"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -2131,6 +2174,46 @@
         }
       ],
       "title": "AWSAppFlowFlowDataTransferApiDefinition"
+    },
+    "SAPODataParallelismConfig": {
+      "description": "SAP Source connector parallelism factor",
+      "type": "object",
+      "properties": {
+        "maxParallelism": {
+          "$ref": "#/definitions/SAPODataMaxParallelism"
+        }
+      },
+      "required": [
+        "maxParallelism"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppFlowFlowSAPODataParallelismConfigDefinition"
+    },
+    "SAPODataPaginationConfig": {
+      "description": "SAP Source connector page size",
+      "type": "object",
+      "properties": {
+        "maxPageSize": {
+          "$ref": "#/definitions/SAPODataMaxPageSize"
+        }
+      },
+      "required": [
+        "maxPageSize"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppFlowFlowSAPODataPaginationConfigDefinition"
+    },
+    "SAPODataMaxParallelism": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "title": "AWSAppFlowFlowSAPODataMaxParallelismDefinition"
+    },
+    "SAPODataMaxPageSize": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000,
+      "title": "AWSAppFlowFlowSAPODataMaxPageSizeDefinition"
     }
   },
   "required": [
@@ -2150,6 +2233,18 @@
   "primaryIdentifier": [
     "/properties/FlowName"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "appflow:TagResource",
+      "appflow:UntagResource",
+      "appflow:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSAppFlowFlowProperties"
 }

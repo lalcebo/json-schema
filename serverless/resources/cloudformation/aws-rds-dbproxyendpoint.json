@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::RDS::DBProxyEndpoint",
-  "description": "Resource schema for AWS::RDS::DBProxyEndpoint.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Resource schema for AWS::RDS::DBProxyEndpoint.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "TagFormat": {
@@ -94,6 +94,22 @@
         ]
       }
     },
+    "EndpointNetworkType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "IPV6",
+            "DUAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The network type of the DB proxy endpoint. The network type determines the IP version that the proxy endpoint supports."
+    },
     "TargetRole": {
       "oneOf": [
         {
@@ -119,6 +135,10 @@
     }
   },
   "additionalProperties": false,
+  "propertyTransform": {
+    "/properties/DBProxyName": "$lowercase(DBProxyName)",
+    "/properties/DBProxyEndpointName": "$lowercase(DBProxyEndpointName)"
+  },
   "required": [
     "DBProxyName",
     "DBProxyEndpointName",
@@ -133,8 +153,21 @@
   "createOnlyProperties": [
     "/properties/DBProxyName",
     "/properties/DBProxyEndpointName",
+    "/properties/EndpointNetworkType",
     "/properties/VpcSubnetIds"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "rds:AddTagsToResource",
+      "rds:RemoveTagsFromResource",
+      "rds:ListTagsForResource"
+    ]
+  },
   "primaryIdentifier": [
     "/properties/DBProxyEndpointName"
   ],

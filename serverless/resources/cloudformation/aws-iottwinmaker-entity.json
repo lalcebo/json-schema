@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoTTwinMaker::Entity",
-  "description": "Resource schema for AWS::IoTTwinMaker::Entity. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iottwinmaker. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iottwinmaker",
+  "description": "Resource schema for AWS::IoTTwinMaker::Entity. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iottwinmaker",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iottwinmaker",
   "definitions": {
     "DateTimeFormat": {
@@ -52,7 +52,7 @@
       "title": "AWSIoTTwinMakerEntityRelationshipDefinition"
     },
     "PropertyDefinitionConfiguration": {
-      "description": "An object that specifies information about a property.",
+      "description": "An object that specifies information about a property configuration.",
       "type": "object",
       "patternProperties": {
         "[a-zA-Z_\\-0-9]+": {
@@ -240,55 +240,61 @@
       "additionalProperties": false,
       "title": "AWSIoTTwinMakerEntityDataValueDefinition"
     },
+    "Definition": {
+      "description": "An object that specifies information about a property definition.",
+      "type": "object",
+      "properties": {
+        "Configuration": {
+          "description": "An object that specifies information about a property configuration.",
+          "$ref": "#/definitions/PropertyDefinitionConfiguration"
+        },
+        "DataType": {
+          "description": "An object that contains information about the data type.",
+          "$ref": "#/definitions/DataType"
+        },
+        "DefaultValue": {
+          "description": "An object that contains the default value.",
+          "$ref": "#/definitions/DataValue"
+        },
+        "IsExternalId": {
+          "description": "A Boolean value that specifies whether the property ID comes from an external data store.",
+          "type": "boolean"
+        },
+        "IsFinal": {
+          "description": "A Boolean value that specifies whether the property definition can be updated.",
+          "type": "boolean"
+        },
+        "IsImported": {
+          "description": "A Boolean value that specifies whether the property definition is imported from an external data store.",
+          "type": "boolean"
+        },
+        "IsInherited": {
+          "description": "A Boolean value that specifies whether the property definition is inherited from a parent entity.",
+          "type": "boolean"
+        },
+        "IsRequiredInEntity": {
+          "description": "A Boolean value that specifies whether the property is required.",
+          "type": "boolean"
+        },
+        "IsStoredExternally": {
+          "description": "A Boolean value that specifies whether the property is stored externally.",
+          "type": "boolean"
+        },
+        "IsTimeSeries": {
+          "description": "A Boolean value that specifies whether the property consists of time series data.",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTTwinMakerEntityDefinition"
+    },
     "Property": {
+      "description": "An object that specifies information about a property.",
       "type": "object",
       "properties": {
         "Definition": {
-          "description": "An object that specifies information about a property.",
-          "type": "object",
-          "properties": {
-            "Configuration": {
-              "description": "An object that specifies information about a property.",
-              "$ref": "#/definitions/PropertyDefinitionConfiguration"
-            },
-            "DataType": {
-              "description": "An object that contains information about the data type.",
-              "$ref": "#/definitions/DataType"
-            },
-            "DefaultValue": {
-              "description": "An object that contains the default value.",
-              "$ref": "#/definitions/DataValue"
-            },
-            "IsExternalId": {
-              "description": "A Boolean value that specifies whether the property ID comes from an external data store.",
-              "type": "boolean"
-            },
-            "IsFinal": {
-              "description": "A Boolean value that specifies whether the property definition can be updated.",
-              "type": "boolean"
-            },
-            "IsImported": {
-              "description": "A Boolean value that specifies whether the property definition is imported from an external data store.",
-              "type": "boolean"
-            },
-            "IsInherited": {
-              "description": "A Boolean value that specifies whether the property definition is inherited from a parent entity.",
-              "type": "boolean"
-            },
-            "IsRequiredInEntity": {
-              "description": "A Boolean value that specifies whether the property is required.",
-              "type": "boolean"
-            },
-            "IsStoredExternally": {
-              "description": "A Boolean value that specifies whether the property is stored externally.",
-              "type": "boolean"
-            },
-            "IsTimeSeries": {
-              "description": "A Boolean value that specifies whether the property consists of time series data.",
-              "type": "boolean"
-            }
-          },
-          "additionalProperties": false
+          "description": "The definition of the property.",
+          "$ref": "#/definitions/Definition"
         },
         "Value": {
           "description": "The value of the property.",
@@ -427,6 +433,92 @@
       },
       "additionalProperties": false,
       "title": "AWSIoTTwinMakerEntityComponentDefinition"
+    },
+    "CompositeComponent": {
+      "type": "object",
+      "properties": {
+        "ComponentName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-zA-Z_\\-0-9]+",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the component."
+        },
+        "ComponentPath": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-zA-Z_\\-0-9/]+",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The path of the component."
+        },
+        "ComponentTypeId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "[a-zA-Z_\\-0-9]+",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the component type."
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The description of the component."
+        },
+        "Properties": {
+          "description": "An object that maps strings to the properties to set in the component type. Each string in the mapping must be unique to this object.",
+          "type": "object",
+          "patternProperties": {
+            "[a-zA-Z_\\-0-9]+": {
+              "$ref": "#/definitions/Property"
+            }
+          },
+          "additionalProperties": false
+        },
+        "PropertyGroups": {
+          "description": "An object that maps strings to the property groups to set in the component type. Each string in the mapping must be unique to this object.",
+          "type": "object",
+          "patternProperties": {
+            "[a-zA-Z_\\-0-9]+": {
+              "$ref": "#/definitions/PropertyGroup"
+            }
+          },
+          "additionalProperties": false
+        },
+        "Status": {
+          "description": "The current status of the component.",
+          "$ref": "#/definitions/Status"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTTwinMakerEntityCompositeComponentDefinition"
     },
     "Status": {
       "type": "object",
@@ -594,6 +686,16 @@
         }
       },
       "additionalProperties": false
+    },
+    "CompositeComponents": {
+      "description": "A map that sets information about a composite component.",
+      "type": "object",
+      "patternProperties": {
+        "[a-zA-Z_\\-0-9/]+": {
+          "$ref": "#/definitions/CompositeComponent"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false,
@@ -602,7 +704,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iottwinmaker:TagResource",
+      "iottwinmaker:UntagResource",
+      "iottwinmaker:ListTagsForResource"
+    ]
   },
   "required": [
     "WorkspaceId",

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Events::Connection",
-  "description": "Resource Type definition for AWS::Events::Connection.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Events::Connection.. Source:- No source definition found, add manually please",
   "definitions": {
     "AuthParameters": {
       "type": "object",
@@ -18,6 +18,9 @@
         },
         "InvocationHttpParameters": {
           "$ref": "#/definitions/ConnectionHttpParameters"
+        },
+        "ConnectivityParameters": {
+          "$ref": "#/definitions/ConnectivityParameters"
         }
       },
       "oneOf": [
@@ -46,7 +49,8 @@
         "Username": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -56,7 +60,8 @@
         "Password": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -82,7 +87,8 @@
             {
               "type": "string",
               "minLength": 1,
-              "maxLength": 2048
+              "maxLength": 2048,
+              "pattern": "^((%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@\\x26=+$,A-Za-z0-9])+)([).!';/?:,])?$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -122,7 +128,8 @@
         "ApiKeyName": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -132,7 +139,8 @@
         "ApiKeyValue": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -153,7 +161,8 @@
         "ClientID": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -163,7 +172,8 @@
         "ClientSecret": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[ \\t]*[^\\x00-\\x1F\\x7F]+([ \\t]+[^\\x00-\\x1F\\x7F]+)*[ \\t]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -202,6 +212,54 @@
       },
       "additionalProperties": false,
       "title": "AWSEventsConnectionConnectionHttpParametersDefinition"
+    },
+    "ConnectivityParameters": {
+      "type": "object",
+      "properties": {
+        "ResourceParameters": {
+          "$ref": "#/definitions/ResourceParameters"
+        }
+      },
+      "required": [
+        "ResourceParameters"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEventsConnectionConnectivityParametersDefinition"
+    },
+    "ResourceParameters": {
+      "type": "object",
+      "properties": {
+        "ResourceConfigurationArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^arn:[a-z0-9f\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResourceAssociationArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 2048,
+              "pattern": "^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:servicenetworkresourceassociation/snra-[0-9a-z]{17}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ResourceConfigurationArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEventsConnectionResourceParametersDefinition"
     },
     "Parameter": {
       "type": "object",
@@ -245,7 +303,8 @@
         {
           "type": "string",
           "minLength": 1,
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "[\\.\\-_A-Za-z0-9]+"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -282,26 +341,62 @@
     },
     "AuthParameters": {
       "$ref": "#/definitions/AuthParameters"
+    },
+    "InvocationConnectivityParameters": {
+      "description": "The private resource the HTTP request will be sent to.",
+      "type": "object",
+      "properties": {
+        "ResourceParameters": {
+          "$ref": "#/definitions/ResourceParameters"
+        }
+      },
+      "required": [
+        "ResourceParameters"
+      ],
+      "additionalProperties": false
+    },
+    "KmsKeyIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^[a-zA-Z0-9_\\-/:]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     }
   },
   "additionalProperties": false,
-  "required": [
-    "AuthorizationType",
-    "AuthParameters"
-  ],
   "createOnlyProperties": [
     "/properties/Name"
   ],
   "readOnlyProperties": [
     "/properties/Arn",
-    "/properties/SecretArn"
+    "/properties/ArnForPolicy",
+    "/properties/SecretArn",
+    "/properties/AuthParameters/ConnectivityParameters/ResourceParameters/ResourceAssociationArn",
+    "/properties/InvocationConnectivityParameters/ResourceParameters/ResourceAssociationArn"
   ],
   "writeOnlyProperties": [
-    "/properties/AuthParameters"
+    "/properties/AuthParameters/BasicAuthParameters/Password",
+    "/properties/AuthParameters/ApiKeyAuthParameters/ApiKeyValue",
+    "/properties/AuthParameters/OAuthParameters/ClientParameters/ClientSecret",
+    "/properties/AuthParameters/OAuthParameters/OAuthHttpParameters/HeaderParameters",
+    "/properties/AuthParameters/OAuthParameters/OAuthHttpParameters/QueryStringParameters",
+    "/properties/AuthParameters/OAuthParameters/OAuthHttpParameters/BodyParameters",
+    "/properties/AuthParameters/InvocationHttpParameters"
   ],
   "primaryIdentifier": [
     "/properties/Name"
   ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
   "type": "object",
   "title": "AWSEventsConnectionProperties"
 }

@@ -1,0 +1,255 @@
+{
+  "typeName": "AWS::DMS::DataMigration",
+  "description": "Resource schema for AWS::DMS::DataMigration.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "dms:AddTagsToResource",
+      "dms:RemoveTagsFromResource",
+      "dms:ListTagsForResource"
+    ]
+  },
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDMSDataMigrationTagDefinition"
+    },
+    "DataMigrationSettings": {
+      "type": "object",
+      "properties": {
+        "CloudwatchLogsEnabled": {
+          "type": "boolean",
+          "description": "The property specifies whether to enable the CloudWatch log."
+        },
+        "NumberOfJobs": {
+          "type": "integer",
+          "description": "The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "SelectionRules": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The property specifies the rules of selecting objects for data migration."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDMSDataMigrationDataMigrationSettingsDefinition"
+    },
+    "SourceDataSettings": {
+      "type": "object",
+      "properties": {
+        "CDCStartPosition": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 40
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The property is a point in the database engine's log that defines a time where you can begin CDC."
+        },
+        "CDCStartTime": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 40
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The property indicates the start time for a change data capture (CDC) operation. The value is server time in UTC format."
+        },
+        "CDCStopTime": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 40
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The property indicates the stop time for a change data capture (CDC) operation. The value is server time in UTC format."
+        },
+        "SlotName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The property sets the name of a previously created logical replication slot for a change data capture (CDC) load of the source instance."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDMSDataMigrationSourceDataSettingsDefinition"
+    }
+  },
+  "properties": {
+    "DataMigrationName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The property describes a name to identify the data migration."
+    },
+    "DataMigrationIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The property describes an ARN of the data migration."
+    },
+    "ServiceAccessRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The property describes Amazon Resource Name (ARN) of the service access role."
+    },
+    "MigrationProjectIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The property describes an identifier for the migration project. It is used for describing/deleting/modifying can be name/arn"
+    },
+    "DataMigrationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "full-load",
+            "cdc",
+            "full-load-and-cdc"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The property describes the type of migration."
+    },
+    "DataMigrationSettings": {
+      "description": "The property describes the settings for the data migration.",
+      "$ref": "#/definitions/DataMigrationSettings"
+    },
+    "SourceDataSettings": {
+      "description": "The property describes the settings for the data migration.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SourceDataSettings"
+      }
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "primaryIdentifier": [
+    "/properties/DataMigrationArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/DataMigrationName"
+    ]
+  ],
+  "readOnlyProperties": [
+    "/properties/DataMigrationArn",
+    "/properties/DataMigrationCreateTime"
+  ],
+  "writeOnlyProperties": [
+    "/properties/DataMigrationIdentifier"
+  ],
+  "required": [
+    "DataMigrationType",
+    "MigrationProjectIdentifier",
+    "ServiceAccessRoleArn"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDMSDataMigrationProperties"
+}

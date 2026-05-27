@@ -1,6 +1,6 @@
 {
   "typeName": "MongoDB::Atlas::Cluster",
-  "description": "The cluster resource provides access to your cluster configurations. The resource lets you create, edit and delete clusters. The resource requires your Project ID.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "The cluster resource provides access to your cluster configurations. The resource lets you create, edit and delete clusters. The resource requires your Project ID.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/cluster",
   "definitions": {
     "advancedAutoScaling": {
       "type": "object",
@@ -74,6 +74,16 @@
             }
           ]
         },
+        "BackingProviderName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "ProviderName": {
           "oneOf": [
             {
@@ -81,7 +91,9 @@
               "enum": [
                 "AWS",
                 "GCP",
-                "AZURE"
+                "AZURE",
+                "TENANT",
+                "FLEX"
               ]
             },
             {
@@ -182,6 +194,7 @@
         },
         "AdvancedRegionConfigs": {
           "type": "array",
+          "insertionOrder": true,
           "description": "Hardware specifications for nodes set for a given region. Each regionConfigs object describes the region's priority in elections and the number and type of MongoDB nodes that MongoDB Cloud deploys to the region. Each regionConfigs object must have either an analyticsSpecs object, electableSpecs object, or readOnlySpecs object. Tenant clusters only require electableSpecs. Dedicated clusters can specify any of these specifications, but must have at least one electableSpecs object within a replicationSpec. Every hardware specification must use the same instanceSize.\n\nExample:\n\nIf you set \"replicationSpecs[n].regionConfigs[m].analyticsSpecs.instanceSize\" : \"M30\", set \"replicationSpecs[n].regionConfigs[m].electableSpecs.instanceSize\" : \"M30\"if you have electable nodes and\"replicationSpecs[n].regionConfigs[m].readOnlySpecs.instanceSize\" : \"M30\" if you have read-only nodes.\",",
           "items": {
             "$ref": "#/definitions/advancedRegionConfig"
@@ -250,34 +263,50 @@
           ],
           "description": "Network peering connection strings for each interface Virtual Private Cloud (VPC) endpoint that you configured to connect to this cluster. This connection string uses the mongodb+srv:// protocol. The resource returns this parameter when someone creates a network peering connection to this cluster. This protocol tells the application to look up the host seed list in the Domain Name System (DNS). This list synchronizes with the nodes in a cluster. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to append the seed list or change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your driver supports it. If it doesn't, use connectionStrings.private. For Amazon Web Services (AWS) clusters, this parameter returns only if you enable custom DNS."
         },
-        "PrivateEndpoint": {
+        "PrivateEndpoints": {
           "type": "array",
-          "description": "List of private endpoint connection strings that you can use to connect to this cluster through a private endpoint. This parameter returns only if you deployed a private endpoint to all regions to which you deployed this clusters' nodes.",
+          "insertionOrder": true,
+          "description": "Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related mongodb:// connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names.",
           "items": {
-            "$ref": "#/definitions/privateEndpoint"
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
           }
         },
-        "AwsPrivateLinkSrv": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related mongodb:// connection string that you use to connect to Atlas through the interface endpoint that the key names."
+        "PrivateEndpointsSrv": {
+          "type": "array",
+          "insertionOrder": true,
+          "description": "Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related mongodb:// connection string that you use to connect to Atlas through the interface endpoint that the key names.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         },
-        "AwsPrivateLink": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "Private endpoint-aware connection strings that use AWS-hosted clusters with Amazon Web Services (AWS) PrivateLink. Each key identifies an Amazon Web Services (AWS) interface endpoint. Each value identifies the related mongodb:// connection string that you use to connect to MongoDB Cloud through the interface endpoint that the key names."
+        "SRVShardOptimizedConnectionString": {
+          "type": "array",
+          "insertionOrder": true,
+          "description": "Private endpoint-aware connection string optimized for sharded clusters that uses the `mongodb+srv://` protocol to connect to MongoDB Cloud through a private endpoint. If the connection string uses this Uniform Resource Identifier (URI) format, you don't need to change the Uniform Resource Identifier (URI) if the nodes change. Use this Uniform Resource Identifier (URI) format if your application and Atlas cluster supports it. If it doesn't, use and consult the documentation for connectionStrings.privateEndpoint[n].srvConnectionString.",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         }
       },
       "additionalProperties": false,
@@ -300,6 +329,7 @@
         },
         "Endpoints": {
           "type": "array",
+          "insertionOrder": true,
           "description": "List that contains the private endpoints through which you connect to MongoDB Cloud when you use connectionStrings.privateEndpoint[n].connectionString or connectionStrings.privateEndpoint[n].srvConnectionString.",
           "items": {
             "$ref": "#/definitions/endpoint"
@@ -414,7 +444,33 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections. Clusters using TLS 1.0 or 1.1 should consider setting TLS 1.2 as the minimum TLS protocol version."
+          "description": "Minimum Transport Layer Security (TLS) version that the cluster accepts for incoming connections. Valid values are TLS1_2 and TLS1_3."
+        },
+        "TlsCipherConfigMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The TLS cipher suite configuration mode. Valid values include `CUSTOM` or `DEFAULT`. The `DEFAULT` mode uses the default cipher suites. The `CUSTOM` mode allows you to specify custom cipher suites for both TLS 1.2 and TLS 1.3. To unset, this should be set back to `DEFAULT`."
+        },
+        "CustomOpensslCipherConfigTls12": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "description": "The custom OpenSSL cipher suite list for TLS 1.2. This field is only valid when `tls_cipher_config_mode` is set to `CUSTOM`."
         },
         "NoTableScan": {
           "type": "boolean",
@@ -431,10 +487,52 @@
         "SampleRefreshIntervalBIConnector": {
           "type": "integer",
           "description": "Number of documents per database to sample when gathering schema information."
+        },
+        "OplogMinRetentionHours": {
+          "type": "number",
+          "description": "Minimum retention window for cluster's oplog expressed in hours. A value of null indicates that the cluster uses the default minimum oplog window that MongoDB Cloud calculates."
+        },
+        "TransactionLifetimeLimitSeconds": {
+          "type": "integer",
+          "description": "Lifetime, in seconds, of multi-document transactions. Atlas considers the transactions that exceed this limit as expired and so aborts them through a periodic cleanup process."
         }
       },
       "additionalProperties": false,
       "title": "MongoDBAtlasClusterprocessArgsDefinition"
+    },
+    "tag": {
+      "type": "object",
+      "description": "List that contains key-value pairs between 1 to 255 characters in length for tagging and categorizing the cluster.",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Constant that defines the set of the tag. For example, environment in the environment : production tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Variable that belongs to the set of the tag. For example, production in the environment : production tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "MongoDBAtlasClustertagDefinition"
     }
   },
   "properties": {
@@ -503,6 +601,10 @@
       ],
       "description": "Cloud service provider that manages your customer keys to provide an additional layer of encryption at rest for the cluster. To enable customer key management for encryption at rest, the cluster replicationSpecs[n].regionConfigs[m].{type}Specs.instanceSize setting must be M10 or higher and \"backupEnabled\" : false or omitted entirely."
     },
+    "GlobalClusterSelfManagedSharding": {
+      "description": "(Optional) Flag that indicates if cluster uses Atlas-Managed Sharding (false, default) or Self-Managed Sharding (true). It can only be enabled for Global Clusters (`GEOSHARDED`). It cannot be changed once the cluster is created. Use this mode if you're an advanced user and the default configuration is too restrictive for your workload. If you select this option, you must manually configure the sharding strategy, more info [here](https://www.mongodb.com/docs/atlas/tutorial/create-global-cluster/#select-your-sharding-configuration).",
+      "type": "boolean"
+    },
     "Profile": {
       "oneOf": [
         {
@@ -529,6 +631,7 @@
     "Labels": {
       "description": "Collection of key-value pairs between 1 to 255 characters in length that tag and categorize the cluster. The MongoDB Cloud console doesn't display your labels.",
       "type": "array",
+      "insertionOrder": false,
       "items": {
         "type": "object",
         "properties": {
@@ -593,6 +696,7 @@
     "ReplicationSpecs": {
       "description": "List of settings that configure your cluster regions. For Global Clusters, each object in the array represents a zone where your clusters nodes deploy. For non-Global replica sets and sharded clusters, this array has one object representing where your clusters nodes deploy.",
       "type": "array",
+      "insertionOrder": true,
       "items": {
         "$ref": "#/definitions/advancedReplicationSpec"
       }
@@ -622,6 +726,14 @@
     "TerminationProtectionEnabled": {
       "description": "Flag that indicates whether termination protection is enabled on the cluster. If set to true, MongoDB Cloud won't delete the cluster. If set to false, MongoDB Cloud will delete the cluster.",
       "type": "boolean"
+    },
+    "Tags": {
+      "description": "List of settings that configure your cluster regions. For Global Clusters, each object in the array represents a zone where your clusters nodes deploy. For non-Global replica sets and sharded clusters, this array has one object representing where your clusters nodes deploy.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/tag"
+      }
     }
   },
   "additionalProperties": false,
@@ -634,6 +746,9 @@
     "/properties/ConnectionStrings/StandardSrv",
     "/properties/ConnectionStrings/Private",
     "/properties/ConnectionStrings/PrivateSrv",
+    "/properties/ConnectionStrings/PrivateEndpoints",
+    "/properties/ConnectionStrings/PrivateEndpointsSrv",
+    "/properties/ConnectionStrings/SRVShardOptimizedConnectionString",
     "/properties/StateName",
     "/properties/MongoDBVersion",
     "/properties/CreatedDate",
@@ -642,13 +757,19 @@
   "createOnlyProperties": [
     "/properties/Name",
     "/properties/ProjectId",
-    "/properties/Profile"
+    "/properties/Profile",
+    "/properties/GlobalClusterSelfManagedSharding"
   ],
   "primaryIdentifier": [
     "/properties/ProjectId",
     "/properties/Name",
     "/properties/Profile"
   ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/cluster/README.md",
+  "tagging": {
+    "taggable": false
+  },
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/cluster",
   "type": "object",
   "title": "MongoDBAtlasClusterProperties"
 }

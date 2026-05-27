@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Signer::SigningProfile",
-  "description": "A signing profile is a signing template that can be used to carry out a pre-defined signing job.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "A signing profile is a signing template that can be used to carry out a pre-defined signing job.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "PlatformId": {
@@ -22,13 +22,27 @@
       "oneOf": [
         {
           "type": "string",
-          "pattern": "^arn:aws(-(cn|gov))?:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
+          "pattern": "^arn:aws(-[a-z]{1,4}){0,2}:[a-z-]+:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
       "title": "AWSSignerSigningProfileArnDefinition"
+    },
+    "ProfileName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64,
+          "pattern": "^[0-9a-zA-Z_]{2,64}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSignerSigningProfileProfileNameDefinition"
     },
     "ProfileVersion": {
       "oneOf": [
@@ -122,6 +136,7 @@
     "PlatformId"
   ],
   "createOnlyProperties": [
+    "/properties/ProfileName",
     "/properties/PlatformId",
     "/properties/SignatureValidityPeriod"
   ],
@@ -142,6 +157,18 @@
       "/properties/ProfileVersionArn"
     ]
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "signer:TagResource",
+      "signer:UntagResource",
+      "signer:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSSignerSigningProfileProperties"
 }

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Connect::ContactFlowModule",
-  "description": "Resource Type definition for AWS::Connect::ContactFlowModule.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "description": "Resource Type definition for AWS::Connect::ContactFlowModule.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "definitions": {
     "Tag": {
@@ -40,6 +40,11 @@
         "Value"
       ],
       "title": "AWSConnectContactFlowModuleTagDefinition"
+    },
+    "Enabled": {
+      "description": "Specifies whether the flow module resource is enabled for external invocation",
+      "type": "boolean",
+      "title": "AWSConnectContactFlowModuleEnabledDefinition"
     }
   },
   "properties": {
@@ -101,10 +106,7 @@
       "oneOf": [
         {
           "type": "string",
-          "enum": [
-            "ACTIVE",
-            "ARCHIVED"
-          ]
+          "maxLength": 500
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -121,6 +123,31 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "Settings": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The schema of the settings for contact flow module in JSON Schema V4 format."
+    },
+    "ExternalInvocationConfiguration": {
+      "description": "Defines the external invocation configuration of the flow module resource",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "$ref": "#/definitions/Enabled"
+        }
+      },
+      "required": [
+        "Enabled"
+      ]
     }
   },
   "required": [
@@ -128,6 +155,18 @@
     "Name",
     "Content"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "connect:ListTagsForResource",
+      "connect:UntagResource",
+      "connect:TagResource"
+    ]
+  },
   "additionalProperties": false,
   "primaryIdentifier": [
     "/properties/ContactFlowModuleArn"

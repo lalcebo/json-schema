@@ -1,0 +1,104 @@
+{
+  "typeName": "AWS::Logs::AccountPolicy",
+  "description": "The AWS::Logs::AccountPolicy resource specifies a CloudWatch Logs AccountPolicy.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "replacementStrategy": "delete_then_create",
+  "properties": {
+    "PolicyName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^:*]{1,256}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the account policy"
+    },
+    "PolicyDocument": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30720
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The body of the policy document you want to use for this topic.\n\nYou can only add one policy per PolicyType.\n\nThe policy must be in JSON string format.\n\nLength Constraints: Maximum length of 30720"
+    },
+    "PolicyType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DATA_PROTECTION_POLICY",
+            "SUBSCRIPTION_FILTER_POLICY",
+            "FIELD_INDEX_POLICY",
+            "TRANSFORMER_POLICY",
+            "METRIC_EXTRACTION_POLICY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of the policy."
+    },
+    "Scope": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ALL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Scope for policy application"
+    },
+    "SelectionCriteria": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Log group  selection criteria to apply policy only to a subset of log groups. SelectionCriteria string can be up to 25KB and cloudwatchlogs determines the length of selectionCriteria by using its UTF-8 bytes"
+    }
+  },
+  "required": [
+    "PolicyName",
+    "PolicyType",
+    "PolicyDocument"
+  ],
+  "createOnlyProperties": [
+    "/properties/PolicyName",
+    "/properties/PolicyType"
+  ],
+  "readOnlyProperties": [
+    "/properties/AccountId"
+  ],
+  "primaryIdentifier": [
+    "/properties/AccountId",
+    "/properties/PolicyType",
+    "/properties/PolicyName"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSLogsAccountPolicyProperties"
+}

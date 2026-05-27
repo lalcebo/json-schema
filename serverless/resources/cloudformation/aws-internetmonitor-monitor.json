@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::InternetMonitor::Monitor",
-  "description": "Represents a monitor, which defines the monitoring boundaries for measurements that Internet Monitor publishes information about for an application. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Represents a monitor, which defines the monitoring boundaries for measurements that Internet Monitor publishes information about for an application. Source:- No source definition found, add manually please",
   "definitions": {
     "MonitorConfigState": {
       "oneOf": [
@@ -130,6 +130,60 @@
       },
       "additionalProperties": false,
       "title": "AWSInternetMonitorMonitorS3ConfigDefinition"
+    },
+    "HealthEventsConfig": {
+      "type": "object",
+      "properties": {
+        "AvailabilityScoreThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "PerformanceScoreThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "AvailabilityLocalHealthEventsConfig": {
+          "$ref": "#/definitions/LocalHealthEventsConfig"
+        },
+        "PerformanceLocalHealthEventsConfig": {
+          "$ref": "#/definitions/LocalHealthEventsConfig"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInternetMonitorMonitorHealthEventsConfigDefinition"
+    },
+    "LocalHealthEventsConfig": {
+      "type": "object",
+      "properties": {
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HealthScoreThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "MinTrafficImpact": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSInternetMonitorMonitorLocalHealthEventsConfigDefinition"
     }
   },
   "properties": {
@@ -145,6 +199,22 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
+    },
+    "LinkedAccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 12,
+          "minLength": 12,
+          "pattern": "^(\\d{12})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "IncludeLinkedAccounts": {
+      "type": "boolean"
     },
     "Resources": {
       "type": "array",
@@ -217,6 +287,9 @@
     },
     "InternetMeasurementsLogDelivery": {
       "$ref": "#/definitions/InternetMeasurementsLogDelivery"
+    },
+    "HealthEventsConfig": {
+      "$ref": "#/definitions/HealthEventsConfig"
     }
   },
   "readOnlyProperties": [
@@ -228,7 +301,9 @@
   ],
   "writeOnlyProperties": [
     "/properties/ResourcesToAdd",
-    "/properties/ResourcesToRemove"
+    "/properties/ResourcesToRemove",
+    "/properties/LinkedAccountId",
+    "/properties/IncludeLinkedAccounts"
   ],
   "createOnlyProperties": [
     "/properties/MonitorName"
@@ -238,10 +313,15 @@
   ],
   "tagging": {
     "taggable": true,
-    "tagOnCreate": false,
+    "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "internetmonitor:TagResource",
+      "internetmonitor:UntagResource",
+      "internetmonitor:ListTagsForResource"
+    ]
   },
   "additionalProperties": false,
   "required": [
