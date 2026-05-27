@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=../../serverless/reference.json
+
+# Exercises `custom.ssmPublish` (ServerlessPlugin-SSMPublish). Covers both
+# parameter shapes: `value` (literal) and `source` (CloudFormation stack
+# Output reference).
+
+service: ssm-publish-plugin-fixture
+frameworkVersion: "4"
+
+plugins:
+  - serverless-ssm-publish
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+custom:
+  ssmPublish:
+    enabled: true
+    params:
+      # Literal-value parameter
+      - path: /myapp/${sls:stage}/api-url
+        value: https://api.example.com
+        description: Primary API URL for the stage
+        secure: false
+        type: String
+        enabled: true
+
+      # Secure (SecureString) literal parameter, object value
+      - path: /myapp/${sls:stage}/feature-flags
+        value:
+          billing_v2: true
+          new_dashboard: false
+        secure: true
+        type: SecureString
+        description: Feature flag map (object is serialised to YAML)
+
+      # CloudFormation stack-output reference
+      - path: /myapp/${sls:stage}/uploads-bucket-arn
+        source: UploadsBucketArn
+        description: Bucket ARN exported from the stack
+        secure: false
+        type: String
+
+      # Disabled item (skipped without removing it)
+      - path: /myapp/${sls:stage}/legacy-flag
+        value: "off"
+        enabled: false
+
+functions:
+  hello:
+    handler: src/hello.handler
+
+resources:
+  Outputs:
+    UploadsBucketArn:
+      Value:
+        Fn::GetAtt:
+          - UploadsBucket
+          - Arn
+  Resources:
+    UploadsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ssm-publish-fixture-uploads

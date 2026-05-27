@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../../serverless/reference.json
+
+# Exercises `custom.splitStacks` (serverless-plugin-split-stacks).
+
+service: split-stacks-plugin-fixture
+frameworkVersion: "4"
+
+plugins:
+  - serverless-plugin-split-stacks
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+custom:
+  splitStacks:
+    nestedStackCount: 20
+    perFunction: false
+    perType: true
+    perGroupFunction: false
+    stackConcurrency: 5
+    resourceConcurrency: 10
+    custom: ./split-stacks/custom-splitter.js
+    proxyAgent: true
+
+functions:
+  hello:
+    handler: src/hello.handler

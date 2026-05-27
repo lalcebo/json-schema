@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = __dirname;
 const SCHEMA_PATH = resolve(ROOT, "serverless/reference.json");
-const FIXTURE_DIRS = [resolve(ROOT, "test")];
+const FIXTURE_ROOT = resolve(ROOT, "test");
 
 // CloudFormation intrinsic-function shorthand (`!Ref`, `!GetAtt`, ...) is
 // valid YAML but not in js-yaml's default schema. Register each tag for every
@@ -116,7 +116,7 @@ function stripIncompatiblePatterns(obj) {
 async function preloadSchemas() {
   const dirs = [
     resolve(ROOT, "serverless/components"),
-    resolve(ROOT, "serverless/plugin"),
+    resolve(ROOT, "serverless/plugins"),
     resolve(ROOT, "serverless/resources"),
     resolve(ROOT, "serverless/resources/cloudformation"),
   ];
@@ -175,12 +175,15 @@ function checkInternalRefs(schema) {
   return [...dangling].sort();
 }
 
-async function listFixtures() {
+async function listFixtures(dir = FIXTURE_ROOT) {
+  if (!existsSync(dir)) return [];
   const out = [];
-  for (const dir of FIXTURE_DIRS) {
-    if (!existsSync(dir)) continue;
-    for (const f of (await readdir(dir)).sort()) {
-      if (f.endsWith(".yml") || f.endsWith(".yaml")) out.push(resolve(dir, f));
+  for (const entry of (await readdir(dir, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
+    const full = resolve(dir, entry.name);
+    if (entry.isDirectory()) {
+      out.push(...await listFixtures(full));
+    } else if (entry.name.endsWith(".yml") || entry.name.endsWith(".yaml")) {
+      out.push(full);
     }
   }
   return out;

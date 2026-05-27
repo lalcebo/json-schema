@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../../serverless/reference.json
+
+# Exercises `custom.wsgi` (serverless-wsgi) — every documented option.
+
+service: python-wsgi-plugin-fixture
+frameworkVersion: "4"
+
+plugins:
+  - serverless-wsgi
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: us-east-1
+  stage: dev
+
+custom:
+  wsgi:
+    app: app.application
+    packRequirements: true
+    pythonBin: python3.12
+    pipArgs: "--no-cache-dir --prefer-binary"
+    textMimeTypes:
+      - application/yaml
+      - application/x-yaml
+      - text/csv
+
+functions:
+  app:
+    handler: wsgi_handler.handler
