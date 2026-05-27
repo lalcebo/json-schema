@@ -53,6 +53,10 @@ const ajv = new Ajv({
   // Schemas declare $schema as draft-07, but the URL (http vs https) varies
   // file-to-file. We trust the schemas, skip meta-schema validation.
   validateSchema: false,
+  // Don't inline $refs: some CFN resource schemas are self-referential (e.g.
+  // `aws-glue-trigger`), and inlining causes the generated validator to recurse
+  // until the stack blows. Keep refs as runtime lookups.
+  inlineRefs: false,
   code: { regExp: tolerantRegExp },
 });
 addFormats(ajv);
