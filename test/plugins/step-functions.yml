@@ -1,0 +1,135 @@
+# yaml-language-server: $schema=../../serverless/reference.json
+
+# Exercises the `stepFunctions` top-level block (serverless-step-functions).
+# Unlike the other plugins, this lives at the root, not under `custom`.
+
+service: step-functions-plugin-fixture
+frameworkVersion: "4"
+
+plugins:
+  - serverless-step-functions
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+functions:
+  validate:
+    handler: src/validate.handler
+  notify:
+    handler: src/notify.handler
+
+stepFunctions:
+  validate: true
+  noOutput: false
+
+  stateMachines:
+    # State machine with schedule + http + eventBridge triggers
+    orderProcessing:
+      name: ${self:service}-${sls:stage}-orderProcessing
+      role: arn:aws:iam::123456789012:role/sfn-execution
+      tracingConfig:
+        enabled: true
+      loggingConfig:
+        level: ALL
+        includeExecutionData: true
+        destinations:
+          - arn:aws:logs:us-east-1:123456789012:log-group:/aws/states/order-processing
+      tags:
+        team: orders
+      dependsOn:
+        - validateLambdaFunction
+      events:
+        - schedule:
+            rate: rate(1 hour)
+            enabled: true
+            name: hourly-order-sweep
+            description: Sweep stuck orders every hour
+            input:
+              source: scheduled
+        - http:
+            path: /orders/process
+            method: POST
+            cors: true
+            authorizer: aws_iam
+            request:
+              parameters:
+                headers:
+                  X-Tenant-Id: true
+                querystrings:
+                  dry-run: false
+        - eventBridge:
+            enabled: true
+            event:
+              source:
+                - acme.orders
+              detail-type:
+                - OrderCreated
+              detail:
+                status:
+                  - PENDING
+            input:
+              kind: order-created
+      definition:
+        Comment: Order processing state machine
+        StartAt: Validate
+        States:
+          Validate:
+            Type: Task
+            Resource:
+              Fn::GetAtt:
+                - ValidateLambdaFunction
+                - Arn
+            ResultPath: $.validation
+            Retry:
+              - ErrorEquals:
+                  - States.ALL
+                IntervalSeconds: 2
+                MaxAttempts: 3
+                BackoffRate: 2
+            Catch:
+              - ErrorEquals:
+                  - States.ALL
+                Next: NotifyFailure
+            Next: Notify
+          Notify:
+            Type: Task
+            Resource: arn:aws:states:::sns:publish
+            Parameters:
+              TopicArn: arn:aws:sns:us-east-1:123456789012:order-events
+              Message.$: $
+            End: true
+          NotifyFailure:
+            Type: Task
+            Resource:
+              Fn::GetAtt:
+                - NotifyLambdaFunction
+                - Arn
+            End: true
+
+    # Express workflow (different StartAt to vary the surface)
+    quickReport:
+      name: ${self:service}-${sls:stage}-quickReport
+      type: EXPRESS
+      role: arn:aws:iam::123456789012:role/sfn-express
+      loggingConfig:
+        level: ERROR
+        includeExecutionData: false
+        destinations:
+          - arn:aws:logs:us-east-1:123456789012:log-group:/aws/states/quick-report
+      definition:
+        StartAt: Wait
+        States:
+          Wait:
+            Type: Wait
+            Seconds: 5
+            Next: Done
+          Done:
+            Type: Pass
+            End: true
+
+  activities:
+    - manualApproval
+    - humanReview

@@ -13,7 +13,7 @@ doesn't apply. CI runs `pnpm test` on every push — see .github/workflows/test.
 
 - [ ] **Serverless Framework reference** — `serverless/reference.json` (top-level keys, provider, functions, events…)
 - [ ] **Shared component** — `serverless/components/*.json`
-- [ ] **Plugin schema** — `serverless/plugin/*.json`
+- [ ] **Plugin schema** — `serverless/plugins/*.json`
 - [ ] **CFN resources regenerated** — ran `./cf-update.sh` (commit the resulting `serverless/resources/cloudformation/*` + `resources.schema.json` diff)
 - [ ] **Third-party CFN submodule bump** — `serverless/resources/third-party/*`
 - [ ] **Test fixture** — `test/*.yml`

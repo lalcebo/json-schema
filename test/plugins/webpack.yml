@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=../../serverless/reference.json
+
+# Exercises `custom.webpack` (serverless-webpack) end to end, including all
+# WebpackIncludeModules options and the npm-flavoured packagerOptions.
+
+service: webpack-plugin-fixture
+frameworkVersion: "4"
+
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+custom:
+  webpack:
+    webpackConfig: webpack.config.js
+    packager: npm
+    excludeFiles: "src/**/*.test.js"
+    excludeRegex: "\\.ts|test|\\.map"
+    keepOutputDirectory: false
+    concurrency: 4
+    serializedCompile: false
+    noBuild: false
+    packExternalModulesMaxBuffer: 5242880
+
+    includeModules:
+      packagePath: package.json
+      nodeModulesRelativeDir: ./
+      forceInclude:
+        - pg
+        - bcryptjs
+      forceExclude:
+        - aws-sdk
+        - "@aws-sdk/*"
+
+    packagerOptions:
+      lockFile: ./package-lock.json
+      ignoreScripts: false
+      noInstall: false
+      scripts:
+        - npm run postinstall
+      copyPackageSectionNames:
+        - resolutions
+        - overrides
+
+functions:
+  hello:
+    handler: src/hello.handler

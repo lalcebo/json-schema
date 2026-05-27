@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=../../serverless/reference.json
+
+# Exercises the full surface of `custom.esbuild` (serverless-esbuild),
+# including v4-era additions: disposeContext, skipBuild, skipRebuild,
+# skipBuildExcludeFns, stripEntryResolveExtensions, config, external, plugins,
+# packagerOptions.{noInstall, ignoreLockfile}, watch.chokidar. Pass-through
+# esbuild API options (target, platform, format, sourcemap, define) are
+# allowed by `additionalProperties: true`.
+
+service: esbuild-plugin-fixture
+frameworkVersion: "4"
+
+plugins:
+  - serverless-esbuild
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    concurrency: 10
+    zipConcurrency: 4
+    disableIncremental: false
+    disposeContext: true
+    config: ./esbuild.config.js
+    plugins: ./esbuild.plugins.js
+    external:
+      - "@aws-sdk/*"
+    exclude:
+      - aws-sdk
+      - pg-native
+    installExtraArgs:
+      - --legacy-peer-deps
+    keepOutputDirectory: false
+    nativeZip: false
+    outputBuildFolder: .build
+    outputWorkFolder: .esbuild
+    outputFileExtension: .mjs
+    packagePath: ./package.json
+    packager: pnpm
+    packagerOptions:
+      noInstall: false
+      ignoreLockfile: false
+      scripts:
+        - pnpm run postinstall
+    skipBuild: false
+    skipRebuild: false
+    skipBuildExcludeFns:
+      - migrationRunner
+    stripEntryResolveExtensions: true
+    watch:
+      pattern:
+        - "src/**/*.ts"
+      ignore:
+        - .esbuild
+        - dist
+        - node_modules
+      chokidar:
+        ignoreInitial: true
+        usePolling: false
+
+    # Pass-through esbuild options
+    target: node20
+    platform: node
+    format: esm
+    sourcemap: true
+    sourceRoot: /var/task
+    tsconfig: tsconfig.json
+    treeShaking: true
+    define:
+      "process.env.NODE_ENV": '"production"'
+
+functions:
+  hello:
+    handler: src/hello.handler

@@ -1,0 +1,92 @@
+# yaml-language-server: $schema=../../serverless/reference.json
+
+# Exercises `custom.pythonRequirements` (serverless-python-requirements) end
+# to end. Note: this plugin is deprecated as of Oct 2025 — its functionality is
+# integrated into Serverless Framework v4.22+. Kept here so existing
+# configurations still validate.
+
+service: python-requirements-plugin-fixture
+frameworkVersion: "4"
+
+plugins:
+  - serverless-python-requirements
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: us-east-1
+  stage: dev
+
+custom:
+  pythonRequirements:
+    # Docker / build environment
+    dockerizePip: non-linux
+    dockerImage: amazon/aws-lambda-python:3.12
+    dockerSsh: false
+    dockerPrivateKey: /home/ci/.ssh/id_ed25519
+    dockerEnv:
+      - HTTPS_PROXY
+      - PIP_INDEX_URL
+    dockerExtraFiles:
+      - /usr/lib/x86_64-linux-gnu/libpq.so.5
+    dockerBuildCmdExtraArgs:
+      - --network=host
+    dockerRunCmdExtraArgs:
+      - --network=host
+
+    # Requirements source / Python invocation
+    fileName: requirements.txt
+    pythonBin: python3
+    pipCmdExtraArgs:
+      - --no-cache-dir
+      - --prefer-binary
+
+    # Pipenv / Poetry support
+    usePipenv: false
+    usePoetry: true
+    requirePoetryLockFile: true
+    poetryWithGroups:
+      - prod
+    poetryWithoutGroups:
+      - dev
+      - test
+    poetryOnlyGroups: []
+
+    # Caching
+    useDownloadCache: true
+    useStaticCache: true
+    cacheLocation: .cache/python-requirements
+    staticCacheMaxVersions: 5
+    invalidateCaches: false
+
+    # Packaging / slimming
+    zip: false
+    slim: true
+    slimPatterns:
+      - "**/*.pyc"
+      - "**/__pycache__/*"
+    slimPatternsAppendDefaults: true
+    strip: true
+    noDeploy:
+      - boto3
+      - botocore
+    vendor: ./vendor
+
+    # Layer publishing — full object form
+    layer:
+      name: python-deps
+      description: Shared python dependencies
+      compatibleRuntimes:
+        - python3.12
+        - python3.11
+      compatibleArchitectures:
+        - x86_64
+        - arm64
+      licenseInfo: MIT
+      retain: false
+      allowedAccounts:
+        - "*"
+
+functions:
+  hello:
+    handler: src/hello.handler
