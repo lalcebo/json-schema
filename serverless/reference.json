@@ -1,16 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
   "title": "ServerlessFrameworkConfiguration",
-  "description": "Schema for serverless framework configuration files",
+  "description": "Schema for Serverless Framework v4 (AWS provider) configuration files. https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml",
   "fileMatch": ["serverless.yml", "serverless.yaml"],
   "type": "object",
   "required": ["provider", "service"],
   "definitions": {
     "Transform": {
-      "type": "object",
       "oneOf": [
         {
           "$comment": "You can use the AWS::Include transform anywhere within the AWS CloudFormation template except in the template parameters section or the template version field. For example, you can use AWS::Include in the mappings section.",
+          "type": "object",
           "properties": {
             "Name": {
               "type": "string",
@@ -237,18 +237,7 @@
           "$ref": "components/common.json#/AwsPackage"
         },
         "provisionedConcurrency": {
-          "anyOf": [
-            {
-              "type": "integer",
-              "minimum": 0
-            },
-            {
-              "$ref": "components/cf.functions.json#/Aws_CF_FunctionString"
-            },
-            {
-              "$ref": "components/cf.functions.json#/FnIf"
-            }
-          ]
+          "$ref": "#/definitions/AwsProvisionedConcurrency"
         },
         "reservedConcurrency": {
           "anyOf": [
@@ -280,7 +269,11 @@
           "type": "string"
         },
         "vpc": {
-          "$ref": "#/definitions/AwsVpc"
+          "description": "VPC configuration for this function. Pass `~` (null) to disable VPC for a single function when the provider has one configured.",
+          "oneOf": [
+            { "$ref": "#/definitions/AwsVpc" },
+            { "type": "null" }
+          ]
         },
         "image": {
           "oneOf": [
@@ -318,14 +311,103 @@
           ]
         },
         "snapStart": {
-          "type": "boolean",
-          "description": "https://www.serverless.com/framework/docs/providers/aws/guide/functions#snapstart"
+          "description": "https://www.serverless.com/framework/docs/providers/aws/guide/functions#snapstart",
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "object",
+              "properties": {
+                "applyOn": { "type": "string", "enum": ["PublishedVersions", "None"] }
+              },
+              "additionalProperties": true
+            }
+          ]
         },
         "logDataProtectionPolicy": {
           "$ref": "components/cloudwatch.json#/LogDataProtectionPolicy"
         },
         "runtimeManagement": {
           "$ref": "components/lambda.json#/AwsLambdaRuntimeManagement"
+        },
+        "architecture": {
+          "$ref": "components/common.json#/AwsSupportedArchitecture"
+        },
+        "ephemeralStorageSize": {
+          "description": "Size of the function's /tmp directory in MB. Defaults to 512; max 10240.",
+          "type": ["string", "number"],
+          "minimum": 512,
+          "maximum": 10240
+        },
+        "kmsKeyArn": {
+          "description": "KMS key ARN used to encrypt this function's environment variables.",
+          "type": "string"
+        },
+        "iam": {
+          "type": "object",
+          "properties": {
+            "inheritStatements": {
+              "description": "Inherit provider-level IAM statements (default: true).",
+              "type": "boolean"
+            },
+            "role": {
+              "oneOf": [
+                { "type": "string" },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "path": { "type": "string" },
+                    "statements": {
+                      "type": "array",
+                      "items": { "$ref": "components/iam.json#/AwsIamRoleStatement" }
+                    },
+                    "managedPolicies": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "permissionsBoundary": { "type": "string" },
+                    "tags": { "$ref": "#/definitions/AwsTags" }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "url": {
+          "$ref": "#/definitions/AwsFunctionUrl"
+        },
+        "logs": {
+          "$ref": "#/definitions/AwsLambdaLogs"
+        },
+        "disableLogs": {
+          "type": "boolean"
+        },
+        "logRetentionInDays": {
+          "type": ["string", "number"]
+        },
+        "tenancy": {
+          "$ref": "#/definitions/AwsFunctionTenancy"
+        },
+        "durableConfig": {
+          "$ref": "#/definitions/AwsFunctionDurableConfig"
+        },
+        "capacityProvider": {
+          "$ref": "#/definitions/AwsFunctionCapacityProvider"
+        },
+        "fileSystemConfig": {
+          "$ref": "#/definitions/AwsFileSystemConfig"
+        },
+        "maximumRetryAttempts": {
+          "type": ["string", "number"],
+          "minimum": 0,
+          "maximum": 2
+        },
+        "maximumEventAge": {
+          "type": ["string", "number"],
+          "minimum": 60,
+          "maximum": 21600
         }
       },
       "type": "object"
@@ -371,6 +453,273 @@
         }
       },
       "type": "object"
+    },
+    "ServerlessParamValue": {
+      "description": "A parameter value resolvable via ${param:key}. Strings, numbers, booleans and structured objects/arrays are all allowed.",
+      "type": ["string", "number", "boolean", "object", "array", "null"]
+    },
+    "ServerlessParamsMap": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/ServerlessParamValue"
+      }
+    },
+    "ServerlessParams": {
+      "title": "ServerlessParams",
+      "description": "Stage-aware parameters resolvable via ${param:key}. Reserve `default` for fallbacks; other keys are stage names. https://www.serverless.com/framework/docs/guides/parameters",
+      "type": "object",
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/ServerlessParamsMap"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/ServerlessParamsMap"
+      }
+    },
+    "ServerlessStage": {
+      "title": "ServerlessStage",
+      "description": "Stage-specific configuration. https://www.serverless.com/framework/docs/guides/stages",
+      "type": "object",
+      "properties": {
+        "params": {
+          "$ref": "#/definitions/ServerlessParamsMap"
+        },
+        "observability": {
+          "description": "Enable Serverless Observability for this stage. Accepts a boolean or an object with provider-specific configuration.",
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "object", "additionalProperties": true }
+          ]
+        },
+        "resolvers": {
+          "description": "Stage-scoped variable resolver configuration.",
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "ServerlessStages": {
+      "title": "ServerlessStages",
+      "description": "Stage-keyed configuration. Reserve `default` for the fallback stage; other keys are stage names. Preferred over top-level `params` in v4. https://www.serverless.com/framework/docs/guides/stages",
+      "type": "object",
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/ServerlessStage"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/ServerlessStage"
+      }
+    },
+    "ServerlessAi": {
+      "title": "ServerlessAi",
+      "description": "Serverless AI block: agents, tools, gateways, memory, browsers and code interpreters. The full sub-schema is not validated here — see the docs for shapes. https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml",
+      "type": "object",
+      "properties": {
+        "agents": { "type": "object", "additionalProperties": true },
+        "tools": { "type": "object", "additionalProperties": true },
+        "gateways": { "type": "object", "additionalProperties": true },
+        "memory": { "type": "object", "additionalProperties": true },
+        "browsers": { "type": "object", "additionalProperties": true },
+        "codeInterpreters": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": true
+    },
+    "AwsProviderDomain": {
+      "title": "AwsProviderDomain",
+      "description": "Custom domain configuration. Provide a string for the simple case or an object for full options.",
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "basePath": { "type": "string" },
+            "apiType": { "type": "string", "enum": ["http", "rest", "websocket"] },
+            "endpointType": { "type": "string", "enum": ["edge", "regional", "private", "EDGE", "REGIONAL", "PRIVATE"] },
+            "certificateArn": { "type": "string" },
+            "certificateName": { "type": "string" },
+            "createRoute53Record": { "type": "boolean" },
+            "createRoute53IPv6Record": { "type": "boolean" },
+            "hostedZoneId": { "type": "string" },
+            "hostedZonePrivate": { "type": "boolean" },
+            "route53Profile": { "type": "string" },
+            "route53Region": { "type": "string" },
+            "route53Params": { "type": "object", "additionalProperties": true },
+            "splitHorizonDns": { "type": "boolean" },
+            "securityPolicy": { "type": "string" },
+            "accessMode": { "type": "string", "enum": ["basic", "strict"] },
+            "tlsTruststoreUri": { "type": "string" },
+            "tlsTruststoreVersion": { "type": "string" },
+            "enabled": { "type": "boolean" },
+            "allowPathMatching": { "type": "boolean" },
+            "preserveExternalPathMappings": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "AwsProviderDomains": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/AwsProviderDomain" }
+    },
+    "AwsCapacityProviders": {
+      "title": "AwsCapacityProviders",
+      "description": "Lambda Managed Instances capacity providers (v4). Each key is a provider name. https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "AwsProviderS3Buckets": {
+      "title": "AwsProviderS3Buckets",
+      "description": "Declarative S3 bucket configuration (v4). Each key is a logical bucket name.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "accelerateConfiguration": { "type": "object", "additionalProperties": true },
+          "accessControl": { "type": "string" },
+          "analyticsConfigurations": { "type": "array" },
+          "bucketEncryption": { "type": "object", "additionalProperties": true },
+          "corsConfiguration": { "type": "object", "additionalProperties": true },
+          "intelligentTieringConfigurations": { "type": "array" },
+          "inventoryConfigurations": { "type": "array" },
+          "lifecycleConfiguration": { "type": "object", "additionalProperties": true },
+          "loggingConfiguration": { "type": "object", "additionalProperties": true },
+          "metricsConfigurations": { "type": "array" },
+          "notificationConfiguration": { "type": "object", "additionalProperties": true },
+          "objectLockConfiguration": { "type": "object", "additionalProperties": true },
+          "objectLockEnabled": { "type": "boolean" },
+          "ownershipControls": { "type": "object", "additionalProperties": true },
+          "publicAccessBlockConfiguration": { "type": "object", "additionalProperties": true },
+          "replicationConfiguration": { "type": "object", "additionalProperties": true },
+          "tags": { "$ref": "#/definitions/AwsTags" },
+          "versioningConfiguration": { "type": "object", "additionalProperties": true },
+          "websiteConfiguration": { "type": "object", "additionalProperties": true }
+        },
+        "additionalProperties": true
+      }
+    },
+    "AwsLambdaLogs": {
+      "title": "AwsLambdaLogs",
+      "description": "Lambda-level log configuration (v4). https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html",
+      "type": "object",
+      "properties": {
+        "logFormat": { "type": "string", "enum": ["JSON", "Text"] },
+        "applicationLogLevel": { "type": "string", "enum": ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"] },
+        "systemLogLevel": { "type": "string", "enum": ["DEBUG", "INFO", "WARN"] },
+        "logGroup": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "AwsFunctionUrl": {
+      "title": "AwsFunctionUrl",
+      "description": "Lambda Function URL configuration. Provide `true` to enable with defaults, or an object for full control. https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html",
+      "oneOf": [
+        { "type": "boolean" },
+        {
+          "type": "object",
+          "properties": {
+            "authorizer": {
+              "oneOf": [
+                { "type": "string", "enum": ["aws_iam", "none", "AWS_IAM", "NONE"] },
+                { "type": "object", "additionalProperties": true }
+              ]
+            },
+            "invokeMode": { "type": "string", "enum": ["BUFFERED", "RESPONSE_STREAM"] },
+            "cors": {
+              "oneOf": [
+                { "type": "boolean" },
+                {
+                  "type": "object",
+                  "properties": {
+                    "allowedOrigins": { "type": "array", "items": { "type": "string" } },
+                    "allowedHeaders": { "type": "array", "items": { "type": "string" } },
+                    "allowedMethods": { "type": "array", "items": { "type": "string" } },
+                    "allowCredentials": { "type": "boolean" },
+                    "exposedResponseHeaders": { "type": "array", "items": { "type": "string" } },
+                    "maxAge": { "type": "number", "minimum": 0 }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "AwsFunctionTenancy": {
+      "title": "AwsFunctionTenancy",
+      "description": "Lambda tenancy configuration (v4).",
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["per_tenant", "shared"] }
+      },
+      "additionalProperties": true
+    },
+    "AwsFunctionDurableConfig": {
+      "title": "AwsFunctionDurableConfig",
+      "description": "Durable Lambda function configuration (v4).",
+      "type": "object",
+      "properties": {
+        "executionTimeout": { "type": ["string", "number"] },
+        "retentionPeriodInDays": { "type": ["string", "number"] }
+      },
+      "additionalProperties": true
+    },
+    "AwsFunctionCapacityProvider": {
+      "title": "AwsFunctionCapacityProvider",
+      "description": "Per-function Capacity Provider assignment (v4).",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "maxConcurrency": { "type": ["string", "number"] },
+        "memoryPerVCpu": { "type": ["string", "number"] },
+        "scaling": {
+          "type": "object",
+          "properties": {
+            "min": { "type": ["string", "number"] },
+            "max": { "type": ["string", "number"] }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "AwsFileSystemConfig": {
+      "title": "AwsFileSystemConfig",
+      "description": "EFS file system attachment for a Lambda function.",
+      "type": "object",
+      "properties": {
+        "arn": { "type": "string" },
+        "localMountPath": { "type": "string" },
+        "type": { "type": "string", "enum": ["efs"] }
+      },
+      "required": ["arn", "localMountPath"],
+      "additionalProperties": false
+    },
+    "AwsProvisionedConcurrency": {
+      "title": "AwsProvisionedConcurrency",
+      "oneOf": [
+        { "type": "integer", "minimum": 0 },
+        {
+          "type": "object",
+          "properties": {
+            "alias": { "type": "string" },
+            "executions": { "type": "integer", "minimum": 0 }
+          },
+          "required": ["executions"],
+          "additionalProperties": false
+        },
+        { "$ref": "components/cf.functions.json#/Aws_CF_FunctionString" },
+        { "$ref": "components/cf.functions.json#/FnIf" }
+      ]
     },
     "ServerlessCustom": {
       "properties": {
@@ -925,6 +1274,9 @@
         "frameworkLambda": {
           "type": "boolean"
         },
+        "lambda": {
+          "$ref": "#/definitions/AwsLambdaLogs"
+        },
         "httpApi": {
           "anyOf": [
             {
@@ -1034,7 +1386,9 @@
                         "description": "URI of an existing Docker image in ECR",
                         "type": "string"
                       }
-                    }
+                    },
+                    "required": ["uri"],
+                    "additionalProperties": false
                   },
                   {
                     "type": "object",
@@ -1050,13 +1404,19 @@
                       "buildArgs": {
                         "type": "object"
                       },
+                      "buildOptions": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      },
                       "cacheFrom": {
                         "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
+                        "items": { "type": "string" }
+                      },
+                      "platform": {
+                        "type": "string"
                       }
-                    }
+                    },
+                    "additionalProperties": false
                   }
                 ]
               }
@@ -1233,6 +1593,30 @@
         },
         "runtimeManagement": {
           "$ref": "components/lambda.json#/AwsLambdaRuntimeManagement"
+        },
+        "domain": {
+          "$ref": "#/definitions/AwsProviderDomain"
+        },
+        "domains": {
+          "$ref": "#/definitions/AwsProviderDomains"
+        },
+        "resolver": {
+          "description": "Name of the AWS credentials resolver to use for this provider (v4).",
+          "type": "string"
+        },
+        "enableLegacyDeploymentBucket": {
+          "description": "Use the legacy per-stack deployment bucket instead of the v4 shared bucket.",
+          "type": "boolean"
+        },
+        "capacityProviders": {
+          "$ref": "#/definitions/AwsCapacityProviders"
+        },
+        "s3": {
+          "$ref": "#/definitions/AwsProviderS3Buckets"
+        },
+        "kmsKeyArn": {
+          "description": "Default KMS key ARN used to encrypt Lambda environment variables.",
+          "type": "string"
         }
       },
       "required": ["name"]
@@ -1480,19 +1864,6 @@
       },
       "type": "object"
     },
-    "ServerlessServiceConfiguration": {
-      "description": "**@deprecated and doesn't work in serverless framework v3**",
-      "title": "ServerlessServiceConfiguration",
-      "properties": {
-        "awsKmsKeyArn": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
     "AwsStackParameters": {
       "properties": {
         "ParameterKey": {
@@ -1562,6 +1933,10 @@
     },
     "AwsVpc": {
       "properties": {
+        "ipv6AllowedForDualStack": {
+          "description": "Allow Lambda functions in a dual-stack VPC to access IPv6 resources (v4).",
+          "type": "boolean"
+        },
         "securityGroupIds": {
           "items": {
             "anyOf": [
@@ -1714,17 +2089,16 @@
       ]
     },
     "service": {
-      "oneOf": [
-        {
-          "$ref": "#/definitions/ServerlessServiceConfiguration"
-        },
-        {
-          "type": "string"
-        }
-      ]
-    },
-    "tenant": {
       "type": "string"
+    },
+    "stages": {
+      "$ref": "#/definitions/ServerlessStages"
+    },
+    "params": {
+      "$ref": "#/definitions/ServerlessParams"
+    },
+    "ai": {
+      "$ref": "#/definitions/ServerlessAi"
     },
     "stepFunctions": {
       "$ref": "plugin/step_functions.json#/AwsStepFunctions"

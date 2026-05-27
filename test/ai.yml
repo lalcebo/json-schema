@@ -1,0 +1,130 @@
+# yaml-language-server: $schema=../serverless/reference.json
+
+# Exercises the v4 `ai` top-level block: agents, tools, gateways, memory,
+# browsers, codeInterpreters. Sub-shapes are intentionally permissive in the
+# schema (additionalProperties: true) — this fixture documents the YAML the
+# Serverless docs show, not a strict validation contract.
+
+service: ai-fixture
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+ai:
+  agents:
+    supportAssistant:
+      description: Customer support assistant
+      role: arn:aws:iam::123456789012:role/agent-role
+      runtime: nodejs20.x
+      handler: src/agents/support.handler
+      memory: sessionMemory
+      gateway: customerGateway
+      authorizer: aws_iam
+      lifecycle:
+        timeout: 60
+      environment:
+        ANTHROPIC_MODEL: claude-opus-4-7
+      endpoints:
+        - path: /chat
+          method: POST
+      requestHeaders:
+        - X-Tenant-Id
+      network:
+        vpc:
+          securityGroupIds:
+            - sg-0a1b2c3d4e5f67890
+          subnetIds:
+            - subnet-0a1b2c3d4e5f67890
+
+  tools:
+    lookupOrder:
+      description: Look up an order by id
+      function: lookupOrderFn
+      toolSchema:
+        type: object
+        properties:
+          orderId:
+            type: string
+        required:
+          - orderId
+    weatherApi:
+      description: Read-only access to a public weather API
+      openapi:
+        url: https://api.weather.example.com/openapi.json
+      credentials:
+        type: api_key
+        apiKey:
+          location: header
+          name: X-API-Key
+          value: ${env:WEATHER_API_KEY}
+    proxyMcp:
+      description: External MCP server
+      mcp:
+        url: https://mcp.example.com
+
+  gateways:
+    customerGateway:
+      description: Customer-facing gateway exposing support tools
+      protocol: https
+      authorizer: aws_iam
+      role: arn:aws:iam::123456789012:role/gateway-role
+      kmsKey: arn:aws:kms:us-east-1:123456789012:key/abcdef01-2345-6789-abcd-ef0123456789
+      exceptionLevel: warning
+      tools:
+        - lookupOrder
+        - weatherApi
+      tags:
+        owner: support-team
+
+  memory:
+    sessionMemory:
+      description: Per-session conversation memory, 30-day retention
+      expiration:
+        days: 30
+      encryptionKey: arn:aws:kms:us-east-1:123456789012:key/abcdef01-2345-6789-abcd-ef0123456789
+      strategies:
+        - type: summary
+          model: claude-opus-4-7
+      role: arn:aws:iam::123456789012:role/memory-role
+      tags:
+        owner: support-team
+
+  browsers:
+    fixtureBrowser:
+      description: Managed headless browser for scraping flows
+      role: arn:aws:iam::123456789012:role/browser-role
+      recording:
+        enabled: true
+        s3Bucket: ai-fixture-recordings
+      signing:
+        enabled: true
+      network:
+        vpc:
+          securityGroupIds:
+            - sg-0a1b2c3d4e5f67890
+          subnetIds:
+            - subnet-0a1b2c3d4e5f67890
+      tags:
+        owner: support-team
+
+  codeInterpreters:
+    sandbox:
+      description: Sandboxed Python code interpreter
+      role: arn:aws:iam::123456789012:role/code-interpreter-role
+      network:
+        vpc:
+          securityGroupIds:
+            - sg-0a1b2c3d4e5f67890
+          subnetIds:
+            - subnet-0a1b2c3d4e5f67890
+      tags:
+        owner: support-team
+
+functions:
+  lookupOrderFn:
+    handler: src/tools/lookupOrder.handler
+    runtime: nodejs20.x

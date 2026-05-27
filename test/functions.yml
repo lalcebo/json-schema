@@ -1,0 +1,176 @@
+# yaml-language-server: $schema=../serverless/reference.json
+
+# Exercises function-level sub-keys including v4 additions:
+# `url`, `logs`, `architecture`, `ephemeralStorageSize`, `kmsKeyArn`, `iam`,
+# `tenancy`, `durableConfig`, `capacityProvider`, `fileSystemConfig`,
+# `snapStart` (object form), `provisionedConcurrency` (object form).
+# See ./events.yml for the full event-source matrix.
+
+service: functions-fixture
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+functions:
+  # Standard handler-based function with most sub-keys
+  api:
+    handler: src/api.handler
+    name: ${sls:stage}-functions-fixture-api
+    description: REST handler with the full v4 sub-key matrix
+    runtime: nodejs20.x
+    architecture: arm64
+    memorySize: 1024
+    timeout: 15
+    ephemeralStorageSize: 1024              # v4
+    kmsKeyArn: arn:aws:kms:us-east-1:123456789012:key/abcdef01-2345-6789-abcd-ef0123456789
+    reservedConcurrency: 10
+    provisionedConcurrency:                 # v4 object form
+      alias: live
+      executions: 3
+    role: arn:aws:iam::123456789012:role/api-handler
+    onError: arn:aws:sns:us-east-1:123456789012:dlq-topic
+    snapStart:                              # v4 object form
+      applyOn: PublishedVersions
+    tracing: Active
+    condition: IsProduction
+    dependsOn:
+      - UsersTable
+    disableLogs: false
+    logRetentionInDays: 14
+    logs:                                   # v4 function-level
+      logFormat: JSON
+      applicationLogLevel: INFO
+      systemLogLevel: WARN
+      logGroup: /aws/lambda/functions-fixture-api
+    tenancy:                                # v4
+      mode: per_tenant
+    durableConfig:                          # v4
+      executionTimeout: 3600
+      retentionPeriodInDays: 14
+    capacityProvider:                       # v4
+      name: standardCapacity
+      maxConcurrency: 100
+      memoryPerVCpu: 4
+      scaling:
+        min: 1
+        max: 10
+    runtimeManagement:                      # v4 object form
+      mode: manual
+      arn: arn:aws:lambda:us-east-1::runtime:nodejs20.x::0000000000000000000000000000000000000000000000000000000000000000
+    fileSystemConfig:
+      arn: arn:aws:elasticfilesystem:us-east-1:123456789012:access-point/fsap-0a1b2c3d4e5f67890
+      localMountPath: /mnt/data
+      type: efs
+    environment:
+      TABLE_NAME: Users
+      LOG_LEVEL: info
+    tags:
+      owner: payments-team
+    vpc:
+      securityGroupIds:
+        - sg-0a1b2c3d4e5f67890
+      subnetIds:
+        - subnet-0a1b2c3d4e5f67890
+    iam:
+      inheritStatements: true               # v4
+      role:
+        name: ${sls:stage}-api-role
+        statements:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:Query
+            Resource: arn:aws:dynamodb:us-east-1:123456789012:table/Users
+        managedPolicies:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        permissionsBoundary: arn:aws:iam::123456789012:policy/perm-boundary
+        path: /service-role/
+        tags:
+          managed-by: serverless
+    destinations:
+      onSuccess: notifySuccessFn
+      onFailure: arn:aws:sns:us-east-1:123456789012:dlq-topic
+    maximumRetryAttempts: 2
+    maximumEventAge: 7200
+    package:
+      patterns:
+        - "src/api/**"
+        - "!src/api/**/*.test.*"
+      individually: true
+    layers:
+      - arn:aws:lambda:us-east-1:123456789012:layer:common-deps:42
+      - Ref: MySharedLayerLambdaLayer
+
+  # Lambda Function URL — boolean shorthand
+  urlSimple:
+    handler: src/urlSimple.handler
+    url: true                               # v4
+
+  # Lambda Function URL — full object with CORS + IAM auth
+  urlFull:
+    handler: src/urlFull.handler
+    url:                                    # v4
+      authorizer: aws_iam
+      invokeMode: BUFFERED
+      cors:
+        allowedOrigins:
+          - https://app.example.com
+        allowedHeaders:
+          - Authorization
+          - Content-Type
+        allowedMethods:
+          - GET
+          - POST
+        allowCredentials: true
+        exposedResponseHeaders:
+          - X-Request-Id
+        maxAge: 3600
+
+  # SnapStart shorthand (boolean) for Java
+  snapStartSimple:
+    handler: com.example.App::handleRequest
+    runtime: java21
+    snapStart: true
+
+  # Container-image-based function pulling from provider.ecr.images.baseimage
+  imageBased:
+    image:
+      name: baseimage
+      command:
+        - app.handler
+      entryPoint:
+        - /var/runtime/bootstrap
+      workingDirectory: /var/task
+
+  # Provisioned concurrency — simple integer form
+  provisionedInt:
+    handler: src/provisionedInt.handler
+    provisionedConcurrency: 5
+
+  # Disable VPC for a single function (tilde / null)
+  noVpc:
+    handler: src/noVpc.handler
+    vpc: ~
+
+resources:
+  Conditions:
+    IsProduction:
+      Fn::Equals:
+        - ${sls:stage}
+        - prod
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Users
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
