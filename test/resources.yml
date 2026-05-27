@@ -1,0 +1,177 @@
+# yaml-language-server: $schema=../serverless/reference.json
+
+# Exercises the `resources`, `layers`, and `package` blocks plus every nested
+# CloudFormation top-level section (Outputs, Mappings, Conditions, Parameters,
+# Transform, Description, Metadata, AWSTemplateFormatVersion, Hooks, Rules).
+
+service: resources-fixture
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+package:
+  patterns:
+    - "src/**"
+    - "!**/*.test.*"
+    - "!**/__snapshots__/**"
+  individually: false
+  excludeDevDependencies: true
+
+# AwsLayer is `path` XOR `package` (oneOf with required). Two layer examples
+# below illustrate each form.
+layers:
+  pathLayer:
+    path: layers/common
+    name: common-deps
+    description: Shared runtime dependencies
+    compatibleRuntimes:
+      - nodejs20.x
+    compatibleArchitectures:
+      - x86_64
+      - arm64
+    licenseInfo: MIT
+    retain: false
+    allowedAccounts:
+      - "*"
+  packageLayer:
+    package:
+      patterns:
+        - "node_modules/**"
+    name: packaged-deps
+    description: Packaged runtime dependencies
+    compatibleRuntimes:
+      - nodejs20.x
+
+functions:
+  noop:
+    handler: src/noop.handler
+
+resources:
+  AWSTemplateFormatVersion: "2010-09-09"
+  Description: Resources fixture stack
+  Metadata:
+    GeneratedBy: serverless-fixture
+  Transform: AWS::Serverless-2016-10-31
+
+  Parameters:
+    DbInstanceClass:
+      Type: String
+      Default: db.t4g.small
+      AllowedValues:
+        - db.t4g.small
+        - db.t4g.medium
+        - db.t4g.large
+      Description: RDS instance class
+    EnableTracing:
+      Type: String
+      Default: "true"
+      AllowedValues:
+        - "true"
+        - "false"
+
+  Mappings:
+    StageRegionMap:
+      dev:
+        primary: us-east-1
+        secondary: us-west-2
+      prod:
+        primary: us-east-1
+        secondary: eu-west-1
+
+  # The shared Conditions component schema only accepts string operands and a
+  # narrow set of intrinsic functions (no {Ref: ...} object form). Real CFN
+  # supports {Ref: ...} but it's not modelled in components/conditions.json.
+  Conditions:
+    IsUsEast1:
+      Fn::Equals:
+        - us-east-1
+        - us-east-1
+    EmptyEnv:
+      Fn::Equals:
+        - ""
+        - ""
+
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      UpdateReplacePolicy: Retain
+      Properties:
+        TableName: ${self:service}-${sls:stage}-users
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        SSESpecification:
+          SSEEnabled: true
+        Tags:
+          - Key: project
+            Value: ${self:service}
+
+    UploadsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        # S3 bucket names must be lowercase + hyphens/dots; Serverless `${...}`
+        # variables fail the upstream CFN pattern, so use a literal here.
+        BucketName: resources-fixture-dev-uploads
+        AccessControl: Private
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          IgnorePublicAcls: true
+          BlockPublicPolicy: true
+          RestrictPublicBuckets: true
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+
+    NotificationTopic:
+      Type: AWS::SNS::Topic
+      Condition: IsUsEast1
+      Properties:
+        TopicName: ${self:service}-${sls:stage}-notify
+
+  Outputs:
+    UsersTableName:
+      Description: Name of the Users table
+      Value:
+        Ref: UsersTable
+      Export:
+        Name: ${self:service}-${sls:stage}-UsersTableName
+    UploadsBucketArn:
+      Description: ARN of the uploads bucket
+      Value:
+        Fn::GetAtt:
+          - UploadsBucket
+          - Arn
+
+  Hooks:
+    PreCreate:
+      LambdaFunction: arn:aws:lambda:us-east-1:123456789012:function:pre-create
+
+  Rules:
+    SupportedRegion:
+      RuleCondition:
+        Fn::Contains:
+          - - us-east-1
+            - us-west-2
+          - Ref: AWS::Region
+      Assertions:
+        - Assert:
+            Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          AssertDescription: Stack must deploy in us-east-1

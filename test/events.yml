@@ -1,0 +1,282 @@
+# yaml-language-server: $schema=../serverless/reference.json
+
+# One function per event type, plus a kitchen-sink function carrying every
+# event type at once so the AwsEvent union is exercised end-to-end.
+
+service: events-fixture
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+  httpApi:
+    payload: "2.0"
+
+functions:
+  # REST API Gateway (v1) — string shorthand only allows `/` and `/{proxy+}`;
+  # any other path requires the object form below.
+  httpString:
+    handler: src/httpString.handler
+    events:
+      - http: GET /
+
+  httpFull:
+    handler: src/httpFull.handler
+    events:
+      - http:
+          method: post
+          path: /orders
+          private: false
+          async: false
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: false
+          authorizer:
+            type: COGNITO_USER_POOLS
+            arn: arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_aBcDeFgHi
+            scopes:
+              - orders/read
+          request:
+            parameters:
+              paths:
+                id: true
+              querystrings:
+                limit: false
+              headers:
+                X-Trace-Id: false
+            schema:
+              application/json: ${file(./schemas/order.json)}
+
+  # HTTP API (v2) — string and object forms
+  httpApiString:
+    handler: src/httpApiString.handler
+    events:
+      - httpApi: "GET /healthz"
+
+  httpApiAuth:
+    handler: src/httpApiAuth.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /me
+          authorizer:
+            name: jwtAuthorizer
+            scopes:
+              - profile/read
+
+  # Websocket
+  wsConnect:
+    handler: src/wsConnect.handler
+    events:
+      - websocket:
+          route: $connect
+          authorizer:
+            arn: arn:aws:lambda:us-east-1:123456789012:function:ws-authorizer
+            identitySource:
+              - route.request.querystring.Auth
+
+  # Schedule — string rate and full object
+  scheduleString:
+    handler: src/scheduleString.handler
+    events:
+      - schedule: rate(5 minutes)
+  scheduleFull:
+    handler: src/scheduleFull.handler
+    events:
+      - schedule:
+          rate:
+            - cron(0 12 * * ? *)
+          name: noon-utc
+          description: Run every day at noon UTC
+          enabled: true
+          input:
+            tenant: acme
+
+  # SNS — object form
+  snsFull:
+    handler: src/snsFull.handler
+    events:
+      - sns:
+          topicName: order-events
+          displayName: Order events
+          filterPolicy:
+            event_type:
+              - created
+              - updated
+          filterPolicyScope: MessageAttributes
+
+  # SQS — string and object
+  sqsString:
+    handler: src/sqsString.handler
+    events:
+      - sqs: arn:aws:sqs:us-east-1:123456789012:fixture-queue
+  sqsFull:
+    handler: src/sqsFull.handler
+    events:
+      - sqs:
+          arn: arn:aws:sqs:us-east-1:123456789012:fixture-queue
+          batchSize: 10
+          maximumBatchingWindow: 5
+          enabled: true
+
+  # DynamoDB / Kinesis stream — `arn` resolves via Fn::GetAtt for DynamoDB
+  streamHandler:
+    handler: src/streamHandler.handler
+    events:
+      - stream:
+          arn:
+            Fn::GetAtt:
+              - UsersTable
+              - StreamArn
+          batchSize: 100
+          startingPosition: LATEST
+          enabled: true
+
+  # S3 event — string and object
+  s3Simple:
+    handler: src/s3Simple.handler
+    events:
+      - s3: fixture-uploads
+  s3Full:
+    handler: src/s3Full.handler
+    events:
+      - s3:
+          bucket: fixture-uploads
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: incoming/
+            - suffix: .json
+
+  # CloudWatch event (legacy)
+  cwEvent:
+    handler: src/cwEvent.handler
+    events:
+      - cloudwatchEvent:
+          event:
+            source:
+              - aws.ec2
+            detail-type:
+              - EC2 Instance State-change Notification
+            detail:
+              state:
+                - running
+
+  # CloudWatch Log subscription
+  cwLog:
+    handler: src/cwLog.handler
+    events:
+      - cloudwatchLog:
+          logGroup: /aws/lambda/source-fn
+          filter: '{ $.level = "ERROR" }'
+
+  # Cognito user pool trigger
+  cognitoTrigger:
+    handler: src/cognitoTrigger.handler
+    events:
+      - cognitoUserPool:
+          pool: MyUserPool
+          trigger: PreSignUp
+          existing: false
+
+  # ALB
+  albEvent:
+    handler: src/albEvent.handler
+    events:
+      - alb:
+          listenerArn: arn:aws:elasticloadbalancing:us-east-1:123456789012:listener/app/my-alb/1234/5678
+          priority: 1
+          conditions:
+            path: /api/*
+
+  # Alexa skills
+  alexaSkillEvent:
+    handler: src/alexaSkillEvent.handler
+    events:
+      - alexaSkill:
+          appId: amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+          enabled: true
+  alexaSmartHomeEvent:
+    handler: src/alexaSmartHomeEvent.handler
+    events:
+      - alexaSmartHome:
+          appId: amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+          enabled: true
+
+  # IoT rule
+  iotEvent:
+    handler: src/iotEvent.handler
+    events:
+      - iot:
+          name: TemperatureRule
+          description: trigger on high temperature
+          enabled: true
+          sql: "SELECT * FROM 'sensors/temperature' WHERE temp > 30"
+          sqlVersion: "2016-03-23"
+
+  # CloudFront Lambda@Edge
+  cfEvent:
+    handler: src/cfEvent.handler
+    events:
+      - cloudFront:
+          eventType: viewer-request
+          includeBody: false
+          pathPattern: /assets/*
+          origin:
+            DomainName: origin.example.com
+            OriginPath: /v1
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+
+  # EventBridge — pattern + schedule + retry
+  ebEvent:
+    handler: src/ebEvent.handler
+    events:
+      - eventBridge:
+          eventBus: arn:aws:events:us-east-1:123456789012:event-bus/orders
+          name: order-created-rule
+          enabled: true
+          pattern:
+            source:
+              - acme.orders
+            detail-type:
+              - OrderCreated
+            detail:
+              status:
+                - PENDING
+          input:
+            tenant: acme
+          retryPolicy:
+            maximumEventAge: 3600
+            maximumRetryAttempts: 5
+
+  # ActiveMQ
+  amqEvent:
+    handler: src/amqEvent.handler
+    events:
+      - activemq:
+          arn: arn:aws:mq:us-east-1:123456789012:broker:fixture:b-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+          queue: orders.in
+          basicAuthArn: arn:aws:secretsmanager:us-east-1:123456789012:secret:amq-creds-AbCdEf
+          batchSize: 10
+          enabled: true
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH

@@ -1,0 +1,271 @@
+# yaml-language-server: $schema=../serverless/reference.json
+
+# Exercises every documented `provider` sub-key, including v4 additions
+# (`domain`, `domains`, `resolver`, `enableLegacyDeploymentBucket`,
+# `capacityProviders`, `s3`, `kmsKeyArn`, `logs.lambda`, `vpc.ipv6AllowedForDualStack`).
+
+service: provider-fixture
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  stage: dev
+  region: us-east-1
+  profile: production
+  stackName: provider-fixture-dev
+  apiName: provider-fixture-api
+  websocketsApiName: provider-fixture-ws
+  websocketsApiRouteSelectionExpression: $request.body.route
+  websocketsDescription: Provider fixture websockets API
+  endpointType: REGIONAL
+  versionFunctions: true
+  architecture: arm64
+  runtime: nodejs20.x
+  memorySize: 512
+  timeout: 10
+  logRetentionInDays: 14
+  kmsKeyArn: arn:aws:kms:us-east-1:123456789012:key/abcdef01-2345-6789-abcd-ef0123456789
+  reservedConcurrency: 50
+  rolePermissionsBoundary: arn:aws:iam::123456789012:policy/perm-boundary
+  cfnRole: arn:aws:iam::123456789012:role/cfn-deployer
+
+  resolver: aws-account-1                  # v4
+  deploymentMethod: direct
+  disableRollback: true
+  enableLegacyDeploymentBucket: false      # v4
+
+  tags:
+    project: provider-fixture
+    env: dev
+  stackTags:
+    cost-center: "1234"
+  notificationArns:
+    - arn:aws:sns:us-east-1:123456789012:cfn-events
+  stackParameters:
+    - ParameterKey: VpcId
+      ParameterValue: vpc-0abcd1234ef567890
+
+  environment:
+    APP_NAME: provider-fixture
+    LOG_LEVEL: info
+
+  rollbackConfiguration:
+    MonitoringTimeInMinutes: 20
+    RollbackTriggers:
+      - Arn: arn:aws:cloudwatch:us-east-1:123456789012:alarm:api-5xx
+        Type: AWS::CloudWatch::Alarm
+
+  tracing:
+    apiGateway: true
+    lambda: true
+
+  runtimeManagement:                       # v4
+    mode: auto
+
+  logDataProtectionPolicy:
+    Name: provider-fixture-dpp
+    Version: "2021-06-01"
+    Statement:
+      - Sid: redact-pii
+        DataIdentifier:
+          - arn:aws:dataprotection::aws:data-identifier/EmailAddress
+        Operation:
+          Audit:
+            FindingsDestination: {}
+
+  # Custom domain — string form
+  domain: api.example.com                  # v4
+
+  # ...or array of domain objects:
+  # domains:
+  #   - name: api.example.com
+  #     basePath: v1
+  #     apiType: http
+  #     endpointType: regional
+  #     certificateArn: arn:aws:acm:us-east-1:123456789012:certificate/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+  #     createRoute53Record: true
+  #     hostedZoneId: Z1PA6795UKMFR9
+  #     securityPolicy: TLS_1_2
+
+  deploymentBucket:
+    name: com.example.${self:provider.region}.deploys
+    blockPublicAccess: true
+    versioning: true
+    serverSideEncryption: AES256
+    skipPolicySetup: false
+    maxPreviousDeploymentArtifacts: 5
+    tags:
+      managed-by: serverless
+
+  iam:
+    role:
+      name: provider-fixture-role
+      path: /service-role/
+      managedPolicies:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      permissionsBoundary: arn:aws:iam::123456789012:policy/perm-boundary
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:Query
+          Resource:
+            Fn::Join:
+              - ""
+              - - "arn:aws:dynamodb:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":table/Users"
+      tags:
+        managed-by: serverless
+
+  vpc:
+    ipv6AllowedForDualStack: true          # v4
+    securityGroupIds:
+      - sg-0a1b2c3d4e5f67890
+    subnetIds:
+      - subnet-0a1b2c3d4e5f67890
+      - subnet-0fedcba9876543210
+
+  logs:
+    frameworkLambda: true
+    lambda:                                # v4
+      logFormat: JSON
+      applicationLogLevel: INFO
+      systemLogLevel: WARN
+      logGroup: /aws/lambda/provider-fixture
+    httpApi:
+      format: '{ "requestId": "$context.requestId" }'
+    restApi:
+      accessLogging: true
+      executionLogging: true
+      level: INFO
+      fullExecutionData: true
+      format: 'requestId: $context.requestId'
+      role: arn:aws:iam::123456789012:role/apigw-cloudwatch
+      roleManagedExternally: false
+    websocket:
+      level: INFO
+      accessLogging: true
+      executionLogging: true
+      fullExecutionData: true
+      format: 'requestId: $context.requestId'
+
+  httpApi:
+    name: provider-fixture-httpapi
+    payload: "2.0"
+    cors: true
+    disableDefaultEndpoint: false
+    metrics: true
+    authorizers:
+      jwtAuthorizer:
+        identitySource: $request.header.Authorization
+        issuerUrl: https://example.auth0.com/
+        audience:
+          - https://api.example.com
+      lambdaAuthorizer:
+        type: request
+        functionName: customAuthorizer
+        identitySource:
+          - $request.header.Authorization
+        resultTtlInSeconds: 300
+        enableSimpleResponses: true
+        payloadVersion: "2.0"
+
+  apiGateway:
+    apiKeySourceType: HEADER
+    minimumCompressionSize: 1024
+    metrics: true
+    shouldStartNameWithService: true
+    description: Provider fixture REST API
+    binaryMediaTypes:
+      - "*/*"
+    apiKeys:
+      - name: firstKey
+        description: primary key
+        enabled: true
+    usagePlan:
+      quota:
+        limit: 5000
+        offset: 0
+        period: MONTH
+      throttle:
+        burstLimit: 200
+        rateLimit: 100
+
+  alb:
+    targetGroupPrefix: pf-
+    authorizers:
+      cognitoAuth:
+        type: cognito
+        userPoolArn: arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_aBcDeFgHi
+        userPoolClientId: 1h57kf5cpq17m0eml1234EXAMPLE
+        userPoolDomain: provider-fixture
+        onUnauthenticatedRequest: deny
+
+  cloudFront:
+    cachePolicies:
+      defaultPolicy:
+        DefaultTTL: 60
+        MinTTL: 30
+        MaxTTL: 3600
+        Comment: provider fixture cache policy
+        ParametersInCacheKeyAndForwardedToOrigin:
+          EnableAcceptEncodingBrotli: true
+          EnableAcceptEncodingGzip: true
+          CookiesConfig:
+            CookieBehavior: none
+          HeadersConfig:
+            HeaderBehavior: whitelist
+            Headers:
+              - authorization
+          QueryStringsConfig:
+            QueryStringBehavior: none
+
+  ecr:
+    scanOnPush: true
+    images:
+      baseimage:
+        uri: 123456789012.dkr.ecr.us-east-1.amazonaws.com/provider-fixture@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+      builtimage:
+        path: ./image
+        file: Dockerfile
+        buildArgs:
+          STAGE: dev
+        cacheFrom:
+          - provider-fixture:latest
+
+  # v4: declarative S3 buckets
+  s3:
+    primaryBucket:
+      name: provider-fixture-primary
+      versioningConfiguration:
+        Status: Enabled
+      publicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+
+  # v4: Lambda Managed Instances capacity providers
+  capacityProviders:
+    standardCapacity:
+      scaling:
+        maxVCpuCount: 16
+        mode: auto
+        policies:
+          - predefinedMetricType: LambdaCapacityProviderAverageCPUUtilization
+            targetValue: 70
+      instanceRequirements:
+        allowedInstanceTypes:
+          - c7g.large
+        architectures:
+          - arm64
+      permissions:
+        operatorRole: arn:aws:iam::123456789012:role/CapacityOperator
+      vpc:
+        securityGroupIds:
+          - sg-0a1b2c3d4e5f67890
+        subnetIds:
+          - subnet-0a1b2c3d4e5f67890

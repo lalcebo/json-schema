@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=../serverless/reference.json
+
+# Exercises the v4 `stages` and `params` top-level blocks.
+# `stages` is the preferred form in v4; both are kept here to verify
+# either resolves against the schema.
+
+service: stages-params-fixture
+frameworkVersion: "4"
+
+# v4 preferred: stage-keyed configuration
+stages:
+  default:
+    observability: false
+    params:
+      domain: api.dev.example.com
+      stripe_api_key: ${env:DEV_STRIPE_API_KEY}
+      max_connections: 10
+      feature_flags:
+        billing_v2: false
+        new_dashboard: true
+    resolvers:
+      ssm:
+        type: aws-ssm
+        region: us-east-1
+  prod:
+    observability: true
+    params:
+      domain: api.example.com
+      stripe_api_key: ${env:PROD_STRIPE_API_KEY}
+      max_connections: 200
+      feature_flags:
+        billing_v2: true
+        new_dashboard: true
+  staging:
+    observability: true
+    params:
+      domain: api.staging.example.com
+      stripe_api_key: ${env:STAGING_STRIPE_API_KEY}
+      max_connections: 50
+
+# Legacy / alternative: top-level `params` (still supported in v4)
+params:
+  default:
+    region: us-east-1
+    retention_days: 7
+  prod:
+    region: us-east-1
+    retention_days: 90
+  staging:
+    region: us-east-1
+    retention_days: 30
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  # AwsRegion is a fixed enum, so the schema rejects ${param:region}. Real
+  # serverless.yml would resolve the variable before validation; here we hard-
+  # code so the file validates standalone.
+  region: us-east-1
+  stage: ${opt:stage, 'default'}
+  environment:
+    DOMAIN: ${param:domain}
+    STRIPE_API_KEY: ${param:stripe_api_key}
+    MAX_CONNECTIONS: ${param:max_connections}
+  logRetentionInDays: ${param:retention_days}
+
+functions:
+  api:
+    handler: src/api.handler
+    events:
+      - httpApi: "ANY /{proxy+}"
