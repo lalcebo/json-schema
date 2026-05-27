@@ -1,0 +1,1783 @@
+{
+  "typeName": "AWS::DevOpsAgent::Service",
+  "description": "The AWS::DevOpsAgent::Service resource registers external services (like Dynatrace, MCP servers, GitLab) for integration with DevOpsAgent.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "ServiceId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The unique identifier of the service",
+      "title": "AWSDevOpsAgentServiceServiceIdDefinition"
+    },
+    "ServiceType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "dynatrace",
+            "mcpserver",
+            "mcpserversplunk",
+            "mcpservernewrelic",
+            "gitlab",
+            "servicenow",
+            "pagerduty",
+            "azureidentity",
+            "mcpserversigv4",
+            "mcpservergrafana"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of service being registered",
+      "title": "AWSDevOpsAgentServiceServiceTypeDefinition"
+    },
+    "ServiceDetails": {
+      "description": "Service-specific configuration details - only MCPServerSigV4 supports in-place updates, all other service types require replacement when modified",
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "Dynatrace": {
+              "$ref": "#/definitions/DynatraceServiceDetails"
+            }
+          },
+          "required": [
+            "Dynatrace"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServer": {
+              "$ref": "#/definitions/MCPServerDetails"
+            }
+          },
+          "required": [
+            "MCPServer"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServerSplunk": {
+              "$ref": "#/definitions/MCPServerSplunkDetails"
+            }
+          },
+          "required": [
+            "MCPServerSplunk"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServerNewRelic": {
+              "$ref": "#/definitions/NewRelicServiceDetails"
+            }
+          },
+          "required": [
+            "MCPServerNewRelic"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "GitLab": {
+              "$ref": "#/definitions/GitLabDetails"
+            }
+          },
+          "required": [
+            "GitLab"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "ServiceNow": {
+              "$ref": "#/definitions/ServiceNowServiceDetails"
+            }
+          },
+          "required": [
+            "ServiceNow"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "PagerDuty": {
+              "$ref": "#/definitions/PagerDutyDetails"
+            }
+          },
+          "required": [
+            "PagerDuty"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "AzureIdentity": {
+              "$ref": "#/definitions/AzureIdentityServiceDetails"
+            }
+          },
+          "required": [
+            "AzureIdentity"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServerSigV4": {
+              "$ref": "#/definitions/MCPServerSigV4Details"
+            }
+          },
+          "required": [
+            "MCPServerSigV4"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServerGrafana": {
+              "$ref": "#/definitions/MCPServerGrafanaDetails"
+            }
+          },
+          "required": [
+            "MCPServerGrafana"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDevOpsAgentServiceServiceDetailsDefinition"
+    },
+    "DynatraceServiceDetails": {
+      "description": "Dynatrace service configuration",
+      "type": "object",
+      "properties": {
+        "AccountUrn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Dynatrace resource account URN"
+        },
+        "AuthorizationConfig": {
+          "$ref": "#/definitions/DynatraceAuthorizationConfig"
+        }
+      },
+      "required": [
+        "AccountUrn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceDynatraceServiceDetailsDefinition"
+    },
+    "DynatraceAuthorizationConfig": {
+      "description": "Dynatrace OAuth authorization configuration",
+      "type": "object",
+      "properties": {
+        "OAuthClientCredentials": {
+          "$ref": "#/definitions/OAuthClientDetails"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceDynatraceAuthorizationConfigDefinition"
+    },
+    "ServiceNowServiceDetails": {
+      "description": "ServiceNow service configuration",
+      "type": "object",
+      "properties": {
+        "InstanceUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https://[a-zA-Z0-9-]+\\.service-now\\.com/?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ServiceNow instance URL"
+        },
+        "AuthorizationConfig": {
+          "$ref": "#/definitions/ServiceNowAuthorizationConfig"
+        }
+      },
+      "required": [
+        "InstanceUrl"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceServiceNowServiceDetailsDefinition"
+    },
+    "ServiceNowAuthorizationConfig": {
+      "description": "ServiceNow OAuth authorization configuration",
+      "type": "object",
+      "properties": {
+        "OAuthClientCredentials": {
+          "$ref": "#/definitions/OAuthClientDetails"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceServiceNowAuthorizationConfigDefinition"
+    },
+    "PagerDutyDetails": {
+      "description": "PagerDuty service configuration",
+      "type": "object",
+      "properties": {
+        "Scopes": {
+          "description": "PagerDuty scopes",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AuthorizationConfig": {
+          "$ref": "#/definitions/PagerDutyAuthorizationConfig"
+        }
+      },
+      "required": [
+        "Scopes",
+        "AuthorizationConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServicePagerDutyDetailsDefinition"
+    },
+    "PagerDutyAuthorizationConfig": {
+      "description": "PagerDuty OAuth authorization configuration",
+      "type": "object",
+      "properties": {
+        "OAuthClientCredentials": {
+          "$ref": "#/definitions/OAuthClientDetails"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServicePagerDutyAuthorizationConfigDefinition"
+    },
+    "MCPServerSigV4Details": {
+      "description": "SigV4-authenticated MCP server configuration",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server name"
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server endpoint URL"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 500
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional description for the MCP server"
+        },
+        "AuthorizationConfig": {
+          "$ref": "#/definitions/MCPServerSigV4AuthorizationConfig"
+        }
+      },
+      "required": [
+        "Name",
+        "Endpoint",
+        "AuthorizationConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceMCPServerSigV4DetailsDefinition"
+    },
+    "MCPServerSigV4AuthorizationConfig": {
+      "description": "SigV4 authorization configuration for MCP server",
+      "type": "object",
+      "properties": {
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(\\*|[a-z]{2,4}(-[a-z]+)+-\\d+)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS region for SigV4 signing. Use '*' for SigV4a multi-region signing."
+        },
+        "Service": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS service name for SigV4 signing"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws:iam::\\d{12}:role/[a-zA-Z0-9+=,.@_/-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IAM role ARN to assume for SigV4 signing"
+        },
+        "CustomHeaders": {
+          "description": "Custom headers for the SigV4 MCP server",
+          "type": "object",
+          "maxProperties": 10,
+          "patternProperties": {
+            "^[a-zA-Z0-9-_]+$": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "Region",
+        "Service",
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceMCPServerSigV4AuthorizationConfigDefinition"
+    },
+    "MCPServerDetails": {
+      "description": "MCP server configuration",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server name"
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server endpoint URL"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 500
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional description for the MCP server"
+        },
+        "AuthorizationConfig": {
+          "$ref": "#/definitions/MCPServerAuthorizationConfig"
+        }
+      },
+      "required": [
+        "Name",
+        "Endpoint",
+        "AuthorizationConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceMCPServerDetailsDefinition"
+    },
+    "MCPServerAuthorizationConfig": {
+      "description": "MCP server authorization configuration",
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "OAuthClientCredentials": {
+              "$ref": "#/definitions/MCPServerOAuthClientCredentialsConfig"
+            }
+          },
+          "required": [
+            "OAuthClientCredentials"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "ApiKey": {
+              "$ref": "#/definitions/ApiKeyDetails"
+            }
+          },
+          "required": [
+            "ApiKey"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDevOpsAgentServiceMCPServerAuthorizationConfigDefinition"
+    },
+    "MCPServerSplunkAuthorizationConfig": {
+      "description": "MCP server splunk authorization configuration",
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "BearerToken": {
+              "$ref": "#/definitions/BearerTokenDetails"
+            }
+          },
+          "required": [
+            "BearerToken"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDevOpsAgentServiceMCPServerSplunkAuthorizationConfigDefinition"
+    },
+    "MCPServerOAuthClientCredentialsConfig": {
+      "description": "MCP server OAuth client credentials configuration",
+      "type": "object",
+      "properties": {
+        "ClientName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "User friendly OAuth client name"
+        },
+        "ClientId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "OAuth client ID"
+        },
+        "ClientSecret": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "OAuth client secret"
+        },
+        "ExchangeUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "OAuth token exchange URL"
+        },
+        "Scopes": {
+          "description": "OAuth scopes",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "ExchangeParameters": {
+          "description": "OAuth token exchange parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "ClientId",
+        "ClientSecret",
+        "ExchangeUrl"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceMCPServerOAuthClientCredentialsConfigDefinition"
+    },
+    "GitLabDetails": {
+      "description": "GitLab service configuration",
+      "type": "object",
+      "properties": {
+        "TargetUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https://[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?(?::[0-9]{1,5})?/?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "GitLab instance URL"
+        },
+        "TokenType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "personal",
+                "group"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Type of GitLab access token"
+        },
+        "TokenValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^glpat-[a-zA-Z0-9._-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "GitLab access token value"
+        },
+        "GroupId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional GitLab group ID for group-level access tokens"
+        }
+      },
+      "required": [
+        "TargetUrl",
+        "TokenType",
+        "TokenValue"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceGitLabDetailsDefinition"
+    },
+    "OAuthClientDetails": {
+      "description": "OAuth client credentials",
+      "type": "object",
+      "properties": {
+        "ClientName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "User friendly OAuth client name"
+        },
+        "ClientId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "OAuth client ID"
+        },
+        "ClientSecret": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "OAuth client secret"
+        },
+        "ExchangeParameters": {
+          "description": "OAuth token exchange parameters",
+          "type": "object"
+        }
+      },
+      "required": [
+        "ClientId",
+        "ClientSecret"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceOAuthClientDetailsDefinition"
+    },
+    "ApiKeyDetails": {
+      "description": "API key authentication details",
+      "type": "object",
+      "properties": {
+        "ApiKeyName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_\\s-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "User friendly API key name"
+        },
+        "ApiKeyValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[!-~]([ \\t]*[!-~])*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "API key value"
+        },
+        "ApiKeyHeader": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "HTTP header name to send the API key"
+        }
+      },
+      "required": [
+        "ApiKeyName",
+        "ApiKeyValue",
+        "ApiKeyHeader"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceApiKeyDetailsDefinition"
+    },
+    "BearerTokenDetails": {
+      "description": "Bearer token authentication details",
+      "type": "object",
+      "properties": {
+        "TokenName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_\\s-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "User friendly bearer token name"
+        },
+        "TokenValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\S]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Bearer token value"
+        },
+        "AuthorizationHeader": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9-]+$",
+              "default": "Authorization"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "HTTP header name to send the bearer token"
+        }
+      },
+      "required": [
+        "TokenName",
+        "TokenValue"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceBearerTokenDetailsDefinition"
+    },
+    "MCPServerSplunkDetails": {
+      "description": "Splunk MCP server configuration",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server name"
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server endpoint URL"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 500
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional description for the MCP server"
+        },
+        "AuthorizationConfig": {
+          "$ref": "#/definitions/MCPServerSplunkAuthorizationConfig"
+        }
+      },
+      "required": [
+        "Name",
+        "Endpoint",
+        "AuthorizationConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceMCPServerSplunkDetailsDefinition"
+    },
+    "MCPServerGrafanaDetails": {
+      "description": "Grafana MCP server configuration",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server name"
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^https://[a-zA-Z0-9.-]+(?::[0-9]+)?(?:/.*)?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server endpoint URL"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 500
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional description for the MCP server"
+        },
+        "AuthorizationConfig": {
+          "$ref": "#/definitions/MCPServerGrafanaAuthorizationConfig"
+        }
+      },
+      "required": [
+        "Name",
+        "Endpoint",
+        "AuthorizationConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceMCPServerGrafanaDetailsDefinition"
+    },
+    "MCPServerGrafanaAuthorizationConfig": {
+      "description": "Grafana MCP server authorization configuration",
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "BearerToken": {
+              "$ref": "#/definitions/BearerTokenDetails"
+            }
+          },
+          "required": [
+            "BearerToken"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDevOpsAgentServiceMCPServerGrafanaAuthorizationConfigDefinition"
+    },
+    "NewRelicServiceDetails": {
+      "description": "New Relic service configuration",
+      "type": "object",
+      "properties": {
+        "AuthorizationConfig": {
+          "$ref": "#/definitions/NewRelicAuthorizationConfig"
+        }
+      },
+      "required": [
+        "AuthorizationConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceNewRelicServiceDetailsDefinition"
+    },
+    "NewRelicAuthorizationConfig": {
+      "description": "New Relic authorization configuration",
+      "type": "object",
+      "properties": {
+        "ApiKey": {
+          "$ref": "#/definitions/NewRelicApiKeyConfig"
+        }
+      },
+      "required": [
+        "ApiKey"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceNewRelicAuthorizationConfigDefinition"
+    },
+    "NewRelicApiKeyConfig": {
+      "description": "New Relic API key configuration",
+      "type": "object",
+      "properties": {
+        "ApiKey": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^NRAK-[A-Z0-9]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "New Relic User API Key"
+        },
+        "AccountId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "New Relic Account ID"
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "US",
+                "EU"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "New Relic region"
+        },
+        "ApplicationIds": {
+          "description": "List of monitored APM application IDs",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "EntityGuids": {
+          "description": "List of globally unique IDs for New Relic resources",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_.-]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AlertPolicyIds": {
+          "description": "List of alert policy IDs",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "ApiKey",
+        "AccountId",
+        "Region"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceNewRelicApiKeyConfigDefinition"
+    },
+    "AzureIdentityServiceDetails": {
+      "description": "Azure Identity service configuration for federated identity",
+      "type": "object",
+      "properties": {
+        "TenantId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Azure AD tenant ID"
+        },
+        "ClientId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Azure AD application client ID"
+        },
+        "WebIdentityRoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN of the IAM role for web identity token exchange"
+        },
+        "WebIdentityTokenAudiences": {
+          "description": "List of audiences for the web identity token",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "TenantId",
+        "ClientId",
+        "WebIdentityRoleArn",
+        "WebIdentityTokenAudiences"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceAzureIdentityServiceDetailsDefinition"
+    },
+    "AdditionalServiceDetails": {
+      "description": "Additional details specific to the service type returned after registration",
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "MCPServer": {
+              "$ref": "#/definitions/RegisteredMCPServerDetails"
+            }
+          },
+          "required": [
+            "MCPServer"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "GitLab": {
+              "$ref": "#/definitions/RegisteredGitLabServiceDetails"
+            }
+          },
+          "required": [
+            "GitLab"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServerSplunk": {
+              "$ref": "#/definitions/RegisteredMCPServerDetails"
+            }
+          },
+          "required": [
+            "MCPServerSplunk"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServerNewRelic": {
+              "$ref": "#/definitions/RegisteredNewRelicDetails"
+            }
+          },
+          "required": [
+            "MCPServerNewRelic"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "Dynatrace": {
+              "$ref": "#/definitions/RegisteredDynatraceDetails"
+            }
+          },
+          "required": [
+            "Dynatrace"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "ServiceNow": {
+              "$ref": "#/definitions/RegisteredServiceNowDetails"
+            }
+          },
+          "required": [
+            "ServiceNow"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "PagerDuty": {
+              "$ref": "#/definitions/RegisteredPagerDutyDetails"
+            }
+          },
+          "required": [
+            "PagerDuty"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "AzureIdentity": {
+              "$ref": "#/definitions/RegisteredAzureIdentityDetails"
+            }
+          },
+          "required": [
+            "AzureIdentity"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServerSigV4": {
+              "$ref": "#/definitions/RegisteredMCPServerSigV4Details"
+            }
+          },
+          "required": [
+            "MCPServerSigV4"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "MCPServerGrafana": {
+              "$ref": "#/definitions/RegisteredMCPServerGrafanaDetails"
+            }
+          },
+          "required": [
+            "MCPServerGrafana"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDevOpsAgentServiceAdditionalServiceDetailsDefinition"
+    },
+    "RegisteredMCPServerDetails": {
+      "description": "MCP server details returned after registration",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server name"
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server endpoint URL"
+        },
+        "AuthorizationMethod": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "oauth-client-credentials",
+                "api-key",
+                "bearer-token"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server authorization method"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional description for the MCP server"
+        },
+        "ApiKeyHeader": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "API key header name if using API key authentication"
+        }
+      },
+      "required": [
+        "Name",
+        "Endpoint",
+        "AuthorizationMethod"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredMCPServerDetailsDefinition"
+    },
+    "RegisteredMCPServerGrafanaDetails": {
+      "description": "Grafana MCP server details returned after registration",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server name"
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server endpoint URL"
+        },
+        "AuthorizationMethod": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "bearer-token"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "MCP server authorization method"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional description for the MCP server"
+        }
+      },
+      "required": [
+        "Endpoint",
+        "AuthorizationMethod"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredMCPServerGrafanaDetailsDefinition"
+    },
+    "RegisteredNewRelicDetails": {
+      "description": "New Relic service details returned after registration",
+      "type": "object",
+      "properties": {
+        "AccountId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "New Relic account ID"
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "US",
+                "EU"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "New Relic region"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional user description"
+        }
+      },
+      "required": [
+        "AccountId",
+        "Region"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredNewRelicDetailsDefinition"
+    },
+    "RegisteredGitLabServiceDetails": {
+      "description": "GitLab service details returned after registration",
+      "type": "object",
+      "properties": {
+        "TargetUrl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "GitLab instance URL"
+        },
+        "TokenType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "personal",
+                "group"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Type of GitLab access token"
+        },
+        "GroupId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional GitLab group ID for group-level access tokens"
+        }
+      },
+      "required": [
+        "TargetUrl",
+        "TokenType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredGitLabServiceDetailsDefinition"
+    },
+    "RegisteredDynatraceDetails": {
+      "description": "Dynatrace service details returned after registration",
+      "type": "object",
+      "properties": {
+        "AccountUrn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Dynatrace resource account URN"
+        }
+      },
+      "required": [
+        "AccountUrn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredDynatraceDetailsDefinition"
+    },
+    "RegisteredServiceNowDetails": {
+      "description": "ServiceNow service details returned after registration",
+      "type": "object",
+      "properties": {
+        "InstanceUrl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ServiceNow instance URL"
+        }
+      },
+      "required": [
+        "InstanceUrl"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredServiceNowDetailsDefinition"
+    },
+    "RegisteredPagerDutyDetails": {
+      "description": "PagerDuty service details returned after registration",
+      "type": "object",
+      "properties": {
+        "Scopes": {
+          "description": "The scopes assigned to the service",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "Scopes"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredPagerDutyDetailsDefinition"
+    },
+    "RegisteredAzureIdentityDetails": {
+      "description": "Azure Identity service details returned after registration",
+      "type": "object",
+      "properties": {
+        "TenantId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Azure AD tenant ID"
+        },
+        "ClientId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Azure AD application client ID"
+        },
+        "WebIdentityRoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN of the IAM role for web identity token exchange"
+        },
+        "WebIdentityTokenAudiences": {
+          "description": "List of audiences for the web identity token",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "TenantId",
+        "ClientId",
+        "WebIdentityRoleArn",
+        "WebIdentityTokenAudiences"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredAzureIdentityDetailsDefinition"
+    },
+    "RegisteredMCPServerSigV4Details": {
+      "description": "SigV4-authenticated MCP server details returned after registration",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The MCP server name"
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The MCP server endpoint URL"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional description for the MCP server"
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS region for SigV4 signing"
+        },
+        "Service": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS service name for SigV4 signing"
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IAM role ARN for SigV4 signing"
+        },
+        "CustomHeaders": {
+          "description": "Custom headers for the SigV4 MCP server",
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z0-9-_]+$": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "Name",
+        "Endpoint",
+        "Region",
+        "Service",
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDevOpsAgentServiceRegisteredMCPServerSigV4DetailsDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSDevOpsAgentServiceTagDefinition"
+    }
+  },
+  "properties": {
+    "ServiceType": {
+      "description": "The type of service being registered",
+      "$ref": "#/definitions/ServiceType"
+    },
+    "ServiceDetails": {
+      "description": "Service-specific configuration details for create operation",
+      "$ref": "#/definitions/ServiceDetails"
+    },
+    "KmsKeyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the KMS key to use for encryption."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "aidevops:TagResource",
+      "aidevops:UntagResource",
+      "aidevops:ListTagsForResource"
+    ]
+  },
+  "required": [
+    "ServiceType"
+  ],
+  "readOnlyProperties": [
+    "/properties/ServiceId",
+    "/properties/AccessibleResources",
+    "/properties/AdditionalServiceDetails",
+    "/properties/Arn"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ServiceDetails"
+  ],
+  "createOnlyProperties": [
+    "/properties/ServiceType",
+    "/properties/ServiceDetails/Dynatrace",
+    "/properties/ServiceDetails/MCPServer",
+    "/properties/ServiceDetails/MCPServerSplunk",
+    "/properties/ServiceDetails/MCPServerNewRelic",
+    "/properties/ServiceDetails/GitLab",
+    "/properties/ServiceDetails/ServiceNow",
+    "/properties/ServiceDetails/PagerDuty",
+    "/properties/ServiceDetails/AzureIdentity",
+    "/properties/ServiceDetails/MCPServerGrafana",
+    "/properties/KmsKeyArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/ServiceId"
+  ],
+  "type": "object",
+  "title": "AWSDevOpsAgentServiceProperties"
+}

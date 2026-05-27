@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::S3::AccessPoint",
-  "description": "The AWS::S3::AccessPoint resource is an Amazon S3 resource type that you can use to access buckets.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3",
+  "description": "The AWS::S3::AccessPoint resource is an Amazon S3 resource type that you can use to access buckets.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-s3",
   "definitions": {
     "VpcConfiguration": {
@@ -56,6 +56,40 @@
       ],
       "description": "the Amazon Resource Name (ARN) of the specified accesspoint.",
       "title": "AWSS3AccessPointArnDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSS3AccessPointTagDefinition"
     }
   },
   "properties": {
@@ -110,6 +144,14 @@
     "Policy": {
       "description": "The Access Point Policy you want to apply to this access point.",
       "type": "object"
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this S3 Access Point.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "type": "array"
     }
   },
   "required": [
@@ -129,6 +171,18 @@
   "primaryIdentifier": [
     "/properties/Name"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "s3:TagResource",
+      "s3:UntagResource",
+      "s3:ListTagsForResource"
+    ]
+  },
   "additionalProperties": false,
   "type": "object",
   "title": "AWSS3AccessPointProperties"

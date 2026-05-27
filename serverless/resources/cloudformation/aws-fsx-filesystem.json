@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::FSx::FileSystem",
-  "description": "Resource Type definition for AWS::FSx::FileSystem. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::FSx::FileSystem. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "StorageType": {
@@ -86,6 +86,16 @@
     "OpenZFSConfiguration": {
       "$ref": "#/definitions/OpenZFSConfiguration"
     },
+    "NetworkType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
     "FileSystemType": {
       "oneOf": [
         {
@@ -105,78 +115,6 @@
     }
   },
   "definitions": {
-    "OpenZFSConfiguration": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Options": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "WeeklyMaintenanceStartTime": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "DiskIopsConfiguration": {
-          "$ref": "#/definitions/DiskIopsConfiguration"
-        },
-        "CopyTagsToVolumes": {
-          "type": "boolean"
-        },
-        "DeploymentType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "DailyAutomaticBackupStartTime": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "CopyTagsToBackups": {
-          "type": "boolean"
-        },
-        "ThroughputCapacity": {
-          "type": "integer"
-        },
-        "RootVolumeConfiguration": {
-          "$ref": "#/definitions/RootVolumeConfiguration"
-        },
-        "AutomaticBackupRetentionDays": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "DeploymentType"
-      ],
-      "title": "AWSFSxFileSystemOpenZFSConfigurationDefinition"
-    },
     "SelfManagedActiveDirectoryConfiguration": {
       "type": "object",
       "additionalProperties": false,
@@ -212,6 +150,16 @@
           ]
         },
         "OrganizationalUnitDistinguishedName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DomainJoinServiceAccountSecret": {
           "oneOf": [
             {
               "type": "string"
@@ -289,26 +237,6 @@
       ],
       "title": "AWSFSxFileSystemAuditLogConfigurationDefinition"
     },
-    "DiskIopsConfiguration": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Mode": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Iops": {
-          "type": "integer"
-        }
-      },
-      "title": "AWSFSxFileSystemDiskIopsConfigurationDefinition"
-    },
     "LustreConfiguration": {
       "type": "object",
       "additionalProperties": false,
@@ -333,6 +261,9 @@
             }
           ]
         },
+        "EfaEnabled": {
+          "type": "boolean"
+        },
         "ImportedFileChunkSize": {
           "type": "integer"
         },
@@ -346,6 +277,9 @@
             }
           ]
         },
+        "ThroughputCapacity": {
+          "type": "integer"
+        },
         "DataCompressionType": {
           "oneOf": [
             {
@@ -355,6 +289,9 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "DataReadCacheConfiguration": {
+          "$ref": "#/definitions/DataReadCacheConfiguration"
         },
         "ImportPath": {
           "oneOf": [
@@ -375,6 +312,9 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "MetadataConfiguration": {
+          "$ref": "#/definitions/MetadataConfiguration"
         },
         "DailyAutomaticBackupStartTime": {
           "oneOf": [
@@ -408,25 +348,40 @@
       },
       "title": "AWSFSxFileSystemLustreConfigurationDefinition"
     },
-    "NfsExports": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "ClientConfigurations": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "$ref": "#/definitions/ClientConfigurations"
-          }
-        }
-      },
-      "title": "AWSFSxFileSystemNfsExportsDefinition"
-    },
     "OntapConfiguration": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "HAPairs": {
+          "type": "integer"
+        },
         "FsxAdminPassword": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ThroughputCapacityPerHAPair": {
+          "type": "integer"
+        },
+        "DeploymentType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ThroughputCapacity": {
+          "type": "integer"
+        },
+        "EndpointIpAddressRange": {
           "oneOf": [
             {
               "type": "string"
@@ -463,16 +418,6 @@
         "DiskIopsConfiguration": {
           "$ref": "#/definitions/DiskIopsConfiguration"
         },
-        "DeploymentType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
         "DailyAutomaticBackupStartTime": {
           "oneOf": [
             {
@@ -483,13 +428,10 @@
             }
           ]
         },
-        "ThroughputCapacity": {
-          "type": "integer"
-        },
         "AutomaticBackupRetentionDays": {
           "type": "integer"
         },
-        "EndpointIpAddressRange": {
+        "EndpointIpv6AddressRange": {
           "oneOf": [
             {
               "type": "string"
@@ -514,6 +456,354 @@
         "DeploymentType"
       ],
       "title": "AWSFSxFileSystemOntapConfigurationDefinition"
+    },
+    "RootVolumeConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ReadOnly": {
+          "type": "boolean"
+        },
+        "DataCompressionType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "NfsExports": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/NfsExports"
+          }
+        },
+        "CopyTagsToSnapshots": {
+          "type": "boolean"
+        },
+        "RecordSizeKiB": {
+          "type": "integer"
+        },
+        "UserAndGroupQuotas": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/UserAndGroupQuotas"
+          }
+        }
+      },
+      "title": "AWSFSxFileSystemRootVolumeConfigurationDefinition"
+    },
+    "WindowsConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SelfManagedActiveDirectoryConfiguration": {
+          "$ref": "#/definitions/SelfManagedActiveDirectoryConfiguration"
+        },
+        "AuditLogConfiguration": {
+          "$ref": "#/definitions/AuditLogConfiguration"
+        },
+        "ActiveDirectoryId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DeploymentType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Aliases": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "ThroughputCapacity": {
+          "type": "integer"
+        },
+        "WeeklyMaintenanceStartTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DiskIopsConfiguration": {
+          "$ref": "#/definitions/DiskIopsConfiguration"
+        },
+        "CopyTagsToBackups": {
+          "type": "boolean"
+        },
+        "DailyAutomaticBackupStartTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AutomaticBackupRetentionDays": {
+          "type": "integer"
+        },
+        "FsrmConfiguration": {
+          "$ref": "#/definitions/FsrmConfiguration"
+        },
+        "PreferredSubnetId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ThroughputCapacity"
+      ],
+      "title": "AWSFSxFileSystemWindowsConfigurationDefinition"
+    },
+    "OpenZFSConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Options": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "CopyTagsToVolumes": {
+          "type": "boolean"
+        },
+        "DeploymentType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ThroughputCapacity": {
+          "type": "integer"
+        },
+        "RootVolumeConfiguration": {
+          "$ref": "#/definitions/RootVolumeConfiguration"
+        },
+        "EndpointIpAddressRange": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ReadCacheConfiguration": {
+          "$ref": "#/definitions/ReadCacheConfiguration"
+        },
+        "RouteTableIds": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "WeeklyMaintenanceStartTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DiskIopsConfiguration": {
+          "$ref": "#/definitions/DiskIopsConfiguration"
+        },
+        "DailyAutomaticBackupStartTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CopyTagsToBackups": {
+          "type": "boolean"
+        },
+        "AutomaticBackupRetentionDays": {
+          "type": "integer"
+        },
+        "EndpointIpv6AddressRange": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PreferredSubnetId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DeploymentType"
+      ],
+      "title": "AWSFSxFileSystemOpenZFSConfigurationDefinition"
+    },
+    "ReadCacheConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SizingMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SizeGiB": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSFSxFileSystemReadCacheConfigurationDefinition"
+    },
+    "DataReadCacheConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SizingMode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SizeGiB": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSFSxFileSystemDataReadCacheConfigurationDefinition"
+    },
+    "DiskIopsConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Mode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Iops": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSFSxFileSystemDiskIopsConfigurationDefinition"
+    },
+    "MetadataConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Mode": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Iops": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSFSxFileSystemMetadataConfigurationDefinition"
+    },
+    "NfsExports": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ClientConfigurations": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/ClientConfigurations"
+          }
+        }
+      },
+      "title": "AWSFSxFileSystemNfsExportsDefinition"
     },
     "ClientConfigurations": {
       "type": "object",
@@ -577,120 +867,14 @@
       ],
       "title": "AWSFSxFileSystemTagDefinition"
     },
-    "RootVolumeConfiguration": {
+    "FsrmConfiguration": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "ReadOnly": {
+        "FsrmServiceEnabled": {
           "type": "boolean"
         },
-        "DataCompressionType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "NfsExports": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "$ref": "#/definitions/NfsExports"
-          }
-        },
-        "CopyTagsToSnapshots": {
-          "type": "boolean"
-        },
-        "RecordSizeKiB": {
-          "type": "integer"
-        },
-        "UserAndGroupQuotas": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "$ref": "#/definitions/UserAndGroupQuotas"
-          }
-        }
-      },
-      "title": "AWSFSxFileSystemRootVolumeConfigurationDefinition"
-    },
-    "WindowsConfiguration": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "SelfManagedActiveDirectoryConfiguration": {
-          "$ref": "#/definitions/SelfManagedActiveDirectoryConfiguration"
-        },
-        "AuditLogConfiguration": {
-          "$ref": "#/definitions/AuditLogConfiguration"
-        },
-        "WeeklyMaintenanceStartTime": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ActiveDirectoryId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "DeploymentType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Aliases": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "ThroughputCapacity": {
-          "type": "integer"
-        },
-        "CopyTagsToBackups": {
-          "type": "boolean"
-        },
-        "DailyAutomaticBackupStartTime": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "AutomaticBackupRetentionDays": {
-          "type": "integer"
-        },
-        "PreferredSubnetId": {
+        "EventLogDestination": {
           "oneOf": [
             {
               "type": "string"
@@ -702,9 +886,9 @@
         }
       },
       "required": [
-        "ThroughputCapacity"
+        "FsrmServiceEnabled"
       ],
-      "title": "AWSFSxFileSystemWindowsConfigurationDefinition"
+      "title": "AWSFSxFileSystemFsrmConfigurationDefinition"
     },
     "UserAndGroupQuotas": {
       "type": "object",
@@ -736,9 +920,7 @@
   ],
   "createOnlyProperties": [
     "/properties/KmsKeyId",
-    "/properties/StorageType",
     "/properties/SecurityGroupIds",
-    "/properties/FileSystemTypeVersion",
     "/properties/FileSystemType",
     "/properties/SubnetIds",
     "/properties/BackupId"

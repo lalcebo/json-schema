@@ -1,0 +1,203 @@
+{
+  "typeName": "AWS::ObservabilityAdmin::S3TableIntegration",
+  "description": "Resource Type definition for a CloudWatch Observability Admin S3 Table Integration.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "observabilityadmin:TagResource",
+      "observabilityadmin:UntagResource",
+      "observabilityadmin:ListTagsForResource"
+    ]
+  },
+  "definitions": {
+    "EncryptionConfig": {
+      "description": "Encryption configuration for the S3 Table Integration",
+      "type": "object",
+      "properties": {
+        "SseAlgorithm": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AES256",
+                "aws:kms"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The server-side encryption algorithm used to encrypt the S3 Table(s) data"
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1011,
+              "pattern": "^arn:aws([a-z0-9\\-]+)?:([a-zA-Z0-9\\-]+):([a-z0-9\\-]+)?:([0-9]{12})?:(.+)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the KMS key used to encrypt the S3 Table Integration"
+        }
+      },
+      "required": [
+        "SseAlgorithm"
+      ],
+      "additionalProperties": false,
+      "title": "AWSObservabilityAdminS3TableIntegrationEncryptionConfigDefinition"
+    },
+    "LogSource": {
+      "description": "CloudWatch Logs data source to associate with the S3 Table Integration",
+      "type": "object",
+      "properties": {
+        "Identifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the CloudWatch Logs data source association"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the CloudWatch Logs data source"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of the CloudWatch Logs data source"
+        }
+      },
+      "required": [
+        "Name",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSObservabilityAdminS3TableIntegrationLogSourceDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSObservabilityAdminS3TableIntegrationTagDefinition"
+    }
+  },
+  "properties": {
+    "Encryption": {
+      "$ref": "#/definitions/EncryptionConfig"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1011,
+          "pattern": "^arn:aws([a-z0-9\\-]+)?:([a-zA-Z0-9\\-]+):([a-z0-9\\-]+)?:([0-9]{12})?:(.+)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the role used to access the S3 Table Integration"
+    },
+    "LogSources": {
+      "description": "The CloudWatch Logs data sources to associate with the S3 Table Integration",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/LogSource"
+      }
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Encryption",
+    "RoleArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/LogSources/*/Identifier"
+  ],
+  "createOnlyProperties": [
+    "/properties/Encryption",
+    "/properties/RoleArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "type": "object",
+  "title": "AWSObservabilityAdminS3TableIntegrationProperties"
+}

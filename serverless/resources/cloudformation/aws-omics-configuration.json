@@ -1,0 +1,143 @@
+{
+  "typeName": "AWS::Omics::Configuration",
+  "description": "Resource schema for AWS::Omics::Configuration. Source:- No source definition found, add manually please",
+  "definitions": {
+    "TagMap": {
+      "type": "object",
+      "description": "A map of resource tags",
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Resource tag value"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSOmicsConfigurationTagMapDefinition"
+    },
+    "RunConfigurations": {
+      "type": "object",
+      "properties": {
+        "VpcConfig": {
+          "$ref": "#/definitions/VpcConfig"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSOmicsConfigurationRunConfigurationsDefinition"
+    },
+    "VpcConfig": {
+      "type": "object",
+      "properties": {
+        "SecurityGroupIds": {
+          "type": "array",
+          "maxItems": 5,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^sg-[0-9a-f]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "SubnetIds": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^subnet-[0-9a-f]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSOmicsConfigurationVpcConfigDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9\\-\\._]*$",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "User-friendly name for the configuration."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+$",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Optional description for the configuration."
+    },
+    "RunConfigurations": {
+      "description": "Required run-specific configurations.",
+      "$ref": "#/definitions/RunConfigurations"
+    },
+    "Tags": {
+      "description": "Tags for the configuration.",
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "RunConfigurations"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/Uuid",
+    "/properties/Status",
+    "/properties/CreationTime"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/RunConfigurations"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "omics:TagResource",
+      "omics:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSOmicsConfigurationProperties"
+}

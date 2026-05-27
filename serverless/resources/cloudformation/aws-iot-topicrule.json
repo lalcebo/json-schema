@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoT::TopicRule",
-  "description": "Resource Type definition for AWS::IoT::TopicRule. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Resource Type definition for AWS::IoT::TopicRule. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "additionalProperties": false,
   "properties": {
@@ -19,90 +19,144 @@
     },
     "Tags": {
       "type": "array",
+      "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
       }
     }
   },
   "definitions": {
+    "TopicRulePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RuleDisabled": {
+          "type": "boolean"
+        },
+        "ErrorAction": {
+          "$ref": "#/definitions/Action"
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AwsIotSqlVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Action"
+          }
+        },
+        "Sql": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Actions",
+        "Sql"
+      ],
+      "title": "AWSIoTTopicRuleTopicRulePayloadDefinition"
+    },
     "Action": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "S3": {
-          "$ref": "#/definitions/S3Action"
-        },
         "CloudwatchAlarm": {
           "$ref": "#/definitions/CloudwatchAlarmAction"
         },
         "CloudwatchLogs": {
           "$ref": "#/definitions/CloudwatchLogsAction"
         },
-        "IotEvents": {
-          "$ref": "#/definitions/IotEventsAction"
-        },
-        "Firehose": {
-          "$ref": "#/definitions/FirehoseAction"
-        },
-        "Republish": {
-          "$ref": "#/definitions/RepublishAction"
-        },
-        "StepFunctions": {
-          "$ref": "#/definitions/StepFunctionsAction"
+        "CloudwatchMetric": {
+          "$ref": "#/definitions/CloudwatchMetricAction"
         },
         "DynamoDB": {
           "$ref": "#/definitions/DynamoDBAction"
         },
-        "Http": {
-          "$ref": "#/definitions/HttpAction"
-        },
         "DynamoDBv2": {
           "$ref": "#/definitions/DynamoDBv2Action"
-        },
-        "CloudwatchMetric": {
-          "$ref": "#/definitions/CloudwatchMetricAction"
-        },
-        "IotSiteWise": {
-          "$ref": "#/definitions/IotSiteWiseAction"
         },
         "Elasticsearch": {
           "$ref": "#/definitions/ElasticsearchAction"
         },
-        "Sqs": {
-          "$ref": "#/definitions/SqsAction"
+        "Firehose": {
+          "$ref": "#/definitions/FirehoseAction"
         },
-        "Kinesis": {
-          "$ref": "#/definitions/KinesisAction"
+        "Http": {
+          "$ref": "#/definitions/HttpAction"
         },
         "IotAnalytics": {
           "$ref": "#/definitions/IotAnalyticsAction"
         },
-        "Sns": {
-          "$ref": "#/definitions/SnsAction"
+        "IotEvents": {
+          "$ref": "#/definitions/IotEventsAction"
         },
-        "Lambda": {
-          "$ref": "#/definitions/LambdaAction"
-        },
-        "Timestream": {
-          "$ref": "#/definitions/TimestreamAction"
+        "IotSiteWise": {
+          "$ref": "#/definitions/IotSiteWiseAction"
         },
         "Kafka": {
           "$ref": "#/definitions/KafkaAction"
         },
-        "OpenSearch": {
-          "$ref": "#/definitions/OpenSearchAction"
+        "Kinesis": {
+          "$ref": "#/definitions/KinesisAction"
+        },
+        "Lambda": {
+          "$ref": "#/definitions/LambdaAction"
         },
         "Location": {
           "$ref": "#/definitions/LocationAction"
+        },
+        "OpenSearch": {
+          "$ref": "#/definitions/OpenSearchAction"
+        },
+        "Republish": {
+          "$ref": "#/definitions/RepublishAction"
+        },
+        "S3": {
+          "$ref": "#/definitions/S3Action"
+        },
+        "Sns": {
+          "$ref": "#/definitions/SnsAction"
+        },
+        "Sqs": {
+          "$ref": "#/definitions/SqsAction"
+        },
+        "StepFunctions": {
+          "$ref": "#/definitions/StepFunctionsAction"
+        },
+        "Timestream": {
+          "$ref": "#/definitions/TimestreamAction"
         }
       },
       "title": "AWSIoTTopicRuleActionDefinition"
     },
-    "ElasticsearchAction": {
+    "CloudwatchAlarmAction": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Type": {
+        "StateValue": {
           "oneOf": [
             {
               "type": "string"
@@ -112,7 +166,7 @@
             }
           ]
         },
-        "Index": {
+        "AlarmName": {
           "oneOf": [
             {
               "type": "string"
@@ -122,17 +176,7 @@
             }
           ]
         },
-        "Id": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Endpoint": {
+        "StateReason": {
           "oneOf": [
             {
               "type": "string"
@@ -154,29 +198,18 @@
         }
       },
       "required": [
-        "Type",
-        "Endpoint",
-        "Index",
-        "Id",
+        "AlarmName",
+        "StateReason",
+        "StateValue",
         "RoleArn"
       ],
-      "title": "AWSIoTTopicRuleElasticsearchActionDefinition"
+      "title": "AWSIoTTopicRuleCloudwatchAlarmActionDefinition"
     },
-    "KinesisAction": {
+    "CloudwatchLogsAction": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "PartitionKey": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "StreamName": {
+        "LogGroupName": {
           "oneOf": [
             {
               "type": "string"
@@ -187,47 +220,6 @@
           ]
         },
         "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "StreamName",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleKinesisActionDefinition"
-    },
-    "FirehoseAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "DeliveryStreamName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Separator": {
           "oneOf": [
             {
               "type": "string"
@@ -242,40 +234,10 @@
         }
       },
       "required": [
-        "DeliveryStreamName",
+        "LogGroupName",
         "RoleArn"
       ],
-      "title": "AWSIoTTopicRuleFirehoseActionDefinition"
-    },
-    "AssetPropertyTimestamp": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "TimeInSeconds": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "OffsetInNanos": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "TimeInSeconds"
-      ],
-      "title": "AWSIoTTopicRuleAssetPropertyTimestampDefinition"
+      "title": "AWSIoTTopicRuleCloudwatchLogsActionDefinition"
     },
     "CloudwatchMetricAction": {
       "type": "object",
@@ -350,53 +312,6 @@
         "RoleArn"
       ],
       "title": "AWSIoTTopicRuleCloudwatchMetricActionDefinition"
-    },
-    "AssetPropertyVariant": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "StringValue": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "DoubleValue": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "BooleanValue": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "IntegerValue": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "title": "AWSIoTTopicRuleAssetPropertyVariantDefinition"
     },
     "DynamoDBAction": {
       "type": "object",
@@ -501,32 +416,17 @@
       ],
       "title": "AWSIoTTopicRuleDynamoDBActionDefinition"
     },
-    "UserProperty": {
+    "DynamoDBv2Action": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "Key",
-        "Value"
-      ],
       "properties": {
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1024
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "PutItem": {
+          "$ref": "#/definitions/PutItemInput"
         },
-        "Value": {
+        "RoleArn": {
           "oneOf": [
             {
-              "type": "string",
-              "minLength": 0,
-              "maxLength": 1024
+              "type": "string"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -534,16 +434,913 @@
           ]
         }
       },
-      "title": "AWSIoTTopicRuleUserPropertyDefinition"
+      "title": "AWSIoTTopicRuleDynamoDBv2ActionDefinition"
     },
-    "UserProperties": {
-      "type": "array",
-      "minItems": 1,
-      "maxItems": 100,
-      "items": {
-        "$ref": "#/definitions/UserProperty"
+    "PutItemInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TableName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
       },
-      "title": "AWSIoTTopicRuleUserPropertiesDefinition"
+      "required": [
+        "TableName"
+      ],
+      "title": "AWSIoTTopicRulePutItemInputDefinition"
+    },
+    "ElasticsearchAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Index": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "Endpoint",
+        "Index",
+        "Id",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleElasticsearchActionDefinition"
+    },
+    "FirehoseAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DeliveryStreamName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Separator": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BatchMode": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "DeliveryStreamName",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleFirehoseActionDefinition"
+    },
+    "HttpAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ConfirmationUrl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Headers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/HttpActionHeader"
+          }
+        },
+        "Url": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Auth": {
+          "$ref": "#/definitions/HttpAuthorization"
+        },
+        "EnableBatching": {
+          "type": "boolean"
+        },
+        "BatchConfig": {
+          "$ref": "#/definitions/BatchConfig"
+        }
+      },
+      "required": [
+        "Url"
+      ],
+      "title": "AWSIoTTopicRuleHttpActionDefinition"
+    },
+    "HttpActionHeader": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSIoTTopicRuleHttpActionHeaderDefinition"
+    },
+    "HttpAuthorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Sigv4": {
+          "$ref": "#/definitions/SigV4Authorization"
+        }
+      },
+      "title": "AWSIoTTopicRuleHttpAuthorizationDefinition"
+    },
+    "SigV4Authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ServiceName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SigningRegion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ServiceName",
+        "SigningRegion",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleSigV4AuthorizationDefinition"
+    },
+    "BatchConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaxBatchOpenMs": {
+          "type": "integer"
+        },
+        "MaxBatchSize": {
+          "type": "integer"
+        },
+        "MaxBatchSizeBytes": {
+          "type": "integer"
+        },
+        "BatchAcrossTopics": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSIoTTopicRuleBatchConfigDefinition"
+    },
+    "IotAnalyticsAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ChannelName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BatchMode": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ChannelName",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleIotAnalyticsActionDefinition"
+    },
+    "IotEventsAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "InputName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MessageId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BatchMode": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "InputName",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleIotEventsActionDefinition"
+    },
+    "IotSiteWiseAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PutAssetPropertyValueEntries": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/PutAssetPropertyValueEntry"
+          }
+        }
+      },
+      "required": [
+        "PutAssetPropertyValueEntries",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleIotSiteWiseActionDefinition"
+    },
+    "PutAssetPropertyValueEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PropertyAlias": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PropertyValues": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/AssetPropertyValue"
+          }
+        },
+        "AssetId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EntryId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PropertyId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "PropertyValues"
+      ],
+      "title": "AWSIoTTopicRulePutAssetPropertyValueEntryDefinition"
+    },
+    "AssetPropertyValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "$ref": "#/definitions/AssetPropertyVariant"
+        },
+        "Timestamp": {
+          "$ref": "#/definitions/AssetPropertyTimestamp"
+        },
+        "Quality": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Timestamp"
+      ],
+      "title": "AWSIoTTopicRuleAssetPropertyValueDefinition"
+    },
+    "AssetPropertyVariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StringValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DoubleValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BooleanValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IntegerValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSIoTTopicRuleAssetPropertyVariantDefinition"
+    },
+    "AssetPropertyTimestamp": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TimeInSeconds": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OffsetInNanos": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "TimeInSeconds"
+      ],
+      "title": "AWSIoTTopicRuleAssetPropertyTimestampDefinition"
+    },
+    "KafkaAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DestinationArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Topic": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Partition": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ClientProperties": {
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": {
+            ".*": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "minProperties": 1
+        },
+        "Headers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/KafkaActionHeader"
+          }
+        }
+      },
+      "required": [
+        "DestinationArn",
+        "Topic",
+        "ClientProperties"
+      ],
+      "title": "AWSIoTTopicRuleKafkaActionDefinition"
+    },
+    "KafkaActionHeader": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSIoTTopicRuleKafkaActionHeaderDefinition"
+    },
+    "KinesisAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PartitionKey": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StreamName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "StreamName",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleKinesisActionDefinition"
+    },
+    "LambdaAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FunctionArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSIoTTopicRuleLambdaActionDefinition"
+    },
+    "LocationAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TrackerName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DeviceId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Latitude": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Longitude": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Timestamp": {
+          "$ref": "#/definitions/Timestamp"
+        }
+      },
+      "required": [
+        "RoleArn",
+        "TrackerName",
+        "DeviceId",
+        "Latitude",
+        "Longitude"
+      ],
+      "title": "AWSIoTTopicRuleLocationActionDefinition"
+    },
+    "Timestamp": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Unit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Value"
+      ],
+      "title": "AWSIoTTopicRuleTimestampDefinition"
+    },
+    "OpenSearchAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Index": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "Endpoint",
+        "Index",
+        "Id",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleOpenSearchActionDefinition"
+    },
+    "RepublishAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Qos": {
+          "type": "integer"
+        },
+        "Topic": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Headers": {
+          "$ref": "#/definitions/RepublishActionHeaders"
+        }
+      },
+      "required": [
+        "Topic",
+        "RoleArn"
+      ],
+      "title": "AWSIoTTopicRuleRepublishActionDefinition"
     },
     "RepublishActionHeaders": {
       "type": "object",
@@ -615,14 +1412,65 @@
       },
       "title": "AWSIoTTopicRuleRepublishActionHeadersDefinition"
     },
-    "RepublishAction": {
+    "UserProperties": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/definitions/UserProperty"
+      },
+      "title": "AWSIoTTopicRuleUserPropertiesDefinition"
+    },
+    "UserProperty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSIoTTopicRuleUserPropertyDefinition"
+    },
+    "S3Action": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Qos": {
-          "type": "integer"
+        "BucketName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "Topic": {
+        "Key": {
           "oneOf": [
             {
               "type": "string"
@@ -642,15 +1490,37 @@
             }
           ]
         },
-        "Headers": {
-          "$ref": "#/definitions/RepublishActionHeaders"
+        "CannedAcl": {
+          "$ref": "#/definitions/CannedAccessControlList"
         }
       },
       "required": [
-        "Topic",
+        "BucketName",
+        "Key",
         "RoleArn"
       ],
-      "title": "AWSIoTTopicRuleRepublishActionDefinition"
+      "title": "AWSIoTTopicRuleS3ActionDefinition"
+    },
+    "CannedAccessControlList": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "private",
+            "public-read",
+            "public-read-write",
+            "aws-exec-read",
+            "authenticated-read",
+            "bucket-owner-read",
+            "bucket-owner-full-control",
+            "log-delivery-write"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSIoTTopicRuleCannedAccessControlListDefinition"
     },
     "SnsAction": {
       "type": "object",
@@ -768,561 +1638,6 @@
       ],
       "title": "AWSIoTTopicRuleSqsActionDefinition"
     },
-    "SigV4Authorization": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "ServiceName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "SigningRegion": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "ServiceName",
-        "SigningRegion",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleSigV4AuthorizationDefinition"
-    },
-    "LambdaAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "FunctionArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "title": "AWSIoTTopicRuleLambdaActionDefinition"
-    },
-    "PutAssetPropertyValueEntry": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "PropertyAlias": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "PropertyValues": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/definitions/AssetPropertyValue"
-          }
-        },
-        "AssetId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "EntryId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "PropertyId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "PropertyValues"
-      ],
-      "title": "AWSIoTTopicRulePutAssetPropertyValueEntryDefinition"
-    },
-    "PutItemInput": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "TableName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "TableName"
-      ],
-      "title": "AWSIoTTopicRulePutItemInputDefinition"
-    },
-    "S3Action": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "BucketName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "CannedAcl": {
-          "$ref": "#/definitions/CannedAccessControlList"
-        }
-      },
-      "required": [
-        "BucketName",
-        "Key",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleS3ActionDefinition"
-    },
-    "AssetPropertyValue": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Value": {
-          "$ref": "#/definitions/AssetPropertyVariant"
-        },
-        "Timestamp": {
-          "$ref": "#/definitions/AssetPropertyTimestamp"
-        },
-        "Quality": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Value",
-        "Timestamp"
-      ],
-      "title": "AWSIoTTopicRuleAssetPropertyValueDefinition"
-    },
-    "DynamoDBv2Action": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "PutItem": {
-          "$ref": "#/definitions/PutItemInput"
-        },
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "title": "AWSIoTTopicRuleDynamoDBv2ActionDefinition"
-    },
-    "IotEventsAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "InputName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "MessageId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "BatchMode": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "InputName",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleIotEventsActionDefinition"
-    },
-    "HttpAuthorization": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Sigv4": {
-          "$ref": "#/definitions/SigV4Authorization"
-        }
-      },
-      "title": "AWSIoTTopicRuleHttpAuthorizationDefinition"
-    },
-    "TopicRulePayload": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "RuleDisabled": {
-          "type": "boolean"
-        },
-        "ErrorAction": {
-          "$ref": "#/definitions/Action"
-        },
-        "Description": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "AwsIotSqlVersion": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Actions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Action"
-          }
-        },
-        "Sql": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Actions",
-        "Sql"
-      ],
-      "title": "AWSIoTTopicRuleTopicRulePayloadDefinition"
-    },
-    "CloudwatchAlarmAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "StateValue": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "AlarmName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "StateReason": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "AlarmName",
-        "StateReason",
-        "StateValue",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleCloudwatchAlarmActionDefinition"
-    },
-    "CloudwatchLogsAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "LogGroupName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "BatchMode": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "LogGroupName",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleCloudwatchLogsActionDefinition"
-    },
-    "IotAnalyticsAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ChannelName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "BatchMode": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "ChannelName",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleIotAnalyticsActionDefinition"
-    },
-    "HttpActionHeader": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Value": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Value",
-        "Key"
-      ],
-      "title": "AWSIoTTopicRuleHttpActionHeaderDefinition"
-    },
-    "IotSiteWiseAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "PutAssetPropertyValueEntries": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/definitions/PutAssetPropertyValueEntry"
-          }
-        }
-      },
-      "required": [
-        "PutAssetPropertyValueEntries",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleIotSiteWiseActionDefinition"
-    },
-    "HttpAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "ConfirmationUrl": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Headers": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/definitions/HttpActionHeader"
-          }
-        },
-        "Url": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Auth": {
-          "$ref": "#/definitions/HttpAuthorization"
-        }
-      },
-      "required": [
-        "Url"
-      ],
-      "title": "AWSIoTTopicRuleHttpActionDefinition"
-    },
     "TimestreamAction": {
       "type": "object",
       "additionalProperties": false,
@@ -1371,269 +1686,6 @@
         "Dimensions"
       ],
       "title": "AWSIoTTopicRuleTimestreamActionDefinition"
-    },
-    "KafkaAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "DestinationArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Topic": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Partition": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ClientProperties": {
-          "type": "object",
-          "additionalProperties": false,
-          "patternProperties": {
-            ".*": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-                }
-              ]
-            }
-          },
-          "minProperties": 1
-        }
-      },
-      "required": [
-        "DestinationArn",
-        "Topic",
-        "ClientProperties"
-      ],
-      "title": "AWSIoTTopicRuleKafkaActionDefinition"
-    },
-    "OpenSearchAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Type": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Index": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Id": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Endpoint": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Type",
-        "Endpoint",
-        "Index",
-        "Id",
-        "RoleArn"
-      ],
-      "title": "AWSIoTTopicRuleOpenSearchActionDefinition"
-    },
-    "LocationAction": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "RoleArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "TrackerName": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "DeviceId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Latitude": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Longitude": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Timestamp": {
-          "$ref": "#/definitions/Timestamp"
-        }
-      },
-      "required": [
-        "RoleArn",
-        "TrackerName",
-        "DeviceId",
-        "Latitude",
-        "Longitude"
-      ],
-      "title": "AWSIoTTopicRuleLocationActionDefinition"
-    },
-    "CannedAccessControlList": {
-      "oneOf": [
-        {
-          "type": "string",
-          "enum": [
-            "private",
-            "public-read",
-            "public-read-write",
-            "aws-exec-read",
-            "authenticated-read",
-            "bucket-owner-read",
-            "bucket-owner-full-control",
-            "log-delivery-write"
-          ]
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSIoTTopicRuleCannedAccessControlListDefinition"
-    },
-    "RoleArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSIoTTopicRuleRoleArnDefinition"
-    },
-    "Tag": {
-      "type": "object",
-      "properties": {
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Value": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "Key",
-        "Value"
-      ],
-      "title": "AWSIoTTopicRuleTagDefinition"
     },
     "TimestreamDimensionsList": {
       "type": "array",
@@ -1706,10 +1758,21 @@
       ],
       "title": "AWSIoTTopicRuleTimestreamTimestampDefinition"
     },
-    "Timestamp": {
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSIoTTopicRuleRoleArnDefinition"
+    },
+    "Tag": {
       "type": "object",
       "properties": {
-        "Value": {
+        "Key": {
           "oneOf": [
             {
               "type": "string"
@@ -1719,7 +1782,7 @@
             }
           ]
         },
-        "Unit": {
+        "Value": {
           "oneOf": [
             {
               "type": "string"
@@ -1732,10 +1795,23 @@
       },
       "additionalProperties": false,
       "required": [
+        "Key",
         "Value"
       ],
-      "title": "AWSIoTTopicRuleTimestampDefinition"
+      "title": "AWSIoTTopicRuleTagDefinition"
     }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iot:UntagResource",
+      "iot:TagResource",
+      "iot:ListTagsForResource"
+    ]
   },
   "required": [
     "TopicRulePayload"
@@ -1748,6 +1824,10 @@
   ],
   "readOnlyProperties": [
     "/properties/Arn"
+  ],
+  "deprecatedProperties": [
+    "/properties/TopicRulePayload/ErrorAction/IotAnalytics",
+    "/properties/TopicRulePayload/Actions/*/IotAnalytics"
   ],
   "type": "object",
   "title": "AWSIoTTopicRuleProperties"

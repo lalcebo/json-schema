@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::ImageBuilder::ImageRecipe",
-  "description": "Resource schema for AWS::ImageBuilder::ImageRecipe. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git",
+  "description": "Resource schema for AWS::ImageBuilder::ImageRecipe. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git",
   "properties": {
     "Name": {
@@ -77,6 +77,23 @@
     "AdditionalInstanceConfiguration": {
       "description": "Specify additional settings and launch scripts for your build instances.",
       "$ref": "#/definitions/AdditionalInstanceConfiguration"
+    },
+    "AmiTags": {
+      "description": "The tags to apply to the AMI created by this image recipe.",
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        ".{1,}": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      }
     },
     "Tags": {
       "description": "The tags of the image recipe.",
@@ -311,20 +328,76 @@
         "Value"
       ],
       "title": "AWSImageBuilderImageRecipeComponentParameterDefinition"
+    },
+    "LatestVersion": {
+      "description": "The latest version references of the image recipe.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created image recipe."
+        },
+        "Major": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created image recipe, with the same major version."
+        },
+        "Minor": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created image recipe, with the same minor version."
+        },
+        "Patch": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created image recipe, with the same patch version."
+        }
+      },
+      "title": "AWSImageBuilderImageRecipeLatestVersionDefinition"
     }
   },
   "additionalProperties": false,
   "required": [
     "Name",
     "Version",
-    "Components",
     "ParentImage"
   ],
   "primaryIdentifier": [
     "/properties/Arn"
   ],
   "readOnlyProperties": [
-    "/properties/Arn"
+    "/properties/Arn",
+    "/properties/LatestVersion",
+    "/properties/LatestVersion/Arn",
+    "/properties/LatestVersion/Major",
+    "/properties/LatestVersion/Minor",
+    "/properties/LatestVersion/Patch"
   ],
   "createOnlyProperties": [
     "/properties/Name",
@@ -333,11 +406,18 @@
     "/properties/ParentImage",
     "/properties/Description",
     "/properties/BlockDeviceMappings",
-    "/properties/WorkingDirectory",
-    "/properties/Tags"
+    "/properties/WorkingDirectory"
   ],
   "tagging": {
-    "taggable": false
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "imagebuilder:TagResource",
+      "imagebuilder:UntagResource"
+    ]
   },
   "type": "object",
   "title": "AWSImageBuilderImageRecipeProperties"

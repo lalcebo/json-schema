@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IAM::SAMLProvider",
-  "description": "Resource Type definition for AWS::IAM::SAMLProvider. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::IAM::SAMLProvider. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "Name": {
@@ -35,6 +35,57 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "AssertionEncryptionMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Allowed",
+            "Required"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The encryption setting for the SAML provider"
+    },
+    "AddPrivateKey": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "maxLength": 16384,
+          "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The private key from your external identity provider"
+    },
+    "RemovePrivateKey": {
+      "oneOf": [
+        {
+          "minLength": 22,
+          "maxLength": 64,
+          "pattern": "[A-Z0-9]+",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Key ID of the private key to remove"
+    },
+    "PrivateKeyList": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SAMLPrivateKey"
+      },
+      "maxItems": 2
     }
   },
   "definitions": {
@@ -75,16 +126,58 @@
         "Key"
       ],
       "title": "AWSIAMSAMLProviderTagDefinition"
+    },
+    "SAMLPrivateKey": {
+      "description": "The private key metadata for the SAML provider",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "KeyId": {
+          "oneOf": [
+            {
+              "minLength": 22,
+              "maxLength": 64,
+              "pattern": "[A-Z0-9]+",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The unique identifier for the SAML private key."
+        },
+        "Timestamp": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The date and time, in <a href=\\\"http://www.iso.org/iso/iso8601\\\">ISO 8601 date-time </a> format, when the private key was uploaded."
+        }
+      },
+      "required": [
+        "KeyId",
+        "Timestamp"
+      ],
+      "title": "AWSIAMSAMLProviderSAMLPrivateKeyDefinition"
     }
   },
-  "required": [
-    "SamlMetadataDocument"
-  ],
   "createOnlyProperties": [
-    "/properties/Name"
+    "/properties/Name",
+    "/properties/AddPrivateKey",
+    "/properties/RemovePrivateKey"
   ],
   "readOnlyProperties": [
-    "/properties/Arn"
+    "/properties/Arn",
+    "/properties/SamlProviderUUID"
+  ],
+  "writeOnlyProperties": [
+    "/properties/AddPrivateKey",
+    "/properties/RemovePrivateKey"
   ],
   "primaryIdentifier": [
     "/properties/Arn"
@@ -93,7 +186,13 @@
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": false
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iam:TagSAMLProvider",
+      "iam:ListSAMLProviderTags",
+      "iam:UntagSAMLProvider"
+    ]
   },
   "type": "object",
   "title": "AWSIAMSAMLProviderProperties"

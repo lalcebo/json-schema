@@ -1,0 +1,243 @@
+{
+  "typeName": "AWS::OpenSearchService::Application",
+  "description": "Amazon OpenSearchService application resource. Source:- No source definition found, add manually please",
+  "definitions": {
+    "AppConfigType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "opensearchDashboards.dashboardAdmin.users",
+            "opensearchDashboards.dashboardAdmin.groups"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "AppConfig type values.",
+      "title": "AWSOpenSearchServiceApplicationAppConfigTypeDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "description": "A key-value pair metadata associated with resource",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key in the key-value pair"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value in the key-value pair"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSOpenSearchServiceApplicationTagDefinition"
+    },
+    "AppConfig": {
+      "type": "object",
+      "description": "A key-value pair of AppConfig",
+      "properties": {
+        "Key": {
+          "$ref": "#/definitions/AppConfigType",
+          "description": "The configuration key"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The configuration value."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSOpenSearchServiceApplicationAppConfigDefinition"
+    },
+    "DataSource": {
+      "type": "object",
+      "description": "Datasource arn and description",
+      "properties": {
+        "DataSourceArn": {
+          "$ref": "#/properties/Arn",
+          "description": "The ARN of the data source."
+        },
+        "DataSourceDescription": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Description of the data source."
+        }
+      },
+      "required": [
+        "DataSourceArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSOpenSearchServiceApplicationDataSourceDefinition"
+    }
+  },
+  "properties": {
+    "IamIdentityCenterOptions": {
+      "type": "object",
+      "description": "Options for configuring IAM Identity Center",
+      "properties": {
+        "Enabled": {
+          "type": "boolean",
+          "description": "Whether IAM Identity Center is enabled."
+        },
+        "IamIdentityCenterInstanceArn": {
+          "$ref": "#/properties/Arn",
+          "description": "The ARN of the IAM Identity Center instance."
+        },
+        "IamRoleForIdentityCenterApplicationArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the IAM role for Identity Center application."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[a-z][a-z0-9\\-]+",
+          "minLength": 3,
+          "maxLength": 40
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the application."
+    },
+    "Endpoint": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The endpoint for the application."
+    },
+    "AppConfigs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AppConfig"
+      },
+      "description": "List of application configurations.",
+      "insertionOrder": false
+    },
+    "KmsKeyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "^arn:aws(-[a-z]+)*:kms:[a-z0-9-]+:\\d{12}:key/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the KMS key used to encrypt the application."
+    },
+    "DataSources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DataSource"
+      },
+      "description": "List of data sources.",
+      "insertionOrder": false
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this application.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/KmsKeyArn"
+  ],
+  "writeOnlyProperties": [
+    "/properties/KmsKeyArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/Arn"
+    ]
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "es:AddTags",
+      "es:RemoveTags",
+      "es:ListTags"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSOpenSearchServiceApplicationProperties"
+}

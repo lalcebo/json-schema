@@ -1,0 +1,907 @@
+{
+  "typeName": "AWS::AppTest::TestCase",
+  "description": "Represents a Test Case that can be captured and executed. Source:- No source definition found, add manually please",
+  "definitions": {
+    "Batch": {
+      "type": "object",
+      "properties": {
+        "BatchJobName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BatchJobParameters": {
+          "$ref": "#/definitions/BatchJobParameters"
+        },
+        "ExportDataSetNames": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^\\S{1,100}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "BatchJobName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseBatchDefinition"
+    },
+    "BatchJobParameters": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseBatchJobParametersDefinition"
+    },
+    "CaptureTool": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Precisely",
+            "AWS DMS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseCaptureToolDefinition"
+    },
+    "CloudFormationAction": {
+      "type": "object",
+      "properties": {
+        "Resource": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ActionType": {
+          "$ref": "#/definitions/CloudFormationActionType"
+        }
+      },
+      "required": [
+        "Resource"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseCloudFormationActionDefinition"
+    },
+    "CloudFormationActionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Create",
+            "Delete"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseCloudFormationActionTypeDefinition"
+    },
+    "CompareAction": {
+      "type": "object",
+      "properties": {
+        "Input": {
+          "$ref": "#/definitions/Input"
+        },
+        "Output": {
+          "$ref": "#/definitions/Output"
+        }
+      },
+      "required": [
+        "Input"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseCompareActionDefinition"
+    },
+    "DataSet": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/DataSetType"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,100}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Ccsid": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,50}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Format": {
+          "$ref": "#/definitions/Format"
+        },
+        "Length": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "Ccsid",
+        "Format",
+        "Length",
+        "Name",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseDataSetDefinition"
+    },
+    "DataSetType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseDataSetTypeDefinition"
+    },
+    "DatabaseCDC": {
+      "type": "object",
+      "properties": {
+        "SourceMetadata": {
+          "$ref": "#/definitions/SourceDatabaseMetadata"
+        },
+        "TargetMetadata": {
+          "$ref": "#/definitions/TargetDatabaseMetadata"
+        }
+      },
+      "required": [
+        "SourceMetadata",
+        "TargetMetadata"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseDatabaseCDCDefinition"
+    },
+    "FileMetadata": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "DataSets",
+          "properties": {
+            "DataSets": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DataSet"
+              }
+            }
+          },
+          "required": [
+            "DataSets"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "DatabaseCDC",
+          "properties": {
+            "DatabaseCDC": {
+              "$ref": "#/definitions/DatabaseCDC"
+            }
+          },
+          "required": [
+            "DatabaseCDC"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSAppTestTestCaseFileMetadataDefinition"
+    },
+    "Format": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "FIXED",
+            "VARIABLE",
+            "LINE_SEQUENTIAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseFormatDefinition"
+    },
+    "Input": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "File",
+          "properties": {
+            "File": {
+              "$ref": "#/definitions/InputFile"
+            }
+          },
+          "required": [
+            "File"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSAppTestTestCaseInputDefinition"
+    },
+    "InputFile": {
+      "type": "object",
+      "properties": {
+        "SourceLocation": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetLocation": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "FileMetadata": {
+          "$ref": "#/definitions/FileMetadata"
+        }
+      },
+      "required": [
+        "FileMetadata",
+        "SourceLocation",
+        "TargetLocation"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseInputFileDefinition"
+    },
+    "M2ManagedActionProperties": {
+      "type": "object",
+      "properties": {
+        "ForceStop": {
+          "type": "boolean"
+        },
+        "ImportDataSetLocation": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseM2ManagedActionPropertiesDefinition"
+    },
+    "M2ManagedActionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Configure",
+            "Deconfigure"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseM2ManagedActionTypeDefinition"
+    },
+    "M2ManagedApplicationAction": {
+      "type": "object",
+      "properties": {
+        "Resource": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ActionType": {
+          "$ref": "#/definitions/M2ManagedActionType"
+        },
+        "Properties": {
+          "$ref": "#/definitions/M2ManagedActionProperties"
+        }
+      },
+      "required": [
+        "ActionType",
+        "Resource"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseM2ManagedApplicationActionDefinition"
+    },
+    "M2NonManagedActionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Configure",
+            "Deconfigure"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseM2NonManagedActionTypeDefinition"
+    },
+    "M2NonManagedApplicationAction": {
+      "type": "object",
+      "properties": {
+        "Resource": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ActionType": {
+          "$ref": "#/definitions/M2NonManagedActionType"
+        }
+      },
+      "required": [
+        "ActionType",
+        "Resource"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseM2NonManagedApplicationActionDefinition"
+    },
+    "MainframeAction": {
+      "type": "object",
+      "properties": {
+        "Resource": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ActionType": {
+          "$ref": "#/definitions/MainframeActionType"
+        },
+        "Properties": {
+          "$ref": "#/definitions/MainframeActionProperties"
+        }
+      },
+      "required": [
+        "ActionType",
+        "Resource"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseMainframeActionDefinition"
+    },
+    "MainframeActionProperties": {
+      "type": "object",
+      "properties": {
+        "DmsTaskArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\S{1,1000}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseMainframeActionPropertiesDefinition"
+    },
+    "MainframeActionType": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Batch",
+          "properties": {
+            "Batch": {
+              "$ref": "#/definitions/Batch"
+            }
+          },
+          "required": [
+            "Batch"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Tn3270",
+          "properties": {
+            "Tn3270": {
+              "$ref": "#/definitions/TN3270"
+            }
+          },
+          "required": [
+            "Tn3270"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSAppTestTestCaseMainframeActionTypeDefinition"
+    },
+    "Output": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "File",
+          "properties": {
+            "File": {
+              "$ref": "#/definitions/OutputFile"
+            }
+          },
+          "required": [
+            "File"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSAppTestTestCaseOutputDefinition"
+    },
+    "OutputFile": {
+      "type": "object",
+      "properties": {
+        "FileLocation": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseOutputFileDefinition"
+    },
+    "ResourceAction": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "M2ManagedApplicationAction",
+          "properties": {
+            "M2ManagedApplicationAction": {
+              "$ref": "#/definitions/M2ManagedApplicationAction"
+            }
+          },
+          "required": [
+            "M2ManagedApplicationAction"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "M2NonManagedApplicationAction",
+          "properties": {
+            "M2NonManagedApplicationAction": {
+              "$ref": "#/definitions/M2NonManagedApplicationAction"
+            }
+          },
+          "required": [
+            "M2NonManagedApplicationAction"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "CloudFormationAction",
+          "properties": {
+            "CloudFormationAction": {
+              "$ref": "#/definitions/CloudFormationAction"
+            }
+          },
+          "required": [
+            "CloudFormationAction"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSAppTestTestCaseResourceActionDefinition"
+    },
+    "Script": {
+      "type": "object",
+      "properties": {
+        "ScriptLocation": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "$ref": "#/definitions/ScriptType"
+        }
+      },
+      "required": [
+        "ScriptLocation",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseScriptDefinition"
+    },
+    "ScriptType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Selenium"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseScriptTypeDefinition"
+    },
+    "SourceDatabase": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "z/OS-DB2"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseSourceDatabaseDefinition"
+    },
+    "SourceDatabaseMetadata": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/SourceDatabase"
+        },
+        "CaptureTool": {
+          "$ref": "#/definitions/CaptureTool"
+        }
+      },
+      "required": [
+        "CaptureTool",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseSourceDatabaseMetadataDefinition"
+    },
+    "Step": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_\\-]{1,59}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1000,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Action": {
+          "$ref": "#/definitions/StepAction"
+        }
+      },
+      "required": [
+        "Action",
+        "Name"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseStepDefinition"
+    },
+    "StepAction": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "ResourceAction",
+          "properties": {
+            "ResourceAction": {
+              "$ref": "#/definitions/ResourceAction"
+            }
+          },
+          "required": [
+            "ResourceAction"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "MainframeAction",
+          "properties": {
+            "MainframeAction": {
+              "$ref": "#/definitions/MainframeAction"
+            }
+          },
+          "required": [
+            "MainframeAction"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "CompareAction",
+          "properties": {
+            "CompareAction": {
+              "$ref": "#/definitions/CompareAction"
+            }
+          },
+          "required": [
+            "CompareAction"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSAppTestTestCaseStepActionDefinition"
+    },
+    "TN3270": {
+      "type": "object",
+      "properties": {
+        "Script": {
+          "$ref": "#/definitions/Script"
+        },
+        "ExportDataSetNames": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^\\S{1,100}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "Script"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseTN3270Definition"
+    },
+    "TagMap": {
+      "type": "object",
+      "maxProperties": 200,
+      "minProperties": 0,
+      "patternProperties": {
+        "^(?!aws:).+$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseTagMapDefinition"
+    },
+    "TargetDatabase": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PostgreSQL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseTargetDatabaseDefinition"
+    },
+    "TargetDatabaseMetadata": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/TargetDatabase"
+        },
+        "CaptureTool": {
+          "$ref": "#/definitions/CaptureTool"
+        }
+      },
+      "required": [
+        "CaptureTool",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseTargetDatabaseMetadataDefinition"
+    },
+    "TestCaseLatestVersion": {
+      "type": "object",
+      "properties": {
+        "Version": {
+          "type": "number"
+        },
+        "Status": {
+          "$ref": "#/definitions/TestCaseLifecycle"
+        }
+      },
+      "required": [
+        "Status",
+        "Version"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppTestTestCaseTestCaseLatestVersionDefinition"
+    },
+    "TestCaseLifecycle": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Active",
+            "Deleting"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSAppTestTestCaseTestCaseLifecycleDefinition"
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_\\-]{1,59}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Step"
+      },
+      "maxItems": 20,
+      "minItems": 1
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "required": [
+    "Name",
+    "Steps"
+  ],
+  "readOnlyProperties": [
+    "/properties/CreationTime",
+    "/properties/LastUpdateTime",
+    "/properties/LatestVersion",
+    "/properties/Status",
+    "/properties/TestCaseArn",
+    "/properties/TestCaseId",
+    "/properties/TestCaseVersion"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "primaryIdentifier": [
+    "/properties/TestCaseId"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "apptest:TagResource",
+      "apptest:UntagResource",
+      "apptest:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSAppTestTestCaseProperties"
+}

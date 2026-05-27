@@ -1,7 +1,19 @@
 {
   "typeName": "AWS::GameLift::Build",
-  "description": "Resource Type definition for AWS::GameLift::Build. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Resource Type definition for AWS::GameLift::Build. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "gamelift:ListTagsForResource",
+      "gamelift:TagResource",
+      "gamelift:UntagResource"
+    ]
+  },
   "definitions": {
     "StorageLocation": {
       "$comment": "Contains object details present in the S3 Bucket",
@@ -59,6 +71,44 @@
         "RoleArn"
       ],
       "title": "AWSGameLiftBuildStorageLocationDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSGameLiftBuildTagDefinition"
     }
   },
   "properties": {
@@ -80,8 +130,10 @@
           "enum": [
             "AMAZON_LINUX",
             "AMAZON_LINUX_2",
+            "AMAZON_LINUX_2023",
             "WINDOWS_2012",
-            "WINDOWS_2016"
+            "WINDOWS_2016",
+            "WINDOWS_2022"
           ]
         },
         {
@@ -115,15 +167,19 @@
         }
       ],
       "description": "A server SDK version you used when integrating your game server build with Amazon GameLift. By default Amazon GameLift sets this value to 4.0.2."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "additionalProperties": false,
-  "tagging": {
-    "taggable": false,
-    "tagOnCreate": false,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": false
-  },
   "required": [],
   "createOnlyProperties": [
     "/properties/StorageLocation",
@@ -131,11 +187,11 @@
     "/properties/ServerSdkVersion"
   ],
   "writeOnlyProperties": [
-    "/properties/StorageLocation",
-    "/properties/ServerSdkVersion"
+    "/properties/StorageLocation"
   ],
   "readOnlyProperties": [
-    "/properties/BuildId"
+    "/properties/BuildId",
+    "/properties/BuildArn"
   ],
   "primaryIdentifier": [
     "/properties/BuildId"

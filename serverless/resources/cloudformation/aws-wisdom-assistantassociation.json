@@ -1,15 +1,64 @@
 {
   "typeName": "AWS::Wisdom::AssistantAssociation",
-  "description": "Definition of AWS::Wisdom::AssistantAssociation Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::Wisdom::AssistantAssociation Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk",
   "definitions": {
     "AssociationData": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "KnowledgeBaseId": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "KnowledgeBaseId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ExternalBedrockKnowledgeBaseConfig": {
+              "$ref": "#/definitions/ExternalBedrockKnowledgeBaseConfig"
+            }
+          },
+          "required": [
+            "ExternalBedrockKnowledgeBaseConfig"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSWisdomAssistantAssociationAssociationDataDefinition"
+    },
+    "ExternalBedrockKnowledgeBaseConfig": {
       "type": "object",
       "properties": {
-        "KnowledgeBaseId": {
+        "BedrockKnowledgeBaseArn": {
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+              "pattern": "^arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:knowledge-base/[0-9a-zA-Z]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AccessRoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws:iam::[0-9]{12}:role/(?:service-role/)?[a-zA-Z0-9_+=,.@-]{1,64}$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -18,17 +67,19 @@
         }
       },
       "required": [
-        "KnowledgeBaseId"
+        "BedrockKnowledgeBaseArn",
+        "AccessRoleArn"
       ],
       "additionalProperties": false,
-      "title": "AWSWisdomAssistantAssociationAssociationDataDefinition"
+      "title": "AWSWisdomAssistantAssociationExternalBedrockKnowledgeBaseConfigDefinition"
     },
     "AssociationType": {
       "oneOf": [
         {
           "type": "string",
           "enum": [
-            "KNOWLEDGE_BASE"
+            "KNOWLEDGE_BASE",
+            "EXTERNAL_BEDROCK_KNOWLEDGE_BASE"
           ]
         },
         {
@@ -128,7 +179,16 @@
     ]
   ],
   "additionalProperties": false,
-  "taggable": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "wisdom:TagResource"
+    ]
+  },
   "replacementStrategy": "delete_then_create",
   "type": "object",
   "title": "AWSWisdomAssistantAssociationProperties"

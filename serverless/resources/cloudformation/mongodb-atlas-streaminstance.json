@@ -1,0 +1,302 @@
+{
+  "typeName": "MongoDB::Atlas::StreamInstance",
+  "description": "Returns, adds, edits, and removes Atlas Stream Processing Instances.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources.git",
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources.git",
+  "definitions": {
+    "BaseStreamsRegion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of the cloud provider region hosting Atlas Stream Processing.",
+      "title": "MongoDBAtlasStreamInstanceBaseStreamsRegionDefinition"
+    },
+    "StreamsDataProcessRegion": {
+      "type": "object",
+      "description": "Information about the cloud provider region in which MongoDB Cloud processes the stream.",
+      "properties": {
+        "CloudProvider": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AWS",
+                "GCP",
+                "AZURE",
+                "TENANT",
+                "SERVERLESS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Label that identifies the cloud service provider where MongoDB Cloud performs stream processing. Currently, this parameter supports AWS only."
+        },
+        "Region": {
+          "$ref": "#/definitions/BaseStreamsRegion"
+        }
+      },
+      "required": [
+        "CloudProvider",
+        "Region"
+      ],
+      "additionalProperties": false,
+      "title": "MongoDBAtlasStreamInstanceStreamsDataProcessRegionDefinition"
+    },
+    "StreamConfig": {
+      "type": "object",
+      "description": "Configuration options for an Atlas Stream Processing Instance.",
+      "properties": {
+        "Tier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "title": "Stream Instance Tier"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Selected tier for the Stream Instance. Configures Memory / VCPU allowances."
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasStreamInstanceStreamConfigDefinition"
+    },
+    "StreamsKafkaAuthentication": {
+      "type": "object",
+      "description": "User credentials required to connect to a Kafka Cluster. Includes the authentication type, as well as the parameters for that authentication mode.",
+      "properties": {
+        "Mechanism": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Style of authentication. Can be one of PLAIN, SCRAM-256, or SCRAM-512."
+        },
+        "Username": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Username of the account to connect to the Kafka cluster."
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasStreamInstanceStreamsKafkaAuthenticationDefinition"
+    },
+    "DBRoleToExecute": {
+      "type": "object",
+      "description": "The name of a Built in or Custom DB Role to connect to an Atlas Cluster.",
+      "properties": {
+        "Role": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the role to use. Can be a built in role or a custom role."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "BUILT_IN",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Type of the DB role. Can be either BuiltIn or Custom."
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasStreamInstanceDBRoleToExecuteDefinition"
+    },
+    "StreamsKafkaSecurity": {
+      "type": "object",
+      "description": "Properties for the secure transport connection to Kafka. For SSL, this can include the trusted certificate to use.",
+      "properties": {
+        "BrokerPublicCertificate": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A trusted, public x509 certificate for connecting to Kafka over SSL."
+        },
+        "Protocol": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Describes the transport type. Can be either PLAINTEXT or SSL."
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasStreamInstanceStreamsKafkaSecurityDefinition"
+    },
+    "StreamsConnection": {
+      "type": "object",
+      "description": "Settings that define a connection to an external data store.",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Human-readable label that identifies the stream connection."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "Kafka",
+                "Cluster",
+                "Sample"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Type of the connection. Can be either Cluster or Kafka."
+        },
+        "Authentication": {
+          "$ref": "#/definitions/StreamsKafkaAuthentication"
+        },
+        "BootstrapServers": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Comma separated list of server addresses."
+        },
+        "Security": {
+          "$ref": "#/definitions/StreamsKafkaSecurity"
+        },
+        "ClusterName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the cluster configured for this connection."
+        },
+        "DbRoleToExecute": {
+          "$ref": "#/definitions/DBRoleToExecute"
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasStreamInstanceStreamsConnectionDefinition"
+    }
+  },
+  "properties": {
+    "Profile": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The profile is defined in AWS Secret manager. See [Secret Manager Profile setup](../../../examples/profile-secret.yaml)."
+    },
+    "InstanceName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Human-readable label that identifies the stream connection."
+    },
+    "DataProcessRegion": {
+      "$ref": "#/definitions/StreamsDataProcessRegion"
+    },
+    "StreamConfig": {
+      "$ref": "#/definitions/StreamConfig"
+    },
+    "ProjectId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique 24-hexadecimal character string that identifies the project."
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ProjectId",
+    "InstanceName",
+    "DataProcessRegion",
+    "StreamConfig"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/Connections",
+    "/properties/Hostnames"
+  ],
+  "primaryIdentifier": [
+    "/properties/InstanceName",
+    "/properties/ProjectId",
+    "/properties/Profile"
+  ],
+  "createOnlyProperties": [
+    "/properties/InstanceName",
+    "/properties/ProjectId",
+    "/properties/Profile"
+  ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/stream-instance/README.md",
+  "tagging": {
+    "taggable": false
+  },
+  "type": "object",
+  "title": "MongoDBAtlasStreamInstanceProperties"
+}

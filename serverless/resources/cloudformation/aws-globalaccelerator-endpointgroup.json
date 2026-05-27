@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::GlobalAccelerator::EndpointGroup",
-  "description": "Resource Type definition for AWS::GlobalAccelerator::EndpointGroup. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-globalaccelerator. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-globalaccelerator",
+  "description": "Resource Type definition for AWS::GlobalAccelerator::EndpointGroup. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-globalaccelerator",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-globalaccelerator",
   "definitions": {
     "EndpointConfiguration": {
@@ -17,6 +17,17 @@
             }
           ],
           "description": "Id of the endpoint. For Network/Application Load Balancer this value is the ARN.  For EIP, this value is the allocation ID.  For EC2 instances, this is the EC2 instance ID"
+        },
+        "AttachmentArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Attachment ARN that provides access control to the cross account endpoint. Not required for resources hosted in the same account as the endpoint group."
         },
         "Weight": {
           "description": "The weight for the endpoint.",
@@ -152,6 +163,9 @@
       }
     }
   },
+  "tagging": {
+    "taggable": false
+  },
   "required": [
     "ListenerArn",
     "EndpointGroupRegion"
@@ -159,6 +173,9 @@
   "createOnlyProperties": [
     "/properties/EndpointGroupRegion",
     "/properties/ListenerArn"
+  ],
+  "writeOnlyProperties": [
+    "/properties/EndpointConfigurations/*/AttachmentArn"
   ],
   "readOnlyProperties": [
     "/properties/EndpointGroupArn"

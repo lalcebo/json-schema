@@ -1,9 +1,12 @@
 {
   "typeName": "AWS::MediaLive::Input",
-  "description": "Resource Type definition for AWS::MediaLive::Input. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::MediaLive::Input. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
-    "Type": {
+    "SrtSettings": {
+      "$ref": "#/definitions/SrtSettingsRequest"
+    },
+    "InputNetworkLocation": {
       "oneOf": [
         {
           "type": "string"
@@ -30,6 +33,63 @@
         "$ref": "#/definitions/MediaConnectFlowRequest"
       }
     },
+    "Sources": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/InputSourceRequest"
+      }
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "RouterSettings": {
+      "$ref": "#/definitions/RouterSettings"
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Smpte2110ReceiverGroupSettings": {
+      "$ref": "#/definitions/Smpte2110ReceiverGroupSettings"
+    },
+    "SdiSources": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
     "InputSecurityGroups": {
       "type": "array",
       "uniqueItems": false,
@@ -44,12 +104,8 @@
         ]
       }
     },
-    "Sources": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/InputSourceRequest"
-      }
+    "MulticastSettings": {
+      "$ref": "#/definitions/MulticastSettingsCreateRequest"
     },
     "InputDevices": {
       "type": "array",
@@ -58,31 +114,387 @@
         "$ref": "#/definitions/InputDeviceSettings"
       }
     },
-    "RoleArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
     "Tags": {
       "type": "object"
-    },
-    "Name": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
     }
   },
   "definitions": {
+    "Smpte2110ReceiverGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SdpSettings": {
+          "$ref": "#/definitions/Smpte2110ReceiverGroupSdpSettings"
+        }
+      },
+      "title": "AWSMediaLiveInputSmpte2110ReceiverGroupDefinition"
+    },
+    "SrtListenerDecryptionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Algorithm": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PassphraseSecretArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputSrtListenerDecryptionRequestDefinition"
+    },
+    "SrtListenerSettingsRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StreamId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MinimumLatency": {
+          "type": "integer"
+        },
+        "Decryption": {
+          "$ref": "#/definitions/SrtListenerDecryptionRequest"
+        }
+      },
+      "title": "AWSMediaLiveInputSrtListenerSettingsRequestDefinition"
+    },
+    "SrtCallerDecryptionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Algorithm": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PassphraseSecretArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputSrtCallerDecryptionRequestDefinition"
+    },
+    "MulticastSettingsCreateRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Sources": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/MulticastSourceCreateRequest"
+          }
+        }
+      },
+      "title": "AWSMediaLiveInputMulticastSettingsCreateRequestDefinition"
+    },
+    "SrtSettingsRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SrtCallerSources": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/SrtCallerSourceRequest"
+          }
+        },
+        "SrtListenerSettings": {
+          "$ref": "#/definitions/SrtListenerSettingsRequest"
+        }
+      },
+      "title": "AWSMediaLiveInputSrtSettingsRequestDefinition"
+    },
+    "InputVpcRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SecurityGroupIds": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "SubnetIds": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSMediaLiveInputInputVpcRequestDefinition"
+    },
+    "InputRequestDestinationRoute": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Cidr": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Gateway": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputInputRequestDestinationRouteDefinition"
+    },
+    "MediaConnectFlowRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FlowArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputMediaConnectFlowRequestDefinition"
+    },
+    "MulticastSourceCreateRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Url": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SourceIp": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputMulticastSourceCreateRequestDefinition"
+    },
+    "RouterDestinationSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AvailabilityZoneName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputRouterDestinationSettingsDefinition"
+    },
+    "RouterSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Destinations": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/RouterDestinationSettings"
+          }
+        },
+        "EncryptionType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputRouterSettingsDefinition"
+    },
+    "Smpte2110ReceiverGroupSdpSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AudioSdps": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/InputSdpLocation"
+          }
+        },
+        "AncillarySdps": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/InputSdpLocation"
+          }
+        },
+        "VideoSdp": {
+          "$ref": "#/definitions/InputSdpLocation"
+        }
+      },
+      "title": "AWSMediaLiveInputSmpte2110ReceiverGroupSdpSettingsDefinition"
+    },
+    "SrtCallerSourceRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SrtListenerPort": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "StreamId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MinimumLatency": {
+          "type": "integer"
+        },
+        "Decryption": {
+          "$ref": "#/definitions/SrtCallerDecryptionRequest"
+        },
+        "SrtListenerAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputSrtCallerSourceRequestDefinition"
+    },
+    "InputSdpLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MediaIndex": {
+          "type": "integer"
+        },
+        "SdpUrl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSMediaLiveInputInputSdpLocationDefinition"
+    },
+    "Smpte2110ReceiverGroupSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Smpte2110ReceiverGroups": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/Smpte2110ReceiverGroup"
+          }
+        }
+      },
+      "title": "AWSMediaLiveInputSmpte2110ReceiverGroupSettingsDefinition"
+    },
     "InputSourceRequest": {
       "type": "object",
       "additionalProperties": false,
@@ -150,50 +562,25 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
-        }
-      },
-      "title": "AWSMediaLiveInputInputDestinationRequestDefinition"
-    },
-    "InputVpcRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "SecurityGroupIds": {
+        },
+        "NetworkRoutes": {
           "type": "array",
           "uniqueItems": false,
           "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
+            "$ref": "#/definitions/InputRequestDestinationRoute"
           }
         },
-        "SubnetIds": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        }
-      },
-      "title": "AWSMediaLiveInputInputVpcRequestDefinition"
-    },
-    "MediaConnectFlowRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "FlowArn": {
+        "StaticIpAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Network": {
           "oneOf": [
             {
               "type": "string"
@@ -204,12 +591,14 @@
           ]
         }
       },
-      "title": "AWSMediaLiveInputMediaConnectFlowRequestDefinition"
+      "title": "AWSMediaLiveInputInputDestinationRequestDefinition"
     }
   },
   "createOnlyProperties": [
     "/properties/Vpc",
-    "/properties/Type"
+    "/properties/Type",
+    "/properties/RouterSettings",
+    "/properties/InputNetworkLocation"
   ],
   "primaryIdentifier": [
     "/properties/Id"

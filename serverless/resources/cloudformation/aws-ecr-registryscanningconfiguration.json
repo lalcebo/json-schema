@@ -1,0 +1,163 @@
+{
+  "typeName": "AWS::ECR::RegistryScanningConfiguration",
+  "description": "The scanning configuration for a private registry.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ecr.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ecr.git",
+  "definitions": {
+    "ScanningRules": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 2,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/ScanningRule"
+      },
+      "description": "The scanning rules associated with the registry. A registry scanning configuration may contain a maximum of 2 rules.",
+      "title": "AWSECRRegistryScanningConfigurationScanningRulesDefinition"
+    },
+    "ScanningRule": {
+      "type": "object",
+      "properties": {
+        "RepositoryFilters": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 100,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/RepositoryFilter"
+          },
+          "description": "The details of a scanning repository filter. For more information on how to use filters, see [Using filters](https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html#image-scanning-filters) in the *Amazon Elastic Container Registry User Guide*."
+        },
+        "ScanFrequency": {
+          "$ref": "#/definitions/ScanFrequency",
+          "description": "The frequency that scans are performed at for a private registry. When the ``ENHANCED`` scan type is specified, the supported scan frequencies are ``CONTINUOUS_SCAN`` and ``SCAN_ON_PUSH``. When the ``BASIC`` scan type is specified, the ``SCAN_ON_PUSH`` scan frequency is supported. If scan on push is not specified, then the ``MANUAL`` scan frequency is set by default."
+        }
+      },
+      "description": "The scanning rules associated with the registry.",
+      "required": [
+        "ScanFrequency",
+        "RepositoryFilters"
+      ],
+      "additionalProperties": false,
+      "title": "AWSECRRegistryScanningConfigurationScanningRuleDefinition"
+    },
+    "RepositoryFilter": {
+      "type": "object",
+      "properties": {
+        "Filter": {
+          "$ref": "#/definitions/Filter",
+          "description": "The filter to use when scanning."
+        },
+        "FilterType": {
+          "$ref": "#/definitions/FilterType",
+          "description": "The type associated with the filter."
+        }
+      },
+      "description": "The filter settings used with image replication. Specifying a repository filter to a replication rule provides a method for controlling which repositories in a private registry are replicated. If no filters are added, the contents of all repositories are replicated.",
+      "required": [
+        "Filter",
+        "FilterType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSECRRegistryScanningConfigurationRepositoryFilterDefinition"
+    },
+    "Filter": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9*](?:[._\\-/a-z0-9*]?[a-z0-9*]+)*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The filter to use when scanning.",
+      "title": "AWSECRRegistryScanningConfigurationFilterDefinition"
+    },
+    "FilterType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "WILDCARD"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type associated with the filter.",
+      "title": "AWSECRRegistryScanningConfigurationFilterTypeDefinition"
+    },
+    "ScanFrequency": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SCAN_ON_PUSH",
+            "CONTINUOUS_SCAN"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The frequency that scans are performed.",
+      "title": "AWSECRRegistryScanningConfigurationScanFrequencyDefinition"
+    },
+    "ScanType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BASIC",
+            "ENHANCED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of scanning configured for the registry.",
+      "title": "AWSECRRegistryScanningConfigurationScanTypeDefinition"
+    },
+    "RegistryId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9]{12}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The registry id.",
+      "title": "AWSECRRegistryScanningConfigurationRegistryIdDefinition"
+    }
+  },
+  "properties": {
+    "Rules": {
+      "$ref": "#/definitions/ScanningRules",
+      "description": "The scanning rules associated with the registry."
+    },
+    "ScanType": {
+      "$ref": "#/definitions/ScanType",
+      "description": "The type of scanning configured for the registry."
+    }
+  },
+  "required": [
+    "Rules",
+    "ScanType"
+  ],
+  "primaryIdentifier": [
+    "/properties/RegistryId"
+  ],
+  "readOnlyProperties": [
+    "/properties/RegistryId"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": false
+  },
+  "type": "object",
+  "title": "AWSECRRegistryScanningConfigurationProperties"
+}

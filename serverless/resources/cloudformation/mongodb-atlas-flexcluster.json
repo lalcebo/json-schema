@@ -1,0 +1,226 @@
+{
+  "typeName": "MongoDB::Atlas::FlexCluster",
+  "description": "The flex cluster resource provides access to your flex cluster configurations. The resource lets you create, edit and delete flex clusters. The resource requires your Project ID.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/flex-cluster",
+  "definitions": {
+    "ProviderSettings": {
+      "description": "Group of cloud provider settings that configure the provisioned MongoDB flex cluster.",
+      "type": "object",
+      "properties": {
+        "BackingProviderName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Cloud service provider on which MongoDB Cloud provisioned the flex cluster."
+        },
+        "RegionName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Human-readable label that identifies the geographic location of your MongoDB flex cluster. The region you choose can affect network latency for clients accessing your databases."
+        },
+        "DiskSizeGB": {
+          "description": "Storage capacity available to the flex cluster expressed in gigabytes.",
+          "type": "number"
+        },
+        "ProviderName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Human-readable label that identifies the cloud service provider."
+        }
+      },
+      "required": [
+        "BackingProviderName",
+        "RegionName"
+      ],
+      "additionalProperties": false,
+      "title": "MongoDBAtlasFlexClusterProviderSettingsDefinition"
+    },
+    "BackupSettings": {
+      "type": "object",
+      "description": "Flex backup configuration",
+      "properties": {
+        "Enabled": {
+          "description": "Flag that indicates whether backups are performed for this flex cluster. Backup uses flex cluster backups.",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasFlexClusterBackupSettingsDefinition"
+    },
+    "ConnectionStrings": {
+      "type": "object",
+      "description": "Collection of Uniform Resource Locators that point to the MongoDB database.",
+      "properties": {
+        "Standard": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Public connection string that you can use to connect to this cluster. This connection string uses the mongodb:// protocol."
+        },
+        "StandardSrv": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Public connection string that you can use to connect to this flex cluster. This connection string uses the mongodb+srv:// protocol."
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasFlexClusterConnectionStringsDefinition"
+    },
+    "tag": {
+      "type": "object",
+      "description": "List that contains key-value pairs between 1 to 255 characters in length for tagging and categorizing the cluster.",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Constant that defines the set of the tag. For example, environment in the environment : production tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Variable that belongs to the set of the tag. For example, production in the environment : production tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "MongoDBAtlasFlexClustertagDefinition"
+    }
+  },
+  "properties": {
+    "Profile": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "default"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Profile used to provide credentials information, (a secret with the cfn/atlas/profile/{Profile}, is required), if not provided default is used"
+    },
+    "ProjectId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique identifier of the project the cluster belongs to."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Human-readable label that identifies the flex cluster."
+    },
+    "ProviderSettings": {
+      "$ref": "#/definitions/ProviderSettings"
+    },
+    "BackupSettings": {
+      "$ref": "#/definitions/BackupSettings"
+    },
+    "ConnectionStrings": {
+      "$ref": "#/definitions/ConnectionStrings"
+    },
+    "TerminationProtectionEnabled": {
+      "description": "Flag that indicates whether termination protection is enabled on the cluster. If set to true, MongoDB Cloud won't delete the cluster. If set to false, MongoDB Cloud will delete the cluster.",
+      "type": "boolean"
+    },
+    "Tags": {
+      "description": "Map that contains key-value pairs between 1 to 255 characters in length for tagging and categorizing the flex cluster.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name",
+    "ProjectId",
+    "ProviderSettings"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/StateName",
+    "/properties/BackupSettings/Enabled",
+    "/properties/ClusterType",
+    "/properties/ConnectionStrings/Standard",
+    "/properties/ConnectionStrings/StandardSrv",
+    "/properties/CreateDate",
+    "/properties/MongoDBVersion",
+    "/properties/VersionReleaseSystem",
+    "/properties/ProviderSettings/DiskSizeGB",
+    "/properties/ProviderSettings/ProviderName"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/ProjectId",
+    "/properties/Profile",
+    "/properties/ProviderSettings/BackingProviderName",
+    "/properties/ProviderSettings/RegionName"
+  ],
+  "primaryIdentifier": [
+    "/properties/ProjectId",
+    "/properties/Name",
+    "/properties/Profile"
+  ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/flex-cluster/README.md",
+  "tagging": {
+    "taggable": false
+  },
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/flex-cluster",
+  "type": "object",
+  "title": "MongoDBAtlasFlexClusterProperties"
+}

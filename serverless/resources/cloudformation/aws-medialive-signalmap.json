@@ -1,0 +1,361 @@
+{
+  "typeName": "AWS::MediaLive::SignalMap",
+  "description": "Definition of AWS::MediaLive::SignalMap Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "FailedMediaResourceMap": {
+      "type": "object",
+      "description": "A map representing an incomplete AWS media workflow as a graph.",
+      "patternProperties": {
+        ".+": {
+          "$ref": "#/definitions/MediaResource"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSMediaLiveSignalMapFailedMediaResourceMapDefinition"
+    },
+    "MediaResource": {
+      "type": "object",
+      "description": "An AWS resource used in media workflows.",
+      "properties": {
+        "Destinations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MediaResourceNeighbor"
+          }
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The logical name of an AWS media resource."
+        },
+        "Sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MediaResourceNeighbor"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSMediaLiveSignalMapMediaResourceDefinition"
+    },
+    "MediaResourceMap": {
+      "type": "object",
+      "description": "A map representing an AWS media workflow as a graph.",
+      "patternProperties": {
+        ".+": {
+          "$ref": "#/definitions/MediaResource"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSMediaLiveSignalMapMediaResourceMapDefinition"
+    },
+    "MediaResourceNeighbor": {
+      "type": "object",
+      "description": "A direct source or destination neighbor to an AWS media resource.",
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^arn.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of a resource used in AWS media workflows."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The logical name of an AWS media resource."
+        }
+      },
+      "required": [
+        "Arn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaLiveSignalMapMediaResourceNeighborDefinition"
+    },
+    "MonitorDeployment": {
+      "type": "object",
+      "description": "Represents the latest monitor deployment of a signal map.",
+      "properties": {
+        "DetailsUri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "URI associated with a signal map's monitor deployment."
+        },
+        "ErrorMessage": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Error message associated with a failed monitor deployment of a signal map."
+        },
+        "Status": {
+          "$ref": "#/definitions/SignalMapMonitorDeploymentStatus"
+        }
+      },
+      "required": [
+        "Status"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaLiveSignalMapMonitorDeploymentDefinition"
+    },
+    "SignalMapMonitorDeploymentStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NOT_DEPLOYED",
+            "DRY_RUN_DEPLOYMENT_COMPLETE",
+            "DRY_RUN_DEPLOYMENT_FAILED",
+            "DRY_RUN_DEPLOYMENT_IN_PROGRESS",
+            "DEPLOYMENT_COMPLETE",
+            "DEPLOYMENT_FAILED",
+            "DEPLOYMENT_IN_PROGRESS",
+            "DELETE_COMPLETE",
+            "DELETE_FAILED",
+            "DELETE_IN_PROGRESS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A signal map's monitor deployment status.",
+      "title": "AWSMediaLiveSignalMapSignalMapMonitorDeploymentStatusDefinition"
+    },
+    "SignalMapStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATE_IN_PROGRESS",
+            "CREATE_COMPLETE",
+            "CREATE_FAILED",
+            "UPDATE_IN_PROGRESS",
+            "UPDATE_COMPLETE",
+            "UPDATE_REVERTED",
+            "UPDATE_FAILED",
+            "READY",
+            "NOT_READY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A signal map's current status which is dependent on its lifecycle actions or associated jobs.",
+      "title": "AWSMediaLiveSignalMapSignalMapStatusDefinition"
+    },
+    "SuccessfulMonitorDeployment": {
+      "type": "object",
+      "description": "Represents the latest successful monitor deployment of a signal map.",
+      "properties": {
+        "DetailsUri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "URI associated with a signal map's monitor deployment."
+        },
+        "Status": {
+          "$ref": "#/definitions/SignalMapMonitorDeploymentStatus"
+        }
+      },
+      "required": [
+        "DetailsUri",
+        "Status"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaLiveSignalMapSuccessfulMonitorDeploymentDefinition"
+    },
+    "TagMap": {
+      "type": "object",
+      "description": "Represents the tags associated with a resource.",
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSMediaLiveSignalMapTagMapDefinition"
+    },
+    "Unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSMediaLiveSignalMapUnitDefinition"
+    }
+  },
+  "properties": {
+    "CloudWatchAlarmTemplateGroupIdentifiers": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^[^\\s]+$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A resource's optional description."
+    },
+    "DiscoveryEntryPointArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A top-level supported AWS resource ARN to discovery a signal map from."
+    },
+    "EventBridgeRuleTemplateGroupIdentifiers": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^[^\\s]+$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "ForceRediscovery": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, will force a rediscovery of a signal map if an unchanged discoveryEntryPointArn is provided."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "pattern": "^[^\\s]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A resource's name. Names must be unique within the scope of a resource type in a specific region."
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagMap"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "medialive:CreateTags",
+      "medialive:DeleteTags"
+    ]
+  },
+  "required": [
+    "DiscoveryEntryPointArn",
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/CloudWatchAlarmTemplateGroupIds",
+    "/properties/CreatedAt",
+    "/properties/ErrorMessage",
+    "/properties/EventBridgeRuleTemplateGroupIds",
+    "/properties/FailedMediaResourceMap",
+    "/properties/Id",
+    "/properties/Identifier",
+    "/properties/LastDiscoveredAt",
+    "/properties/LastSuccessfulMonitorDeployment",
+    "/properties/MediaResourceMap",
+    "/properties/ModifiedAt",
+    "/properties/MonitorChangesPendingDeployment",
+    "/properties/MonitorDeployment",
+    "/properties/Status"
+  ],
+  "writeOnlyProperties": [
+    "/properties/CloudWatchAlarmTemplateGroupIdentifiers",
+    "/properties/EventBridgeRuleTemplateGroupIdentifiers",
+    "/properties/ForceRediscovery"
+  ],
+  "createOnlyProperties": [
+    "/properties/Tags"
+  ],
+  "primaryIdentifier": [
+    "/properties/Identifier"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSMediaLiveSignalMapProperties"
+}

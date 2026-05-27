@@ -1,67 +1,10 @@
 {
   "typeName": "AWS::EC2::TrafficMirrorSession",
-  "description": "Resource Type definition for AWS::EC2::TrafficMirrorSession. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "TrafficMirrorTargetId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Description": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "SessionNumber": {
-      "type": "integer"
-    },
-    "VirtualNetworkId": {
-      "type": "integer"
-    },
-    "PacketLength": {
-      "type": "integer"
-    },
-    "NetworkInterfaceId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "TrafficMirrorFilterId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    }
-  },
+  "description": "Resource schema for AWS::EC2::TrafficMirrorSession. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-tm.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-tm.git",
   "definitions": {
     "Tag": {
+      "description": "A key-value pair to associate with a traffic mirror session resource.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -87,20 +30,123 @@
         }
       },
       "required": [
-        "Value",
-        "Key"
+        "Key",
+        "Value"
       ],
       "title": "AWSEC2TrafficMirrorSessionTagDefinition"
+    },
+    "TrafficMirrorSessionField": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "packet-length",
+            "description",
+            "virtual-network-id"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEC2TrafficMirrorSessionTrafficMirrorSessionFieldDefinition"
     }
   },
+  "properties": {
+    "NetworkInterfaceId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the source network interface."
+    },
+    "TrafficMirrorTargetId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of a Traffic Mirror target."
+    },
+    "TrafficMirrorFilterId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of a Traffic Mirror filter."
+    },
+    "PacketLength": {
+      "description": "The number of bytes in each packet to mirror.",
+      "type": "integer"
+    },
+    "SessionNumber": {
+      "description": "The session number determines the order in which sessions are evaluated when an interface is used by multiple sessions. The first session with a matching filter is the one that mirrors the packets.",
+      "type": "integer"
+    },
+    "VirtualNetworkId": {
+      "description": "The VXLAN ID for the Traffic Mirror session.",
+      "type": "integer"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the Traffic Mirror session."
+    },
+    "OwnerId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the account that owns the Traffic Mirror session."
+    },
+    "Tags": {
+      "description": "The tags assigned to the Traffic Mirror session.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
+  },
+  "additionalProperties": false,
   "required": [
-    "TrafficMirrorTargetId",
     "NetworkInterfaceId",
     "TrafficMirrorFilterId",
-    "SessionNumber"
-  ],
-  "createOnlyProperties": [
-    "/properties/NetworkInterfaceId"
+    "SessionNumber",
+    "TrafficMirrorTargetId"
   ],
   "readOnlyProperties": [
     "/properties/Id"

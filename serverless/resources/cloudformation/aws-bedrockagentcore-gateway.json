@@ -1,0 +1,664 @@
+{
+  "typeName": "AWS::BedrockAgentCore::Gateway",
+  "description": "Definition of AWS::BedrockAgentCore::Gateway Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "AuthorizerConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "CustomJWTAuthorizer",
+          "properties": {
+            "CustomJWTAuthorizer": {
+              "$ref": "#/definitions/CustomJWTAuthorizerConfiguration"
+            }
+          },
+          "required": [
+            "CustomJWTAuthorizer"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewayAuthorizerConfigurationDefinition"
+    },
+    "AuthorizerType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CUSTOM_JWT",
+            "AWS_IAM",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewayAuthorizerTypeDefinition"
+    },
+    "CustomJWTAuthorizerConfiguration": {
+      "type": "object",
+      "properties": {
+        "DiscoveryUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^.+/\\.well-known/openid-configuration$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AllowedAudience": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "AllowedClients": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "AllowedScopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AllowedScope"
+          },
+          "minItems": 1
+        },
+        "CustomClaims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CustomClaimValidationType"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "DiscoveryUrl"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayCustomJWTAuthorizerConfigurationDefinition"
+    },
+    "AllowedScope": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[\\x21\\x23-\\x5B\\x5D-\\x7E]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Allowed scope value",
+      "title": "AWSBedrockAgentCoreGatewayAllowedScopeDefinition"
+    },
+    "CustomClaimValidationType": {
+      "type": "object",
+      "description": "Required custom claim",
+      "properties": {
+        "AuthorizingClaimMatchValue": {
+          "$ref": "#/definitions/AuthorizingClaimMatchValueType"
+        },
+        "InboundTokenClaimName": {
+          "$ref": "#/definitions/InboundTokenClaimName"
+        },
+        "InboundTokenClaimValueType": {
+          "$ref": "#/definitions/InboundTokenClaimValueType"
+        }
+      },
+      "required": [
+        "AuthorizingClaimMatchValue",
+        "InboundTokenClaimName",
+        "InboundTokenClaimValueType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayCustomClaimValidationTypeDefinition"
+    },
+    "InboundTokenClaimName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[A-Za-z0-9_.-:]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the custom claim to validate",
+      "title": "AWSBedrockAgentCoreGatewayInboundTokenClaimNameDefinition"
+    },
+    "InboundTokenClaimValueType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STRING",
+            "STRING_ARRAY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Token claim data type",
+      "title": "AWSBedrockAgentCoreGatewayInboundTokenClaimValueTypeDefinition"
+    },
+    "AuthorizingClaimMatchValueType": {
+      "type": "object",
+      "description": "The value or values in the custom claim to match and relationship of match",
+      "properties": {
+        "ClaimMatchOperator": {
+          "$ref": "#/definitions/ClaimMatchOperator"
+        },
+        "ClaimMatchValue": {
+          "$ref": "#/definitions/ClaimMatchValueType"
+        }
+      },
+      "required": [
+        "ClaimMatchOperator",
+        "ClaimMatchValue"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayAuthorizingClaimMatchValueTypeDefinition"
+    },
+    "ClaimMatchOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "EQUALS",
+            "CONTAINS",
+            "CONTAINS_ANY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The relationship between the claim field value and the value or values being matched",
+      "title": "AWSBedrockAgentCoreGatewayClaimMatchOperatorDefinition"
+    },
+    "ClaimMatchValueType": {
+      "type": "object",
+      "description": "The value or values in the custom claim to match for",
+      "oneOf": [
+        {
+          "required": [
+            "MatchValueString"
+          ]
+        },
+        {
+          "required": [
+            "MatchValueStringList"
+          ]
+        }
+      ],
+      "properties": {
+        "MatchValueString": {
+          "$ref": "#/definitions/MatchValueString"
+        },
+        "MatchValueStringList": {
+          "$ref": "#/definitions/MatchValueStringList"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayClaimMatchValueTypeDefinition"
+    },
+    "MatchValueString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[A-Za-z0-9_.-]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The string value to match for",
+      "title": "AWSBedrockAgentCoreGatewayMatchValueStringDefinition"
+    },
+    "MatchValueStringList": {
+      "type": "array",
+      "description": "The list of strings to check for a match",
+      "minItems": 1,
+      "maxItems": 255,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/MatchValueString"
+      },
+      "title": "AWSBedrockAgentCoreGatewayMatchValueStringListDefinition"
+    },
+    "ExceptionLevel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DEBUG"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewayExceptionLevelDefinition"
+    },
+    "GatewayInterceptionPoint": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "REQUEST",
+            "RESPONSE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewayGatewayInterceptionPointDefinition"
+    },
+    "GatewayInterceptorConfiguration": {
+      "type": "object",
+      "properties": {
+        "Interceptor": {
+          "$ref": "#/definitions/InterceptorConfiguration"
+        },
+        "InterceptionPoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GatewayInterceptionPoint"
+          },
+          "minItems": 1,
+          "maxItems": 2
+        },
+        "InputConfiguration": {
+          "$ref": "#/definitions/InterceptorInputConfiguration"
+        }
+      },
+      "required": [
+        "Interceptor",
+        "InterceptionPoints"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayGatewayInterceptorConfigurationDefinition"
+    },
+    "InterceptorConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Lambda",
+          "properties": {
+            "Lambda": {
+              "$ref": "#/definitions/LambdaInterceptorConfiguration"
+            }
+          },
+          "required": [
+            "Lambda"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewayInterceptorConfigurationDefinition"
+    },
+    "InterceptorInputConfiguration": {
+      "type": "object",
+      "properties": {
+        "PassRequestHeaders": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "PassRequestHeaders"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayInterceptorInputConfigurationDefinition"
+    },
+    "LambdaInterceptorConfiguration": {
+      "type": "object",
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 170,
+              "minLength": 1,
+              "pattern": "^arn:[a-z0-9-]{1,20}:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Arn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayLambdaInterceptorConfigurationDefinition"
+    },
+    "GatewayPolicyEngineMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LOG_ONLY",
+            "ENFORCE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The enforcement mode for the policy engine. LOG_ONLY - The policy engine evaluates each action against your policies and adds traces on whether tool calls would be allowed or denied, but does not enforce the decision. Use this mode to test and validate policies before enabling enforcement. ENFORCE - The policy engine evaluates actions against your policies and enforces decisions by allowing or denying agent operations. Test and validate policies in LOG_ONLY mode before enabling enforcement to avoid unintended denials or adversely affecting production traffic.",
+      "title": "AWSBedrockAgentCoreGatewayGatewayPolicyEngineModeDefinition"
+    },
+    "GatewayPolicyEngineConfiguration": {
+      "type": "object",
+      "description": "The configuration for a policy engine associated with a gateway. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with a gateway, the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies.",
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 170,
+              "minLength": 1,
+              "pattern": "^arn:[a-z0-9-]{1,20}:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:policy-engine/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9_]{10}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the policy engine. The policy engine contains Cedar policies that define fine-grained authorization rules specifying who can perform what actions on which resources as agents interact through the gateway."
+        },
+        "Mode": {
+          "$ref": "#/definitions/GatewayPolicyEngineMode"
+        }
+      },
+      "required": [
+        "Arn",
+        "Mode"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayGatewayPolicyEngineConfigurationDefinition"
+    },
+    "GatewayProtocolConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Mcp",
+          "properties": {
+            "Mcp": {
+              "$ref": "#/definitions/MCPGatewayConfiguration"
+            }
+          },
+          "required": [
+            "Mcp"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewayGatewayProtocolConfigurationDefinition"
+    },
+    "GatewayProtocolType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MCP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewayGatewayProtocolTypeDefinition"
+    },
+    "GatewayStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "UPDATING",
+            "UPDATE_UNSUCCESSFUL",
+            "DELETING",
+            "READY",
+            "FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewayGatewayStatusDefinition"
+    },
+    "MCPGatewayConfiguration": {
+      "type": "object",
+      "properties": {
+        "SupportedVersions": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "default": "2025-03-26"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Instructions": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SearchType": {
+          "$ref": "#/definitions/SearchType"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayMCPGatewayConfigurationDefinition"
+    },
+    "SearchType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SEMANTIC"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockAgentCoreGatewaySearchTypeDefinition"
+    },
+    "TagsMap": {
+      "type": "object",
+      "maxProperties": 50,
+      "minProperties": 0,
+      "patternProperties": {
+        "^[a-zA-Z0-9\\s._:/=+@-]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayTagsMapDefinition"
+    },
+    "WorkloadIdentityDetails": {
+      "type": "object",
+      "properties": {
+        "WorkloadIdentityArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "WorkloadIdentityArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCoreGatewayWorkloadIdentityDetailsDefinition"
+    }
+  },
+  "properties": {
+    "AuthorizerConfiguration": {
+      "$ref": "#/definitions/AuthorizerConfiguration"
+    },
+    "AuthorizerType": {
+      "$ref": "#/definitions/AuthorizerType"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ExceptionLevel": {
+      "$ref": "#/definitions/ExceptionLevel"
+    },
+    "InterceptorConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/GatewayInterceptorConfiguration"
+      },
+      "minItems": 1,
+      "maxItems": 2
+    },
+    "PolicyEngineConfiguration": {
+      "$ref": "#/definitions/GatewayPolicyEngineConfiguration"
+    },
+    "KmsKeyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 1,
+          "pattern": "^arn:[a-z0-9-]{1,20}:kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-9a-zA-Z][-]?){1,100}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ProtocolConfiguration": {
+      "$ref": "#/definitions/GatewayProtocolConfiguration"
+    },
+    "ProtocolType": {
+      "$ref": "#/definitions/GatewayProtocolType"
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 1,
+          "pattern": "^arn:[a-z0-9-]{1,20}:iam::([0-9]{12})?:role/.+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagsMap"
+    }
+  },
+  "required": [
+    "AuthorizerType",
+    "Name",
+    "ProtocolType",
+    "RoleArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/CreatedAt",
+    "/properties/GatewayArn",
+    "/properties/GatewayIdentifier",
+    "/properties/GatewayUrl",
+    "/properties/Status",
+    "/properties/StatusReasons",
+    "/properties/UpdatedAt",
+    "/properties/WorkloadIdentityDetails"
+  ],
+  "primaryIdentifier": [
+    "/properties/GatewayIdentifier"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "bedrock-agentcore:ListTagsForResource",
+      "bedrock-agentcore:TagResource",
+      "bedrock-agentcore:UntagResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSBedrockAgentCoreGatewayProperties"
+}

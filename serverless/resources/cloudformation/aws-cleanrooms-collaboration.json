@@ -1,8 +1,118 @@
 {
   "typeName": "AWS::CleanRooms::Collaboration",
-  "description": "Represents a collaboration between AWS accounts that allows for secure data collaboration. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Represents a collaboration between AWS accounts that allows for secure data collaboration. Source:- No source definition found, add manually please",
   "documentationUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cleanrooms-collaboration.html",
   "definitions": {
+    "AnalyticsEngine": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CLEAN_ROOMS_SQL",
+            "SPARK"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsCollaborationAnalyticsEngineDefinition"
+    },
+    "AutoApprovedChangeType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ADD_MEMBER",
+            "GRANT_RECEIVE_RESULTS_ABILITY",
+            "REVOKE_RECEIVE_RESULTS_ABILITY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsCollaborationAutoApprovedChangeTypeDefinition"
+    },
+    "AutoApprovedChangeTypeList": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AutoApprovedChangeType"
+      },
+      "uniqueItems": true,
+      "title": "AWSCleanRoomsCollaborationAutoApprovedChangeTypeListDefinition"
+    },
+    "CollaborationJobLogStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsCollaborationCollaborationJobLogStatusDefinition"
+    },
+    "SupportedS3Region": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "us-west-1",
+            "us-west-2",
+            "us-east-1",
+            "us-east-2",
+            "af-south-1",
+            "ap-east-1",
+            "ap-east-2",
+            "ap-south-2",
+            "ap-southeast-1",
+            "ap-southeast-2",
+            "ap-southeast-3",
+            "ap-southeast-5",
+            "ap-southeast-4",
+            "ap-southeast-7",
+            "ap-south-1",
+            "ap-northeast-3",
+            "ap-northeast-1",
+            "ap-northeast-2",
+            "ca-central-1",
+            "ca-west-1",
+            "eu-south-1",
+            "eu-west-3",
+            "eu-south-2",
+            "eu-central-2",
+            "eu-central-1",
+            "eu-north-1",
+            "eu-west-1",
+            "eu-west-2",
+            "me-south-1",
+            "me-central-1",
+            "il-central-1",
+            "sa-east-1",
+            "mx-central-1"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsCollaborationSupportedS3RegionDefinition"
+    },
+    "AllowedResultRegions": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/SupportedS3Region"
+      },
+      "uniqueItems": true,
+      "title": "AWSCleanRoomsCollaborationAllowedResultRegionsDefinition"
+    },
     "CollaborationQueryLogStatus": {
       "oneOf": [
         {
@@ -49,6 +159,7 @@
           "type": "string",
           "enum": [
             "CAN_QUERY",
+            "CAN_RUN_JOB",
             "CAN_RECEIVE_RESULTS"
           ]
         },
@@ -66,6 +177,43 @@
       },
       "uniqueItems": true,
       "title": "AWSCleanRoomsCollaborationMemberAbilitiesDefinition"
+    },
+    "MLMemberAbilities": {
+      "type": "object",
+      "properties": {
+        "CustomMLMemberAbilities": {
+          "$ref": "#/definitions/CustomMLMemberAbilities"
+        }
+      },
+      "required": [
+        "CustomMLMemberAbilities"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsCollaborationMLMemberAbilitiesDefinition"
+    },
+    "CustomMLMemberAbility": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CAN_RECEIVE_MODEL_OUTPUT",
+            "CAN_RECEIVE_INFERENCE_OUTPUT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsCollaborationCustomMLMemberAbilityDefinition"
+    },
+    "CustomMLMemberAbilities": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/CustomMLMemberAbility"
+      },
+      "uniqueItems": true,
+      "title": "AWSCleanRoomsCollaborationCustomMLMemberAbilitiesDefinition"
     },
     "MemberSpecification": {
       "type": "object",
@@ -86,14 +234,19 @@
         "MemberAbilities": {
           "$ref": "#/definitions/MemberAbilities"
         },
+        "MLMemberAbilities": {
+          "$ref": "#/definitions/MLMemberAbilities"
+        },
         "DisplayName": {
           "$ref": "#/definitions/Name"
+        },
+        "PaymentConfiguration": {
+          "$ref": "#/definitions/PaymentConfiguration"
         }
       },
       "required": [
         "AccountId",
-        "DisplayName",
-        "MemberAbilities"
+        "DisplayName"
       ],
       "additionalProperties": false,
       "title": "AWSCleanRoomsCollaborationMemberSpecificationDefinition"
@@ -163,6 +316,106 @@
         }
       ],
       "title": "AWSCleanRoomsCollaborationNameDefinition"
+    },
+    "PaymentConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "JobCompute": {
+          "$ref": "#/definitions/JobComputePaymentConfig"
+        },
+        "QueryCompute": {
+          "$ref": "#/definitions/QueryComputePaymentConfig"
+        },
+        "MachineLearning": {
+          "$ref": "#/definitions/MLPaymentConfig"
+        }
+      },
+      "required": [
+        "QueryCompute"
+      ],
+      "title": "AWSCleanRoomsCollaborationPaymentConfigurationDefinition"
+    },
+    "JobComputePaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsCollaborationJobComputePaymentConfigDefinition"
+    },
+    "QueryComputePaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsCollaborationQueryComputePaymentConfigDefinition"
+    },
+    "MLPaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ModelTraining": {
+          "$ref": "#/definitions/ModelTrainingPaymentConfig"
+        },
+        "ModelInference": {
+          "$ref": "#/definitions/ModelInferencePaymentConfig"
+        },
+        "SyntheticDataGeneration": {
+          "$ref": "#/definitions/SyntheticDataGenerationPaymentConfig"
+        }
+      },
+      "title": "AWSCleanRoomsCollaborationMLPaymentConfigDefinition"
+    },
+    "ModelTrainingPaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsCollaborationModelTrainingPaymentConfigDefinition"
+    },
+    "ModelInferencePaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsCollaborationModelInferencePaymentConfigDefinition"
+    },
+    "SyntheticDataGenerationPaymentConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "IsResponsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "IsResponsible"
+      ],
+      "title": "AWSCleanRoomsCollaborationSyntheticDataGenerationPaymentConfigDefinition"
     }
   },
   "properties": {
@@ -180,6 +433,9 @@
     },
     "CreatorMemberAbilities": {
       "$ref": "#/definitions/MemberAbilities"
+    },
+    "CreatorMLMemberAbilities": {
+      "$ref": "#/definitions/MLMemberAbilities"
     },
     "DataEncryptionMetadata": {
       "$ref": "#/definitions/DataEncryptionMetadata"
@@ -219,14 +475,30 @@
         }
       ]
     },
+    "JobLogStatus": {
+      "$ref": "#/definitions/CollaborationJobLogStatus"
+    },
     "QueryLogStatus": {
       "$ref": "#/definitions/CollaborationQueryLogStatus"
+    },
+    "AnalyticsEngine": {
+      "$ref": "#/definitions/AnalyticsEngine"
+    },
+    "CreatorPaymentConfiguration": {
+      "$ref": "#/definitions/PaymentConfiguration"
+    },
+    "AutoApprovedChangeTypes": {
+      "$ref": "#/definitions/AutoApprovedChangeTypeList"
+    },
+    "AllowedResultRegions": {
+      "$ref": "#/definitions/AllowedResultRegions"
+    },
+    "IsMetricsEnabled": {
+      "type": "boolean"
     }
   },
   "required": [
     "CreatorDisplayName",
-    "CreatorMemberAbilities",
-    "Members",
     "Name",
     "Description",
     "QueryLogStatus"
@@ -238,9 +510,14 @@
   "createOnlyProperties": [
     "/properties/CreatorDisplayName",
     "/properties/CreatorMemberAbilities",
+    "/properties/CreatorMLMemberAbilities",
     "/properties/DataEncryptionMetadata",
+    "/properties/JobLogStatus",
     "/properties/QueryLogStatus",
-    "/properties/Members"
+    "/properties/Members",
+    "/properties/CreatorPaymentConfiguration",
+    "/properties/AutoApprovedChangeTypes",
+    "/properties/AllowedResultRegions"
   ],
   "primaryIdentifier": [
     "/properties/CollaborationIdentifier"
@@ -250,7 +527,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cleanrooms:ListTagsForResource",
+      "cleanrooms:UntagResource",
+      "cleanrooms:TagResource"
+    ]
   },
   "additionalProperties": false,
   "type": "object",

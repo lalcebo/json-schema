@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::AppStream::Application",
-  "description": "Resource Type definition for AWS::AppStream::Application. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appstream.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appstream.git",
+  "description": "Resource Type definition for AWS::AppStream::Application. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appstream.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appstream.git",
   "definitions": {
     "S3Location": {
@@ -57,34 +57,68 @@
       "title": "AWSAppStreamApplicationPlatformTypeDefinition"
     },
     "Tag": {
-      "type": "object",
-      "properties": {
-        "TagKey": {
-          "oneOf": [
-            {
-              "type": "string"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "Key": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
             },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            "Value": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
             }
-          ]
+          },
+          "required": [
+            "Key",
+            "Value"
+          ],
+          "additionalProperties": false
         },
-        "TagValue": {
-          "oneOf": [
-            {
-              "type": "string"
+        {
+          "type": "object",
+          "properties": {
+            "TagKey": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
             },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            "TagValue": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
             }
-          ]
+          },
+          "required": [
+            "TagKey",
+            "TagValue"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "TagKey",
-        "TagValue"
       ],
-      "additionalProperties": false,
       "title": "AWSAppStreamApplicationTagDefinition"
     },
     "ApplicationAttribute": {
@@ -207,6 +241,18 @@
     }
   },
   "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "appstream:TagResource",
+      "appstream:ListTagsForResource",
+      "appstream:UntagResource"
+    ]
+  },
   "required": [
     "Name",
     "IconS3Location",
@@ -225,7 +271,11 @@
     "/properties/CreatedTime"
   ],
   "writeOnlyProperties": [
-    "/properties/Tags"
+    "/properties/AttributesToDelete"
+  ],
+  "deprecatedProperties": [
+    "/properties/Tags/TagKey",
+    "/properties/Tags/TagValue"
   ],
   "primaryIdentifier": [
     "/properties/Arn"

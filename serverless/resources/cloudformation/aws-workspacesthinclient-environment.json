@@ -1,0 +1,305 @@
+{
+  "typeName": "AWS::WorkSpacesThinClient::Environment",
+  "description": "Resource type definition for AWS::WorkSpacesThinClient::Environment.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Hour": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 23,
+      "title": "AWSWorkSpacesThinClientEnvironmentHourDefinition"
+    },
+    "Minute": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 59,
+      "title": "AWSWorkSpacesThinClientEnvironmentMinuteDefinition"
+    },
+    "DayOfWeek": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY",
+            "SUNDAY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesThinClientEnvironmentDayOfWeekDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 1 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSWorkSpacesThinClientEnvironmentTagDefinition"
+    },
+    "MaintenanceWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SYSTEM",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of maintenance window."
+        },
+        "StartTimeHour": {
+          "description": "The hour start time of maintenance window.",
+          "$ref": "#/definitions/Hour"
+        },
+        "StartTimeMinute": {
+          "description": "The minute start time of maintenance window.",
+          "$ref": "#/definitions/Minute"
+        },
+        "EndTimeHour": {
+          "description": "The hour end time of maintenance window.",
+          "$ref": "#/definitions/Hour"
+        },
+        "EndTimeMinute": {
+          "description": "The minute end time of maintenance window.",
+          "$ref": "#/definitions/Minute"
+        },
+        "DaysOfTheWeek": {
+          "description": "The date of maintenance window.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/DayOfWeek"
+          }
+        },
+        "ApplyTimeOf": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "UTC",
+                "DEVICE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The desired time zone maintenance window."
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "title": "AWSWorkSpacesThinClientEnvironmentMaintenanceWindowDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^.+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the environment."
+    },
+    "DesktopArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:[\\w+=\\/,.@-]+:[a-zA-Z0-9\\-]+:[a-zA-Z0-9\\-]*:[0-9]{0,12}:[a-zA-Z0-9\\-\\/\\._]+$",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the desktop to stream from Amazon WorkSpaces, WorkSpaces Web, or AppStream 2.0."
+    },
+    "DesktopEndpoint": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(https:\\/\\/)[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,32}(:[0-9]{1,5})?(\\/.*)?$",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The URL for the identity provider login (only for environments that use AppStream 2.0)."
+    },
+    "SoftwareSetUpdateSchedule": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "USE_MAINTENANCE_WINDOW",
+            "APPLY_IMMEDIATELY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An option to define if software updates should be applied within a maintenance window."
+    },
+    "MaintenanceWindow": {
+      "description": "A specification for a time window to apply software updates.",
+      "$ref": "#/definitions/MaintenanceWindow"
+    },
+    "SoftwareSetUpdateMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "USE_LATEST",
+            "USE_DESIRED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An option to define which software updates to apply."
+    },
+    "DesiredSoftwareSetId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9]{1,9}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the software set to apply."
+    },
+    "KmsKeyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:[\\w+=\\/,.@-]+:kms:[a-zA-Z0-9\\-]*:[0-9]{0,12}:key\\/[a-zA-Z0-9-]+$",
+          "minLength": 20,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the AWS Key Management Service key used to encrypt the environment."
+    },
+    "Tags": {
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "DeviceCreationTags": {
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "An array of key-value pairs to apply to the newly created devices for this environment.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "thinclient:UntagResource",
+      "thinclient:ListTagsForResource",
+      "thinclient:TagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "required": [
+    "DesktopArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/ActivationCode",
+    "/properties/Arn",
+    "/properties/CreatedAt",
+    "/properties/DesktopType",
+    "/properties/RegisteredDevicesCount",
+    "/properties/UpdatedAt",
+    "/properties/PendingSoftwareSetId",
+    "/properties/PendingSoftwareSetVersion",
+    "/properties/SoftwareSetComplianceStatus"
+  ],
+  "createOnlyProperties": [
+    "/properties/KmsKeyArn",
+    "/properties/DesktopArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "type": "object",
+  "title": "AWSWorkSpacesThinClientEnvironmentProperties"
+}

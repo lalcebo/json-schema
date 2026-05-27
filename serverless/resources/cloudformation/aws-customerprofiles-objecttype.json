@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::CustomerProfiles::ObjectType",
-  "description": "An ObjectType resource of Amazon Connect Customer Profiles. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles.git",
+  "description": "An ObjectType resource of Amazon Connect Customer Profiles. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles.git",
   "definitions": {
     "Tag": {
@@ -174,7 +174,21 @@
                   "UNIQUE",
                   "SECONDARY",
                   "LOOKUP_ONLY",
-                  "NEW_ONLY"
+                  "NEW_ONLY",
+                  "ASSET",
+                  "CASE",
+                  "ORDER",
+                  "AIR_PREFERENCE",
+                  "AIR_BOOKING",
+                  "AIR_SEGMENT",
+                  "HOTEL_PREFERENCE",
+                  "HOTEL_STAY_REVENUE",
+                  "HOTEL_RESERVATION",
+                  "LOYALTY",
+                  "LOYALTY_TRANSACTION",
+                  "LOYALTY_PROMOTION",
+                  "WEB_ANALYTICS",
+                  "DEVICE"
                 ]
               },
               {
@@ -226,7 +240,7 @@
         {
           "type": "string",
           "minLength": 1,
-          "maxLength": 1000
+          "maxLength": 10000
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -269,6 +283,19 @@
         "$ref": "#/definitions/KeyMap"
       }
     },
+    "SourceLastUpdatedTimestampFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The format of your sourceLastUpdatedTimestamp that was previously set up."
+    },
     "Tags": {
       "description": "The tags (keys and values) associated with the integration.",
       "type": "array",
@@ -291,19 +318,44 @@
         }
       ],
       "description": "A unique identifier for the object template."
+    },
+    "MaxProfileObjectCount": {
+      "description": "The maximum number of profile objects for this object type",
+      "type": "integer",
+      "minimum": 1
+    },
+    "SourcePriority": {
+      "description": "Defines the priority order of object types. Lower value indicates higher priority.",
+      "type": "integer",
+      "minimum": 1
     }
   },
   "additionalProperties": false,
   "required": [
-    "DomainName"
+    "DomainName",
+    "ObjectTypeName",
+    "Description"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "profile:TagResource",
+      "profile:UntagResource",
+      "profile:ListTagsForResource"
+    ]
+  },
   "createOnlyProperties": [
     "/properties/DomainName",
     "/properties/ObjectTypeName"
   ],
   "readOnlyProperties": [
     "/properties/LastUpdatedAt",
-    "/properties/CreatedAt"
+    "/properties/CreatedAt",
+    "/properties/MaxAvailableProfileObjectCount"
   ],
   "primaryIdentifier": [
     "/properties/DomainName",

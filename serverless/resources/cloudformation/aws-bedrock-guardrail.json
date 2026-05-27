@@ -1,0 +1,953 @@
+{
+  "typeName": "AWS::Bedrock::Guardrail",
+  "description": "Definition of AWS::Bedrock::Guardrail Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "ContentFilterAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BLOCK",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockGuardrailContentFilterActionDefinition"
+    },
+    "Modality": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "TEXT",
+            "IMAGE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Modality for filters",
+      "title": "AWSBedrockGuardrailModalityDefinition"
+    },
+    "AutomatedReasoningPolicyConfig": {
+      "type": "object",
+      "description": "Optional configuration for integrating Automated Reasoning policies with the guardrail.",
+      "properties": {
+        "ConfidenceThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "The confidence threshold for triggering guardrail actions based on Automated Reasoning policy violations."
+        },
+        "Policies": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "minLength": 15,
+                "pattern": "^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:automated-reasoning-policy\\/[a-z0-9]{12}(:([1-9][0-9]{0,11}))?$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ],
+            "description": "The Amazon Resource Name (ARN) of the Automated Reasoning policy"
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 2,
+          "description": "The list of Automated Reasoning policy ARNs to include in the guardrail configuration"
+        }
+      },
+      "required": [
+        "Policies"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailAutomatedReasoningPolicyConfigDefinition"
+    },
+    "ContentFilterConfig": {
+      "type": "object",
+      "description": "Content filter config in content policy.",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/ContentFilterType"
+        },
+        "InputStrength": {
+          "$ref": "#/definitions/FilterStrength"
+        },
+        "OutputStrength": {
+          "$ref": "#/definitions/FilterStrength"
+        },
+        "InputModalities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Modality"
+          },
+          "minItems": 1,
+          "description": "List of modalities"
+        },
+        "OutputModalities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Modality"
+          },
+          "minItems": 1,
+          "description": "List of modalities"
+        },
+        "InputAction": {
+          "$ref": "#/definitions/ContentFilterAction"
+        },
+        "OutputAction": {
+          "$ref": "#/definitions/ContentFilterAction"
+        },
+        "InputEnabled": {
+          "type": "boolean"
+        },
+        "OutputEnabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "InputStrength",
+        "OutputStrength",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailContentFilterConfigDefinition"
+    },
+    "ContentFilterType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SEXUAL",
+            "VIOLENCE",
+            "HATE",
+            "INSULTS",
+            "MISCONDUCT",
+            "PROMPT_ATTACK"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of filter in content policy",
+      "title": "AWSBedrockGuardrailContentFilterTypeDefinition"
+    },
+    "ContentPolicyConfig": {
+      "type": "object",
+      "description": "Content policy config for a guardrail.",
+      "properties": {
+        "FiltersConfig": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContentFilterConfig"
+          },
+          "maxItems": 6,
+          "minItems": 1,
+          "description": "List of content filter configs in content policy."
+        },
+        "ContentFiltersTierConfig": {
+          "type": "object",
+          "properties": {
+            "TierName": {
+              "$ref": "#/definitions/ContentFiltersTierName"
+            }
+          },
+          "required": [
+            "TierName"
+          ],
+          "additionalProperties": false,
+          "description": "Guardrail tier config for content policy"
+        }
+      },
+      "required": [
+        "FiltersConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailContentPolicyConfigDefinition"
+    },
+    "ContextualGroundingAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BLOCK",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockGuardrailContextualGroundingActionDefinition"
+    },
+    "ContextualGroundingFilterConfig": {
+      "type": "object",
+      "description": "A config for grounding filter.",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/ContextualGroundingFilterType"
+        },
+        "Threshold": {
+          "type": "number",
+          "minimum": 0,
+          "description": "The threshold for this filter."
+        },
+        "Action": {
+          "$ref": "#/definitions/ContextualGroundingAction"
+        },
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Threshold",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailContextualGroundingFilterConfigDefinition"
+    },
+    "ContextualGroundingFilterType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "GROUNDING",
+            "RELEVANCE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of contextual grounding filter",
+      "title": "AWSBedrockGuardrailContextualGroundingFilterTypeDefinition"
+    },
+    "ContextualGroundingPolicyConfig": {
+      "type": "object",
+      "description": "Contextual grounding policy config for a guardrail.",
+      "properties": {
+        "FiltersConfig": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContextualGroundingFilterConfig"
+          },
+          "minItems": 1,
+          "description": "List of contextual grounding filter configs."
+        }
+      },
+      "required": [
+        "FiltersConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailContextualGroundingPolicyConfigDefinition"
+    },
+    "FilterStrength": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Strength for filters",
+      "title": "AWSBedrockGuardrailFilterStrengthDefinition"
+    },
+    "GuardrailCrossRegionConfig": {
+      "type": "object",
+      "description": "The system-defined guardrail profile that you’re using with your guardrail",
+      "properties": {
+        "GuardrailProfileArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 15,
+              "pattern": "^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail-profile/[a-z0-9-]+[.]{1}guardrail[.]{1}v[0-9:]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the guardrail profile"
+        }
+      },
+      "required": [
+        "GuardrailProfileArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailGuardrailCrossRegionConfigDefinition"
+    },
+    "GuardrailStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "UPDATING",
+            "VERSIONING",
+            "READY",
+            "FAILED",
+            "DELETING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Status of the guardrail",
+      "title": "AWSBedrockGuardrailGuardrailStatusDefinition"
+    },
+    "ManagedWordsConfig": {
+      "type": "object",
+      "description": "A managed words config.",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/ManagedWordsType"
+        },
+        "InputAction": {
+          "$ref": "#/definitions/WordAction"
+        },
+        "OutputAction": {
+          "$ref": "#/definitions/WordAction"
+        },
+        "InputEnabled": {
+          "type": "boolean"
+        },
+        "OutputEnabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailManagedWordsConfigDefinition"
+    },
+    "ManagedWordsType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROFANITY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Options for managed words.",
+      "title": "AWSBedrockGuardrailManagedWordsTypeDefinition"
+    },
+    "PiiEntityConfig": {
+      "type": "object",
+      "description": "Pii entity configuration.",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/PiiEntityType"
+        },
+        "Action": {
+          "$ref": "#/definitions/SensitiveInformationAction"
+        },
+        "InputAction": {
+          "$ref": "#/definitions/SensitiveInformationAction"
+        },
+        "OutputAction": {
+          "$ref": "#/definitions/SensitiveInformationAction"
+        },
+        "InputEnabled": {
+          "type": "boolean"
+        },
+        "OutputEnabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Action",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailPiiEntityConfigDefinition"
+    },
+    "PiiEntityType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ADDRESS",
+            "AGE",
+            "AWS_ACCESS_KEY",
+            "AWS_SECRET_KEY",
+            "CA_HEALTH_NUMBER",
+            "CA_SOCIAL_INSURANCE_NUMBER",
+            "CREDIT_DEBIT_CARD_CVV",
+            "CREDIT_DEBIT_CARD_EXPIRY",
+            "CREDIT_DEBIT_CARD_NUMBER",
+            "DRIVER_ID",
+            "EMAIL",
+            "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+            "IP_ADDRESS",
+            "LICENSE_PLATE",
+            "MAC_ADDRESS",
+            "NAME",
+            "PASSWORD",
+            "PHONE",
+            "PIN",
+            "SWIFT_CODE",
+            "UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+            "UK_NATIONAL_INSURANCE_NUMBER",
+            "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER",
+            "URL",
+            "USERNAME",
+            "US_BANK_ACCOUNT_NUMBER",
+            "US_BANK_ROUTING_NUMBER",
+            "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+            "US_PASSPORT_NUMBER",
+            "US_SOCIAL_SECURITY_NUMBER",
+            "VEHICLE_IDENTIFICATION_NUMBER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The currently supported PII entities",
+      "title": "AWSBedrockGuardrailPiiEntityTypeDefinition"
+    },
+    "RegexConfig": {
+      "type": "object",
+      "description": "A regex configuration.",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The regex name."
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The regex description."
+        },
+        "Pattern": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The regex pattern."
+        },
+        "Action": {
+          "$ref": "#/definitions/SensitiveInformationAction"
+        },
+        "InputAction": {
+          "$ref": "#/definitions/SensitiveInformationAction"
+        },
+        "OutputAction": {
+          "$ref": "#/definitions/SensitiveInformationAction"
+        },
+        "InputEnabled": {
+          "type": "boolean"
+        },
+        "OutputEnabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Action",
+        "Name",
+        "Pattern"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailRegexConfigDefinition"
+    },
+    "SensitiveInformationAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BLOCK",
+            "ANONYMIZE",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Options for sensitive information action.",
+      "title": "AWSBedrockGuardrailSensitiveInformationActionDefinition"
+    },
+    "SensitiveInformationPolicyConfig": {
+      "type": "object",
+      "description": "Sensitive information policy config for a guardrail.",
+      "properties": {
+        "PiiEntitiesConfig": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PiiEntityConfig"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "List of entities."
+        },
+        "RegexesConfig": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RegexConfig"
+          },
+          "minItems": 1,
+          "description": "List of regex."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailSensitiveInformationPolicyConfigDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "description": "Definition of the key/value pair for a tag",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag Key"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag Value"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailTagDefinition"
+    },
+    "TopicAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BLOCK",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockGuardrailTopicActionDefinition"
+    },
+    "TopicConfig": {
+      "type": "object",
+      "description": "Topic config in topic policy.",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^[0-9a-zA-Z-_ !?.]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of topic in topic policy"
+        },
+        "Definition": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Definition of topic in topic policy"
+        },
+        "Examples": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ],
+            "description": "Text example in topic policy"
+          },
+          "minItems": 0,
+          "description": "List of text examples"
+        },
+        "Type": {
+          "$ref": "#/definitions/TopicType"
+        },
+        "InputAction": {
+          "$ref": "#/definitions/TopicAction"
+        },
+        "OutputAction": {
+          "$ref": "#/definitions/TopicAction"
+        },
+        "InputEnabled": {
+          "type": "boolean"
+        },
+        "OutputEnabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Definition",
+        "Name",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailTopicConfigDefinition"
+    },
+    "TopicPolicyConfig": {
+      "type": "object",
+      "description": "Topic policy config for a guardrail.",
+      "properties": {
+        "TopicsConfig": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TopicConfig"
+          },
+          "minItems": 1,
+          "description": "List of topic configs in topic policy."
+        },
+        "TopicsTierConfig": {
+          "type": "object",
+          "properties": {
+            "TierName": {
+              "$ref": "#/definitions/TopicsTierName"
+            }
+          },
+          "required": [
+            "TierName"
+          ],
+          "additionalProperties": false,
+          "description": "Guardrail tier config for topic policy"
+        }
+      },
+      "required": [
+        "TopicsConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailTopicPolicyConfigDefinition"
+    },
+    "TopicType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DENY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of topic in a policy",
+      "title": "AWSBedrockGuardrailTopicTypeDefinition"
+    },
+    "WordAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BLOCK",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockGuardrailWordActionDefinition"
+    },
+    "WordConfig": {
+      "type": "object",
+      "description": "A custom word config.",
+      "properties": {
+        "Text": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The custom word text."
+        },
+        "InputAction": {
+          "$ref": "#/definitions/WordAction"
+        },
+        "OutputAction": {
+          "$ref": "#/definitions/WordAction"
+        },
+        "InputEnabled": {
+          "type": "boolean"
+        },
+        "OutputEnabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Text"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailWordConfigDefinition"
+    },
+    "WordPolicyConfig": {
+      "type": "object",
+      "description": "Word policy config for a guardrail.",
+      "properties": {
+        "WordsConfig": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WordConfig"
+          },
+          "minItems": 1,
+          "description": "List of custom word configs."
+        },
+        "ManagedWordListsConfig": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ManagedWordsConfig"
+          },
+          "description": "A config for the list of managed words."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockGuardrailWordPolicyConfigDefinition"
+    },
+    "ContentFiltersTierName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CLASSIC",
+            "STANDARD"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Tier name for tier configuration in content filters policy",
+      "title": "AWSBedrockGuardrailContentFiltersTierNameDefinition"
+    },
+    "TopicsTierName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CLASSIC",
+            "STANDARD"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Tier name for tier configuration in topic policy",
+      "title": "AWSBedrockGuardrailTopicsTierNameDefinition"
+    }
+  },
+  "properties": {
+    "BlockedInputMessaging": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Messaging for when violations are detected in text"
+    },
+    "BlockedOutputsMessaging": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 500,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Messaging for when violations are detected in text"
+    },
+    "AutomatedReasoningPolicyConfig": {
+      "$ref": "#/definitions/AutomatedReasoningPolicyConfig"
+    },
+    "ContentPolicyConfig": {
+      "$ref": "#/definitions/ContentPolicyConfig"
+    },
+    "ContextualGroundingPolicyConfig": {
+      "$ref": "#/definitions/ContextualGroundingPolicyConfig"
+    },
+    "CrossRegionConfig": {
+      "$ref": "#/definitions/GuardrailCrossRegionConfig"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Description of the guardrail or its version"
+    },
+    "KmsKeyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 1,
+          "pattern": "^arn:aws(-[^:]+)?:kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The KMS key with which the guardrail was encrypted at rest"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1,
+          "pattern": "^[0-9a-zA-Z-_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of the guardrail"
+    },
+    "SensitiveInformationPolicyConfig": {
+      "$ref": "#/definitions/SensitiveInformationPolicyConfig"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0,
+      "description": "List of Tags"
+    },
+    "TopicPolicyConfig": {
+      "$ref": "#/definitions/TopicPolicyConfig"
+    },
+    "WordPolicyConfig": {
+      "$ref": "#/definitions/WordPolicyConfig"
+    }
+  },
+  "required": [
+    "Name",
+    "BlockedInputMessaging",
+    "BlockedOutputsMessaging"
+  ],
+  "readOnlyProperties": [
+    "/properties/CreatedAt",
+    "/properties/FailureRecommendations",
+    "/properties/GuardrailArn",
+    "/properties/GuardrailId",
+    "/properties/Status",
+    "/properties/StatusReasons",
+    "/properties/UpdatedAt",
+    "/properties/Version"
+  ],
+  "primaryIdentifier": [
+    "/properties/GuardrailArn"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": false,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "bedrock:ListTagsForResource",
+      "bedrock:TagResource",
+      "bedrock:UntagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSBedrockGuardrailProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::NetworkManager::CoreNetwork",
-  "description": "AWS::NetworkManager::CoreNetwork Resource Type Definition.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager/aws-networkmanager-corenetwork. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager/aws-networkmanager-corenetwork",
+  "description": "AWS::NetworkManager::CoreNetwork Resource Type Definition.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager/aws-networkmanager-corenetwork",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager/aws-networkmanager-corenetwork",
   "properties": {
     "GlobalNetworkId": {
@@ -88,6 +88,75 @@
       "additionalProperties": false,
       "title": "AWSNetworkManagerCoreNetworkCoreNetworkSegmentDefinition"
     },
+    "CoreNetworkNetworkFunctionGroup": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of network function group"
+        },
+        "EdgeLocations": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ],
+            "description": "The Regions where the edges are located."
+          }
+        },
+        "Segments": {
+          "type": "object",
+          "properties": {
+            "SendTo": {
+              "type": "array",
+              "insertionOrder": false,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ],
+                "description": "The send-to segments."
+              }
+            },
+            "SendVia": {
+              "type": "array",
+              "insertionOrder": false,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ],
+                "description": "The send-via segments."
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSNetworkManagerCoreNetworkCoreNetworkNetworkFunctionGroupDefinition"
+    },
     "CoreNetworkEdge": {
       "type": "object",
       "properties": {
@@ -165,7 +234,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "networkmanager:TagResource",
+      "networkmanager:UntagResource",
+      "networkmanager:ListTagsForResource"
+    ]
   },
   "additionalProperties": false,
   "required": [
@@ -178,6 +252,7 @@
     "/properties/CreatedAt",
     "/properties/State",
     "/properties/Segments",
+    "/properties/NetworkFunctionGroups",
     "/properties/Edges"
   ],
   "createOnlyProperties": [

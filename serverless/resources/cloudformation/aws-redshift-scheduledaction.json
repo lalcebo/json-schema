@@ -1,32 +1,57 @@
 {
-  "typeName": "AWS::Redshift::ScheduledAction",
-  "description": "The `AWS::Redshift::ScheduledAction` resource creates an Amazon Redshift Scheduled Action.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
+  "tagging": {
+    "taggable": false
+  },
+  "typeName": "AWS::Redshift::ScheduledAction",
+  "readOnlyProperties": [
+    "/properties/State",
+    "/properties/NextInvocations"
+  ],
+  "description": "The `AWS::Redshift::ScheduledAction` resource creates an Amazon Redshift Scheduled Action.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-redshift",
+  "createOnlyProperties": [
+    "/properties/ScheduledActionName"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/ScheduledActionName"
+  ],
   "definitions": {
+    "ScheduledActionType": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "ResizeCluster": {
+              "$ref": "#/definitions/ResizeClusterMessage"
+            }
+          }
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "PauseCluster": {
+              "$ref": "#/definitions/PauseClusterMessage"
+            }
+          }
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "ResumeCluster": {
+              "$ref": "#/definitions/ResumeClusterMessage"
+            }
+          }
+        }
+      ],
+      "type": "object",
+      "title": "AWSRedshiftScheduledActionScheduledActionTypeDefinition"
+    },
     "ResizeClusterMessage": {
       "description": "Describes a resize cluster operation. For example, a scheduled action to run the `ResizeCluster` API operation.",
+      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "ClusterIdentifier": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ClusterType": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
         "NodeType": {
           "oneOf": [
             {
@@ -40,18 +65,38 @@
         "NumberOfNodes": {
           "type": "integer"
         },
+        "ClusterType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "Classic": {
           "type": "boolean"
+        },
+        "ClusterIdentifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
         "ClusterIdentifier"
       ],
-      "additionalProperties": false,
       "title": "AWSRedshiftScheduledActionResizeClusterMessageDefinition"
     },
     "PauseClusterMessage": {
       "description": "Describes a pause cluster operation. For example, a scheduled action to run the `PauseCluster` API operation.",
+      "additionalProperties": false,
       "type": "object",
       "properties": {
         "ClusterIdentifier": {
@@ -68,11 +113,11 @@
       "required": [
         "ClusterIdentifier"
       ],
-      "additionalProperties": false,
       "title": "AWSRedshiftScheduledActionPauseClusterMessageDefinition"
     },
     "ResumeClusterMessage": {
       "description": "Describes a resume cluster operation. For example, a scheduled action to run the `ResumeCluster` API operation.",
+      "additionalProperties": false,
       "type": "object",
       "properties": {
         "ClusterIdentifier": {
@@ -89,38 +134,7 @@
       "required": [
         "ClusterIdentifier"
       ],
-      "additionalProperties": false,
       "title": "AWSRedshiftScheduledActionResumeClusterMessageDefinition"
-    },
-    "ScheduledActionType": {
-      "type": "object",
-      "oneOf": [
-        {
-          "properties": {
-            "ResizeCluster": {
-              "$ref": "#/definitions/ResizeClusterMessage"
-            }
-          },
-          "additionalProperties": false
-        },
-        {
-          "properties": {
-            "PauseCluster": {
-              "$ref": "#/definitions/PauseClusterMessage"
-            }
-          },
-          "additionalProperties": false
-        },
-        {
-          "properties": {
-            "ResumeCluster": {
-              "$ref": "#/definitions/ResumeClusterMessage"
-            }
-          },
-          "additionalProperties": false
-        }
-      ],
-      "title": "AWSRedshiftScheduledActionScheduledActionTypeDefinition"
     },
     "timestamp": {
       "oneOf": [
@@ -135,11 +149,21 @@
     }
   },
   "properties": {
+    "ScheduledActionDescription": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the scheduled action."
+    },
     "ScheduledActionName": {
       "oneOf": [
         {
-          "type": "string",
-          "pattern": "^(?=^[a-z][a-z0-9]*(-[a-z0-9]+)*$).{1,60}$"
+          "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -147,9 +171,9 @@
       ],
       "description": "The name of the scheduled action. The name must be unique within an account."
     },
-    "TargetAction": {
-      "description": "A JSON format string of the Amazon Redshift API operation with input parameters.",
-      "$ref": "#/definitions/ScheduledActionType"
+    "EndTime": {
+      "description": "The end time in UTC of the scheduled action. After this time, the scheduled action does not trigger.",
+      "$ref": "#/definitions/timestamp"
     },
     "Schedule": {
       "oneOf": [
@@ -173,47 +197,21 @@
       ],
       "description": "The IAM role to assume to run the target action."
     },
-    "ScheduledActionDescription": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^(?=^[\\x09\\x0a\\x0d\\x20-\\xff]*$).{1,255}$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The description of the scheduled action."
-    },
     "StartTime": {
       "description": "The start time in UTC of the scheduled action. Before this time, the scheduled action does not trigger.",
-      "$ref": "#/definitions/timestamp"
-    },
-    "EndTime": {
-      "description": "The end time in UTC of the scheduled action. After this time, the scheduled action does not trigger.",
       "$ref": "#/definitions/timestamp"
     },
     "Enable": {
       "description": "If true, the schedule is enabled. If false, the scheduled action does not trigger.",
       "type": "boolean"
+    },
+    "TargetAction": {
+      "description": "A JSON format string of the Amazon Redshift API operation with input parameters.",
+      "$ref": "#/definitions/ScheduledActionType"
     }
   },
-  "tagging": {
-    "taggable": false
-  },
-  "additionalProperties": false,
   "required": [
     "ScheduledActionName"
-  ],
-  "primaryIdentifier": [
-    "/properties/ScheduledActionName"
-  ],
-  "createOnlyProperties": [
-    "/properties/ScheduledActionName"
-  ],
-  "readOnlyProperties": [
-    "/properties/State",
-    "/properties/NextInvocations"
   ],
   "type": "object",
   "title": "AWSRedshiftScheduledActionProperties"

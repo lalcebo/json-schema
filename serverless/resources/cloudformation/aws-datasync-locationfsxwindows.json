@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::DataSync::LocationFSxWindows",
-  "description": "Resource schema for AWS::DataSync::LocationFSxWindows.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
+  "description": "Resource Type definition for AWS::DataSync::LocationFSxWindows.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datasync.git",
   "definitions": {
     "Tag": {
@@ -42,6 +42,102 @@
         "Value"
       ],
       "title": "AWSDataSyncLocationFSxWindowsTagDefinition"
+    },
+    "CmkSecretConfig": {
+      "additionalProperties": false,
+      "description": "Specifies configuration information for a DataSync-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location, and a customer-managed AWS KMS key.",
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):secretsmanager:[a-z-0-9]+:[0-9]{12}:secret:.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for an AWS Secrets Manager secret, managed by DataSync."
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):kms:[a-z-0-9]+:[0-9]{12}:key/.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for the customer-managed AWS KMS key used to encrypt the secret specified for SecretArn. DataSync provides this key to AWS Secrets Manager."
+        }
+      },
+      "title": "AWSDataSyncLocationFSxWindowsCmkSecretConfigDefinition"
+    },
+    "CustomSecretConfig": {
+      "additionalProperties": false,
+      "description": "Specifies configuration information for a customer-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location, and an IAM role that DataSync can assume and access the customer-managed secret.",
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):secretsmanager:[a-z-0-9]+:[0-9]{12}:secret:.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for a customer created AWS Secrets Manager secret."
+        },
+        "SecretAccessRoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):iam::[0-9]{12}:role/.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for the AWS Identity and Access Management role that DataSync uses to access the secret specified for SecretArn."
+        }
+      },
+      "required": [
+        "SecretArn",
+        "SecretAccessRoleArn"
+      ],
+      "title": "AWSDataSyncLocationFSxWindowsCustomSecretConfigDefinition"
+    },
+    "ManagedSecretConfig": {
+      "additionalProperties": false,
+      "description": "Specifies configuration information for a DataSync-managed secret, such as an authentication token or set of credentials that DataSync uses to access a specific transfer location. DataSync uses the default AWS-managed KMS key to encrypt this secret in AWS Secrets Manager.",
+      "type": "object",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):secretsmanager:[a-z-0-9]+:[0-9]{12}:secret:.*|)$",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the ARN for an AWS Secrets Manager secret."
+        }
+      },
+      "required": [
+        "SecretArn"
+      ],
+      "title": "AWSDataSyncLocationFSxWindowsManagedSecretConfigDefinition"
     }
   },
   "properties": {
@@ -63,7 +159,7 @@
         {
           "type": "string",
           "maxLength": 128,
-          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):fsx:[a-z\\-0-9]*:[0-9]{12}:file-system/fs-.*$"
+          "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):fsx:[a-z\\-0-9]*:[0-9]{12}:file-system/fs-.*$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -92,7 +188,7 @@
           {
             "type": "string",
             "maxLength": 128,
-            "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/.*$"
+            "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc|aws-iso|aws-iso-b):ec2:[a-z\\-0-9]*:[0-9]{12}:security-group/.*$"
           },
           {
             "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -136,14 +232,25 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "CmkSecretConfig": {
+      "$ref": "#/definitions/CmkSecretConfig"
+    },
+    "CustomSecretConfig": {
+      "$ref": "#/definitions/CustomSecretConfig"
     }
   },
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "datasync:TagResource",
+      "datasync:UntagResource",
+      "datasync:ListTagsForResource"
+    ]
   },
   "additionalProperties": false,
   "required": [
@@ -152,7 +259,9 @@
   ],
   "readOnlyProperties": [
     "/properties/LocationArn",
-    "/properties/LocationUri"
+    "/properties/LocationUri",
+    "/properties/ManagedSecretConfig",
+    "/properties/CmkSecretConfig/SecretArn"
   ],
   "writeOnlyProperties": [
     "/properties/Password",
@@ -163,12 +272,8 @@
     "/properties/LocationArn"
   ],
   "createOnlyProperties": [
-    "/properties/Domain",
     "/properties/FsxFilesystemArn",
-    "/properties/Password",
-    "/properties/SecurityGroupArns",
-    "/properties/Subdirectory",
-    "/properties/User"
+    "/properties/SecurityGroupArns"
   ],
   "type": "object",
   "title": "AWSDataSyncLocationFSxWindowsProperties"

@@ -1,7 +1,59 @@
 {
   "typeName": "AWS::AppSync::DomainName",
-  "description": "Resource Type definition for AWS::AppSync::DomainName. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::AppSync::DomainName. Source:- No source definition found, add manually please",
   "additionalProperties": false,
+  "definitions": {
+    "Tag": {
+      "description": "An arbitrary set of tags (key-value pairs) for this Domain Name.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:)[ a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "^[\\s\\w+-=\\.:/@]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for this tag. You can specify a maximum of 256 characters for a tag value."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppSyncDomainNameTagDefinition"
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this Domain Name.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSAppSyncDomainNameTagsDefinition"
+    }
+  },
   "properties": {
     "DomainName": {
       "oneOf": [
@@ -40,9 +92,22 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
     }
   },
-  "taggable": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "appsync:TagResource",
+      "appsync:UntagResource"
+    ]
+  },
   "required": [
     "DomainName",
     "CertificateArn"
@@ -52,7 +117,8 @@
   ],
   "readOnlyProperties": [
     "/properties/AppSyncDomainName",
-    "/properties/HostedZoneId"
+    "/properties/HostedZoneId",
+    "/properties/DomainNameArn"
   ],
   "createOnlyProperties": [
     "/properties/DomainName",

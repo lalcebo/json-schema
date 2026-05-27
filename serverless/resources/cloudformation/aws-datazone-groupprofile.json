@@ -1,0 +1,115 @@
+{
+  "typeName": "AWS::DataZone::GroupProfile",
+  "description": "Group profiles represent groups of Amazon DataZone users. Groups can be manually created, or mapped to Active Directory groups of enterprise customers. In Amazon DataZone, groups serve two purposes. First, a group can map to a team of users in the organizational chart, and thus reduce the administrative work of a Amazon DataZone project owner when there are new employees joining or leaving a team. Second, corporate administrators use Active Directory groups to manage and update user statuses and so Amazon DataZone domain administrators can use these group memberships to implement Amazon DataZone domain policies.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "definitions": {
+    "GroupProfileStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ASSIGNED",
+            "NOT_ASSIGNED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the group profile.",
+      "title": "AWSDataZoneGroupProfileGroupProfileStatusDefinition"
+    },
+    "GroupType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DATAZONE_SSO_GROUP",
+            "IAM_ROLE_SESSION_GROUP"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of the group.",
+      "title": "AWSDataZoneGroupProfileGroupTypeDefinition"
+    }
+  },
+  "properties": {
+    "DomainIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^dzd[-_][a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the Amazon DataZone domain in which the group profile would be created."
+    },
+    "GroupIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "(^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$|[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\t\\n\\r  ]+)"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the group."
+    },
+    "GroupType": {
+      "$ref": "#/definitions/GroupType"
+    },
+    "Status": {
+      "$ref": "#/definitions/GroupProfileStatus"
+    },
+    "RolePrincipalArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the role principal for the group profile."
+    }
+  },
+  "required": [
+    "DomainIdentifier"
+  ],
+  "readOnlyProperties": [
+    "/properties/DomainId",
+    "/properties/GroupName",
+    "/properties/Id",
+    "/properties/RolePrincipalId"
+  ],
+  "writeOnlyProperties": [
+    "/properties/DomainIdentifier",
+    "/properties/GroupIdentifier",
+    "/properties/RolePrincipalArn",
+    "/properties/GroupType"
+  ],
+  "createOnlyProperties": [
+    "/properties/DomainIdentifier",
+    "/properties/GroupIdentifier",
+    "/properties/RolePrincipalArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainId",
+    "/properties/Id"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDataZoneGroupProfileProperties"
+}

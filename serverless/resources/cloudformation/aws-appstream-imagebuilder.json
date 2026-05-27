@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::AppStream::ImageBuilder",
-  "description": "Resource Type definition for AWS::AppStream::ImageBuilder. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::AppStream::ImageBuilder. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "Description": {
@@ -105,6 +105,35 @@
       "items": {
         "$ref": "#/definitions/AccessEndpoint"
       }
+    },
+    "SoftwaresToInstall": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "SoftwaresToUninstall": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "RootVolumeConfig": {
+      "$ref": "#/definitions/VolumeConfig"
     }
   },
   "definitions": {
@@ -231,6 +260,16 @@
         "VpceId"
       ],
       "title": "AWSAppStreamImageBuilderAccessEndpointDefinition"
+    },
+    "VolumeConfig": {
+      "type": "object",
+      "properties": {
+        "VolumeSizeInGb": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAppStreamImageBuilderVolumeConfigDefinition"
     }
   },
   "required": [
@@ -243,12 +282,37 @@
   "readOnlyProperties": [
     "/properties/StreamingUrl"
   ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "writeOnlyProperties": [
+    "/properties/SoftwaresToInstall",
+    "/properties/SoftwaresToUninstall",
+    "/properties/ImageName"
+  ],
+  "oneOf": [
+    {
+      "required": [
+        "ImageName"
+      ]
+    },
+    {
+      "required": [
+        "ImageArn"
+      ]
+    }
+  ],
   "tagging": {
     "taggable": false,
     "tagOnCreate": true,
     "tagUpdatable": false,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "appstream:ListTagsForResource",
+      "appstream:TagResource",
+      "appstream:UntagResource"
+    ]
   },
   "type": "object",
   "title": "AWSAppStreamImageBuilderProperties"

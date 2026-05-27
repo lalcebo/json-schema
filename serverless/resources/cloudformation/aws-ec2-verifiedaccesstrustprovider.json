@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EC2::VerifiedAccessTrustProvider",
-  "description": "The AWS::EC2::VerifiedAccessTrustProvider type describes a verified access trust provider. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-verified-access.aws-ec2-verifiedaccesstrustprovider. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-verified-access.aws-ec2-verifiedaccesstrustprovider",
+  "description": "The AWS::EC2::VerifiedAccessTrustProvider type describes a verified access trust provider. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-verified-access.aws-ec2-verifiedaccesstrustprovider",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-verified-access.aws-ec2-verifiedaccesstrustprovider",
   "definitions": {
     "OidcOptions": {
@@ -102,6 +102,17 @@
             }
           ],
           "description": "The ID of the tenant application with the device-identity provider."
+        },
+        "PublicSigningKeyUrl": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "URL Verified Access will use to verify authenticity of the device tokens."
         }
       },
       "additionalProperties": false,
@@ -144,6 +155,107 @@
       ],
       "additionalProperties": false,
       "title": "AWSEC2VerifiedAccessTrustProviderTagDefinition"
+    },
+    "SseSpecification": {
+      "description": "The configuration options for customer provided KMS encryption.",
+      "$ref": "#/definitions/SseSpecification",
+      "title": "AWSEC2VerifiedAccessTrustProviderSseSpecificationDefinition"
+    },
+    "NativeApplicationOidcOptions": {
+      "description": "The OpenID Connect details for an oidc -type, user-identity based trust provider for L4.",
+      "type": "object",
+      "properties": {
+        "Issuer": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The OIDC issuer."
+        },
+        "AuthorizationEndpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The OIDC authorization endpoint."
+        },
+        "TokenEndpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The OIDC token endpoint."
+        },
+        "UserInfoEndpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The OIDC user info endpoint."
+        },
+        "ClientId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The client identifier."
+        },
+        "ClientSecret": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The client secret."
+        },
+        "Scope": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "OpenID Connect (OIDC) scopes are used by an application during authentication to authorize access to details of a user. Each scope returns a specific set of user attributes."
+        },
+        "PublicSigningKeyEndpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The public signing key for endpoint"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSEC2VerifiedAccessTrustProviderNativeApplicationOidcOptionsDefinition"
     }
   },
   "properties": {
@@ -216,6 +328,31 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "SseSpecification": {
+      "description": "The configuration options for customer provided KMS encryption.",
+      "type": "object",
+      "properties": {
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "KMS Key Arn used to encrypt the group policy"
+        },
+        "CustomerManagedKeyEnabled": {
+          "description": "Whether to encrypt the policy with the provided key or disable encryption",
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "NativeApplicationOidcOptions": {
+      "$ref": "#/definitions/NativeApplicationOidcOptions"
     }
   },
   "additionalProperties": false,
@@ -235,6 +372,9 @@
     "/properties/TrustProviderType",
     "/properties/UserTrustProviderType"
   ],
+  "writeOnlyProperties": [
+    "/properties/NativeApplicationOidcOptions/ClientSecret"
+  ],
   "primaryIdentifier": [
     "/properties/VerifiedAccessTrustProviderId"
   ],
@@ -243,7 +383,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DescribeTags",
+      "ec2:DeleteTags"
+    ]
   },
   "type": "object",
   "title": "AWSEC2VerifiedAccessTrustProviderProperties"

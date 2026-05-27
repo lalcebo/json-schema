@@ -1,7 +1,61 @@
 {
   "typeName": "AWS::RolesAnywhere::TrustAnchor",
-  "description": "Definition of AWS::RolesAnywhere::TrustAnchor Resource Type.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::RolesAnywhere::TrustAnchor Resource Type.. Source:- No source definition found, add manually please",
   "definitions": {
+    "NotificationChannel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ALL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSRolesAnywhereTrustAnchorNotificationChannelDefinition"
+    },
+    "NotificationEvent": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CA_CERTIFICATE_EXPIRY",
+            "END_ENTITY_CERTIFICATE_EXPIRY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSRolesAnywhereTrustAnchorNotificationEventDefinition"
+    },
+    "NotificationSetting": {
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "Event": {
+          "$ref": "#/definitions/NotificationEvent"
+        },
+        "Threshold": {
+          "type": "number",
+          "maximum": 360,
+          "minimum": 1
+        },
+        "Channel": {
+          "$ref": "#/definitions/NotificationChannel"
+        }
+      },
+      "required": [
+        "Enabled",
+        "Event"
+      ],
+      "additionalProperties": false,
+      "title": "AWSRolesAnywhereTrustAnchorNotificationSettingDefinition"
+    },
     "Source": {
       "type": "object",
       "properties": {
@@ -12,6 +66,10 @@
           "$ref": "#/definitions/SourceData"
         }
       },
+      "required": [
+        "SourceType",
+        "SourceData"
+      ],
       "additionalProperties": false,
       "title": "AWSRolesAnywhereTrustAnchorSourceDefinition"
     },
@@ -101,8 +159,7 @@
           "type": "string",
           "enum": [
             "AWS_ACM_PCA",
-            "CERTIFICATE_BUNDLE",
-            "SELF_SIGNED_REPOSITORY"
+            "CERTIFICATE_BUNDLE"
           ]
         },
         {
@@ -126,6 +183,14 @@
         }
       ]
     },
+    "NotificationSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/NotificationSetting"
+      },
+      "maxItems": 50,
+      "minItems": 0
+    },
     "Source": {
       "$ref": "#/definitions/Source"
     },
@@ -143,7 +208,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "rolesanywhere:UntagResource",
+      "rolesanywhere:TagResource",
+      "rolesanywhere:ListTagsForResource"
+    ]
   },
   "required": [
     "Name",

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Panorama::Package",
-  "description": "Schema for Package CloudFormation Resource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Creates a package and storage location in an Amazon S3 access point.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "NodePackageName": {
@@ -59,7 +59,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The location's bucket."
         },
         "RepoPrefixLocation": {
           "oneOf": [
@@ -69,7 +70,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The location's repo prefix."
         },
         "GeneratedPrefixLocation": {
           "oneOf": [
@@ -79,7 +81,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The location's generated prefix."
         },
         "BinaryPrefixLocation": {
           "oneOf": [
@@ -89,7 +92,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The location's binary prefix."
         },
         "ManifestPrefixLocation": {
           "oneOf": [
@@ -99,10 +103,12 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The location's manifest prefix."
         }
       },
       "additionalProperties": false,
+      "description": "A storage location.",
       "title": "AWSPanoramaPackageStorageLocationDefinition"
     },
     "Tag": {
@@ -140,6 +146,7 @@
         "Value"
       ],
       "additionalProperties": false,
+      "description": "",
       "title": "AWSPanoramaPackageTagDefinition"
     },
     "TagList": {
@@ -154,17 +161,19 @@
   },
   "properties": {
     "PackageName": {
-      "$ref": "#/definitions/NodePackageName"
+      "$ref": "#/definitions/NodePackageName",
+      "description": "A name for the package."
     },
     "StorageLocation": {
-      "$ref": "#/definitions/StorageLocation"
+      "$ref": "#/definitions/StorageLocation",
+      "description": "A storage location."
     },
     "Tags": {
-      "$ref": "#/definitions/TagList"
+      "$ref": "#/definitions/TagList",
+      "description": "Tags for the package."
     }
   },
   "additionalProperties": false,
-  "taggable": true,
   "required": [
     "PackageName"
   ],
@@ -184,6 +193,18 @@
   "primaryIdentifier": [
     "/properties/PackageId"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "panorama:ListTagsForResource",
+      "panorama:TagResource",
+      "panorama:UntagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSPanoramaPackageProperties"
 }

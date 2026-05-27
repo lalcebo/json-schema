@@ -1,70 +1,76 @@
 {
+  "tagging": {
+    "permissions": [
+      "imagebuilder:TagResource",
+      "imagebuilder:UntagResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
   "typeName": "AWS::ImageBuilder::Image",
-  "description": "Resource schema for AWS::ImageBuilder::Image. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git",
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder.git",
-  "properties": {
-    "ImageTestsConfiguration": {
-      "description": "The image tests configuration used when creating this image.",
-      "$ref": "#/definitions/ImageTestsConfiguration"
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/Name",
+    "/properties/ImageId",
+    "/properties/ImageUri",
+    "/properties/LatestVersion",
+    "/properties/LatestVersion/Arn",
+    "/properties/LatestVersion/Major",
+    "/properties/LatestVersion/Minor",
+    "/properties/LatestVersion/Patch"
+  ],
+  "description": "Resource schema for AWS::ImageBuilder::Image. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder",
+  "createOnlyProperties": [
+    "/properties/ImageRecipeArn",
+    "/properties/ContainerRecipeArn",
+    "/properties/InfrastructureConfigurationArn",
+    "/properties/Workflows",
+    "/properties/DistributionConfigurationArn",
+    "/properties/ImageTestsConfiguration",
+    "/properties/ImageScanningConfiguration",
+    "/properties/EnhancedImageMetadataEnabled"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "conditionalCreateOnlyProperties": [
+    "/properties/ImagePipelineExecutionSettings"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-imagebuilder",
+  "oneOf": [
+    {
+      "required": [
+        "ContainerRecipeArn",
+        "InfrastructureConfigurationArn"
+      ]
     },
-    "ImageRecipeArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The Amazon Resource Name (ARN) of the image recipe that defines how images are configured, tested, and assessed."
+    {
+      "required": [
+        "ImageRecipeArn",
+        "InfrastructureConfigurationArn"
+      ]
     },
-    "ContainerRecipeArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The Amazon Resource Name (ARN) of the container recipe that defines how images are configured and tested."
-    },
-    "DistributionConfigurationArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The Amazon Resource Name (ARN) of the distribution configuration."
-    },
-    "InfrastructureConfigurationArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The Amazon Resource Name (ARN) of the infrastructure configuration."
-    },
-    "EnhancedImageMetadataEnabled": {
-      "description": "Collects additional information about the image being created, including the operating system (OS) version and package list.",
-      "type": "boolean"
-    },
-    "ImageScanningConfiguration": {
-      "description": "Contains settings for vulnerability scans.",
-      "$ref": "#/definitions/ImageScanningConfiguration"
-    },
-    "Tags": {
-      "description": "The tags associated with the image.",
-      "type": "object",
+    {
+      "required": [
+        "ImagePipelineExecutionSettings"
+      ]
+    }
+  ],
+  "writeOnlyProperties": [
+    "/properties/DeletionSettings",
+    "/properties/ImagePipelineExecutionSettings"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "ImageLoggingConfiguration": {
+      "description": "The logging configuration settings for the image.",
       "additionalProperties": false,
-      "patternProperties": {
-        ".{1,}": {
+      "type": "object",
+      "properties": {
+        "LogGroupName": {
           "oneOf": [
             {
               "type": "string"
@@ -72,34 +78,16 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
-        }
-      }
-    }
-  },
-  "definitions": {
-    "ImageTestsConfiguration": {
-      "description": "The image tests configuration used when creating this image.",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "ImageTestsEnabled": {
-          "description": "ImageTestsEnabled",
-          "type": "boolean"
-        },
-        "TimeoutMinutes": {
-          "description": "TimeoutMinutes",
-          "type": "integer",
-          "minimum": 60,
-          "maximum": 1440
+          ],
+          "description": "The name of the log group for image build logs."
         }
       },
-      "title": "AWSImageBuilderImageImageTestsConfigurationDefinition"
+      "title": "AWSImageBuilderImageImageLoggingConfigurationDefinition"
     },
     "ImageScanningConfiguration": {
       "description": "Contains settings for Image Builder image resource and container image scans.",
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "EcrConfiguration": {
           "description": "Contains ECR settings for vulnerability scans.",
@@ -112,15 +100,68 @@
       },
       "title": "AWSImageBuilderImageImageScanningConfigurationDefinition"
     },
+    "WorkflowConfiguration": {
+      "description": "The workflow configuration of the image",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ParallelGroup": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The parallel group name"
+        },
+        "Parameters": {
+          "description": "The parameters associated with the workflow",
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WorkflowParameter"
+          }
+        },
+        "WorkflowArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the workflow"
+        },
+        "OnFailure": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CONTINUE",
+                "ABORT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Define execution decision in case of workflow failure"
+        }
+      },
+      "title": "AWSImageBuilderImageWorkflowConfigurationDefinition"
+    },
     "EcrConfiguration": {
       "description": "Settings for Image Builder to configure the ECR repository and output container images that are scanned.",
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "ContainerTags": {
           "description": "Tags for Image Builder to apply the output container image that is scanned. Tags can help you identify and manage your scanned images.",
-          "type": "array",
           "insertionOrder": true,
+          "type": "array",
           "items": {
             "oneOf": [
               {
@@ -145,44 +186,316 @@
         }
       },
       "title": "AWSImageBuilderImageEcrConfigurationDefinition"
+    },
+    "LatestVersion": {
+      "description": "The latest version references of the image.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Major": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created image, with the same major version."
+        },
+        "Minor": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created image, with the same minor version."
+        },
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created image."
+        },
+        "Patch": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The latest version ARN of the created image, with the same patch version."
+        }
+      },
+      "title": "AWSImageBuilderImageLatestVersionDefinition"
+    },
+    "WorkflowParameterValue": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The value associated with the workflow parameter",
+      "title": "AWSImageBuilderImageWorkflowParameterValueDefinition"
+    },
+    "ImagePipelineExecutionSettings": {
+      "description": "The settings for starting an image pipeline execution.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "DeploymentId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The deployment ID of the pipeline, used to trigger new image pipeline executions."
+        },
+        "OnUpdate": {
+          "description": "Whether to trigger the image pipeline when the pipeline is updated. False by default.",
+          "type": "boolean"
+        }
+      },
+      "title": "AWSImageBuilderImageImagePipelineExecutionSettingsDefinition"
+    },
+    "ImageTestsConfiguration": {
+      "description": "The image tests configuration used when creating this image.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "description": "TimeoutMinutes",
+          "maximum": 1440,
+          "type": "integer",
+          "minimum": 60
+        },
+        "ImageTestsEnabled": {
+          "description": "ImageTestsEnabled",
+          "type": "boolean"
+        }
+      },
+      "title": "AWSImageBuilderImageImageTestsConfigurationDefinition"
+    },
+    "DeletionSettings": {
+      "description": "The deletion settings of the image, indicating whether to delete the underlying resources in addition to the image.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ExecutionRole": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The execution role to use for deleting the image, as well as underlying resources."
+        }
+      },
+      "required": [
+        "ExecutionRole"
+      ],
+      "title": "AWSImageBuilderImageDeletionSettingsDefinition"
+    },
+    "WorkflowParameter": {
+      "description": "A parameter associated with the workflow",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WorkflowParameterValue"
+          }
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSImageBuilderImageWorkflowParameterDefinition"
     }
   },
-  "additionalProperties": false,
-  "oneOf": [
-    {
-      "required": [
-        "ContainerRecipeArn",
-        "InfrastructureConfigurationArn"
-      ]
+  "properties": {
+    "ImageScanningConfiguration": {
+      "description": "Contains settings for vulnerability scans.",
+      "$ref": "#/definitions/ImageScanningConfiguration"
     },
-    {
-      "required": [
-        "ImageRecipeArn",
-        "InfrastructureConfigurationArn"
-      ]
+    "ContainerRecipeArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the container recipe that defines how images are configured and tested."
+    },
+    "Workflows": {
+      "description": "Workflows to define the image build process",
+      "insertionOrder": true,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/WorkflowConfiguration"
+      }
+    },
+    "ImagePipelineExecutionSettings": {
+      "description": "The image pipeline execution settings of the image.",
+      "$ref": "#/definitions/ImagePipelineExecutionSettings",
+      "dependencies": {
+        "ImagePipelineExecutionSettings": {
+          "oneOf": [
+            {
+              "required": [
+                "ImageRecipeArn"
+              ]
+            },
+            {
+              "required": [
+                "ContainerRecipeArn"
+              ]
+            },
+            {
+              "required": [
+                "InfrastructureConfigurationArn"
+              ]
+            },
+            {
+              "required": [
+                "Workflows"
+              ]
+            },
+            {
+              "required": [
+                "DistributionConfigurationArn"
+              ]
+            },
+            {
+              "required": [
+                "ImageTestsConfiguration"
+              ]
+            },
+            {
+              "required": [
+                "ImageScanningConfiguration"
+              ]
+            },
+            {
+              "required": [
+                "EnhancedImageMetadataEnabled"
+              ]
+            },
+            {
+              "required": [
+                "ImportDiskImageSettings"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "DeletionSettings": {
+      "description": "The deletion settings of the image, indicating whether to delete the underlying resources in addition to the image.",
+      "$ref": "#/definitions/DeletionSettings"
+    },
+    "InfrastructureConfigurationArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the infrastructure configuration."
+    },
+    "ImageRecipeArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the image recipe that defines how images are configured, tested, and assessed."
+    },
+    "DistributionConfigurationArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the distribution configuration."
+    },
+    "LoggingConfiguration": {
+      "description": "The logging configuration settings for the image.",
+      "$ref": "#/definitions/ImageLoggingConfiguration"
+    },
+    "ImageTestsConfiguration": {
+      "description": "The image tests configuration used when creating this image.",
+      "$ref": "#/definitions/ImageTestsConfiguration"
+    },
+    "EnhancedImageMetadataEnabled": {
+      "description": "Collects additional information about the image being created, including the operating system (OS) version and package list.",
+      "type": "boolean"
+    },
+    "ExecutionRole": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The execution role name/ARN for the image build, if provided"
+    },
+    "Tags": {
+      "patternProperties": {
+        ".{1,}": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "description": "The tags associated with the image.",
+      "additionalProperties": false,
+      "type": "object"
     }
-  ],
-  "primaryIdentifier": [
-    "/properties/Arn"
-  ],
-  "readOnlyProperties": [
-    "/properties/Arn",
-    "/properties/Name",
-    "/properties/ImageId",
-    "/properties/ImageUri"
-  ],
-  "createOnlyProperties": [
-    "/properties/ImageRecipeArn",
-    "/properties/ContainerRecipeArn",
-    "/properties/InfrastructureConfigurationArn",
-    "/properties/DistributionConfigurationArn",
-    "/properties/ImageTestsConfiguration",
-    "/properties/ImageScanningConfiguration",
-    "/properties/EnhancedImageMetadataEnabled",
-    "/properties/Tags"
-  ],
-  "tagging": {
-    "taggable": false
   },
   "type": "object",
   "title": "AWSImageBuilderImageProperties"

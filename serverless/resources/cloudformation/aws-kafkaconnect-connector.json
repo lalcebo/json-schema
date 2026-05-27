@@ -1,8 +1,20 @@
 {
   "typeName": "AWS::KafkaConnect::Connector",
-  "description": "Resource Type definition for AWS::KafkaConnect::Connector. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kafkaconnect.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kafkaconnect.git",
+  "description": "Resource Type definition for AWS::KafkaConnect::Connector. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kafkaconnect.git",
   "additionalProperties": false,
-  "taggable": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "kafkaconnect:ListTagsForResource",
+      "kafkaconnect:UntagResource",
+      "kafkaconnect:TagResource",
+      "firehose:TagDeliveryStream"
+    ]
+  },
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kafkaconnect.git",
   "properties": {
     "Capacity": {
@@ -70,6 +82,21 @@
       ],
       "description": "The version of Kafka Connect. It has to be compatible with both the Kafka cluster's version and the plugins."
     },
+    "NetworkType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "DUAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The network type of the Connector."
+    },
     "LogDelivery": {
       "$ref": "#/definitions/LogDelivery"
     },
@@ -94,6 +121,15 @@
         }
       ],
       "description": "The Amazon Resource Name (ARN) of the IAM role used by the connector to access Amazon S3 objects and other external resources."
+    },
+    "Tags": {
+      "description": "A collection of tags associated with a resource",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     },
     "WorkerConfiguration": {
       "$ref": "#/definitions/WorkerConfiguration"
@@ -127,7 +163,7 @@
       "title": "AWSKafkaConnectConnectorApacheKafkaClusterDefinition"
     },
     "AutoScaling": {
-      "description": "Details about auto scaling of a connector. ",
+      "description": "Details about auto scaling of a connector.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -154,6 +190,10 @@
             4,
             8
           ]
+        },
+        "MaxAutoscalingTaskCount": {
+          "description": "The maximum number of tasks allocated to the connector during autoscaling operations.",
+          "type": "integer"
         }
       },
       "required": [
@@ -396,6 +436,7 @@
         }
       },
       "required": [
+        "McuCount",
         "WorkerCount"
       ],
       "title": "AWSKafkaConnectConnectorProvisionedCapacityDefinition"
@@ -470,6 +511,40 @@
         "CpuUtilizationPercentage"
       ],
       "title": "AWSKafkaConnectConnectorScaleOutPolicyDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "additionalProperties": false,
+      "title": "AWSKafkaConnectConnectorTagDefinition"
     },
     "Vpc": {
       "description": "Information about a VPC used with the connector.",
@@ -578,11 +653,16 @@
   "primaryIdentifier": [
     "/properties/ConnectorArn"
   ],
+  "additionalIdentifiers": [
+    [
+      "/properties/ConnectorName"
+    ]
+  ],
   "readOnlyProperties": [
     "/properties/ConnectorArn"
   ],
+  "replacementStrategy": "delete_then_create",
   "createOnlyProperties": [
-    "/properties/ConnectorConfiguration",
     "/properties/ConnectorDescription",
     "/properties/ConnectorName",
     "/properties/KafkaCluster",
@@ -592,7 +672,8 @@
     "/properties/LogDelivery",
     "/properties/Plugins",
     "/properties/ServiceExecutionRoleArn",
-    "/properties/WorkerConfiguration"
+    "/properties/WorkerConfiguration",
+    "/properties/NetworkType"
   ],
   "type": "object",
   "title": "AWSKafkaConnectConnectorProperties"

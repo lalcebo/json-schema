@@ -1,6 +1,7 @@
 {
   "typeName": "AWS::Lambda::LayerVersionPermission",
-  "description": "Resource Type definition for AWS::Lambda::LayerVersionPermission. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Schema for Lambda LayerVersionPermission. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-lambda.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-lambda.git",
   "additionalProperties": false,
   "properties": {
     "Action": {
@@ -11,7 +12,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The API action that grants access to the layer."
     },
     "LayerVersionArn": {
       "oneOf": [
@@ -21,7 +23,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The name or Amazon Resource Name (ARN) of the layer."
     },
     "OrganizationId": {
       "oneOf": [
@@ -31,7 +34,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "With the principal set to *, grant permission to all accounts in the specified organization."
     },
     "Principal": {
       "oneOf": [
@@ -41,8 +45,15 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "An account ID, or * to grant layer usage permission to all accounts in an organization, or all AWS accounts (if organizationId is not specified)."
     }
+  },
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
   },
   "required": [
     "LayerVersionArn",
@@ -61,6 +72,9 @@
   "readOnlyProperties": [
     "/properties/Id"
   ],
+  "propertyTransform": {
+    "/properties/Principal": "$join([\"^arn:aws[a-zA-Z-]*:iam::\",Principal,\":[a-zA-Z-]*\"]) $OR $join([\".*AWS.*[\", Principal, \"].*\"]) $OR $replace(Principal, /^arn:aws[a-zA-Z-]*:/, \"arn:aws[a-zA-Z-]*:\") $OR Principal"
+  },
   "type": "object",
   "title": "AWSLambdaLayerVersionPermissionProperties"
 }

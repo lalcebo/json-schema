@@ -1,8 +1,20 @@
 {
   "$schema": "https://schema.cloudformation.us-east-1.amazonaws.com/provider.definition.schema.v1.json",
   "typeName": "AWS::GameLift::Fleet",
-  "description": "The AWS::GameLift::Fleet resource creates an Amazon GameLift (GameLift) fleet to host game servers. A fleet is a set of EC2 or Anywhere instances, each of which can host multiple game sessions.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
+  "description": "The AWS::GameLift::Fleet resource creates an Amazon GameLift (GameLift) fleet to host game servers. A fleet is a set of EC2 or Anywhere instances, each of which can host multiple game sessions.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "gamelift:ListTagsForResource",
+      "gamelift:TagResource",
+      "gamelift:UntagResource"
+    ]
+  },
   "definitions": {
     "AnywhereConfiguration": {
       "description": "Configuration for Anywhere fleet.",
@@ -125,7 +137,7 @@
       "type": "object",
       "properties": {
         "DesiredEC2Instances": {
-          "description": "The number of EC2 instances you want to maintain in the specified fleet location. This value must fall between the minimum and maximum size limits.",
+          "description": "Defaults to MinSize if not defined. The number of EC2 instances you want to maintain in the specified fleet location. This value must fall between the minimum and maximum size limits.",
           "type": "integer",
           "minimum": 0
         },
@@ -138,12 +150,14 @@
           "description": "The maximum value that is allowed for the fleet's instance count for a location. When creating a new fleet, GameLift automatically sets this value to \"1\". Once the fleet is active, you can change this value.",
           "type": "integer",
           "minimum": 0
+        },
+        "ManagedCapacityConfiguration": {
+          "description": "Configuration options for Amazon GameLift Servers-managed capacity behavior.",
+          "$ref": "#/definitions/ManagedCapacityConfiguration"
         }
       },
       "additionalProperties": false,
       "required": [
-        "DesiredEC2Instances",
-        "MinSize",
         "MaxSize"
       ],
       "title": "AWSGameLiftFleetLocationCapacityDefinition"
@@ -157,6 +171,21 @@
         },
         "LocationCapacity": {
           "$ref": "#/definitions/LocationCapacity"
+        },
+        "PlayerGatewayStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DISABLED",
+                "ENABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The player gateway status for the location."
         }
       },
       "additionalProperties": false,
@@ -164,6 +193,61 @@
         "Location"
       ],
       "title": "AWSGameLiftFleetLocationConfigurationDefinition"
+    },
+    "ManagedCapacityConfiguration": {
+      "description": "Configuration options for Amazon GameLift Servers-managed capacity behavior.",
+      "type": "object",
+      "properties": {
+        "ZeroCapacityStrategy": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SCALE_TO_AND_FROM_ZERO",
+                "MANUAL"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The strategy Amazon GameLift Servers will use to automatically scale your capacity to and from zero in response to game session activity. Game session activity refers to any active running sessions or game session requests. When set to SCALE_TO_AND_FROM_ZERO, MinSize must not be specified and will be managed automatically. When set to MANUAL, MinSize is required."
+        },
+        "ScaleInAfterInactivityMinutes": {
+          "description": "Length of time, in minutes, that Amazon GameLift Servers will wait before scaling in your MinSize and DesiredInstances to 0 after a period with no game session activity.",
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 1440
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "ZeroCapacityStrategy"
+      ],
+      "title": "AWSGameLiftFleetManagedCapacityConfigurationDefinition"
+    },
+    "PlayerGatewayConfiguration": {
+      "description": "Configuration for player gateway.",
+      "type": "object",
+      "properties": {
+        "GameServerIpProtocolSupported": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "IPv4",
+                "DUAL_STACK"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IP protocol supported by the game server."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSGameLiftFleetPlayerGatewayConfigurationDefinition"
     },
     "ResourceCreationLimitPolicy": {
       "description": "A policy that limits the number of game sessions a player can create on the same fleet. This optional policy gives game owners control over how players can consume available game server resources. A resource creation policy makes the following statement: \"An individual player can create a maximum number of new game sessions within a specified time period\".\n\nThe policy is evaluated when a player tries to create a new game session. For example, assume you have a policy of 10 new game sessions and a time period of 60 minutes. On receiving a CreateGameSession request, Amazon GameLift checks that the player (identified by CreatorId) has created fewer than 10 game sessions in the past 60 minutes.",
@@ -212,6 +296,158 @@
       "additionalProperties": false,
       "title": "AWSGameLiftFleetRuntimeConfigurationDefinition"
     },
+    "ScalingPolicy": {
+      "description": "Rule that controls how a fleet is scaled. Scaling policies are uniquely identified by the combination of name and fleet ID.",
+      "type": "object",
+      "properties": {
+        "ComparisonOperator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "GreaterThanOrEqualToThreshold",
+                "GreaterThanThreshold",
+                "LessThanThreshold",
+                "LessThanOrEqualToThreshold"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Comparison operator to use when measuring a metric against the threshold value."
+        },
+        "EvaluationPeriods": {
+          "description": "Length of time (in minutes) the metric must be at or beyond the threshold before a scaling event is triggered.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "Location": {
+          "$ref": "#/definitions/Location"
+        },
+        "MetricName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ActivatingGameSessions",
+                "ActiveGameSessions",
+                "ActiveInstances",
+                "AvailableGameSessions",
+                "AvailablePlayerSessions",
+                "CurrentPlayerSessions",
+                "IdleInstances",
+                "PercentAvailableGameSessions",
+                "PercentIdleInstances",
+                "QueueDepth",
+                "WaitTime",
+                "ConcurrentActivatableGameSessions"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Name of the Amazon GameLift-defined metric that is used to trigger a scaling adjustment."
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A descriptive label that is associated with a fleet's scaling policy. Policy names do not need to be unique."
+        },
+        "PolicyType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "RuleBased",
+                "TargetBased"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of scaling policy to create. For a target-based policy, set the parameter MetricName to 'PercentAvailableGameSessions' and specify a TargetConfiguration. For a rule-based policy set the following parameters: MetricName, ComparisonOperator, Threshold, EvaluationPeriods, ScalingAdjustmentType, and ScalingAdjustment."
+        },
+        "ScalingAdjustment": {
+          "description": "Amount of adjustment to make, based on the scaling adjustment type.",
+          "type": "integer"
+        },
+        "ScalingAdjustmentType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ChangeInCapacity",
+                "ExactCapacity",
+                "PercentChangeInCapacity"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of adjustment to make to a fleet's instance count."
+        },
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ACTIVE",
+                "UPDATE_REQUESTED",
+                "UPDATING",
+                "DELETE_REQUESTED",
+                "DELETING",
+                "DELETED",
+                "ERROR"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Current status of the scaling policy. The scaling policy can be in force only when in an ACTIVE status. Scaling policies can be suspended for individual fleets. If the policy is suspended for a fleet, the policy status does not change."
+        },
+        "TargetConfiguration": {
+          "description": "An object that contains settings for a target-based scaling policy.",
+          "$ref": "#/definitions/TargetConfiguration"
+        },
+        "Threshold": {
+          "description": "Metric value used to trigger a scaling event.",
+          "type": "number"
+        },
+        "UpdateStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PENDING_UPDATE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The current status of the fleet's scaling policies in a requested fleet location. The status PENDING_UPDATE indicates that an update was requested for the fleet but has not yet been completed for the location."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "MetricName",
+        "Name"
+      ],
+      "title": "AWSGameLiftFleetScalingPolicyDefinition"
+    },
     "ServerProcess": {
       "description": "A set of instructions for launching server processes on each instance in a fleet. Each instruction set identifies the location of the server executable, optional launch parameters, and the number of server processes with this configuration to maintain concurrently on the instance. Server process configurations make up a fleet's RuntimeConfiguration.",
       "type": "object",
@@ -255,12 +491,90 @@
         "LaunchPath"
       ],
       "title": "AWSGameLiftFleetServerProcessDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSGameLiftFleetTagDefinition"
+    },
+    "TargetConfiguration": {
+      "description": "Settings for a target-based scaling policy. A target-based policy tracks a particular fleet metric specifies a target value for the metric. As player usage changes, the policy triggers Amazon GameLift to adjust capacity so that the metric returns to the target value. The target configuration specifies settings as needed for the target based policy, including the target value.",
+      "type": "object",
+      "properties": {
+        "TargetValue": {
+          "description": "Desired value to use with a target-based scaling policy. The value must be relevant for whatever metric the scaling policy is using. For example, in a policy using the metric PercentAvailableGameSessions, the target value should be the preferred size of the fleet's buffer (the percent of capacity that should be idle and ready for new game sessions).",
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "TargetValue"
+      ],
+      "title": "AWSGameLiftFleetTargetConfigurationDefinition"
     }
   },
   "properties": {
+    "ScalingPolicies": {
+      "description": "A list of rules that control how a fleet is scaled.",
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/ScalingPolicy"
+      },
+      "insertionOrder": false
+    },
     "AnywhereConfiguration": {
       "description": "Configuration for Anywhere fleet.",
       "$ref": "#/definitions/AnywhereConfiguration"
+    },
+    "ApplyCapacity": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ON_UPDATE",
+            "ON_CREATE_AND_UPDATE",
+            "ON_CREATE_AND_UPDATE_WITH_AUTOSCALING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Determines when and how to apply fleet or location capacities. Allowed options are ON_UPDATE (default), ON_CREATE_AND_UPDATE and ON_CREATE_AND_UPDATE_WITH_AUTOSCALING. If you choose ON_CREATE_AND_UPDATE_WITH_AUTOSCALING, MinSize and MaxSize will still be applied on creation and on updates, but DesiredEC2Instances will only be applied once on fleet creation and will be ignored during updates to prevent conflicts with auto-scaling. During updates with ON_CREATE_AND_UPDATE_WITH_AUTOSCALING chosen, if current desired instance is lower than the new MinSize, it will be increased to the new MinSize; if current desired instance is larger than the new MaxSize, it will be decreased to the new MaxSize."
     },
     "CertificateConfiguration": {
       "description": "Indicates whether to generate a TLS/SSL certificate for the new fleet. TLS certificates are used for encrypting traffic between game clients and game servers running on GameLift. If this parameter is not set, certificate generation is disabled. This fleet setting cannot be changed once the fleet is created.",
@@ -347,6 +661,20 @@
         }
       ],
       "description": "A unique identifier for an AWS IAM role that manages access to your AWS services. With an instance role ARN set, any application that runs on an instance in this fleet can assume the role, including install scripts, server processes, and daemons (background processes). Create a role or look up a role's ARN from the IAM dashboard in the AWS Management Console."
+    },
+    "InstanceRoleCredentialsProvider": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SHARED_CREDENTIAL_FILE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Credentials provider implementation that loads credentials from the Amazon EC2 Instance Metadata Service."
     },
     "Locations": {
       "type": "array",
@@ -454,6 +782,10 @@
       ],
       "description": "A unique identifier for a VPC with resources to be accessed by your Amazon GameLift fleet. The VPC must be in the same Region as your fleet. To look up a VPC ID, use the VPC Dashboard in the AWS Management Console."
     },
+    "PlayerGatewayConfiguration": {
+      "description": "Configuration for player gateway.",
+      "$ref": "#/definitions/PlayerGatewayConfiguration"
+    },
     "ResourceCreationLimitPolicy": {
       "description": "A policy that limits the number of game sessions an individual player can create over a span of time for this fleet.",
       "$ref": "#/definitions/ResourceCreationLimitPolicy"
@@ -511,6 +843,32 @@
         }
       ],
       "description": "This parameter is no longer used. Instead, specify a server launch path using the RuntimeConfiguration parameter. Requests that specify a server launch path and launch parameters instead of a runtime configuration will continue to work."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "PlayerGatewayMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DISABLED",
+            "ENABLED",
+            "REQUIRED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The player gateway mode for the fleet."
     }
   },
   "required": [
@@ -523,27 +881,39 @@
     "/properties/EC2InstanceType",
     "/properties/FleetType",
     "/properties/InstanceRoleARN",
+    "/properties/InstanceRoleCredentialsProvider",
     "/properties/LogPaths",
     "/properties/PeerVpcAwsAccountId",
     "/properties/PeerVpcId",
     "/properties/ScriptId",
     "/properties/ServerLaunchParameters",
     "/properties/ServerLaunchPath",
-    "/properties/CertificateType",
-    "/properties/ComputeType"
+    "/properties/ComputeType",
+    "/properties/PlayerGatewayMode",
+    "/properties/PlayerGatewayConfiguration"
   ],
   "deprecatedProperties": [
     "/properties/LogPaths",
     "/properties/ServerLaunchParameters",
-    "/properties/ServerLaunchPath"
+    "/properties/ServerLaunchPath",
+    "/properties/MinSize",
+    "/properties/MaxSize",
+    "/properties/DesiredEC2Instances"
   ],
   "readOnlyProperties": [
-    "/properties/FleetId"
+    "/properties/FleetId",
+    "/properties/FleetArn",
+    "/properties/Locations/*/PlayerGatewayStatus"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ApplyCapacity"
   ],
   "primaryIdentifier": [
     "/properties/FleetId"
   ],
-  "taggable": true,
+  "propertyTransform": {
+    "/properties/AnywhereConfiguration/Cost": "$contains(Cost, \".\") ? Cost : Cost & \".0\""
+  },
   "type": "object",
   "title": "AWSGameLiftFleetProperties"
 }

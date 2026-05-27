@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::MSK::Cluster",
-  "description": "Resource Type definition for AWS::MSK::Cluster. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::MSK::Cluster. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "BrokerNodeGroupInfo": {
@@ -57,17 +57,6 @@
         }
       ]
     },
-    "CurrentVersion": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "The current version of the MSK cluster"
-    },
     "ClientAuthentication": {
       "$ref": "#/definitions/ClientAuthentication"
     },
@@ -109,6 +98,12 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
+    },
+    "Rebalancing": {
+      "$ref": "#/definitions/Rebalancing"
+    },
+    "ZookeeperAccess": {
+      "$ref": "#/definitions/ZookeeperAccess"
     }
   },
   "definitions": {
@@ -316,6 +311,21 @@
       },
       "title": "AWSMSKClusterVpcConnectivityDefinition"
     },
+    "NetworkType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "DUAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSMSKClusterNetworkTypeDefinition"
+    },
     "ConfigurationInfo": {
       "type": "object",
       "additionalProperties": false,
@@ -411,6 +421,30 @@
       ],
       "title": "AWSMSKClusterBrokerNodeGroupInfoDefinition"
     },
+    "Rebalancing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PAUSED",
+                "ACTIVE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Status"
+      ],
+      "title": "AWSMSKClusterRebalancingDefinition"
+    },
     "EncryptionAtRest": {
       "type": "object",
       "additionalProperties": false,
@@ -463,6 +497,9 @@
         },
         "VpcConnectivity": {
           "$ref": "#/definitions/VpcConnectivity"
+        },
+        "NetworkType": {
+          "$ref": "#/definitions/NetworkType"
         }
       },
       "title": "AWSMSKClusterConnectivityInfoDefinition"
@@ -662,6 +699,16 @@
         }
       },
       "title": "AWSMSKClusterEncryptionInTransitDefinition"
+    },
+    "ZookeeperAccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSMSKClusterZookeeperAccessDefinition"
     }
   },
   "required": [
@@ -676,21 +723,29 @@
     "/properties/BrokerNodeGroupInfo/SecurityGroups",
     "/properties/EncryptionInfo/EncryptionAtRest",
     "/properties/EncryptionInfo/EncryptionInTransit/InCluster",
-    "/properties/ClusterName",
-    "/properties/Tags"
+    "/properties/ClusterName"
   ],
   "primaryIdentifier": [
     "/properties/Arn"
   ],
   "readOnlyProperties": [
-    "/properties/Arn"
+    "/properties/Arn",
+    "/properties/CurrentVersion"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ZookeeperAccess"
   ],
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
-    "tagUpdatable": false,
+    "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "kafka:TagResource",
+      "kafka:UntagResource",
+      "kafka:ListTagsForResource"
+    ]
   },
   "type": "object",
   "title": "AWSMSKClusterProperties"

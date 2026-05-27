@@ -1,6 +1,7 @@
 {
   "typeName": "AWS::Amplify::App",
-  "description": "The AWS::Amplify::App resource creates Apps in the Amplify Console. An App is a collection of branches.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "The AWS::Amplify::App resource creates Apps in the Amplify Console. An App is a collection of branches.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-amplify",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-amplify",
   "additionalProperties": false,
   "properties": {
     "AccessToken": {
@@ -28,6 +29,22 @@
           "minLength": 1,
           "maxLength": 25000,
           "pattern": "(?s).+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "CacheConfig": {
+      "$ref": "#/definitions/CacheConfig"
+    },
+    "ComputeRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000,
+          "pattern": "(?s).*"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -146,6 +163,9 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "JobConfig": {
+      "$ref": "#/definitions/JobConfig"
     }
   },
   "definitions": {
@@ -280,6 +300,52 @@
         }
       },
       "title": "AWSAmplifyAppBasicAuthConfigDefinition"
+    },
+    "CacheConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AMPLIFY_MANAGED",
+                "AMPLIFY_MANAGED_NO_COOKIES"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSAmplifyAppCacheConfigDefinition"
+    },
+    "JobConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BuildComputeType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "STANDARD_8GB",
+                "LARGE_16GB",
+                "XLARGE_72GB"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "BuildComputeType"
+      ],
+      "title": "AWSAmplifyAppJobConfigDefinition"
     },
     "CustomRule": {
       "type": "object",
@@ -435,6 +501,18 @@
     "/properties/OauthToken",
     "/properties/AutoBranchCreationConfig"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "amplify:TagResource",
+      "amplify:ListTagsForResource",
+      "amplify:UntagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSAmplifyAppProperties"
 }

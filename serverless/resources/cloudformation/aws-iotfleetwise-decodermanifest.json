@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoTFleetWise::DecoderManifest",
-  "description": "Definition of AWS::IoTFleetWise::DecoderManifest Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::IoTFleetWise::DecoderManifest Resource Type. Source:- No source definition found, add manually please",
   "definitions": {
     "CanInterface": {
       "type": "object",
@@ -104,6 +104,9 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "SignalValueType": {
+          "$ref": "#/definitions/SignalValueType"
         }
       },
       "required": [
@@ -335,6 +338,15 @@
             "integer",
             "string"
           ]
+        },
+        "IsSigned": {
+          "type": [
+            "boolean",
+            "string"
+          ]
+        },
+        "SignalValueType": {
+          "$ref": "#/definitions/SignalValueType"
         }
       },
       "required": [
@@ -455,6 +467,21 @@
       "additionalProperties": false,
       "title": "AWSIoTFleetWiseDecoderManifestObdSignalDecoderDefinition"
     },
+    "SignalValueType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "INTEGER",
+            "FLOATING_POINT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSIoTFleetWiseDecoderManifestSignalValueTypeDefinition"
+    },
     "Tag": {
       "type": "object",
       "properties": {
@@ -489,6 +516,159 @@
       ],
       "additionalProperties": false,
       "title": "AWSIoTFleetWiseDecoderManifestTagDefinition"
+    },
+    "CustomDecodingNetworkInterface": {
+      "type": "object",
+      "properties": {
+        "InterfaceId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 50,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CUSTOM_DECODING_INTERFACE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomDecodingInterface": {
+          "$ref": "#/definitions/CustomDecodingInterface"
+        }
+      },
+      "required": [
+        "InterfaceId",
+        "Type",
+        "CustomDecodingInterface"
+      ],
+      "additionalProperties": false,
+      "title": "AWSIoTFleetWiseDecoderManifestCustomDecodingNetworkInterfaceDefinition"
+    },
+    "CustomDecodingInterface": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z\\d\\-_:]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name"
+      ],
+      "additionalProperties": false,
+      "title": "AWSIoTFleetWiseDecoderManifestCustomDecodingInterfaceDefinition"
+    },
+    "CustomDecodingSignal": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 150,
+              "minLength": 1,
+              "pattern": "^(?!.*\\.\\.)[a-zA-Z0-9_\\-#:.]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Id"
+      ],
+      "additionalProperties": false,
+      "title": "AWSIoTFleetWiseDecoderManifestCustomDecodingSignalDefinition"
+    },
+    "CustomDecodingSignalDecoder": {
+      "type": "object",
+      "properties": {
+        "FullyQualifiedName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 150,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CUSTOM_DECODING_SIGNAL"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "InterfaceId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 50,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomDecodingSignal": {
+          "$ref": "#/definitions/CustomDecodingSignal"
+        }
+      },
+      "required": [
+        "FullyQualifiedName",
+        "InterfaceId",
+        "Type",
+        "CustomDecodingSignal"
+      ],
+      "additionalProperties": false,
+      "title": "AWSIoTFleetWiseDecoderManifestCustomDecodingSignalDecoderDefinition"
+    },
+    "DefaultForUnmappedSignalsType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CUSTOM_DECODING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSIoTFleetWiseDecoderManifestDefaultForUnmappedSignalsTypeDefinition"
     }
   },
   "properties": {
@@ -538,10 +718,13 @@
           },
           {
             "$ref": "#/definitions/ObdNetworkInterface"
+          },
+          {
+            "$ref": "#/definitions/CustomDecodingNetworkInterface"
           }
         ]
       },
-      "maxItems": 500,
+      "maxItems": 5000,
       "minItems": 1
     },
     "SignalDecoders": {
@@ -554,14 +737,20 @@
           },
           {
             "$ref": "#/definitions/ObdSignalDecoder"
+          },
+          {
+            "$ref": "#/definitions/CustomDecodingSignalDecoder"
           }
         ]
       },
-      "maxItems": 500,
+      "maxItems": 5000,
       "minItems": 1
     },
     "Status": {
       "$ref": "#/definitions/ManifestStatus"
+    },
+    "DefaultForUnmappedSignals": {
+      "$ref": "#/definitions/DefaultForUnmappedSignalsType"
     },
     "Tags": {
       "type": "array",
@@ -587,6 +776,9 @@
     "/properties/Name",
     "/properties/ModelManifestArn"
   ],
+  "writeOnlyProperties": [
+    "/properties/DefaultForUnmappedSignals"
+  ],
   "primaryIdentifier": [
     "/properties/Name"
   ],
@@ -596,7 +788,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iotfleetwise:UntagResource",
+      "iotfleetwise:TagResource",
+      "iotfleetwise:ListTagsForResource"
+    ]
   },
   "type": "object",
   "title": "AWSIoTFleetWiseDecoderManifestProperties"

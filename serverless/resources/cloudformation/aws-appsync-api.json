@@ -1,0 +1,415 @@
+{
+  "typeName": "AWS::AppSync::Api",
+  "description": "Resource schema for AppSync Api. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "EventConfig": {
+      "description": "The configuration for an Event Api",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuthProviders": {
+          "$ref": "#/definitions/AuthProviders"
+        },
+        "ConnectionAuthModes": {
+          "$ref": "#/definitions/AuthModes"
+        },
+        "DefaultPublishAuthModes": {
+          "$ref": "#/definitions/AuthModes"
+        },
+        "DefaultSubscribeAuthModes": {
+          "$ref": "#/definitions/AuthModes"
+        },
+        "LogConfig": {
+          "$ref": "#/definitions/EventLogConfig"
+        }
+      },
+      "required": [
+        "AuthProviders",
+        "ConnectionAuthModes",
+        "DefaultPublishAuthModes",
+        "DefaultSubscribeAuthModes"
+      ],
+      "title": "AWSAppSyncApiEventConfigDefinition"
+    },
+    "AuthMode": {
+      "description": "An auth mode.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuthType": {
+          "$ref": "#/definitions/AuthenticationType"
+        }
+      },
+      "title": "AWSAppSyncApiAuthModeDefinition"
+    },
+    "AuthModes": {
+      "description": "A list of auth modes for the AppSync API.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AuthMode"
+      },
+      "title": "AWSAppSyncApiAuthModesDefinition"
+    },
+    "AuthenticationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AMAZON_COGNITO_USER_POOLS",
+            "AWS_IAM",
+            "API_KEY",
+            "OPENID_CONNECT",
+            "AWS_LAMBDA"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Security configuration for your AppSync API.",
+      "title": "AWSAppSyncApiAuthenticationTypeDefinition"
+    },
+    "OpenIDConnectConfig": {
+      "description": "The OpenID Connect configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ClientId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AuthTTL": {
+          "type": "number"
+        },
+        "Issuer": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IatTTL": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "Issuer"
+      ],
+      "title": "AWSAppSyncApiOpenIDConnectConfigDefinition"
+    },
+    "CognitoConfig": {
+      "description": "Optional authorization configuration for using Amazon Cognito user pools with your API endpoint.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AppIdClientRegex": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UserPoolId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AwsRegion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "UserPoolId",
+        "AwsRegion"
+      ],
+      "title": "AWSAppSyncApiCognitoConfigDefinition"
+    },
+    "LambdaAuthorizerConfig": {
+      "description": "A LambdaAuthorizerConfig holds configuration on how to authorize AWS AppSync API access when using the AWS_LAMBDA authorizer mode. Be aware that an AWS AppSync API may have only one Lambda authorizer configured at a time.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuthorizerResultTtlInSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3600
+        },
+        "AuthorizerUri": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IdentityValidationExpression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AuthorizerUri"
+      ],
+      "title": "AWSAppSyncApiLambdaAuthorizerConfigDefinition"
+    },
+    "AuthProviders": {
+      "description": "A list of auth providers for the AppSync API.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AuthProvider"
+      },
+      "title": "AWSAppSyncApiAuthProvidersDefinition"
+    },
+    "AuthProvider": {
+      "description": "An auth provider for the AppSync API.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuthType": {
+          "$ref": "#/definitions/AuthenticationType"
+        },
+        "OpenIDConnectConfig": {
+          "$ref": "#/definitions/OpenIDConnectConfig"
+        },
+        "CognitoConfig": {
+          "$ref": "#/definitions/CognitoConfig"
+        },
+        "LambdaAuthorizerConfig": {
+          "$ref": "#/definitions/LambdaAuthorizerConfig"
+        }
+      },
+      "required": [
+        "AuthType"
+      ],
+      "title": "AWSAppSyncApiAuthProviderDefinition"
+    },
+    "Tag": {
+      "description": "An arbitrary set of tags (key-value pairs) for this AppSync API.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:)[ a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string used to identify this tag. You can specify a maximum of 128 characters for a tag key."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "^[\\s\\w+-=\\.:/@]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A string containing the value for this tag. You can specify a maximum of 256 characters for a tag value."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAppSyncApiTagDefinition"
+    },
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this AppSync API.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSAppSyncApiTagsDefinition"
+    },
+    "ApiName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "pattern": "[A-Za-z0-9_\\-\\ ]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the AppSync API.",
+      "title": "AWSAppSyncApiApiNameDefinition"
+    },
+    "OwnerContact": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250,
+          "pattern": "[A-Za-z0-9_\\-\\ \\.]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The owner contact information for an API resource.",
+      "title": "AWSAppSyncApiOwnerContactDefinition"
+    },
+    "DnsMap": {
+      "description": "A map of DNS names for the AppSync API.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Realtime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Http": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSAppSyncApiDnsMapDefinition"
+    },
+    "EventLogLevel": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "ERROR",
+            "ALL",
+            "INFO",
+            "DEBUG"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Logging level for the AppSync API.",
+      "title": "AWSAppSyncApiEventLogLevelDefinition"
+    },
+    "EventLogConfig": {
+      "description": "The log config for the AppSync API.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LogLevel": {
+          "$ref": "#/definitions/EventLogLevel"
+        },
+        "CloudWatchLogsRoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "LogLevel",
+        "CloudWatchLogsRoleArn"
+      ],
+      "title": "AWSAppSyncApiEventLogConfigDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "$ref": "#/definitions/ApiName"
+    },
+    "OwnerContact": {
+      "$ref": "#/definitions/OwnerContact"
+    },
+    "EventConfig": {
+      "$ref": "#/definitions/EventConfig"
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "appsync:TagResource",
+      "appsync:UntagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "required": [
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/ApiId",
+    "/properties/Dns",
+    "/properties/Dns/Realtime",
+    "/properties/Dns/Http",
+    "/properties/ApiArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/ApiArn"
+  ],
+  "type": "object",
+  "title": "AWSAppSyncApiProperties"
+}

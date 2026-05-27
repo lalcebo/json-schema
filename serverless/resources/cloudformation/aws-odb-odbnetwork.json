@@ -1,0 +1,647 @@
+{
+  "typeName": "AWS::ODB::OdbNetwork",
+  "description": "The AWS::ODB::OdbNetwork resource creates an ODB Network. Source:- No source definition found, add manually please",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that's 1 to 128 Unicode characters in length and can't be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., :, /, =, +, @, -, and \"."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that's 1 to 256 characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "title": "AWSODBOdbNetworkTagDefinition"
+    },
+    "ManagedResourceStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "ENABLING",
+            "DISABLED",
+            "DISABLING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the managed resource access.",
+      "title": "AWSODBOdbNetworkManagedResourceStatusDefinition"
+    },
+    "CrossRegionS3RestoreSourcesAccess": {
+      "type": "object",
+      "description": "The configuration access for the cross-Region Amazon S3 database restore source for the ODB network.",
+      "additionalProperties": false,
+      "properties": {
+        "Status": {
+          "$ref": "#/definitions/ManagedResourceStatus",
+          "description": "The current status of the cross-Region Amazon S3 restore access configuration."
+        },
+        "Ipv4Addresses": {
+          "type": "array",
+          "description": "The IPv4 addresses allowed for cross-Region Amazon S3 restore access.",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The AWS-Region for cross-Region Amazon S3 restore access."
+        }
+      },
+      "title": "AWSODBOdbNetworkCrossRegionS3RestoreSourcesAccessDefinition"
+    },
+    "ManagedServices": {
+      "description": "The managed services configuration for the ODB network.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ServiceNetworkArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the service network."
+        },
+        "ResourceGatewayArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) of the resource gateway."
+        },
+        "ManagedServicesIpv4Cidrs": {
+          "type": "array",
+          "description": "The IPv4 CIDR blocks for the managed services.",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "ServiceNetworkEndpoint": {
+          "type": "object",
+          "description": "The service network endpoint configuration.",
+          "additionalProperties": false,
+          "properties": {
+            "VpcEndpointId": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The identifier of the VPC endpoint."
+            },
+            "VpcEndpointType": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "SERVICENETWORK"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The type of the VPC endpoint."
+            }
+          }
+        },
+        "ManagedS3BackupAccess": {
+          "type": "object",
+          "description": "The managed Amazon S3 backup access configuration.",
+          "additionalProperties": false,
+          "properties": {
+            "Status": {
+              "$ref": "#/definitions/ManagedResourceStatus",
+              "description": "The status of the managed Amazon S3 backup access."
+            },
+            "Ipv4Addresses": {
+              "type": "array",
+              "description": "The IPv4 addresses for the managed Amazon S3 backup access.",
+              "uniqueItems": false,
+              "insertionOrder": false,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "ZeroEtlAccess": {
+          "type": "object",
+          "description": "The Zero-ETL access configuration.",
+          "additionalProperties": false,
+          "properties": {
+            "Status": {
+              "$ref": "#/definitions/ManagedResourceStatus",
+              "description": "The status of the Zero-ETL access."
+            },
+            "Cidr": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The CIDR block for the Zero-ETL access."
+            }
+          }
+        },
+        "S3Access": {
+          "type": "object",
+          "description": "The Amazon S3 access configuration.",
+          "additionalProperties": false,
+          "properties": {
+            "Status": {
+              "$ref": "#/definitions/ManagedResourceStatus",
+              "description": "The status of the Amazon S3 access."
+            },
+            "Ipv4Addresses": {
+              "type": "array",
+              "description": "The IPv4 addresses for the Amazon S3 access.",
+              "uniqueItems": false,
+              "insertionOrder": false,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            },
+            "DomainName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The domain name for the Amazon S3 access."
+            },
+            "S3PolicyDocument": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The endpoint policy for the Amazon S3 access."
+            }
+          }
+        },
+        "KmsAccess": {
+          "type": "object",
+          "description": "The AWS Key Management Service (KMS) access configuration.",
+          "additionalProperties": false,
+          "properties": {
+            "Status": {
+              "$ref": "#/definitions/ManagedResourceStatus",
+              "description": "The status of the AWS KMS access."
+            },
+            "Ipv4Addresses": {
+              "type": "array",
+              "description": "The IPv4 addresses for the AWS KMS access.",
+              "uniqueItems": false,
+              "insertionOrder": false,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            },
+            "DomainName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The domain name for the AWS KMS access."
+            },
+            "KmsPolicyDocument": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The endpoint policy for the AWS KMS access."
+            }
+          }
+        },
+        "StsAccess": {
+          "type": "object",
+          "description": "The AWS Security Token Service (STS) access configuration.",
+          "additionalProperties": false,
+          "properties": {
+            "Status": {
+              "$ref": "#/definitions/ManagedResourceStatus",
+              "description": "The status of the AWS STS access."
+            },
+            "Ipv4Addresses": {
+              "type": "array",
+              "description": "The IPv4 addresses for the AWS STS access.",
+              "uniqueItems": false,
+              "insertionOrder": false,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            },
+            "DomainName": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The domain name for the AWS STS access."
+            },
+            "StsPolicyDocument": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The endpoint policy for the AWS STS access."
+            }
+          }
+        },
+        "CrossRegionS3RestoreSourcesAccess": {
+          "type": "array",
+          "description": "The access configuration for the cross-Region Amazon S3 database restore source.",
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/CrossRegionS3RestoreSourcesAccess"
+          }
+        }
+      },
+      "title": "AWSODBOdbNetworkManagedServicesDefinition"
+    }
+  },
+  "properties": {
+    "AvailabilityZone": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Availability Zone (AZ) where the ODB network is located."
+    },
+    "AvailabilityZoneId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AZ ID of the AZ where the ODB network is located."
+    },
+    "BackupSubnetCidr": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The CIDR range of the backup subnet in the ODB network."
+    },
+    "ClientSubnetCidr": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The CIDR range of the client subnet in the ODB network."
+    },
+    "CustomDomainName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The domain name to use for the resources in the ODB network."
+    },
+    "DefaultDnsPrefix": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The DNS prefix to the default DNS domain name. The default DNS domain name is oraclevcn.com."
+    },
+    "DeleteAssociatedResources": {
+      "type": "boolean",
+      "description": "Specifies whether to delete associated OCI networking resources along with the ODB network."
+    },
+    "DisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z_](?!.*--)[a-zA-Z0-9_-]*$",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The user-friendly name of the ODB network."
+    },
+    "S3Access": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the configuration for Amazon S3 access from the ODB network."
+    },
+    "S3PolicyDocument": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the endpoint policy for Amazon S3 access from the ODB network."
+    },
+    "KmsAccess": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Key Management Service (KMS) access configuration for the ODB network."
+    },
+    "KmsPolicyDocument": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Key Management Service (KMS) policy document that defines permissions for key usage within the ODB network."
+    },
+    "StsAccess": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Security Token Service (STS) access configuration for the ODB network."
+    },
+    "StsPolicyDocument": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Security Token Service (STS) policy document that defines permissions for token service usage within the ODB network."
+    },
+    "CrossRegionS3RestoreSources": {
+      "type": "array",
+      "description": "The cross-Region Amazon S3 restore sources for the ODB network.",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "Tags": {
+      "type": "array",
+      "description": "Tags to assign to the Odb Network.",
+      "insertionOrder": false,
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "ZeroEtlAccess": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the configuration for Zero-ETL access from the ODB network."
+    }
+  },
+  "additionalProperties": false,
+  "createOnlyProperties": [
+    "/properties/AvailabilityZone",
+    "/properties/AvailabilityZoneId",
+    "/properties/BackupSubnetCidr",
+    "/properties/ClientSubnetCidr",
+    "/properties/CustomDomainName",
+    "/properties/DefaultDnsPrefix"
+  ],
+  "readOnlyProperties": [
+    "/properties/ManagedServices",
+    "/properties/OciNetworkAnchorId",
+    "/properties/OciResourceAnchorName",
+    "/properties/OciVcnUrl",
+    "/properties/OdbNetworkArn",
+    "/properties/OdbNetworkId",
+    "/properties/Ec2PlacementGroupIds"
+  ],
+  "writeOnlyProperties": [
+    "/properties/DeleteAssociatedResources",
+    "/properties/DefaultDnsPrefix",
+    "/properties/S3Access",
+    "/properties/S3PolicyDocument",
+    "/properties/KmsAccess",
+    "/properties/KmsPolicyDocument",
+    "/properties/StsAccess",
+    "/properties/StsPolicyDocument",
+    "/properties/CrossRegionS3RestoreSources",
+    "/properties/ZeroEtlAccess"
+  ],
+  "primaryIdentifier": [
+    "/properties/OdbNetworkArn"
+  ],
+  "replacementStrategy": "delete_then_create",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "odb:TagResource",
+      "odb:UntagResource",
+      "odb:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSODBOdbNetworkProperties"
+}

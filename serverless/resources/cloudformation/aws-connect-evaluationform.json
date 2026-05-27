@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Connect::EvaluationForm",
-  "description": "Resource Type definition for AWS::Connect::EvaluationForm. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "description": "Creates an evaluation form for the specified CON instance.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "definitions": {
     "RefId": {
@@ -16,6 +16,14 @@
       "description": "The identifier to reference the item.",
       "title": "AWSConnectEvaluationFormRefIdDefinition"
     },
+    "ReferenceIdList": {
+      "description": "The list of reference id.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/RefId"
+      },
+      "title": "AWSConnectEvaluationFormReferenceIdListDefinition"
+    },
     "Weight": {
       "description": "The item weight used for scoring.",
       "type": "number",
@@ -30,13 +38,163 @@
       "maximum": 10,
       "title": "AWSConnectEvaluationFormScoreDefinition"
     },
+    "AutomaticFailConfiguration": {
+      "description": "Information about automatic fail configuration for an evaluation form.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TargetSection": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9._-]{1,40}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The referenceId of the target section for auto failure."
+        }
+      },
+      "title": "AWSConnectEvaluationFormAutomaticFailConfigurationDefinition"
+    },
+    "EvaluationFormTargetConfiguration": {
+      "description": "Configuration that specifies the target for an evaluation form.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ContactInteractionType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AGENT",
+                "AUTOMATED",
+                "CUSTOMER"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The contact interaction type for this evaluation form."
+        }
+      },
+      "required": [
+        "ContactInteractionType"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormTargetConfigurationDefinition"
+    },
+    "EvaluationFormLanguageConfiguration": {
+      "description": "Language configuration for an evaluation form.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FormLanguage": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "de-DE",
+                "en-US",
+                "es-ES",
+                "fr-FR",
+                "it-IT",
+                "pt-BR",
+                "ja-JP",
+                "ko-KR",
+                "zh-CN"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The language for the evaluation form."
+        }
+      },
+      "title": "AWSConnectEvaluationFormEvaluationFormLanguageConfigurationDefinition"
+    },
+    "EvaluationReviewNotificationRecipientValue": {
+      "description": "The value information for an evaluation review notification recipient.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "UserId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The user identifier for the notification recipient."
+        }
+      },
+      "title": "AWSConnectEvaluationFormEvaluationReviewNotificationRecipientValueDefinition"
+    },
+    "EvaluationReviewNotificationRecipient": {
+      "description": "Information about a recipient who should be notified when an evaluation review is requested.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "USER_ID"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of notification recipient."
+        },
+        "Value": {
+          "description": "The value associated with the notification recipient type.",
+          "$ref": "#/definitions/EvaluationReviewNotificationRecipientValue"
+        }
+      },
+      "required": [
+        "Type",
+        "Value"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationReviewNotificationRecipientDefinition"
+    },
+    "EvaluationReviewConfiguration": {
+      "description": "Configuration settings for evaluation reviews.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ReviewNotificationRecipients": {
+          "description": "List of recipients who should be notified when a review is requested.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EvaluationReviewNotificationRecipient"
+          }
+        },
+        "EligibilityDays": {
+          "description": "Number of days during which a request for review can be submitted for evaluations created from this form.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 90
+        }
+      },
+      "required": [
+        "ReviewNotificationRecipients"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationReviewConfigurationDefinition"
+    },
     "EvaluationFormBaseItem": {
-      "description": "The evaluation form base item.",
+      "description": "An item at the root level. All items must be sections.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "Section": {
-          "description": "The evaluation form section item",
+          "description": "A subsection or inner section of an item.",
           "$ref": "#/definitions/EvaluationFormSection"
         }
       },
@@ -46,23 +204,23 @@
       "title": "AWSConnectEvaluationFormEvaluationFormBaseItemDefinition"
     },
     "EvaluationFormItem": {
-      "description": "The evaluation form item.",
+      "description": "Items that are part of the evaluation form. The total number of sections and questions must not exceed 100 each. Questions must be contained in a section.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "Section": {
-          "description": "The evaluation form section item",
+          "description": "The information of the section.",
           "$ref": "#/definitions/EvaluationFormSection"
         },
         "Question": {
-          "description": "The evaluation form question item",
+          "description": "The information of the question.",
           "$ref": "#/definitions/EvaluationFormQuestion"
         }
       },
       "title": "AWSConnectEvaluationFormEvaluationFormItemDefinition"
     },
     "EvaluationFormSection": {
-      "description": "The evaluation form section.",
+      "description": "Information about a section from an evaluation form. A section can contain sections and/or questions. Evaluation forms can only contain sections and subsections (two level nesting).",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -77,7 +235,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The title of the section."
+          "description": "The title of the section.\n *Length Constraints*: Minimum length of 1. Maximum length of 128."
         },
         "Instructions": {
           "oneOf": [
@@ -89,14 +247,14 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The instructions for the section."
+          "description": "The instructions of the section."
         },
         "RefId": {
-          "description": "The identifier to reference the section.",
+          "description": "The identifier of the section. An identifier must be unique within the evaluation form.\n *Length Constraints*: Minimum length of 1. Maximum length of 40.",
           "$ref": "#/definitions/RefId"
         },
         "Items": {
-          "description": "The list of section items.",
+          "description": "The items of the section.\n *Minimum*: 1",
           "type": "array",
           "insertionOrder": true,
           "minItems": 1,
@@ -106,7 +264,7 @@
           }
         },
         "Weight": {
-          "description": "The item weight used for scoring.",
+          "description": "The scoring weight of the section.\n *Minimum*: 0 \n *Maximum*: 100",
           "$ref": "#/definitions/Weight"
         }
       },
@@ -116,26 +274,221 @@
       ],
       "title": "AWSConnectEvaluationFormEvaluationFormSectionDefinition"
     },
+    "EvaluationFormItemEnablementConfiguration": {
+      "description": "An item enablement configuration.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Condition": {
+          "description": "A condition for item enablement configuration.",
+          "$ref": "#/definitions/EvaluationFormItemEnablementCondition"
+        },
+        "Action": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DISABLE",
+                "ENABLE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An enablement action that if condition is satisfied."
+        },
+        "DefaultAction": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DISABLE",
+                "ENABLE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "An enablement action that if condition is not satisfied."
+        }
+      },
+      "required": [
+        "Condition",
+        "Action"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormItemEnablementConfigurationDefinition"
+    },
+    "EvaluationFormItemEnablementCondition": {
+      "description": "A condition for item enablement.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Operands": {
+          "description": "Operands of the enablement condition.",
+          "type": "array",
+          "insertionOrder": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/EvaluationFormItemEnablementConditionOperand"
+          }
+        },
+        "Operator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "OR",
+                "AND"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The operator to be used to be applied to operands if more than one provided."
+        }
+      },
+      "required": [
+        "Operands"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormItemEnablementConditionDefinition"
+    },
+    "EvaluationFormItemEnablementConditionOperand": {
+      "description": "An operand of the enablement condition.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Expression": {
+          "description": "An expression of the enablement condition.",
+          "$ref": "#/definitions/EvaluationFormItemEnablementExpression"
+        }
+      },
+      "title": "AWSConnectEvaluationFormEvaluationFormItemEnablementConditionOperandDefinition"
+    },
+    "EvaluationFormItemEnablementExpression": {
+      "description": "An expression that defines a basic building block of conditional enablement.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Source": {
+          "description": "A source item of enablement expression.",
+          "$ref": "#/definitions/EvaluationFormItemEnablementSource"
+        },
+        "Values": {
+          "description": "A list of values from source item.",
+          "type": "array",
+          "insertionOrder": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/EvaluationFormItemEnablementSourceValue"
+          }
+        },
+        "Comparator": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "IN",
+                "NOT_IN",
+                "ALL_IN",
+                "EXACT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A comparator to be used against list of values."
+        }
+      },
+      "required": [
+        "Source",
+        "Values",
+        "Comparator"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormItemEnablementExpressionDefinition"
+    },
+    "EvaluationFormItemEnablementSource": {
+      "description": "An enablement expression source item.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "QUESTION_REF_ID"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A type of source item."
+        },
+        "RefId": {
+          "$ref": "#/definitions/RefId",
+          "description": "A referenceId of the source item."
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormItemEnablementSourceDefinition"
+    },
+    "EvaluationFormItemEnablementSourceValue": {
+      "description": "An enablement expression source value.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "OPTION_REF_ID"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A type of source item value."
+        },
+        "RefId": {
+          "description": "A referenceId of the source value.",
+          "$ref": "#/definitions/RefId"
+        }
+      },
+      "title": "AWSConnectEvaluationFormEvaluationFormItemEnablementSourceValueDefinition"
+    },
     "EvaluationFormNumericQuestionOption": {
-      "description": "The option ranges used for scoring in numeric questions.",
+      "description": "Information about the option range used for scoring in numeric questions.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "MinValue": {
-          "description": "The minimum value of the option range.",
+          "description": "The minimum answer value of the range option.",
           "type": "integer"
         },
         "MaxValue": {
-          "description": "The maximum value of the option range.",
+          "description": "The maximum answer value of the range option.",
           "type": "integer"
         },
         "Score": {
-          "description": "The score of the option range.",
+          "description": "The score assigned to answer values within the range option.\n *Minimum*: 0\n *Maximum*: 10",
           "$ref": "#/definitions/Score"
         },
         "AutomaticFail": {
-          "description": "The flag to mark the option as automatic fail.",
+          "description": "The flag to mark the option as automatic fail. If an automatic fail answer is provided, the overall evaluation gets a score of 0.",
           "type": "boolean"
+        },
+        "AutomaticFailConfiguration": {
+          "description": "A configuration for automatic fail.",
+          "$ref": "#/definitions/AutomaticFailConfiguration"
         }
       },
       "required": [
@@ -145,7 +498,7 @@
       "title": "AWSConnectEvaluationFormEvaluationFormNumericQuestionOptionDefinition"
     },
     "NumericQuestionPropertyValueAutomation": {
-      "description": "The automation property name of the question.",
+      "description": "Information about the property value used in automation of a numeric questions.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -161,14 +514,19 @@
                 "NUMBER_OF_INTERRUPTIONS",
                 "CONTACT_DURATION",
                 "AGENT_INTERACTION_DURATION",
-                "CUSTOMER_HOLD_TIME"
+                "CUSTOMER_HOLD_TIME",
+                "LONGEST_HOLD_DURATION",
+                "NUMBER_OF_HOLDS",
+                "AGENT_INTERACTION_AND_HOLD_DURATION",
+                "CUSTOMER_SENTIMENT_SCORE_WITHOUT_AGENT",
+                "CUSTOMER_SENTIMENT_SCORE_WITH_AGENT"
               ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The automation property label."
+          "description": "The property label of the automation."
         }
       },
       "required": [
@@ -177,35 +535,36 @@
       "title": "AWSConnectEvaluationFormNumericQuestionPropertyValueAutomationDefinition"
     },
     "EvaluationFormNumericQuestionAutomation": {
-      "description": "The automation properties for the numeric question.",
+      "description": "Information about the automation configuration in numeric questions.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "PropertyValue": {
-          "description": "The automation property name of the question.",
+          "description": "The property value of the automation.",
           "$ref": "#/definitions/NumericQuestionPropertyValueAutomation"
+        },
+        "AnswerSource": {
+          "description": "A source of automation answer for numeric question.",
+          "$ref": "#/definitions/EvaluationFormQuestionAutomationAnswerSource"
         }
       },
-      "required": [
-        "PropertyValue"
-      ],
       "title": "AWSConnectEvaluationFormEvaluationFormNumericQuestionAutomationDefinition"
     },
     "EvaluationFormNumericQuestionProperties": {
-      "description": "The properties of the numeric question.",
+      "description": "Information about properties for a numeric question in an evaluation form.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "MinValue": {
-          "description": "The minimum value for answers of the question.",
+          "description": "The minimum answer value.",
           "type": "integer"
         },
         "MaxValue": {
-          "description": "The maximum value for answers of the question.",
+          "description": "The maximum answer value.",
           "type": "integer"
         },
         "Options": {
-          "description": "The list of option ranges used for scoring.",
+          "description": "The scoring options of the numeric question.",
           "type": "array",
           "insertionOrder": true,
           "minItems": 1,
@@ -215,7 +574,7 @@
           }
         },
         "Automation": {
-          "description": "The automation properties for the numeric question.",
+          "description": "The automation properties of the numeric question.",
           "$ref": "#/definitions/EvaluationFormNumericQuestionAutomation"
         }
       },
@@ -226,12 +585,12 @@
       "title": "AWSConnectEvaluationFormEvaluationFormNumericQuestionPropertiesDefinition"
     },
     "EvaluationFormSingleSelectQuestionAutomationOption": {
-      "description": "The automation option for the single-select question.",
+      "description": "The automation options of the single select question.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "RuleCategory": {
-          "description": "The automation option based on Rules categories.",
+          "description": "The automation option based on a rule category for the single select question.",
           "$ref": "#/definitions/SingleSelectQuestionRuleCategoryAutomation"
         }
       },
@@ -241,7 +600,7 @@
       "title": "AWSConnectEvaluationFormEvaluationFormSingleSelectQuestionAutomationOptionDefinition"
     },
     "SingleSelectQuestionRuleCategoryAutomation": {
-      "description": "The automation option based on Rules categories.",
+      "description": "Information about the automation option based on a rule category for a single select question.\n *Length Constraints*: Minimum length of 1. Maximum length of 50.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -256,7 +615,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The category name as defined in Rules."
+          "description": "The category name, as defined in Rules.\n *Minimum*: 1\n *Maximum*: 50"
         },
         "Condition": {
           "oneOf": [
@@ -271,10 +630,10 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The automation condition applied on contact categories."
+          "description": "The condition to apply for the automation option. If the condition is PRESENT, then the option is applied when the contact data includes the category. Similarly, if the condition is NOT_PRESENT, then the option is applied when the contact data does not include the category.\n *Allowed values*: ``PRESENT`` | ``NOT_PRESENT``\n *Maximum*: 50"
         },
         "OptionRefId": {
-          "description": "The option identifier referencing the option to be selected when the automation option is triggered.",
+          "description": "The identifier of the answer option. An identifier must be unique within the question.\n *Length Constraints*: Minimum length of 1. Maximum length of 40.",
           "$ref": "#/definitions/RefId"
         }
       },
@@ -286,12 +645,12 @@
       "title": "AWSConnectEvaluationFormSingleSelectQuestionRuleCategoryAutomationDefinition"
     },
     "EvaluationFormSingleSelectQuestionAutomation": {
-      "description": "The automation properties for the single-select question.",
+      "description": "Information about the automation configuration in single select questions. Automation options are evaluated in order, and the first matched option is applied. If no automation option matches, and there is a default option, then the default option is applied.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "Options": {
-          "description": "The answer options for the automation.",
+          "description": "The automation options of the single select question.\n *Minimum*: 1\n *Maximum*: 20",
           "type": "array",
           "insertionOrder": true,
           "minItems": 1,
@@ -301,22 +660,23 @@
           }
         },
         "DefaultOptionRefId": {
-          "description": "The option reference identifier of the default answer.",
+          "description": "The identifier of the default answer option, when none of the automation options match the criteria.\n *Length Constraints*: Minimum length of 1. Maximum length of 40.",
           "$ref": "#/definitions/RefId"
+        },
+        "AnswerSource": {
+          "description": "Automation answer source.",
+          "$ref": "#/definitions/EvaluationFormQuestionAutomationAnswerSource"
         }
       },
-      "required": [
-        "Options"
-      ],
       "title": "AWSConnectEvaluationFormEvaluationFormSingleSelectQuestionAutomationDefinition"
     },
     "EvaluationFormSingleSelectQuestionOption": {
-      "description": "The option for a question.",
+      "description": "Information about the automation configuration in single select questions.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "RefId": {
-          "description": "The identifier used to reference the option.",
+          "description": "The identifier of the answer option. An identifier must be unique within the question.\n *Length Constraints*: Minimum length of 1. Maximum length of 40.",
           "$ref": "#/definitions/RefId"
         },
         "Text": {
@@ -330,15 +690,19 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The title of the option."
+          "description": "The title of the answer option.\n *Length Constraints*: Minimum length of 1. Maximum length of 128."
         },
         "Score": {
-          "description": "The score of the option.",
+          "description": "The score assigned to the answer option.\n *Minimum*: 0\n *Maximum*: 10",
           "$ref": "#/definitions/Score"
         },
         "AutomaticFail": {
-          "description": "The flag to mark the option as automatic fail.",
+          "description": "The flag to mark the option as automatic fail. If an automatic fail answer is provided, the overall evaluation gets a score of 0.",
           "type": "boolean"
+        },
+        "AutomaticFailConfiguration": {
+          "description": "Whether automatic fail is configured on a single select question.",
+          "$ref": "#/definitions/AutomaticFailConfiguration"
         }
       },
       "required": [
@@ -348,12 +712,12 @@
       "title": "AWSConnectEvaluationFormEvaluationFormSingleSelectQuestionOptionDefinition"
     },
     "EvaluationFormSingleSelectQuestionProperties": {
-      "description": "The properties of the single-select question.",
+      "description": "Information about the options in single select questions.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "Options": {
-          "description": "The list of options for the question.",
+          "description": "The answer options of the single select question.\n *Minimum*: 2\n *Maximum*: 256",
           "type": "array",
           "insertionOrder": true,
           "minItems": 2,
@@ -375,10 +739,10 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The display mode of the single-select question."
+          "description": "The display mode of the single select question.\n *Allowed values*: ``DROPDOWN`` | ``RADIO``"
         },
         "Automation": {
-          "description": "The automation properties for the single-select question.",
+          "description": "The display mode of the single select question.",
           "$ref": "#/definitions/EvaluationFormSingleSelectQuestionAutomation"
         }
       },
@@ -387,8 +751,213 @@
       ],
       "title": "AWSConnectEvaluationFormEvaluationFormSingleSelectQuestionPropertiesDefinition"
     },
+    "EvaluationFormQuestionAutomationAnswerSource": {
+      "description": "A question automation answer.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SourceType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CONTACT_LENS_DATA",
+                "GEN_AI"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The automation answer source type."
+        }
+      },
+      "required": [
+        "SourceType"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormQuestionAutomationAnswerSourceDefinition"
+    },
+    "EvaluationFormTextQuestionProperties": {
+      "description": "Information about properties for a text question in an evaluation form.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Automation": {
+          "description": "The automation properties of the text question.",
+          "$ref": "#/definitions/EvaluationFormTextQuestionAutomation"
+        }
+      },
+      "title": "AWSConnectEvaluationFormEvaluationFormTextQuestionPropertiesDefinition"
+    },
+    "EvaluationFormTextQuestionAutomation": {
+      "description": "Information about the automation configuration in text questions.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AnswerSource": {
+          "description": "Automation answer source.",
+          "$ref": "#/definitions/EvaluationFormQuestionAutomationAnswerSource"
+        }
+      },
+      "title": "AWSConnectEvaluationFormEvaluationFormTextQuestionAutomationDefinition"
+    },
+    "EvaluationFormMultiSelectQuestionAutomationOption": {
+      "description": "An automation option for a multi-select question.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RuleCategory": {
+          "description": "Rule category configuration for this automation option.",
+          "$ref": "#/definitions/MultiSelectQuestionRuleCategoryAutomation"
+        }
+      },
+      "required": [
+        "RuleCategory"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormMultiSelectQuestionAutomationOptionDefinition"
+    },
+    "MultiSelectQuestionRuleCategoryAutomation": {
+      "description": "Automation rule for multi-select questions based on rule categories.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Category": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The category name for this automation rule."
+        },
+        "Condition": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "PRESENT",
+                "NOT_PRESENT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The condition for this automation rule."
+        },
+        "OptionRefIds": {
+          "description": "Reference IDs of options for this automation rule.",
+          "$ref": "#/definitions/ReferenceIdList"
+        }
+      },
+      "required": [
+        "Category",
+        "Condition",
+        "OptionRefIds"
+      ],
+      "title": "AWSConnectEvaluationFormMultiSelectQuestionRuleCategoryAutomationDefinition"
+    },
+    "EvaluationFormMultiSelectQuestionAutomation": {
+      "description": "Automation configuration for multi-select questions.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Options": {
+          "description": "Automation options for the multi-select question.",
+          "type": "array",
+          "insertionOrder": true,
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/definitions/EvaluationFormMultiSelectQuestionAutomationOption"
+          }
+        },
+        "DefaultOptionRefIds": {
+          "description": "Reference IDs of default options.",
+          "$ref": "#/definitions/ReferenceIdList"
+        },
+        "AnswerSource": {
+          "description": "",
+          "$ref": "#/definitions/EvaluationFormQuestionAutomationAnswerSource"
+        }
+      },
+      "title": "AWSConnectEvaluationFormEvaluationFormMultiSelectQuestionAutomationDefinition"
+    },
+    "EvaluationFormMultiSelectQuestionOption": {
+      "description": "An option for a multi-select question in an evaluation form.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RefId": {
+          "description": "Reference identifier for this option.",
+          "$ref": "#/definitions/RefId"
+        },
+        "Text": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Display text for this option."
+        }
+      },
+      "required": [
+        "RefId",
+        "Text"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormMultiSelectQuestionOptionDefinition"
+    },
+    "EvaluationFormMultiSelectQuestionProperties": {
+      "description": "Properties for a multi-select question in an evaluation form.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Options": {
+          "description": "Options available for this multi-select question.",
+          "type": "array",
+          "insertionOrder": true,
+          "minItems": 2,
+          "maxItems": 256,
+          "items": {
+            "$ref": "#/definitions/EvaluationFormMultiSelectQuestionOption"
+          }
+        },
+        "DisplayAs": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DROPDOWN",
+                "CHECKBOX"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Display format for the multi-select question."
+        },
+        "Automation": {
+          "description": "Automation configuration for this multi-select question.",
+          "$ref": "#/definitions/EvaluationFormMultiSelectQuestionAutomation"
+        }
+      },
+      "required": [
+        "Options"
+      ],
+      "title": "AWSConnectEvaluationFormEvaluationFormMultiSelectQuestionPropertiesDefinition"
+    },
     "EvaluationFormQuestionTypeProperties": {
-      "description": "The properties of the question.",
+      "description": "Information about properties for a question in an evaluation form. The question type properties must be either for a numeric question or a single select question.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -397,14 +966,22 @@
           "$ref": "#/definitions/EvaluationFormNumericQuestionProperties"
         },
         "SingleSelect": {
-          "description": "The properties of the single-select question.",
+          "description": "The properties of the numeric question.",
           "$ref": "#/definitions/EvaluationFormSingleSelectQuestionProperties"
+        },
+        "Text": {
+          "description": "The properties of the text question.",
+          "$ref": "#/definitions/EvaluationFormTextQuestionProperties"
+        },
+        "MultiSelect": {
+          "description": "Properties for multi-select question types.",
+          "$ref": "#/definitions/EvaluationFormMultiSelectQuestionProperties"
         }
       },
       "title": "AWSConnectEvaluationFormEvaluationFormQuestionTypePropertiesDefinition"
     },
     "EvaluationFormQuestion": {
-      "description": "The evaluation form question.",
+      "description": "Information about a question from an evaluation form.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -419,7 +996,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The title of the question."
+          "description": "The title of the question.\n *Length Constraints*: Minimum length of 1. Maximum length of 350."
         },
         "Instructions": {
           "oneOf": [
@@ -431,10 +1008,10 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The instructions for the question."
+          "description": "The instructions of the section.\n *Length Constraints*: Minimum length of 0. Maximum length of 1024."
         },
         "RefId": {
-          "description": "The identifier used to reference the question.",
+          "description": "The identifier of the question. An identifier must be unique within the evaluation form.\n *Length Constraints*: Minimum length of 1. Maximum length of 40.",
           "$ref": "#/definitions/RefId"
         },
         "NotApplicableEnabled": {
@@ -448,22 +1025,28 @@
               "enum": [
                 "NUMERIC",
                 "SINGLESELECT",
-                "TEXT"
+                "TEXT",
+                "MULTISELECT",
+                "DATETIME"
               ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The type of the question."
+          "description": "The type of the question.\n *Allowed values*: ``NUMERIC`` | ``SINGLESELECT`` | ``TEXT``"
         },
         "QuestionTypeProperties": {
-          "description": "The properties of the question",
+          "description": "The properties of the type of question. Text questions do not have to define question type properties.",
           "$ref": "#/definitions/EvaluationFormQuestionTypeProperties"
         },
         "Weight": {
-          "description": "The question weight used for scoring.",
+          "description": "The scoring weight of the section.\n *Minimum*: 0\n *Maximum*: 100",
           "$ref": "#/definitions/Weight"
+        },
+        "Enablement": {
+          "description": "A question conditional enablement.",
+          "$ref": "#/definitions/EvaluationFormItemEnablementConfiguration"
         }
       },
       "required": [
@@ -474,7 +1057,7 @@
       "title": "AWSConnectEvaluationFormEvaluationFormQuestionDefinition"
     },
     "ScoringStrategy": {
-      "description": "The scoring strategy.",
+      "description": "A scoring strategy of the evaluation form.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -491,7 +1074,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The scoring mode."
+          "description": "The scoring mode of the evaluation form.\n *Allowed values*: ``QUESTION_ONLY`` | ``SECTION_ONLY``"
         },
         "Status": {
           "oneOf": [
@@ -506,7 +1089,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The scoring status."
+          "description": "The scoring status of the evaluation form.\n *Allowed values*: ``ENABLED`` | ``DISABLED``"
         }
       },
       "required": [
@@ -514,6 +1097,18 @@
         "Status"
       ],
       "title": "AWSConnectEvaluationFormScoringStrategyDefinition"
+    },
+    "AutoEvaluationConfiguration": {
+      "description": "Configuration information about automated evaluations.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "description": "",
+          "type": "boolean"
+        }
+      },
+      "title": "AWSConnectEvaluationFormAutoEvaluationConfigurationDefinition"
     },
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
@@ -532,7 +1127,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -"
         },
         "Value": {
           "oneOf": [
@@ -544,7 +1139,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The value for the tag. You can specify a value that's 1 to 256 characters in length."
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -"
         }
       },
       "required": [
@@ -566,7 +1161,7 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The title of the evaluation form."
+      "description": "A title of the evaluation form."
     },
     "Description": {
       "oneOf": [
@@ -578,7 +1173,7 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The description of the evaluation form."
+      "description": "The description of the evaluation form.\n *Length Constraints*: Minimum length of 0. Maximum length of 1024."
     },
     "InstanceArn": {
       "oneOf": [
@@ -590,10 +1185,10 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The Amazon Resource Name (ARN) of the instance."
+      "description": "The identifier of the Amazon Connect instance."
     },
     "Items": {
-      "description": "The list of evaluation form items.",
+      "description": "Items that are part of the evaluation form. The total number of sections and questions must not exceed 100 each. Questions must be contained in a section.\n *Minimum size*: 1\n *Maximum size*: 100",
       "type": "array",
       "insertionOrder": true,
       "minItems": 1,
@@ -603,8 +1198,12 @@
       }
     },
     "ScoringStrategy": {
-      "description": "The scoring strategy.",
+      "description": "A scoring strategy of the evaluation form.",
       "$ref": "#/definitions/ScoringStrategy"
+    },
+    "AutoEvaluationConfiguration": {
+      "description": "The automatic evaluation configuration of an evaluation form.",
+      "$ref": "#/definitions/AutoEvaluationConfiguration"
     },
     "Status": {
       "oneOf": [
@@ -620,10 +1219,22 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The status of the evaluation form."
+      "description": "The status of the evaluation form.\n *Allowed values*: ``DRAFT`` | ``ACTIVE``"
+    },
+    "TargetConfiguration": {
+      "description": "Configuration that specifies the target for this evaluation form.",
+      "$ref": "#/definitions/EvaluationFormTargetConfiguration"
+    },
+    "LanguageConfiguration": {
+      "description": "Configuration for language settings of this evaluation form.",
+      "$ref": "#/definitions/EvaluationFormLanguageConfiguration"
+    },
+    "ReviewConfiguration": {
+      "description": "Configuration for evaluation review settings of this evaluation form.",
+      "$ref": "#/definitions/EvaluationReviewConfiguration"
     },
     "Tags": {
-      "description": "One or more tags.",
+      "description": "The tags used to organize, track, or control access for this resource. For example, { \"tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.",
       "type": "array",
       "maxItems": 50,
       "uniqueItems": true,
@@ -651,7 +1262,12 @@
     "tagOnCreate": false,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "connect:ListTagsForResource",
+      "connect:UntagResource",
+      "connect:TagResource"
+    ]
   },
   "type": "object",
   "title": "AWSConnectEvaluationFormProperties"

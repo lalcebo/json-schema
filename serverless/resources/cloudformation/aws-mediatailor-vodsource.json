@@ -1,0 +1,159 @@
+{
+  "typeName": "AWS::MediaTailor::VodSource",
+  "description": "Definition of AWS::MediaTailor::VodSource Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediatailor",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediatailor",
+  "definitions": {
+    "HttpPackageConfiguration": {
+      "type": "object",
+      "description": "<p>The HTTP package configuration properties for the requested VOD source.</p>",
+      "properties": {
+        "Path": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The relative path to the URL for this VOD source. This is combined with <code>SourceLocation::HttpConfiguration::BaseUrl</code> to form a valid URL.</p>"
+        },
+        "SourceGroup": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The name of the source group. This has to match one of the <code>Channel::Outputs::SourceGroup</code>.</p>"
+        },
+        "Type": {
+          "$ref": "#/definitions/Type"
+        }
+      },
+      "required": [
+        "Path",
+        "SourceGroup",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaTailorVodSourceHttpPackageConfigurationDefinition"
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DASH",
+            "HLS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSMediaTailorVodSourceTypeDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSMediaTailorVodSourceTagDefinition"
+    }
+  },
+  "properties": {
+    "HttpPackageConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/HttpPackageConfiguration"
+      },
+      "description": "<p>A list of HTTP package configuration parameters for this VOD source.</p>"
+    },
+    "SourceLocationName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "description": "The tags to assign to the VOD source.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "VodSourceName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "mediatailor:TagResource",
+      "mediatailor:UntagResource"
+    ]
+  },
+  "required": [
+    "HttpPackageConfigurations",
+    "SourceLocationName",
+    "VodSourceName"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/SourceLocationName",
+    "/properties/VodSourceName"
+  ],
+  "primaryIdentifier": [
+    "/properties/SourceLocationName",
+    "/properties/VodSourceName"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSMediaTailorVodSourceProperties"
+}

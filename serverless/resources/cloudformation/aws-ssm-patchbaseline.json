@@ -1,93 +1,148 @@
 {
   "typeName": "AWS::SSM::PatchBaseline",
-  "description": "Resource Type definition for AWS::SSM::PatchBaseline. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::SSM::PatchBaseline. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
+    "DefaultBaseline": {
+      "description": "Set the baseline as default baseline. Only registering to default patch baseline is allowed.",
+      "type": "boolean",
+      "default": false
+    },
     "OperatingSystem": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "default": "WINDOWS",
+          "enum": [
+            "WINDOWS",
+            "AMAZON_LINUX",
+            "AMAZON_LINUX_2",
+            "AMAZON_LINUX_2022",
+            "AMAZON_LINUX_2023",
+            "UBUNTU",
+            "REDHAT_ENTERPRISE_LINUX",
+            "SUSE",
+            "CENTOS",
+            "ORACLE_LINUX",
+            "DEBIAN",
+            "MACOS",
+            "RASPBIAN",
+            "ROCKY_LINUX",
+            "ALMA_LINUX"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "Defines the operating system the patch baseline applies to. The Default value is WINDOWS."
     },
     "Description": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The description of the patch baseline."
     },
     "ApprovalRules": {
       "$ref": "#/definitions/RuleGroup"
     },
     "Sources": {
+      "description": "Information about the patches to use to update the instances, including target operating systems and source repository. Applies to Linux instances only.",
       "type": "array",
       "uniqueItems": false,
       "items": {
         "$ref": "#/definitions/PatchSource"
-      }
+      },
+      "minItems": 0,
+      "maxItems": 20
     },
     "Name": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_\\-.]{3,128}$",
+          "minLength": 3,
+          "maxLength": 128
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The name of the patch baseline."
     },
     "RejectedPatches": {
+      "description": "A list of explicitly rejected patches for the baseline.",
       "type": "array",
       "uniqueItems": false,
       "items": {
         "oneOf": [
           {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
           },
           {
             "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
           }
         ]
-      }
+      },
+      "minItems": 0,
+      "maxItems": 50,
+      "insertionOrder": false
     },
     "ApprovedPatches": {
+      "description": "A list of explicitly approved patches for the baseline.",
       "type": "array",
       "uniqueItems": false,
       "items": {
         "oneOf": [
           {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
           },
           {
             "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
           }
         ]
-      }
+      },
+      "minItems": 0,
+      "maxItems": 50,
+      "insertionOrder": false
     },
     "RejectedPatchesAction": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "default": "ALLOW_AS_DEPENDENCY",
+          "enum": [
+            "ALLOW_AS_DEPENDENCY",
+            "BLOCK"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The action for Patch Manager to take on patches included in the RejectedPackages list."
     },
     "PatchGroups": {
+      "description": "PatchGroups is used to associate instances with a specific patch baseline",
       "type": "array",
       "uniqueItems": false,
       "items": {
         "oneOf": [
           {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
           },
           {
             "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -98,29 +153,61 @@
     "ApprovedPatchesComplianceLevel": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "default": "UNSPECIFIED",
+          "enum": [
+            "CRITICAL",
+            "HIGH",
+            "MEDIUM",
+            "LOW",
+            "INFORMATIONAL",
+            "UNSPECIFIED"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "Defines the compliance level for approved patches. This means that if an approved patch is reported as missing, this is the severity of the compliance violation. The default value is UNSPECIFIED."
     },
     "ApprovedPatchesEnableNonSecurity": {
-      "type": "boolean"
+      "description": "Indicates whether the list of approved patches includes non-security updates that should be applied to the instances. The default value is 'false'. Applies to Linux instances only.",
+      "type": "boolean",
+      "default": false
     },
     "GlobalFilters": {
+      "description": "A set of global filters used to include patches in the baseline.",
       "$ref": "#/definitions/PatchFilterGroup"
     },
+    "AvailableSecurityUpdatesComplianceStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "NON_COMPLIANT",
+            "COMPLIANT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The compliance status for vendor recommended security updates that are not approved by this patch baseline."
+    },
     "Tags": {
+      "description": "Optional metadata that you assign to a resource. Tags enable you to categorize a resource in different ways.",
       "type": "array",
       "uniqueItems": false,
       "items": {
         "$ref": "#/definitions/Tag"
-      }
+      },
+      "minItems": 0,
+      "maxItems": 1000
     }
   },
   "definitions": {
     "PatchFilterGroup": {
+      "description": "The patch filter group that defines the criteria for the rule.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -129,33 +216,53 @@
           "uniqueItems": false,
           "items": {
             "$ref": "#/definitions/PatchFilter"
-          }
+          },
+          "minItems": 0,
+          "maxItems": 5
         }
       },
       "title": "AWSSSMPatchBaselinePatchFilterGroupDefinition"
     },
-    "PatchFilter": {
+    "PatchSource": {
+      "description": "Information about the patches to use to update the instances, including target operating systems and source repository. Applies to Linux instances only.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Values": {
+        "Products": {
           "type": "array",
           "uniqueItems": false,
           "items": {
             "oneOf": [
               {
-                "type": "string"
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
               },
               {
                 "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
               }
             ]
-          }
+          },
+          "minItems": 0,
+          "maxItems": 20
         },
-        "Key": {
+        "Configuration": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_\\-.]{3,50}$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -163,26 +270,31 @@
           ]
         }
       },
-      "title": "AWSSSMPatchBaselinePatchFilterDefinition"
+      "title": "AWSSSMPatchBaselinePatchSourceDefinition"
     },
     "Tag": {
+      "description": "Metadata that you assign to your AWS resources.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Value": {
+        "Key": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
         },
-        "Key": {
+        "Value": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -196,82 +308,8 @@
       ],
       "title": "AWSSSMPatchBaselineTagDefinition"
     },
-    "Rule": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "ApproveUntilDate": {
-          "$ref": "#/definitions/PatchStringDate"
-        },
-        "ApproveAfterDays": {
-          "type": "integer"
-        },
-        "EnableNonSecurity": {
-          "type": "boolean"
-        },
-        "ComplianceLevel": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "PatchFilterGroup": {
-          "$ref": "#/definitions/PatchFilterGroup"
-        }
-      },
-      "title": "AWSSSMPatchBaselineRuleDefinition"
-    },
-    "PatchStringDate": {
-      "type": "object",
-      "additionalProperties": false,
-      "title": "AWSSSMPatchBaselinePatchStringDateDefinition"
-    },
-    "PatchSource": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Products": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-              }
-            ]
-          }
-        },
-        "Configuration": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "title": "AWSSSMPatchBaselinePatchSourceDefinition"
-    },
     "RuleGroup": {
+      "description": "A set of rules defining the approval rules for a patch baseline.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -280,10 +318,121 @@
           "uniqueItems": false,
           "items": {
             "$ref": "#/definitions/Rule"
-          }
+          },
+          "minItems": 0,
+          "maxItems": 10
         }
       },
+      "insertionOrder": false,
       "title": "AWSSSMPatchBaselineRuleGroupDefinition"
+    },
+    "Rule": {
+      "description": "Defines an approval rule for a patch baseline.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ApproveUntilDate": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 10
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EnableNonSecurity": {
+          "type": "boolean",
+          "default": false
+        },
+        "PatchFilterGroup": {
+          "$ref": "#/definitions/PatchFilterGroup"
+        },
+        "ApproveAfterDays": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 360
+        },
+        "ComplianceLevel": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CRITICAL",
+                "HIGH",
+                "INFORMATIONAL",
+                "LOW",
+                "MEDIUM",
+                "UNSPECIFIED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "insertionOrder": false,
+      "title": "AWSSSMPatchBaselineRuleDefinition"
+    },
+    "PatchFilter": {
+      "description": "Defines which patches should be included in a patch baseline.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Values": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ADVISORY_ID",
+                "ARCH",
+                "BUGZILLA_ID",
+                "CLASSIFICATION",
+                "CVE_ID",
+                "EPOCH",
+                "MSRC_SEVERITY",
+                "NAME",
+                "PATCH_ID",
+                "PATCH_SET",
+                "PRIORITY",
+                "PRODUCT",
+                "PRODUCT_FAMILY",
+                "RELEASE",
+                "REPOSITORY",
+                "SECTION",
+                "SECURITY",
+                "SEVERITY",
+                "VERSION"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSSSMPatchBaselinePatchFilterDefinition"
     }
   },
   "required": [
@@ -298,6 +447,18 @@
   "readOnlyProperties": [
     "/properties/Id"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ssm:AddTagsToResource",
+      "ssm:ListTagsForResource",
+      "ssm:RemoveTagsFromResource"
+    ]
+  },
   "type": "object",
   "title": "AWSSSMPatchBaselineProperties"
 }

@@ -1,0 +1,304 @@
+{
+  "typeName": "AWS::SageMaker::PartnerApp",
+  "description": "Resource Type definition for AWS::SageMaker::PartnerApp. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A name for the PartnerApp."
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "lakera-guard",
+            "comet",
+            "deepchecks-llm-evaluation",
+            "fiddler"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of PartnerApp."
+    },
+    "ExecutionRoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The execution role for the user."
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": ".*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS KMS customer managed key used to encrypt the data associated with the PartnerApp."
+    },
+    "Tier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The tier of the PartnerApp."
+    },
+    "EnableIamSessionBasedIdentity": {
+      "type": "boolean",
+      "description": "Enables IAM Session based Identity for PartnerApp."
+    },
+    "EnableAutoMinorVersionUpgrade": {
+      "type": "boolean",
+      "description": "Enables automatic minor version upgrades for the PartnerApp."
+    },
+    "AppVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The version of the PartnerApp."
+    },
+    "ApplicationConfig": {
+      "$ref": "#/definitions/PartnerAppConfig",
+      "description": "A collection of settings that specify the maintenance schedule for the PartnerApp."
+    },
+    "AuthType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IAM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Auth type of PartnerApp."
+    },
+    "MaintenanceConfig": {
+      "$ref": "#/definitions/PartnerAppMaintenanceConfig",
+      "description": "A collection of settings that specify the maintenance schedule for the PartnerApp."
+    },
+    "ClientToken": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 36,
+          "pattern": "^[a-zA-Z0-9-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The client token for the PartnerApp."
+    },
+    "Tags": {
+      "type": "array",
+      "description": "A list of tags to apply to the PartnerApp.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "PartnerAppConfig": {
+      "type": "object",
+      "description": "A collection of configuration settings for the PartnerApp.",
+      "additionalProperties": false,
+      "properties": {
+        "AdminUsers": {
+          "type": "array",
+          "description": "A list of users with administrator privileges for the PartnerApp.",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "minItems": 0,
+          "maxItems": 5,
+          "items": {
+            "$ref": "#/definitions/PartnerAppAdminUserList"
+          }
+        },
+        "Arguments": {
+          "description": "A list of arguments to pass to the PartnerApp.",
+          "type": "object",
+          "additionalProperties": false,
+          "maxProperties": 5,
+          "patternProperties": {
+            "^(?!\\s*$).{1,256}$": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^.{0,1024}$",
+                  "maxLength": 1024
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "title": "AWSSageMakerPartnerAppPartnerAppConfigDefinition"
+    },
+    "PartnerAppAdminUserList": {
+      "oneOf": [
+        {
+          "type": "string",
+          "additionalProperties": false,
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A collection of AdminUsers for the PartnerApp",
+      "title": "AWSSageMakerPartnerAppPartnerAppAdminUserListDefinition"
+    },
+    "PartnerAppMaintenanceConfig": {
+      "type": "object",
+      "description": "A collection of settings that specify the maintenance schedule for the PartnerApp.",
+      "additionalProperties": false,
+      "properties": {
+        "MaintenanceWindowStart": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 9,
+              "pattern": "(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):([0-5]\\d)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The maintenance window start day and time for the PartnerApp."
+        }
+      },
+      "required": [
+        "MaintenanceWindowStart"
+      ],
+      "title": "AWSSageMakerPartnerAppPartnerAppMaintenanceConfigDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSSageMakerPartnerAppTagDefinition"
+    }
+  },
+  "required": [
+    "Name",
+    "Type",
+    "AuthType",
+    "ExecutionRoleArn",
+    "Tier"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Type",
+    "/properties/ExecutionRoleArn",
+    "/properties/AuthType",
+    "/properties/KmsKeyId"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/BaseUrl",
+    "/properties/CurrentVersionEolDate"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ClientToken"
+  ],
+  "deprecatedProperties": [
+    "/properties/ClientToken"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "replacementStrategy": "create_then_delete",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "sagemaker:AddTags",
+      "sagemaker:DeleteTags",
+      "sagemaker:ListTags"
+    ]
+  },
+  "type": "object",
+  "title": "AWSSageMakerPartnerAppProperties"
+}

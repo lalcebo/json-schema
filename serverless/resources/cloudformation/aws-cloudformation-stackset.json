@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::CloudFormation::StackSet",
-  "description": "StackSet as a resource provides one-click experience for provisioning a StackSet and StackInstances. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudformation.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudformation.git",
+  "description": "StackSet as a resource provides one-click experience for provisioning a StackSet and StackInstances. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudformation.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cloudformation.git",
   "resourceLink": {
     "templateUri": "/cloudformation/home?region=${awsRegion}#/stacksets/${StackSetId}",
@@ -58,10 +58,31 @@
         "RetainStacksOnAccountRemoval": {
           "description": "If set to true, stack resources are retained when an account is removed from a target organization or OU. If set to false, stack resources are deleted. Specify only if Enabled is set to True.",
           "type": "boolean"
+        },
+        "DependsOn": {
+          "description": "A list of StackSet ARNs that this StackSet depends on for auto-deployment operations. When auto-deployment is triggered, operations will be sequenced to ensure all dependencies complete successfully before this StackSet's operation begins.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/StackSetArn"
+          }
         }
       },
       "additionalProperties": false,
       "title": "AWSCloudFormationStackSetAutoDeploymentDefinition"
+    },
+    "StackSetArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Number (ARN) of a stack set.",
+      "title": "AWSCloudFormationStackSetStackSetArnDefinition"
     },
     "Account": {
       "oneOf": [
@@ -132,6 +153,22 @@
       "description": "The concurrency type of deploying StackSets operations in regions, could be in parallel or one region at a time",
       "title": "AWSCloudFormationStackSetRegionConcurrencyTypeDefinition"
     },
+    "ConcurrencyMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STRICT_FAILURE_TOLERANCE",
+            "SOFT_FAILURE_TOLERANCE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies how the concurrency level behaves during the operation execution.",
+      "title": "AWSCloudFormationStackSetConcurrencyModeDefinition"
+    },
     "Active": {
       "description": "When true, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.",
       "type": "boolean",
@@ -167,6 +204,9 @@
         },
         "RegionConcurrencyType": {
           "$ref": "#/definitions/RegionConcurrencyType"
+        },
+        "ConcurrencyMode": {
+          "$ref": "#/definitions/ConcurrencyMode"
         }
       },
       "additionalProperties": false,
@@ -218,6 +258,20 @@
           "items": {
             "$ref": "#/definitions/Account"
           }
+        },
+        "AccountsUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 5120,
+              "pattern": "(s3://|http(s?)://).+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Returns the value of the AccountsUrl property."
         },
         "OrganizationalUnitIds": {
           "description": "The organization root ID or organizational unit (OU) IDs to which StackSets deploys.",
@@ -473,6 +527,7 @@
   "writeOnlyProperties": [
     "/properties/TemplateURL",
     "/properties/OperationPreferences",
+    "/properties/StackInstancesGroup",
     "/properties/CallAs"
   ],
   "readOnlyProperties": [
@@ -481,6 +536,22 @@
   "primaryIdentifier": [
     "/properties/StackSetId"
   ],
+  "additionalIdentifiers": [
+    [
+      "/properties/StackSetName"
+    ]
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cloudformation:TagResource",
+      "cloudformation:UntagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSCloudFormationStackSetProperties"
 }

@@ -1,90 +1,55 @@
 {
-  "typeName": "AWS::AppConfig::Deployment",
-  "description": "Resource Type definition for AWS::AppConfig::Deployment. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "DeploymentStrategyId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ConfigurationProfileId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "EnvironmentId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "KmsKeyIdentifier": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Description": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ConfigurationVersion": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ApplicationId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tags"
-      }
-    }
+  "tagging": {
+    "permissions": [
+      "appconfig:TagResource",
+      "appconfig:UntagResource",
+      "appconfig:ListTagsForResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
   },
+  "typeName": "AWS::AppConfig::Deployment",
+  "readOnlyProperties": [
+    "/properties/DeploymentNumber",
+    "/properties/State"
+  ],
+  "description": "Resource Type definition for AWS::AppConfig::Deployment. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "createOnlyProperties": [
+    "/properties/ApplicationId",
+    "/properties/ConfigurationProfileId",
+    "/properties/DeploymentStrategyId",
+    "/properties/EnvironmentId",
+    "/properties/Description",
+    "/properties/ConfigurationVersion",
+    "/properties/KmsKeyIdentifier",
+    "/properties/DynamicExtensionParameters",
+    "/properties/Tags"
+  ],
+  "primaryIdentifier": [
+    "/properties/ApplicationId",
+    "/properties/EnvironmentId",
+    "/properties/DeploymentNumber"
+  ],
+  "required": [
+    "ApplicationId",
+    "ConfigurationProfileId",
+    "DeploymentStrategyId",
+    "EnvironmentId",
+    "ConfigurationVersion"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "writeOnlyProperties": [
+    "/properties/DynamicExtensionParameters"
+  ],
+  "additionalProperties": false,
   "definitions": {
-    "Tags": {
-      "type": "object",
+    "Tag": {
+      "description": "Metadata to assign to the deployment. Tags help organize and categorize your AWS AppConfig resources. Each tag consists of a key and an optional value, both of which you define.",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Value": {
           "oneOf": [
@@ -94,9 +59,48 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The tag value can be up to 256 characters."
         },
         "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key-value string map. The valid character set is [a-zA-Z1-9+-=._:/]. The tag key can be up to 128 characters and must not start with aws:."
+        }
+      },
+      "title": "AWSAppConfigDeploymentTagDefinition"
+    },
+    "DynamicExtensionParameters": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ParameterValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExtensionReference": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ParameterName": {
           "oneOf": [
             {
               "type": "string"
@@ -107,32 +111,104 @@
           ]
         }
       },
-      "title": "AWSAppConfigDeploymentTagsDefinition"
+      "title": "AWSAppConfigDeploymentDynamicExtensionParametersDefinition"
     }
   },
-  "required": [
-    "DeploymentStrategyId",
-    "ConfigurationProfileId",
-    "EnvironmentId",
-    "ConfigurationVersion",
-    "ApplicationId"
-  ],
-  "createOnlyProperties": [
-    "/properties/KmsKeyIdentifier",
-    "/properties/DeploymentStrategyId",
-    "/properties/ConfigurationVersion",
-    "/properties/ApplicationId",
-    "/properties/ConfigurationProfileId",
-    "/properties/Tags",
-    "/properties/EnvironmentId",
-    "/properties/Description"
-  ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id"
-  ],
+  "properties": {
+    "DeploymentStrategyId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The deployment strategy ID."
+    },
+    "ConfigurationProfileId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The configuration profile ID."
+    },
+    "EnvironmentId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The environment ID."
+    },
+    "KmsKeyIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Key Management Service key identifier (key ID, key alias, or key ARN) provided when the resource was created or updated."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the deployment."
+    },
+    "ConfigurationVersion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The configuration version to deploy. If deploying an AWS AppConfig hosted configuration version, you can specify either the version number or version label. For all other configurations, you must specify the version number."
+    },
+    "ApplicationId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The application ID."
+    },
+    "DynamicExtensionParameters": {
+      "uniqueItems": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DynamicExtensionParameters"
+      }
+    },
+    "Tags": {
+      "uniqueItems": true,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
   "type": "object",
   "title": "AWSAppConfigDeploymentProperties"
 }

@@ -1,7 +1,23 @@
 {
   "typeName": "AWS::Omics::SequenceStore",
-  "description": "Definition of AWS::Omics::SequenceStore Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Omics::SequenceStore. Source:- No source definition found, add manually please",
   "definitions": {
+    "ETagAlgorithmFamily": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "MD5up",
+            "SHA256up",
+            "SHA512up"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSOmicsSequenceStoreETagAlgorithmFamilyDefinition"
+    },
     "EncryptionType": {
       "oneOf": [
         {
@@ -15,6 +31,24 @@
         }
       ],
       "title": "AWSOmicsSequenceStoreEncryptionTypeDefinition"
+    },
+    "SequenceStoreStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "ACTIVE",
+            "UPDATING",
+            "DELETING",
+            "FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSOmicsSequenceStoreSequenceStoreStatusDefinition"
     },
     "SseConfig": {
       "type": "object",
@@ -65,6 +99,18 @@
     }
   },
   "properties": {
+    "AccessLogLocation": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^$|^s3://([a-z0-9][a-z0-9-.]{1,61}[a-z0-9])/?((.{1,800})/)?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Location of the access logs."
+    },
     "Description": {
       "oneOf": [
         {
@@ -78,6 +124,22 @@
         }
       ],
       "description": "A description for the store."
+    },
+    "ETagAlgorithmFamily": {
+      "$ref": "#/definitions/ETagAlgorithmFamily"
+    },
+    "FallbackLocation": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "pattern": "^$|^s3://([a-z0-9][a-z0-9-.]{1,61}[a-z0-9])/?((.{1,1024})/)?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An S3 location that is used to store files that have failed a direct upload."
     },
     "Name": {
       "oneOf": [
@@ -93,18 +155,27 @@
       ],
       "description": "A name for the store."
     },
-    "FallbackLocation": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1,
-          "pattern": "^s3:\\/\\/([a-z0-9][a-z0-9-.]{1,61}[a-z0-9])\\/?((.{1,1024})\\/)?$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "An S3 URI representing the bucket and folder to store failed read set uploads."
+    "PropagatedSetLevelTags": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 50,
+      "minItems": 0,
+      "description": "The tags keys to propagate to the S3 objects associated with read sets in the sequence store."
+    },
+    "S3AccessPolicy": {
+      "description": "The resource policy that controls S3 access on the store",
+      "type": "object"
     },
     "SseConfig": {
       "$ref": "#/definitions/SseConfig"
@@ -119,17 +190,16 @@
   "readOnlyProperties": [
     "/properties/Arn",
     "/properties/CreationTime",
-    "/properties/SequenceStoreId"
-  ],
-  "writeOnlyProperties": [
-    "/properties/Tags"
+    "/properties/S3AccessPointArn",
+    "/properties/S3Uri",
+    "/properties/SequenceStoreId",
+    "/properties/Status",
+    "/properties/StatusMessage",
+    "/properties/UpdateTime"
   ],
   "createOnlyProperties": [
-    "/properties/Description",
-    "/properties/Name",
-    "/properties/FallbackLocation",
-    "/properties/SseConfig",
-    "/properties/Tags"
+    "/properties/ETagAlgorithmFamily",
+    "/properties/SseConfig"
   ],
   "primaryIdentifier": [
     "/properties/SequenceStoreId"
@@ -137,8 +207,14 @@
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": true
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "omics:TagResource",
+      "omics:ListTagsForResource",
+      "omics:UntagResource"
+    ]
   },
   "additionalProperties": false,
   "type": "object",

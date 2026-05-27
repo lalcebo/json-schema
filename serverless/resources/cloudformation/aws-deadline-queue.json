@@ -1,0 +1,494 @@
+{
+  "typeName": "AWS::Deadline::Queue",
+  "description": "Resource Type definition for AWS::Deadline::Queue. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-deadline",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-deadline",
+  "definitions": {
+    "DefaultQueueBudgetAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "NONE",
+          "enum": [
+            "NONE",
+            "STOP_SCHEDULING_AND_COMPLETE_TASKS",
+            "STOP_SCHEDULING_AND_CANCEL_TASKS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineQueueDefaultQueueBudgetActionDefinition"
+    },
+    "JobAttachmentSettings": {
+      "type": "object",
+      "properties": {
+        "S3BucketName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "minLength": 3,
+              "pattern": "(?!^(\\d+\\.)+\\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])$)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RootPrefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "RootPrefix",
+        "S3BucketName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueueJobAttachmentSettingsDefinition"
+    },
+    "JobRunAsUser": {
+      "type": "object",
+      "properties": {
+        "Posix": {
+          "$ref": "#/definitions/PosixUser"
+        },
+        "Windows": {
+          "$ref": "#/definitions/WindowsUser"
+        },
+        "RunAs": {
+          "$ref": "#/definitions/RunAs"
+        }
+      },
+      "required": [
+        "RunAs"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueueJobRunAsUserDefinition"
+    },
+    "PosixUser": {
+      "type": "object",
+      "properties": {
+        "User": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 31,
+              "minLength": 0,
+              "pattern": "^(?:[a-z][a-z0-9-]{0,30})?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Group": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 31,
+              "minLength": 0,
+              "pattern": "^(?:[a-z][a-z0-9-]{0,30})?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Group",
+        "User"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueuePosixUserDefinition"
+    },
+    "PriorityBalancedSchedulingConfiguration": {
+      "type": "object",
+      "properties": {
+        "RenderingTaskBuffer": {
+          "type": "integer",
+          "default": 1,
+          "maximum": 1000,
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueuePriorityBalancedSchedulingConfigurationDefinition"
+    },
+    "PriorityFifoSchedulingConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueuePriorityFifoSchedulingConfigurationDefinition"
+    },
+    "RunAs": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "QUEUE_CONFIGURED_USER",
+            "WORKER_AGENT_USER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineQueueRunAsDefinition"
+    },
+    "SchedulingConfiguration": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "PriorityFifo",
+          "properties": {
+            "PriorityFifo": {
+              "$ref": "#/definitions/PriorityFifoSchedulingConfiguration"
+            }
+          },
+          "required": [
+            "PriorityFifo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "PriorityBalanced",
+          "properties": {
+            "PriorityBalanced": {
+              "$ref": "#/definitions/PriorityBalancedSchedulingConfiguration"
+            }
+          },
+          "required": [
+            "PriorityBalanced"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "WeightedBalanced",
+          "properties": {
+            "WeightedBalanced": {
+              "$ref": "#/definitions/WeightedBalancedSchedulingConfiguration"
+            }
+          },
+          "required": [
+            "WeightedBalanced"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDeadlineQueueSchedulingConfigurationDefinition"
+    },
+    "SchedulingMaxPriorityOverride": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "AlwaysScheduleFirst",
+          "properties": {
+            "AlwaysScheduleFirst": {
+              "$ref": "#/definitions/SchedulingMaxPriorityOverrideAlwaysScheduleFirst"
+            }
+          },
+          "required": [
+            "AlwaysScheduleFirst"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDeadlineQueueSchedulingMaxPriorityOverrideDefinition"
+    },
+    "SchedulingMaxPriorityOverrideAlwaysScheduleFirst": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueueSchedulingMaxPriorityOverrideAlwaysScheduleFirstDefinition"
+    },
+    "SchedulingMinPriorityOverride": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "AlwaysScheduleLast",
+          "properties": {
+            "AlwaysScheduleLast": {
+              "$ref": "#/definitions/SchedulingMinPriorityOverrideAlwaysScheduleLast"
+            }
+          },
+          "required": [
+            "AlwaysScheduleLast"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDeadlineQueueSchedulingMinPriorityOverrideDefinition"
+    },
+    "SchedulingMinPriorityOverrideAlwaysScheduleLast": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueueSchedulingMinPriorityOverrideAlwaysScheduleLastDefinition"
+    },
+    "WeightedBalancedSchedulingConfiguration": {
+      "type": "object",
+      "properties": {
+        "PriorityWeight": {
+          "type": "number",
+          "default": 100,
+          "maximum": 10000,
+          "minimum": 0
+        },
+        "ErrorWeight": {
+          "type": "number",
+          "default": -10,
+          "maximum": 10000,
+          "minimum": -10000
+        },
+        "SubmissionTimeWeight": {
+          "type": "number",
+          "default": 3,
+          "maximum": 10000,
+          "minimum": 0
+        },
+        "RenderingTaskWeight": {
+          "type": "number",
+          "default": -100,
+          "maximum": 10000,
+          "minimum": -10000
+        },
+        "RenderingTaskBuffer": {
+          "type": "integer",
+          "default": 1,
+          "maximum": 1000,
+          "minimum": 0
+        },
+        "MaxPriorityOverride": {
+          "$ref": "#/definitions/SchedulingMaxPriorityOverride"
+        },
+        "MinPriorityOverride": {
+          "$ref": "#/definitions/SchedulingMinPriorityOverride"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueueWeightedBalancedSchedulingConfigurationDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueueTagDefinition"
+    },
+    "WindowsUser": {
+      "type": "object",
+      "properties": {
+        "User": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 111,
+              "minLength": 0,
+              "pattern": "^[^\"'/\\[\\]:;|=,+*?<>\\s]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PasswordArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:secret:[a-zA-Z0-9-/_+=.@]{1,2028}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "PasswordArn",
+        "User"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineQueueWindowsUserDefinition"
+    }
+  },
+  "properties": {
+    "AllowedStorageProfileIds": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^sp-[0-9a-f]{32}$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 20,
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "DefaultBudgetAction": {
+      "$ref": "#/definitions/DefaultQueueBudgetAction"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "default": "",
+          "maxLength": 100,
+          "minLength": 0
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "FarmId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^farm-[0-9a-f]{32}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "JobAttachmentSettings": {
+      "$ref": "#/definitions/JobAttachmentSettings"
+    },
+    "JobRunAsUser": {
+      "$ref": "#/definitions/JobRunAsUser"
+    },
+    "RequiredFileSystemLocationNames": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[0-9A-Za-z ]*$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 20,
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:(aws[a-zA-Z-]*):iam::\\d{12}:role(/[!-.0-~]+)*/[\\w+=,.@-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "SchedulingConfiguration": {
+      "$ref": "#/definitions/SchedulingConfiguration"
+    },
+    "Tags": {
+      "type": "array",
+      "maxItems": 50,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "insertionOrder": false,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "DisplayName",
+    "FarmId"
+  ],
+  "readOnlyProperties": [
+    "/properties/QueueId",
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/FarmId"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "deadline:TagResource",
+      "deadline:UntagResource",
+      "deadline:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDeadlineQueueProperties"
+}

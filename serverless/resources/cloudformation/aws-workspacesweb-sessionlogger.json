@@ -1,0 +1,307 @@
+{
+  "typeName": "AWS::WorkSpacesWeb::SessionLogger",
+  "description": "Definition of AWS::WorkSpacesWeb::SessionLogger Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "EncryptionContextMap": {
+      "type": "object",
+      "patternProperties": {
+        "^[\\s\\S]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 131072,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebSessionLoggerEncryptionContextMapDefinition"
+    },
+    "Event": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "WebsiteInteract",
+            "FileDownloadFromSecureBrowserToRemoteDisk",
+            "FileTransferFromRemoteToLocalDisk",
+            "FileTransferFromLocalToRemoteDisk",
+            "FileUploadFromRemoteDiskToSecureBrowser",
+            "ContentPasteToWebsite",
+            "ContentTransferFromLocalToRemoteClipboard",
+            "ContentCopyFromWebsite",
+            "UrlLoad",
+            "TabOpen",
+            "TabClose",
+            "PrintJobSubmit",
+            "SessionConnect",
+            "SessionStart",
+            "SessionDisconnect",
+            "SessionEnd",
+            "UrlBlockByContentFilter"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebSessionLoggerEventDefinition"
+    },
+    "EventFilter": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "All",
+          "properties": {
+            "All": {
+              "$ref": "#/definitions/Unit"
+            }
+          },
+          "required": [
+            "All"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Include",
+          "properties": {
+            "Include": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Event"
+              },
+              "maxItems": 100,
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "Include"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSWorkSpacesWebSessionLoggerEventFilterDefinition"
+    },
+    "FolderStructure": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Flat",
+            "NestedByDate"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebSessionLoggerFolderStructureDefinition"
+    },
+    "LogConfiguration": {
+      "type": "object",
+      "properties": {
+        "S3": {
+          "$ref": "#/definitions/S3LogConfiguration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebSessionLoggerLogConfigurationDefinition"
+    },
+    "LogFileFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "JSONLines",
+            "Json"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWorkSpacesWebSessionLoggerLogFileFormatDefinition"
+    },
+    "S3LogConfiguration": {
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KeyPrefix": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[\\d\\w\\-_/!().*']+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BucketOwner": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9]{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LogFileFormat": {
+          "$ref": "#/definitions/LogFileFormat"
+        },
+        "FolderStructure": {
+          "$ref": "#/definitions/FolderStructure"
+        }
+      },
+      "required": [
+        "Bucket",
+        "FolderStructure",
+        "LogFileFormat"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebSessionLoggerS3LogConfigurationDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebSessionLoggerTagDefinition"
+    },
+    "Unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSWorkSpacesWebSessionLoggerUnitDefinition"
+    }
+  },
+  "properties": {
+    "AdditionalEncryptionContext": {
+      "$ref": "#/definitions/EncryptionContextMap"
+    },
+    "CustomerManagedKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:[\\w+=\\/,.@-]+:kms:[a-zA-Z0-9\\-]*:[a-zA-Z0-9]{1,12}:key\\/[a-zA-Z0-9-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "DisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[ _\\-\\d\\w]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "EventFilter": {
+      "$ref": "#/definitions/EventFilter"
+    },
+    "LogConfiguration": {
+      "$ref": "#/definitions/LogConfiguration"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0,
+      "insertionOrder": false
+    }
+  },
+  "required": [
+    "EventFilter",
+    "LogConfiguration"
+  ],
+  "readOnlyProperties": [
+    "/properties/AssociatedPortalArns",
+    "/properties/CreationDate",
+    "/properties/SessionLoggerArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/AdditionalEncryptionContext",
+    "/properties/CustomerManagedKey"
+  ],
+  "primaryIdentifier": [
+    "/properties/SessionLoggerArn"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": true,
+    "permissions": [
+      "workspaces-web:ListTagsForResource",
+      "workspaces-web:TagResource",
+      "workspaces-web:UntagResource"
+    ],
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSWorkSpacesWebSessionLoggerProperties"
+}

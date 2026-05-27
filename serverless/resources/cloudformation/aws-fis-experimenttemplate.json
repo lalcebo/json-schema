@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::FIS::ExperimentTemplate",
-  "description": "Resource schema for AWS::FIS::ExperimentTemplate. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-fis.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-fis.git",
+  "description": "Resource schema for AWS::FIS::ExperimentTemplate. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-fis.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-fis.git",
   "definitions": {
     "ExperimentTemplateId": {
@@ -67,6 +67,28 @@
         "Source"
       ],
       "title": "AWSFISExperimentTemplateExperimentTemplateStopConditionDefinition"
+    },
+    "CloudWatchDashboard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DashboardIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "DashboardIdentifier"
+      ],
+      "title": "AWSFISExperimentTemplateCloudWatchDashboardDefinition"
     },
     "ExperimentTemplateStopConditionList": {
       "type": "array",
@@ -417,7 +439,7 @@
                 {
                   "type": "string",
                   "minLength": 1,
-                  "maxLength": 1024
+                  "maxLength": 700
                 },
                 {
                   "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -438,6 +460,127 @@
         "LogSchemaVersion"
       ],
       "title": "AWSFISExperimentTemplateExperimentTemplateLogConfigurationDefinition"
+    },
+    "ExperimentTemplateExperimentOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AccountTargeting": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "multi-account",
+                "single-account"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The account targeting setting for the experiment template."
+        },
+        "EmptyTargetResolutionMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "fail",
+                "skip"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The target resolution failure mode for the experiment template."
+        }
+      },
+      "title": "AWSFISExperimentTemplateExperimentTemplateExperimentOptionsDefinition"
+    },
+    "ExperimentTemplateExperimentReportConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Outputs"
+      ],
+      "properties": {
+        "Outputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ExperimentReportS3Configuration": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "BucketName": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 63
+                    },
+                    {
+                      "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                  ]
+                },
+                "Prefix": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    {
+                      "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "BucketName"
+              ]
+            }
+          },
+          "required": [
+            "ExperimentReportS3Configuration"
+          ]
+        },
+        "DataSources": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "CloudWatchDashboards": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CloudWatchDashboard"
+              }
+            }
+          }
+        },
+        "PreExperimentDuration": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PostExperimentDuration": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSFISExperimentTemplateExperimentTemplateExperimentReportConfigurationDefinition"
     },
     "RoleArn": {
       "oneOf": [
@@ -488,6 +631,12 @@
         }
       },
       "additionalProperties": false
+    },
+    "ExperimentOptions": {
+      "$ref": "#/definitions/ExperimentTemplateExperimentOptions"
+    },
+    "ExperimentReportConfiguration": {
+      "$ref": "#/definitions/ExperimentTemplateExperimentReportConfiguration"
     }
   },
   "additionalProperties": false,
@@ -495,15 +644,26 @@
     "Description",
     "StopConditions",
     "Targets",
-    "RoleArn",
-    "Tags"
+    "RoleArn"
   ],
   "readOnlyProperties": [
     "/properties/Id"
   ],
   "createOnlyProperties": [
-    "/properties/Tags"
+    "/properties/ExperimentOptions/AccountTargeting"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "fis:TagResource",
+      "fis:UntagResource",
+      "fis:ListTagsForResource"
+    ]
+  },
   "primaryIdentifier": [
     "/properties/Id"
   ],

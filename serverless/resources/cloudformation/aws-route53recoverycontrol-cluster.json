@@ -1,8 +1,7 @@
 {
   "typeName": "AWS::Route53RecoveryControl::Cluster",
-  "description": "AWS Route53 Recovery Control Cluster resource schema. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-route53-recovery-control.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-route53-recovery-control.git",
+  "description": "AWS Route53 Recovery Control Cluster resource schema. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-route53-recovery-control.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-route53-recovery-control.git",
-  "taggable": true,
   "definitions": {
     "ClusterEndpoint": {
       "type": "object",
@@ -92,6 +91,21 @@
         "maxItems": 20
       },
       "insertionOrder": false
+    },
+    "NetworkType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "DUALSTACK"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Cluster supports IPv4 endpoints and Dual-stack IPv4 and IPv6 endpoints. NetworkType can be IPV4 or DUALSTACK."
     }
   },
   "required": [
@@ -102,9 +116,6 @@
     "/properties/Name",
     "/properties/Tags"
   ],
-  "writeOnlyProperties": [
-    "/properties/Tags"
-  ],
   "readOnlyProperties": [
     "/properties/ClusterArn",
     "/properties/ClusterEndpoints",
@@ -113,6 +124,18 @@
   "primaryIdentifier": [
     "/properties/ClusterArn"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": false,
+    "permissions": [
+      "route53-recovery-control-config:TagResource",
+      "route53-recovery-control-config:UntagResource",
+      "route53-recovery-control-config:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSRoute53RecoveryControlClusterProperties"
 }

@@ -1,13 +1,13 @@
 {
   "typeName": "AWS::Synthetics::Canary",
-  "description": "Resource Type definition for AWS::Synthetics::Canary. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-synthetics. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-synthetics",
+  "description": "Resource Type definition for AWS::Synthetics::Canary. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-synthetics",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-synthetics",
   "properties": {
     "Name": {
       "oneOf": [
         {
           "type": "string",
-          "pattern": "^[0-9a-z_\\-]{1,21}$"
+          "pattern": "^[0-9a-z_\\-]{1,255}$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -95,6 +95,51 @@
     "DeleteLambdaResourcesOnCanaryDeletion": {
       "description": "Deletes associated lambda resources created by Synthetics if set to True. Default is False",
       "type": "boolean"
+    },
+    "ResourcesToReplicateTags": {
+      "type": "array",
+      "uniqueItems": true,
+      "description": "List of resources which canary tags should be replicated to.",
+      "items": {
+        "$ref": "#/definitions/ResourceToTag"
+      }
+    },
+    "ProvisionedResourceCleanup": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AUTOMATIC",
+            "OFF"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Setting to control if provisioned resources created by Synthetics are deleted alongside the canary. Default is AUTOMATIC."
+    },
+    "DryRunAndUpdate": {
+      "description": "Setting to control if UpdateCanary will perform a DryRun and validate it is PASSING before performing the Update. Default is FALSE.",
+      "type": "boolean"
+    },
+    "BrowserConfigs": {
+      "description": "List of browser configurations for the canary",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/definitions/BrowserConfig"
+      }
+    },
+    "VisualReferences": {
+      "description": "List of visual references for the canary",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/definitions/VisualReference"
+      }
     }
   },
   "definitions": {
@@ -121,6 +166,10 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "RetryConfig": {
+          "$ref": "#/definitions/RetryConfig",
+          "description": "Provide canary auto retry configuration"
         }
       },
       "required": [
@@ -191,25 +240,97 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "Dependencies": {
+          "type": "array",
+          "description": "List of Lambda layers to attach to the canary",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          }
+        },
+        "BlueprintTypes": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         }
       },
-      "required": [
-        "Handler"
-      ],
       "oneOf": [
         {
           "required": [
+            "Handler",
             "S3Bucket",
             "S3Key"
           ]
         },
         {
           "required": [
+            "BlueprintTypes",
+            "S3Bucket",
+            "S3Key"
+          ]
+        },
+        {
+          "required": [
+            "Handler",
+            "Script"
+          ]
+        },
+        {
+          "required": [
+            "BlueprintTypes",
             "Script"
           ]
         }
       ],
       "title": "AWSSyntheticsCanaryCodeDefinition"
+    },
+    "Dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LambdaLayer"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Type of dependency"
+        },
+        "Reference": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\\d{12}:layer:[a-zA-Z0-9-_]+:[0-9]+",
+              "minLength": 1,
+              "maxLength": 140
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN of the Lambda layer"
+        }
+      },
+      "required": [
+        "Reference"
+      ],
+      "title": "AWSSyntheticsCanaryDependencyDefinition"
     },
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
@@ -288,6 +409,10 @@
               }
             ]
           }
+        },
+        "Ipv6AllowedForDualStack": {
+          "description": "Allow outbound IPv6 traffic on VPC canaries that are connected to dual-stack subnets if set to true",
+          "type": "boolean"
         }
       },
       "required": [
@@ -306,6 +431,10 @@
         },
         "MemoryInMB": {
           "description": "Provide maximum memory available for canary in MB",
+          "type": "integer"
+        },
+        "EphemeralStorage": {
+          "description": "Provide ephemeralStorage available for canary in MB",
           "type": "integer"
         },
         "ActiveTracing": {
@@ -353,6 +482,9 @@
           "items": {
             "$ref": "#/definitions/BaseScreenshot"
           }
+        },
+        "BrowserType": {
+          "$ref": "#/definitions/BrowserType"
         }
       },
       "required": [
@@ -434,6 +566,63 @@
         }
       },
       "title": "AWSSyntheticsCanaryS3EncryptionDefinition"
+    },
+    "ResourceToTag": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "lambda-function"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies which resources canary tags should be replicated to.",
+      "title": "AWSSyntheticsCanaryResourceToTagDefinition"
+    },
+    "RetryConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaxRetries": {
+          "type": "integer",
+          "description": "maximum times the canary will be retried upon the scheduled run failure"
+        }
+      },
+      "required": [
+        "MaxRetries"
+      ],
+      "title": "AWSSyntheticsCanaryRetryConfigDefinition"
+    },
+    "BrowserConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "BrowserType": {
+          "$ref": "#/definitions/BrowserType"
+        }
+      },
+      "required": [
+        "BrowserType"
+      ],
+      "title": "AWSSyntheticsCanaryBrowserConfigDefinition"
+    },
+    "BrowserType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CHROME",
+            "FIREFOX"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSyntheticsCanaryBrowserTypeDefinition"
     }
   },
   "required": [
@@ -444,6 +633,17 @@
     "Schedule",
     "RuntimeVersion"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "synthetics:TagResource",
+      "synthetics:UntagResource"
+    ]
+  },
   "additionalProperties": false,
   "createOnlyProperties": [
     "/properties/Name"
@@ -463,11 +663,15 @@
     "/properties/Code/Script",
     "/properties/DeleteLambdaResourcesOnCanaryDeletion",
     "/properties/StartCanaryAfterCreation",
+    "/properties/ResourcesToReplicateTags",
     "/properties/RunConfig/EnvironmentVariables",
-    "/properties/VisualReference"
+    "/properties/VisualReference",
+    "/properties/VisualReferences",
+    "/properties/DryRunAndUpdate"
   ],
   "deprecatedProperties": [
-    "/properties/DeleteLambdaResourcesOnCanaryDeletion"
+    "/properties/DeleteLambdaResourcesOnCanaryDeletion",
+    "/properties/VisualReference"
   ],
   "type": "object",
   "title": "AWSSyntheticsCanaryProperties"

@@ -1,0 +1,862 @@
+{
+  "typeName": "AWS::Logs::Transformer",
+  "description": "Specifies a transformer on the log group to transform logs into consistent structured and information rich format.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-logs.git",
+  "properties": {
+    "LogGroupIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "[\\w#+=/:,.@-]*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Existing log group that you want to associate with this transformer."
+    },
+    "TransformerConfig": {
+      "description": "List of processors in a transformer",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Processor"
+      },
+      "minItems": 1,
+      "maxItems": 20,
+      "insertionOrder": false
+    }
+  },
+  "required": [
+    "LogGroupIdentifier",
+    "TransformerConfig"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Processor": {
+      "description": "Individual processor configuration",
+      "type": "object",
+      "properties": {
+        "ParseCloudfront": {
+          "$ref": "#/definitions/ParseCloudfront"
+        },
+        "ParseVPC": {
+          "$ref": "#/definitions/ParseVPC"
+        },
+        "ParseWAF": {
+          "$ref": "#/definitions/ParseWAF"
+        },
+        "ParseJSON": {
+          "type": "object",
+          "properties": {
+            "Source": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Destination": {
+              "$ref": "#/definitions/NonEmptyAndMaxLengthString"
+            }
+          },
+          "additionalProperties": false
+        },
+        "ParseRoute53": {
+          "$ref": "#/definitions/ParseRoute53"
+        },
+        "ParsePostgres": {
+          "$ref": "#/definitions/ParsePostgres"
+        },
+        "ParseToOCSF": {
+          "$ref": "#/definitions/ParseToOCSF"
+        },
+        "ParseKeyValue": {
+          "type": "object",
+          "properties": {
+            "Source": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "Destination": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "FieldDelimiter": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "KeyValueDelimiter": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "KeyPrefix": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "NonMatchValue": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "OverwriteIfExists": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "CopyValue": {
+          "type": "object",
+          "properties": {
+            "Entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CopyValueEntry"
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "Entries"
+          ],
+          "additionalProperties": false
+        },
+        "Csv": {
+          "type": "object",
+          "properties": {
+            "QuoteCharacter": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Delimiter": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Source": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Columns": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Column"
+              },
+              "minItems": 1,
+              "maxItems": 100,
+              "insertionOrder": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "DateTimeConverter": {
+          "type": "object",
+          "properties": {
+            "Source": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "Target": {
+              "$ref": "#/definitions/NonEmptyAndMaxLengthString"
+            },
+            "TargetFormat": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "MatchPatterns": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MatchPattern"
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "uniqueItems": true,
+              "insertionOrder": false
+            },
+            "SourceTimezone": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "TargetTimezone": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            "Locale": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "Source",
+            "Target",
+            "MatchPatterns"
+          ],
+          "additionalProperties": false
+        },
+        "DeleteKeys": {
+          "type": "object",
+          "properties": {
+            "WithKeys": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WithKey"
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "uniqueItems": true,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "WithKeys"
+          ],
+          "additionalProperties": false
+        },
+        "Grok": {
+          "type": "object",
+          "properties": {
+            "Source": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "Match": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 512
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "Match"
+          ],
+          "additionalProperties": false
+        },
+        "ListToMap": {
+          "type": "object",
+          "properties": {
+            "Source": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "Key": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "ValueKey": {
+              "$ref": "#/definitions/NonEmptyString"
+            },
+            "Target": {
+              "$ref": "#/definitions/NonEmptyAndMaxLengthString"
+            },
+            "Flatten": {
+              "type": "boolean"
+            },
+            "FlattenedElement": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "first",
+                    "last"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "Source",
+            "Key"
+          ],
+          "additionalProperties": false
+        },
+        "AddKeys": {
+          "type": "object",
+          "properties": {
+            "Entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AddKeyEntry"
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "uniqueItems": true,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "Entries"
+          ],
+          "additionalProperties": false
+        },
+        "MoveKeys": {
+          "type": "object",
+          "properties": {
+            "Entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MoveKeyEntry"
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "Entries"
+          ],
+          "additionalProperties": false
+        },
+        "RenameKeys": {
+          "type": "object",
+          "properties": {
+            "Entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RenameKeyEntry"
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "Entries"
+          ],
+          "additionalProperties": false
+        },
+        "LowerCaseString": {
+          "type": "object",
+          "properties": {
+            "WithKeys": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WithKey"
+              },
+              "minItems": 1,
+              "maxItems": 10,
+              "uniqueItems": true,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "WithKeys"
+          ],
+          "additionalProperties": false
+        },
+        "SplitString": {
+          "type": "object",
+          "properties": {
+            "Entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SplitStringEntry"
+              },
+              "minItems": 1,
+              "maxItems": 10,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "Entries"
+          ],
+          "additionalProperties": false
+        },
+        "SubstituteString": {
+          "type": "object",
+          "properties": {
+            "Entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SubstituteStringEntry"
+              },
+              "minItems": 1,
+              "maxItems": 10,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "Entries"
+          ],
+          "additionalProperties": false
+        },
+        "TrimString": {
+          "type": "object",
+          "properties": {
+            "WithKeys": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WithKey"
+              },
+              "minItems": 1,
+              "maxItems": 10,
+              "uniqueItems": true,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "WithKeys"
+          ],
+          "additionalProperties": false
+        },
+        "UpperCaseString": {
+          "type": "object",
+          "properties": {
+            "WithKeys": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/WithKey"
+              },
+              "minItems": 1,
+              "maxItems": 10,
+              "uniqueItems": true,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "WithKeys"
+          ],
+          "additionalProperties": false
+        },
+        "TypeConverter": {
+          "type": "object",
+          "properties": {
+            "Entries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TypeConverterEntry"
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "insertionOrder": false
+            }
+          },
+          "required": [
+            "Entries"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "title": "AWSLogsTransformerProcessorDefinition"
+    },
+    "ParseCloudfront": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerParseCloudfrontDefinition"
+    },
+    "ParseVPC": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerParseVPCDefinition"
+    },
+    "ParseWAF": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerParseWAFDefinition"
+    },
+    "ParseRoute53": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerParseRoute53Definition"
+    },
+    "ParsePostgres": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerParsePostgresDefinition"
+    },
+    "ParseToOCSF": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "EventSource": {
+          "$ref": "#/definitions/EventSource"
+        },
+        "OcsfVersion": {
+          "$ref": "#/definitions/OcsfVersion"
+        },
+        "MappingVersion": {
+          "$ref": "#/definitions/MappingVersion"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "EventSource",
+        "OcsfVersion"
+      ],
+      "title": "AWSLogsTransformerParseToOCSFDefinition"
+    },
+    "AddKeyEntry": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "$ref": "#/definitions/NonEmptyAndMaxLengthString"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OverwriteIfExists": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSLogsTransformerAddKeyEntryDefinition"
+    },
+    "CopyValueEntry": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "Target": {
+          "$ref": "#/definitions/NonEmptyAndMaxLengthString"
+        },
+        "OverwriteIfExists": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Source",
+        "Target"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerCopyValueEntryDefinition"
+    },
+    "Column": {
+      "$ref": "#/definitions/NonEmptyAndMaxLengthString",
+      "title": "AWSLogsTransformerColumnDefinition"
+    },
+    "WithKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsTransformerWithKeyDefinition"
+    },
+    "MatchPattern": {
+      "$ref": "#/definitions/NonEmptyString",
+      "title": "AWSLogsTransformerMatchPatternDefinition"
+    },
+    "MoveKeyEntry": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "Target": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "OverwriteIfExists": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Source",
+        "Target"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerMoveKeyEntryDefinition"
+    },
+    "RenameKeyEntry": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "RenameTo": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "OverwriteIfExists": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Key",
+        "RenameTo"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerRenameKeyEntryDefinition"
+    },
+    "SplitStringEntry": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "Delimiter": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Source",
+        "Delimiter"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerSplitStringEntryDefinition"
+    },
+    "SubstituteStringEntry": {
+      "type": "object",
+      "properties": {
+        "Source": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "From": {
+          "$ref": "#/definitions/MaxLengthString"
+        },
+        "To": {
+          "$ref": "#/definitions/MaxLengthString"
+        }
+      },
+      "required": [
+        "Source",
+        "From",
+        "To"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerSubstituteStringEntryDefinition"
+    },
+    "TypeConverterEntry": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "$ref": "#/definitions/NonEmptyString"
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "boolean",
+                "integer",
+                "double",
+                "string"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSLogsTransformerTypeConverterEntryDefinition"
+    },
+    "NonEmptyAndMaxLengthString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^.*[a-zA-Z0-9]+.*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsTransformerNonEmptyAndMaxLengthStringDefinition"
+    },
+    "NonEmptyString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^.*[a-zA-Z0-9]+.*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsTransformerNonEmptyStringDefinition"
+    },
+    "MaxLengthString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsTransformerMaxLengthStringDefinition"
+    },
+    "EventSource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CloudTrail",
+            "Route53Resolver",
+            "VPCFlow",
+            "EKSAudit",
+            "AWSWAF"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsTransformerEventSourceDefinition"
+    },
+    "OcsfVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "V1.1",
+            "V1.5"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsTransformerOcsfVersionDefinition"
+    },
+    "MappingVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^v\\d+\\.\\d+(\\.\\d+)?$",
+          "minLength": 1,
+          "maxLength": 10
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSLogsTransformerMappingVersionDefinition"
+    }
+  },
+  "primaryIdentifier": [
+    "/properties/LogGroupIdentifier"
+  ],
+  "createOnlyProperties": [
+    "/properties/LogGroupIdentifier"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "type": "object",
+  "title": "AWSLogsTransformerProperties"
+}

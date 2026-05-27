@@ -1,13 +1,62 @@
 {
   "typeName": "AWS::EC2::Host",
-  "description": "Resource Type definition for AWS::EC2::Host. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2.git",
+  "description": "Resource Type definition for AWS::EC2::Host. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2.git",
   "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSEC2HostTagDefinition"
+    }
+  },
   "properties": {
     "AutoPlacement": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "on"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -29,7 +78,12 @@
     "HostRecovery": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -73,13 +127,38 @@
     "HostMaintenance": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "on",
+            "off"
+          ],
+          "default": "off"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
       "description": "Automatically allocates a new dedicated host and moves your instances on to it if a degradation is detected on your current host."
+    },
+    "AssetId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the Outpost hardware asset."
+    },
+    "Tags": {
+      "description": "Any tags assigned to the Host.",
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "required": [
@@ -89,7 +168,8 @@
     "/properties/AvailabilityZone",
     "/properties/InstanceType",
     "/properties/InstanceFamily",
-    "/properties/OutpostArn"
+    "/properties/OutpostArn",
+    "/properties/AssetId"
   ],
   "primaryIdentifier": [
     "/properties/HostId"

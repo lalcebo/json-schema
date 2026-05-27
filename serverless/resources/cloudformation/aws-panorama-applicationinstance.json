@@ -1,105 +1,57 @@
 {
+  "tagging": {
+    "permissions": [
+      "panorama:ListTagsForResource",
+      "panorama:TagResource",
+      "panorama:UntagResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
   "typeName": "AWS::Panorama::ApplicationInstance",
-  "description": "Schema for ApplicationInstance CloudFormation Resource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "readOnlyProperties": [
+    "/properties/ApplicationInstanceId",
+    "/properties/Arn",
+    "/properties/Status",
+    "/properties/HealthStatus",
+    "/properties/StatusDescription",
+    "/properties/DefaultRuntimeContextDeviceName",
+    "/properties/CreatedTime",
+    "/properties/LastUpdatedTime"
+  ],
+  "description": "Creates an application instance and deploys it to a device.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/Description",
+    "/properties/ManifestPayload",
+    "/properties/ManifestOverridesPayload",
+    "/properties/RuntimeRoleArn",
+    "/properties/DefaultRuntimeContextDevice",
+    "/properties/ApplicationInstanceIdToReplace"
+  ],
+  "primaryIdentifier": [
+    "/properties/ApplicationInstanceId"
+  ],
+  "required": [
+    "ManifestPayload",
+    "DefaultRuntimeContextDevice"
+  ],
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "writeOnlyProperties": [
+    "/properties/ApplicationInstanceIdToReplace"
+  ],
+  "additionalProperties": false,
   "definitions": {
-    "Name": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "pattern": "^[a-zA-Z0-9\\-\\_]+$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSPanoramaApplicationInstanceNameDefinition"
-    },
-    "Description": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 0,
-          "maxLength": 255,
-          "pattern": "^.*$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSPanoramaApplicationInstanceDescriptionDefinition"
-    },
-    "ManifestPayloadData": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 51200,
-          "pattern": "^.+$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSPanoramaApplicationInstanceManifestPayloadDataDefinition"
-    },
-    "ManifestPayload": {
-      "type": "object",
-      "properties": {
-        "PayloadData": {
-          "$ref": "#/definitions/ManifestPayloadData"
-        }
-      },
-      "additionalProperties": false,
-      "title": "AWSPanoramaApplicationInstanceManifestPayloadDefinition"
-    },
-    "ManifestOverridesPayloadData": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 0,
-          "maxLength": 51200,
-          "pattern": "^.+$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSPanoramaApplicationInstanceManifestOverridesPayloadDataDefinition"
-    },
-    "ManifestOverridesPayload": {
-      "type": "object",
-      "properties": {
-        "PayloadData": {
-          "$ref": "#/definitions/ManifestOverridesPayloadData"
-        }
-      },
-      "additionalProperties": false,
-      "title": "AWSPanoramaApplicationInstanceManifestOverridesPayloadDefinition"
-    },
-    "RuntimeRoleArn": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "pattern": "^arn:[a-z0-9][-.a-z0-9]{0,62}:iam::[0-9]{12}:role/.+$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSPanoramaApplicationInstanceRuntimeRoleArnDefinition"
-    },
     "DefaultRuntimeContextDevice": {
       "oneOf": [
         {
-          "type": "string",
           "minLength": 1,
-          "maxLength": 255,
-          "pattern": "^[a-zA-Z0-9\\-\\_]+$"
+          "pattern": "^[a-zA-Z0-9\\-\\_]+$",
+          "type": "string",
+          "maxLength": 255
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -107,71 +59,27 @@
       ],
       "title": "AWSPanoramaApplicationInstanceDefaultRuntimeContextDeviceDefinition"
     },
-    "DeviceName": {
+    "Description": {
       "oneOf": [
         {
+          "minLength": 0,
+          "pattern": "^.*$",
           "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "pattern": "^[a-zA-Z0-9\\-\\_]+$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSPanoramaApplicationInstanceDeviceNameDefinition"
-    },
-    "ApplicationInstanceId": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255,
-          "pattern": "^[a-zA-Z0-9\\-\\_]+$"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSPanoramaApplicationInstanceApplicationInstanceIdDefinition"
-    },
-    "ApplicationInstanceArn": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1,
           "maxLength": 255
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "title": "AWSPanoramaApplicationInstanceApplicationInstanceArnDefinition"
-    },
-    "ApplicationInstanceStatusDescription": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 255
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSPanoramaApplicationInstanceApplicationInstanceStatusDescriptionDefinition"
-    },
-    "Timestamp": {
-      "type": "integer",
-      "title": "AWSPanoramaApplicationInstanceTimestampDefinition"
+      "title": "AWSPanoramaApplicationInstanceDescriptionDefinition"
     },
     "DeviceId": {
       "oneOf": [
         {
-          "type": "string",
           "minLength": 1,
-          "maxLength": 255,
-          "pattern": "^[a-zA-Z0-9\\-\\_]+$"
+          "pattern": "^[a-zA-Z0-9\\-\\_]+$",
+          "type": "string",
+          "maxLength": 255
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -201,6 +109,78 @@
         }
       ],
       "title": "AWSPanoramaApplicationInstanceApplicationInstanceStatusDefinition"
+    },
+    "ManifestOverridesPayload": {
+      "description": "Parameter overrides for an application instance. This is a JSON document that has a single key (``PayloadData``) where the value is an escaped string representation of the overrides document.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "PayloadData": {
+          "description": "The overrides document.",
+          "$ref": "#/definitions/ManifestOverridesPayloadData"
+        }
+      },
+      "title": "AWSPanoramaApplicationInstanceManifestOverridesPayloadDefinition"
+    },
+    "RuntimeRoleArn": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "pattern": "^arn:[a-z0-9][-.a-z0-9]{0,62}:iam::[0-9]{12}:role/.+$",
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPanoramaApplicationInstanceRuntimeRoleArnDefinition"
+    },
+    "Timestamp": {
+      "type": "integer",
+      "title": "AWSPanoramaApplicationInstanceTimestampDefinition"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9\\-\\_]+$",
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPanoramaApplicationInstanceNameDefinition"
+    },
+    "ApplicationInstanceId": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9\\-\\_]+$",
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPanoramaApplicationInstanceApplicationInstanceIdDefinition"
+    },
+    "ManifestPayloadData": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "pattern": "^.+$",
+          "type": "string",
+          "maxLength": 51200
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPanoramaApplicationInstanceManifestPayloadDataDefinition"
     },
     "ApplicationInstanceHealthStatus": {
       "oneOf": [
@@ -237,116 +217,155 @@
       ],
       "title": "AWSPanoramaApplicationInstanceStatusFilterDefinition"
     },
-    "Tag": {
+    "TagList": {
+      "uniqueItems": true,
+      "description": "List of tags",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "title": "AWSPanoramaApplicationInstanceTagListDefinition"
+    },
+    "ManifestPayload": {
+      "description": "A application verion's manifest file. This is a JSON document that has a single key (``PayloadData``) where the value is an escaped string representation of the application manifest (``graph.json``). This file is located in the ``graphs`` folder in your application source.",
+      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128,
-              "pattern": "^.+$"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "A string used to identify this tag"
+        "PayloadData": {
+          "description": "The application manifest.",
+          "$ref": "#/definitions/ManifestPayloadData"
+        }
+      },
+      "title": "AWSPanoramaApplicationInstanceManifestPayloadDefinition"
+    },
+    "ApplicationInstanceArn": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 255
         },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPanoramaApplicationInstanceApplicationInstanceArnDefinition"
+    },
+    "ManifestOverridesPayloadData": {
+      "oneOf": [
+        {
+          "minLength": 0,
+          "pattern": "^.+$",
+          "type": "string",
+          "maxLength": 51200
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPanoramaApplicationInstanceManifestOverridesPayloadDataDefinition"
+    },
+    "ApplicationInstanceStatusDescription": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPanoramaApplicationInstanceApplicationInstanceStatusDescriptionDefinition"
+    },
+    "Tag": {
+      "description": "",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
         "Value": {
           "oneOf": [
             {
-              "type": "string",
               "minLength": 0,
-              "maxLength": 256,
-              "pattern": "^.+$"
+              "pattern": "^.+$",
+              "type": "string",
+              "maxLength": 256
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ],
-          "description": "A string containing the value for the tag"
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "pattern": "^.+$",
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
         "Key",
         "Value"
       ],
-      "additionalProperties": false,
       "title": "AWSPanoramaApplicationInstanceTagDefinition"
     },
-    "TagList": {
-      "description": "List of tags",
-      "type": "array",
-      "uniqueItems": true,
-      "insertionOrder": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      },
-      "title": "AWSPanoramaApplicationInstanceTagListDefinition"
+    "DeviceName": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9\\-\\_]+$",
+          "type": "string",
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSPanoramaApplicationInstanceDeviceNameDefinition"
     }
   },
   "properties": {
-    "Name": {
-      "$ref": "#/definitions/Name"
+    "DefaultRuntimeContextDevice": {
+      "description": "The device's ID.",
+      "$ref": "#/definitions/DefaultRuntimeContextDevice"
     },
     "Description": {
+      "description": "A description for the application instance.",
       "$ref": "#/definitions/Description"
     },
-    "ManifestPayload": {
-      "$ref": "#/definitions/ManifestPayload"
+    "ApplicationInstanceIdToReplace": {
+      "description": "The ID of an application instance to replace with the new instance.",
+      "$ref": "#/definitions/ApplicationInstanceId"
     },
     "ManifestOverridesPayload": {
+      "description": "Setting overrides for the application manifest.",
       "$ref": "#/definitions/ManifestOverridesPayload"
     },
     "RuntimeRoleArn": {
+      "description": "The ARN of a runtime role for the application instance.",
       "$ref": "#/definitions/RuntimeRoleArn"
     },
-    "DefaultRuntimeContextDevice": {
-      "$ref": "#/definitions/DefaultRuntimeContextDevice"
+    "Name": {
+      "description": "A name for the application instance.",
+      "$ref": "#/definitions/Name"
     },
-    "ApplicationInstanceIdToReplace": {
-      "$ref": "#/definitions/ApplicationInstanceId"
-    },
-    "DeviceId": {
-      "$ref": "#/definitions/DeviceId"
-    },
-    "StatusFilter": {
-      "$ref": "#/definitions/StatusFilter"
+    "ManifestPayload": {
+      "description": "The application's manifest document.",
+      "$ref": "#/definitions/ManifestPayload"
     },
     "Tags": {
+      "description": "Tags for the application instance.",
       "$ref": "#/definitions/TagList"
     }
   },
-  "additionalProperties": false,
-  "taggable": true,
-  "required": [
-    "ManifestPayload",
-    "DefaultRuntimeContextDevice"
-  ],
-  "readOnlyProperties": [
-    "/properties/ApplicationInstanceId",
-    "/properties/Arn",
-    "/properties/Status",
-    "/properties/HealthStatus",
-    "/properties/StatusDescription",
-    "/properties/DefaultRuntimeContextDeviceName",
-    "/properties/CreatedTime",
-    "/properties/LastUpdatedTime"
-  ],
-  "createOnlyProperties": [
-    "/properties/Name",
-    "/properties/Description",
-    "/properties/ManifestPayload",
-    "/properties/ManifestOverridesPayload",
-    "/properties/RuntimeRoleArn",
-    "/properties/DefaultRuntimeContextDevice",
-    "/properties/ApplicationInstanceIdToReplace"
-  ],
-  "primaryIdentifier": [
-    "/properties/ApplicationInstanceId"
-  ],
   "type": "object",
   "title": "AWSPanoramaApplicationInstanceProperties"
 }

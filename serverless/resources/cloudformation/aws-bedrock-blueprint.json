@@ -1,0 +1,161 @@
+{
+  "typeName": "AWS::Bedrock::Blueprint",
+  "description": "Definition of AWS::Bedrock::Blueprint Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "description": "Definition of the key/value pair for a tag",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Key for the tag"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Value for the tag"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockBlueprintTagDefinition"
+    }
+  },
+  "properties": {
+    "BlueprintName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name of the Blueprint"
+    },
+    "Schema": {
+      "type": "object",
+      "description": "Schema of the blueprint"
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DOCUMENT",
+            "IMAGE",
+            "AUDIO",
+            "VIDEO"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Modality Type"
+    },
+    "KmsKeyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "KMS key identifier"
+    },
+    "KmsEncryptionContext": {
+      "type": "object",
+      "description": "KMS encryption context",
+      "patternProperties": {
+        "^.*$": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "dependencies": {
+        "KmsEncryptionContext": [
+          "KmsKeyId"
+        ]
+      }
+    },
+    "Tags": {
+      "description": "List of Tags",
+      "type": "array",
+      "insertionOrder": false,
+      "minItems": 0,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "BlueprintName",
+    "Schema",
+    "Type"
+  ],
+  "primaryIdentifier": [
+    "/properties/BlueprintArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/BlueprintName",
+    "/properties/Type"
+  ],
+  "readOnlyProperties": [
+    "/properties/BlueprintArn",
+    "/properties/BlueprintStage",
+    "/properties/CreationTime",
+    "/properties/LastModifiedTime"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": false,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "bedrock:TagResource",
+      "bedrock:UntagResource",
+      "bedrock:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSBedrockBlueprintProperties"
+}

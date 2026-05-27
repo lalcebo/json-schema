@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::ResourceExplorer2::View",
-  "description": "Definition of AWS::ResourceExplorer2::View Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::ResourceExplorer2::View Resource Type. Source:- No source definition found, add manually please",
   "definitions": {
     "IncludedProperty": {
       "type": "object",
@@ -8,7 +8,9 @@
         "Name": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "maxLength": 1011,
+              "minLength": 1
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -22,13 +24,15 @@
       "additionalProperties": false,
       "title": "AWSResourceExplorer2ViewIncludedPropertyDefinition"
     },
-    "Filters": {
+    "SearchFilter": {
       "type": "object",
       "properties": {
         "FilterString": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 0
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -40,7 +44,7 @@
         "FilterString"
       ],
       "additionalProperties": false,
-      "title": "AWSResourceExplorer2ViewFiltersDefinition"
+      "title": "AWSResourceExplorer2ViewSearchFilterDefinition"
     },
     "TagMap": {
       "type": "object",
@@ -61,15 +65,24 @@
     }
   },
   "properties": {
+    "Filters": {
+      "$ref": "#/definitions/SearchFilter"
+    },
     "IncludedProperties": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/IncludedProperty"
-      },
-      "insertionOrder": false
+      }
     },
-    "Filters": {
-      "$ref": "#/definitions/Filters"
+    "Scope": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "Tags": {
       "$ref": "#/definitions/TagMap"
@@ -93,6 +106,7 @@
     "/properties/ViewArn"
   ],
   "createOnlyProperties": [
+    "/properties/Scope",
     "/properties/ViewName"
   ],
   "primaryIdentifier": [
@@ -101,9 +115,14 @@
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
-    "cloudFormationSystemTags": false,
+    "cloudFormationSystemTags": true,
     "tagUpdatable": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "resource-explorer-2:ListTagsForResource",
+      "resource-explorer-2:TagResource",
+      "resource-explorer-2:UntagResource"
+    ]
   },
   "additionalProperties": false,
   "type": "object",

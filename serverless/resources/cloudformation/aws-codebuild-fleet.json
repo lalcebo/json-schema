@@ -1,0 +1,393 @@
+{
+  "typeName": "AWS::CodeBuild::Fleet",
+  "description": "Resource Type definition for AWS::CodeBuild::Fleet. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "BaseCapacity": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "EnvironmentType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "WINDOWS_SERVER_2019_CONTAINER",
+            "WINDOWS_SERVER_2022_CONTAINER",
+            "LINUX_CONTAINER",
+            "LINUX_GPU_CONTAINER",
+            "ARM_CONTAINER",
+            "MAC_ARM",
+            "LINUX_EC2",
+            "ARM_EC2",
+            "WINDOWS_EC2"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ComputeType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BUILD_GENERAL1_SMALL",
+            "BUILD_GENERAL1_MEDIUM",
+            "BUILD_GENERAL1_LARGE",
+            "BUILD_GENERAL1_XLARGE",
+            "BUILD_GENERAL1_2XLARGE",
+            "ATTRIBUTE_BASED_COMPUTE",
+            "CUSTOM_INSTANCE_TYPE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "OverflowBehavior": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "QUEUE",
+            "ON_DEMAND"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "FleetServiceRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(?:arn:)[a-zA-Z+-=,._:/@]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "FleetVpcConfig": {
+      "$ref": "#/definitions/VpcConfig"
+    },
+    "FleetProxyConfiguration": {
+      "$ref": "#/definitions/ProxyConfiguration"
+    },
+    "Tags": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "ImageId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^((aws/codebuild/([A-Za-z0-9._-]+|ami/[A-Za-z0-9._-]+):[A-Za-z0-9._-]+)|ami-[a-z0-9]{1,1020})$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ScalingConfiguration": {
+      "$ref": "#/definitions/ScalingConfigurationInput"
+    },
+    "ComputeConfiguration": {
+      "$ref": "#/definitions/ComputeConfiguration"
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256,
+              "pattern": "[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 255 Unicode characters in length. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSCodeBuildFleetTagDefinition"
+    },
+    "VpcConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "VpcId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Subnets": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "SecurityGroupIds": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSCodeBuildFleetVpcConfigDefinition"
+    },
+    "ProxyConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ALLOW_ALL",
+                "DENY_ALL"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OrderedProxyRules": {
+          "type": "array",
+          "insertionOrder": true,
+          "items": {
+            "$ref": "#/definitions/FleetProxyRule"
+          }
+        }
+      },
+      "title": "AWSCodeBuildFleetProxyConfigurationDefinition"
+    },
+    "FleetProxyRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DOMAIN",
+                "IP"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Effect": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ALLOW",
+                "DENY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Entities": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSCodeBuildFleetFleetProxyRuleDefinition"
+    },
+    "ScalingConfigurationInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MaxCapacity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ScalingType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "TARGET_TRACKING_SCALING"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetTrackingScalingConfigs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TargetTrackingScalingConfiguration"
+          }
+        }
+      },
+      "title": "AWSCodeBuildFleetScalingConfigurationInputDefinition"
+    },
+    "TargetTrackingScalingConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MetricType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FLEET_UTILIZATION_RATE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetValue": {
+          "type": "number"
+        }
+      },
+      "title": "AWSCodeBuildFleetTargetTrackingScalingConfigurationDefinition"
+    },
+    "ComputeConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "vCpu": {
+          "type": "integer"
+        },
+        "memory": {
+          "type": "integer"
+        },
+        "disk": {
+          "type": "integer"
+        },
+        "machineType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "GENERAL",
+                "NVME"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "instanceType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSCodeBuildFleetComputeConfigurationDefinition"
+    }
+  },
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "codebuild:CreateFleet",
+      "codebuild:UpdateFleet"
+    ]
+  },
+  "type": "object",
+  "title": "AWSCodeBuildFleetProperties"
+}

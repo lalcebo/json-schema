@@ -1,0 +1,178 @@
+{
+  "typeName": "AWS::Glue::IntegrationResourceProperty",
+  "description": "Resource Type definition for AWS::Glue::IntegrationResourceProperty. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue.git",
+  "properties": {
+    "ResourceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "arn:aws:.*:.*:[0-9]+:.*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The connection ARN of the source, or the database ARN of the target."
+    },
+    "SourceProcessingProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The resource properties associated with the integration source.",
+      "properties": {
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IAM role to access the Glue connection."
+        }
+      },
+      "required": [
+        "RoleArn"
+      ]
+    },
+    "TargetProcessingProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The resource properties associated with the integration target.",
+      "properties": {
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "arn:aws:iam:.*:[0-9]+:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IAM role to access the Glue database."
+        },
+        "KmsArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "arn:aws:kms:.*:[0-9]+:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the KMS key used for encryption."
+        },
+        "ConnectionName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Glue network connection to configure the Glue job running in the customer VPC."
+        },
+        "EventBusArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of an Eventbridge event bus to receive the integration status notification."
+        }
+      },
+      "required": [
+        "RoleArn"
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "ResourceArn"
+  ],
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Key"
+      ],
+      "title": "AWSGlueIntegrationResourcePropertyTagDefinition"
+    }
+  },
+  "createOnlyProperties": [
+    "/properties/ResourceArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/ResourceArn",
+    "/properties/ResourcePropertyArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/ResourcePropertyArn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "glue:TagResource",
+      "glue:UntagResource",
+      "glue:GetTags"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSGlueIntegrationResourcePropertyProperties"
+}

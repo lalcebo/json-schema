@@ -1,0 +1,283 @@
+{
+  "tagging": {
+    "permissions": [
+      "directconnect:TagResource",
+      "directconnect:UntagResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "typeName": "AWS::DirectConnect::PublicVirtualInterface",
+  "readOnlyProperties": [
+    "/properties/BgpPeers/*/BgpPeerId",
+    "/properties/VirtualInterfaceArn",
+    "/properties/VirtualInterfaceId"
+  ],
+  "description": "Resource Type definition for AWS::DirectConnect::PublicVirtualInterface. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "createOnlyProperties": [
+    "/properties/AllocatePublicVirtualInterfaceRoleArn",
+    "/properties/RouteFilterPrefixes",
+    "/properties/Vlan"
+  ],
+  "primaryIdentifier": [
+    "/properties/VirtualInterfaceArn"
+  ],
+  "required": [
+    "BgpPeers",
+    "ConnectionId",
+    "VirtualInterfaceName",
+    "Vlan"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "propertyTransform": {
+    "/properties/ConnectionId": "$lowercase($substringAfter(ConnectionId, \"/\"))"
+  },
+  "writeOnlyProperties": [
+    "/properties/AllocatePublicVirtualInterfaceRoleArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/VirtualInterfaceId"
+    ]
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "BgpPeer": {
+      "description": "Information about a BGP peer.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "BgpPeerId": {
+          "oneOf": [
+            {
+              "pattern": "^dxpeer-[a-z0-9]{8}$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AuthKey": {
+          "oneOf": [
+            {
+              "pattern": "^[A-Za-z0-9\\\\!\"#$%&'()*+,\\-./:;<=>?@\\[\\]\\^_`{|}~]{6,80}$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The authentication key for BGP configuration. This string has a minimum length of 6 characters and and a maximum length of 80 characters."
+        },
+        "AddressFamily": {
+          "oneOf": [
+            {
+              "pattern": "^(ipv4)|(ipv6)$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The address family for the BGP peer."
+        },
+        "AmazonAddress": {
+          "oneOf": [
+            {
+              "pattern": "^[0-9a-fA-F:.]+/[0-9]+$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IP address assigned to the Amazon interface."
+        },
+        "Asn": {
+          "oneOf": [
+            {
+              "pattern": "^[1-9][0-9]*$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The autonomous system (AS) number for Border Gateway Protocol (BGP) configuration."
+        },
+        "CustomerAddress": {
+          "oneOf": [
+            {
+              "pattern": "^[0-9a-fA-F:.]+/[0-9]+$",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IP address assigned to the customer interface."
+        }
+      },
+      "required": [
+        "AddressFamily",
+        "Asn"
+      ],
+      "title": "AWSDirectConnectPublicVirtualInterfaceBgpPeerDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSDirectConnectPublicVirtualInterfaceTagDefinition"
+    }
+  },
+  "replacementStrategy": "delete_then_create",
+  "properties": {
+    "BgpPeers": {
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "description": "The BGP peers configured on this virtual interface.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/BgpPeer"
+      }
+    },
+    "ConnectionId": {
+      "oneOf": [
+        {
+          "pattern": "^((arn:aws[a-z-]*:directconnect:[a-z0-9-]+:[0-9]{12}:(dxcon/dxcon|dxlag/dxlag))|dx(con|lag))-[a-z0-9A-Z]{8,21}$",
+          "anyOf": [
+            {
+              "relationshipRef": {
+                "typeName": "AWS::DirectConnect::Connection",
+                "propertyPath": "/properties/ConnectionId"
+              }
+            },
+            {
+              "relationshipRef": {
+                "typeName": "AWS::DirectConnect::Connection",
+                "propertyPath": "/properties/ConnectionArn"
+              }
+            },
+            {
+              "relationshipRef": {
+                "typeName": "AWS::DirectConnect::Lag",
+                "propertyPath": "/properties/LagId"
+              }
+            },
+            {
+              "relationshipRef": {
+                "typeName": "AWS::DirectConnect::Lag",
+                "propertyPath": "/properties/LagArn"
+              }
+            }
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID or ARN of the connection or LAG."
+    },
+    "RouteFilterPrefixes": {
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "The routes to be advertised to the AWS network in this region.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "pattern": "^[0-9a-fA-F:.]+/[0-9]+$",
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ],
+        "description": "A CIDR block for the advertised route. An IPv6 CIDR must use /64 or shorter."
+      }
+    },
+    "VirtualInterfaceName": {
+      "oneOf": [
+        {
+          "pattern": "^[\\w \\-_,\\/]{1,100}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the virtual interface assigned by the customer network. The name has a maximum of 100 characters. The following are valid characters: a-z, 0-9 and a hyphen (-)."
+    },
+    "Vlan": {
+      "description": "The ID of the VLAN.",
+      "maximum": 4095,
+      "type": "integer",
+      "minimum": 0
+    },
+    "Tags": {
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "The tags associated with the public virtual interface.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "AllocatePublicVirtualInterfaceRoleArn": {
+      "oneOf": [
+        {
+          "pattern": "^arn:aws[a-z-]*:iam::[0-9]{12}:role/.+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the role to allocate the public virtual interface. Needs directconnect:AllocatePublicVirtualInterface permissions and tag permissions if applicable."
+    }
+  },
+  "type": "object",
+  "title": "AWSDirectConnectPublicVirtualInterfaceProperties"
+}

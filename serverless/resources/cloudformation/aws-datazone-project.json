@@ -1,0 +1,538 @@
+{
+  "typeName": "AWS::DataZone::Project",
+  "description": "Amazon DataZone projects are business use case–based groupings of people, assets (data), and tools used to simplify access to the AWS analytics.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "definitions": {
+    "Member": {
+      "type": "object",
+      "description": "The member of the project.",
+      "properties": {
+        "UserIdentifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GroupIdentifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectMemberDefinition"
+    },
+    "UserDesignation": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROJECT_OWNER",
+            "PROJECT_CONTRIBUTOR"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDataZoneProjectUserDesignationDefinition"
+    },
+    "ProjectMembershipAssignment": {
+      "type": "object",
+      "description": "The project membership assignment.",
+      "properties": {
+        "Member": {
+          "$ref": "#/definitions/Member"
+        },
+        "Designation": {
+          "$ref": "#/definitions/UserDesignation"
+        }
+      },
+      "required": [
+        "Member",
+        "Designation"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectProjectMembershipAssignmentDefinition"
+    },
+    "EnvironmentConfigurationUserParameter": {
+      "type": "object",
+      "properties": {
+        "EnvironmentId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,36}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EnvironmentConfigurationName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[\\w -]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EnvironmentParameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EnvironmentParameter"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectEnvironmentConfigurationUserParameterDefinition"
+    },
+    "EnvironmentDeploymentDetails": {
+      "type": "object",
+      "properties": {
+        "OverallDeploymentStatus": {
+          "$ref": "#/definitions/OverallDeploymentStatus"
+        },
+        "EnvironmentFailureReasons": {
+          "$ref": "#/definitions/EnvironmentFailureReasons"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectEnvironmentDeploymentDetailsDefinition"
+    },
+    "EnvironmentError": {
+      "type": "object",
+      "properties": {
+        "Code": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Message"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectEnvironmentErrorDefinition"
+    },
+    "EnvironmentFailureReasons": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EnvironmentError"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectEnvironmentFailureReasonsDefinition"
+    },
+    "EnvironmentParameter": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectEnvironmentParameterDefinition"
+    },
+    "EnvironmentResolvedAccount": {
+      "type": "object",
+      "properties": {
+        "AwsAccountId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RegionName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z]{2}-[a-z]{4,10}-\\d$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SourceAccountPoolId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{1,36}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "AwsAccountId",
+        "RegionName",
+        "SourceAccountPoolId"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectEnvironmentResolvedAccountDefinition"
+    },
+    "OverallDeploymentStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PENDING_DEPLOYMENT",
+            "IN_PROGRESS",
+            "SUCCESSFUL",
+            "FAILED_VALIDATION",
+            "FAILED_DEPLOYMENT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDataZoneProjectOverallDeploymentStatusDefinition"
+    },
+    "ProjectDeletionError": {
+      "type": "object",
+      "description": "Error that occurred during project deletion",
+      "properties": {
+        "Code": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Project Deletion Error Code"
+        },
+        "Message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Project Deletion Error Message"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectProjectDeletionErrorDefinition"
+    },
+    "ProjectStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "MOVING",
+            "DELETING",
+            "DELETE_FAILED",
+            "UPDATING",
+            "UPDATE_FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDataZoneProjectProjectStatusDefinition"
+    },
+    "Tags": {
+      "type": "object",
+      "patternProperties": {
+        "^[\\w \\.:/=+@-]+$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[\\w \\.:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectTagsDefinition"
+    },
+    "ResourceTag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\w \\.:/=+@-]+$",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[\\w \\.:/=+@-]*$",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneProjectResourceTagDefinition"
+    }
+  },
+  "properties": {
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the Amazon DataZone project."
+    },
+    "DomainIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^dzd[-_][a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon DataZone domain in which this project is created."
+    },
+    "DomainUnitId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9_\\-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the domain unit."
+    },
+    "GlossaryTerms": {
+      "description": "The glossary terms that can be used in this Amazon DataZone project.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,36}$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 20,
+      "minItems": 0
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[\\w -]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the Amazon DataZone project."
+    },
+    "ProjectProfileId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The project profile ID."
+    },
+    "ProjectProfileVersion": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The project profile version to which the project should be updated. You can only specify the following string for this parameter: latest."
+    },
+    "UserParameters": {
+      "description": "The user parameters of the project.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EnvironmentConfigurationUserParameter"
+      }
+    },
+    "ResourceTags": {
+      "description": "The resource tags of the project.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ResourceTag"
+      }
+    },
+    "MembershipAssignments": {
+      "description": "The project membership assignments.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ProjectMembershipAssignment"
+      }
+    },
+    "ProjectCategory": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The project category."
+    },
+    "ProjectExecutionRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[^:]*:iam::\\d{12}:role/[\\w+=,.@/-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The project execution role ARN."
+    }
+  },
+  "required": [
+    "DomainIdentifier",
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/CreatedAt",
+    "/properties/CreatedBy",
+    "/properties/DomainId",
+    "/properties/LastUpdatedAt",
+    "/properties/ProjectStatus"
+  ],
+  "writeOnlyProperties": [
+    "/properties/DomainIdentifier",
+    "/properties/ProjectProfileVersion",
+    "/properties/ProjectProfileId",
+    "/properties/UserParameters",
+    "/properties/MembershipAssignments",
+    "/properties/ProjectExecutionRole"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainId",
+    "/properties/Id"
+  ],
+  "createOnlyProperties": [
+    "/properties/ProjectProfileId",
+    "/properties/DomainIdentifier",
+    "/properties/MembershipAssignments",
+    "/properties/ProjectCategory",
+    "/properties/ProjectExecutionRole"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/DomainIdentifier"
+    ]
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDataZoneProjectProperties"
+}

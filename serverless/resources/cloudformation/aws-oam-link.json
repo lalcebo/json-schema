@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Oam::Link",
-  "description": "Definition of AWS::Oam::Link Resource Type. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of AWS::Oam::Link Resource Type. Source:- No source definition found, add manually please",
   "definitions": {
     "ResourceType": {
       "oneOf": [
@@ -9,7 +9,11 @@
           "enum": [
             "AWS::CloudWatch::Metric",
             "AWS::Logs::LogGroup",
-            "AWS::XRay::Trace"
+            "AWS::XRay::Trace",
+            "AWS::ApplicationInsights::Application",
+            "AWS::InternetMonitor::Monitor",
+            "AWS::ApplicationSignals::Service",
+            "AWS::ApplicationSignals::ServiceLevelObjective"
           ]
         },
         {
@@ -17,6 +21,41 @@
         }
       ],
       "title": "AWSOamLinkResourceTypeDefinition"
+    },
+    "LinkConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MetricConfiguration": {
+          "$ref": "#/definitions/LinkFilter"
+        },
+        "LogGroupConfiguration": {
+          "$ref": "#/definitions/LinkFilter"
+        }
+      },
+      "title": "AWSOamLinkLinkConfigurationDefinition"
+    },
+    "LinkFilter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Filter": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Filter"
+      ],
+      "title": "AWSOamLinkLinkFilterDefinition"
     }
   },
   "properties": {
@@ -54,16 +93,19 @@
         }
       ]
     },
+    "LinkConfiguration": {
+      "$ref": "#/definitions/LinkConfiguration"
+    },
     "Tags": {
       "description": "Tags to apply to the link",
       "type": "object",
       "additionalProperties": false,
       "patternProperties": {
-        "^(?!aws:.*)[a-zA-Z0-9\\s\\_\\.\\/\\=\\+\\-]{1,128}$": {
+        "^(?!aws:.*).{1,128}$": {
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^(?!aws:.*)[a-zA-Z0-9\\s\\_\\.\\/\\=\\+\\-]{0,256}$",
+              "pattern": "^(?!aws:.*).{0,256}$",
               "minLength": 0,
               "maxLength": 256
             },
@@ -71,7 +113,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:."
         }
       }
     }
@@ -80,7 +122,13 @@
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": false
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "oam:ListTagsForResource",
+      "oam:UntagResource",
+      "oam:TagResource"
+    ]
   },
   "required": [
     "ResourceTypes",

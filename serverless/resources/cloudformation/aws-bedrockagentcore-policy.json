@@ -1,0 +1,164 @@
+{
+  "typeName": "AWS::BedrockAgentCore::Policy",
+  "description": "Resource Type definition for AWS::BedrockAgentCore::Policy. Source:- No source definition found, add manually please",
+  "definitions": {
+    "PolicyStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "ACTIVE",
+            "UPDATING",
+            "DELETING",
+            "CREATE_FAILED",
+            "UPDATE_FAILED",
+            "DELETE_FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBedrockAgentCorePolicyPolicyStatusDefinition"
+    },
+    "PolicyDefinition": {
+      "type": "object",
+      "description": "The definition structure for policies. Encapsulates different policy formats.",
+      "properties": {
+        "Cedar": {
+          "$ref": "#/definitions/CedarPolicy"
+        }
+      },
+      "required": [
+        "Cedar"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCorePolicyPolicyDefinition"
+    },
+    "CedarPolicy": {
+      "type": "object",
+      "description": "A Cedar policy statement within the AgentCore Policy system.",
+      "properties": {
+        "Statement": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 35,
+              "maxLength": 153600
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Cedar policy statement that defines the authorization logic."
+        }
+      },
+      "required": [
+        "Statement"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentCorePolicyCedarPolicyDefinition"
+    },
+    "PolicyValidationMode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "FAIL_ON_ANY_FINDINGS",
+            "IGNORE_ALL_FINDINGS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The validation mode for the policy. Determines how Cedar analyzer validation results are handled.",
+      "title": "AWSBedrockAgentCorePolicyPolicyValidationModeDefinition"
+    }
+  },
+  "properties": {
+    "PolicyEngineId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 59,
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*-[a-z0-9_]{10}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the policy engine which contains this policy."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 48,
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The customer-assigned immutable name for the policy. Must be unique within the policy engine."
+    },
+    "Definition": {
+      "$ref": "#/definitions/PolicyDefinition"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A human-readable description of the policy's purpose and functionality."
+    },
+    "ValidationMode": {
+      "$ref": "#/definitions/PolicyValidationMode"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "PolicyEngineId",
+    "Name",
+    "Definition"
+  ],
+  "readOnlyProperties": [
+    "/properties/PolicyId",
+    "/properties/PolicyArn",
+    "/properties/CreatedAt",
+    "/properties/UpdatedAt",
+    "/properties/Status",
+    "/properties/StatusReasons"
+  ],
+  "createOnlyProperties": [
+    "/properties/PolicyEngineId",
+    "/properties/Name"
+  ],
+  "writeOnlyProperties": [
+    "/properties/ValidationMode"
+  ],
+  "primaryIdentifier": [
+    "/properties/PolicyArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/PolicyEngineId",
+      "/properties/PolicyId"
+    ]
+  ],
+  "tagging": {
+    "taggable": false
+  },
+  "type": "object",
+  "title": "AWSBedrockAgentCorePolicyProperties"
+}

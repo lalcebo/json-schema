@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::SES::ConfigurationSetEventDestination",
-  "description": "Resource Type definition for AWS::SES::ConfigurationSetEventDestination. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
+  "description": "Resource Type definition for AWS::SES::ConfigurationSetEventDestination. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
   "definitions": {
     "EventDestination": {
@@ -50,12 +50,40 @@
         "SnsDestination": {
           "description": "An object that contains SNS topic ARN associated event destination.",
           "$ref": "#/definitions/SnsDestination"
+        },
+        "EventBridgeDestination": {
+          "description": "An object that contains Event bus ARN associated with the event bridge destination.",
+          "$ref": "#/definitions/EventBridgeDestination"
         }
       },
       "required": [
         "MatchingEventTypes"
       ],
       "title": "AWSSESConfigurationSetEventDestinationEventDestinationDefinition"
+    },
+    "EventBridgeDestination": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "An object that contains Event bus ARN associated with the event bridge destination.",
+      "properties": {
+        "EventBusArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 36,
+              "maxLength": 1024,
+              "pattern": "^arn:aws[a-z0-9-]*:events:[a-z0-9-]+:\\d{12}:event-bus/[^:]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "EventBusArn"
+      ],
+      "title": "AWSSESConfigurationSetEventDestinationEventBridgeDestinationDefinition"
     },
     "SnsDestination": {
       "type": "object",
@@ -203,7 +231,9 @@
     }
   },
   "additionalProperties": false,
-  "taggable": false,
+  "tagging": {
+    "taggable": false
+  },
   "required": [
     "ConfigurationSetName",
     "EventDestination"

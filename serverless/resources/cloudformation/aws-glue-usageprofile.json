@@ -1,0 +1,222 @@
+{
+  "typeName": "AWS::Glue::UsageProfile",
+  "description": "This creates a Resource of UsageProfile type.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-glue",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A key to identify the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Corresponding tag value for the key."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSGlueUsageProfileTagDefinition"
+    },
+    "ProfileConfiguration": {
+      "properties": {
+        "JobConfiguration": {
+          "patternProperties": {
+            "^.+$": {
+              "$ref": "#/definitions/ConfigurationObject"
+            }
+          },
+          "additionalProperties": false
+        },
+        "SessionConfiguration": {
+          "patternProperties": {
+            "^.+$": {
+              "$ref": "#/definitions/ConfigurationObject"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "JobConfiguration"
+          ]
+        },
+        {
+          "required": [
+            "SessionConfiguration"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSGlueUsageProfileProfileConfigurationDefinition"
+    },
+    "ConfigurationObject": {
+      "properties": {
+        "DefaultValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AllowedValues": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "insertionOrder": false
+        },
+        "MinValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MaxValue": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "DefaultValue"
+          ]
+        },
+        {
+          "oneOf": [
+            {
+              "required": [
+                "AllowedValues"
+              ]
+            },
+            {
+              "required": [
+                "MinValue",
+                "MaxValue"
+              ]
+            }
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSGlueUsageProfileConfigurationObjectDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 5
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the UsageProfile."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "[a-zA-Z0-9\\-\\:\\_]{1,64}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the UsageProfile."
+    },
+    "Configuration": {
+      "description": "UsageProfile configuration for supported service ex: (Jobs, Sessions).",
+      "$ref": "#/definitions/ProfileConfiguration",
+      "minItems": 1
+    },
+    "Tags": {
+      "description": "The tags to be applied to this UsageProfiles.",
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "uniqueItems": true,
+      "insertionOrder": false
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "glue:TagResource",
+      "glue:UntagResource",
+      "glue:GetTags"
+    ]
+  },
+  "required": [
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/CreatedOn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "type": "object",
+  "title": "AWSGlueUsageProfileProperties"
+}

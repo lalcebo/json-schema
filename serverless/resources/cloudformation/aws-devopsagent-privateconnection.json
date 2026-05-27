@@ -1,0 +1,299 @@
+{
+  "typeName": "AWS::DevOpsAgent::PrivateConnection",
+  "description": "Resource Type definition for AWS::DevOpsAgent::PrivateConnection. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSDevOpsAgentPrivateConnectionTagDefinition"
+    },
+    "ServiceManagedMode": {
+      "description": "Configuration for a service-managed Private Connection.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "HostAddress": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 255,
+              "pattern": "^[a-zA-Z0-9.:\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IP address or DNS name of the target resource."
+        },
+        "VpcId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 50,
+              "pattern": "^vpc-(([0-9a-z]{8})|([0-9a-z]{17}))$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "VPC to create the service-managed Resource Gateway in."
+        },
+        "SubnetIds": {
+          "description": "Subnets that the service-managed Resource Gateway will span.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 15,
+                "maxLength": 24,
+                "pattern": "^subnet-(([0-9a-z]{8})|([0-9a-z]{17}))$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "SecurityGroupIds": {
+          "description": "Security groups to attach to the service-managed Resource Gateway.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 11,
+                "maxLength": 20,
+                "pattern": "^sg-(([0-9a-z]{8})|([0-9a-z]{17}))$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 5
+        },
+        "IpAddressType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "IPV4",
+                "IPV6",
+                "DUAL_STACK"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IP address type of the service-managed Resource Gateway."
+        },
+        "Ipv4AddressesPerEni": {
+          "description": "Number of IPv4 addresses in each ENI for the service-managed Resource Gateway.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 62
+        },
+        "PortRanges": {
+          "description": "TCP port ranges that a consumer can use to access the resource.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^((\\d{1,5}\\-\\d{1,5})|(\\d+))$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 11
+        }
+      },
+      "required": [
+        "HostAddress",
+        "VpcId"
+      ],
+      "title": "AWSDevOpsAgentPrivateConnectionServiceManagedModeDefinition"
+    },
+    "SelfManagedMode": {
+      "description": "Configuration for a self-managed Private Connection.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ResourceConfigurationId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 2048,
+              "pattern": "^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the Resource Configuration."
+        }
+      },
+      "required": [
+        "ResourceConfigurationId"
+      ],
+      "title": "AWSDevOpsAgentPrivateConnectionSelfManagedModeDefinition"
+    },
+    "ConnectionConfiguration": {
+      "description": "The connection configuration, either SelfManaged or ServiceManaged.",
+      "type": "object",
+      "oneOf": [
+        {
+          "title": "SelfManaged",
+          "properties": {
+            "SelfManaged": {
+              "$ref": "#/definitions/SelfManagedMode"
+            }
+          },
+          "required": [
+            "SelfManaged"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "title": "ServiceManaged",
+          "properties": {
+            "ServiceManaged": {
+              "$ref": "#/definitions/ServiceManagedMode"
+            }
+          },
+          "required": [
+            "ServiceManaged"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDevOpsAgentPrivateConnectionConnectionConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 30,
+          "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Unique name for this Private Connection within the account."
+    },
+    "ConnectionConfiguration": {
+      "description": "The connection configuration for the Private Connection.",
+      "$ref": "#/definitions/ConnectionConfiguration"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Certificate": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32768
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Certificate for the Private Connection."
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "aidevops:TagResource",
+      "aidevops:UntagResource",
+      "aidevops:ListTagsForResource"
+    ]
+  },
+  "required": [
+    "Name",
+    "ConnectionConfiguration"
+  ],
+  "readOnlyProperties": [
+    "/properties/Status",
+    "/properties/CertificateExpiryTime",
+    "/properties/Arn"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Certificate",
+    "/properties/ConnectionConfiguration/ServiceManaged/SubnetIds",
+    "/properties/ConnectionConfiguration/ServiceManaged/SecurityGroupIds",
+    "/properties/ConnectionConfiguration/ServiceManaged/IpAddressType",
+    "/properties/ConnectionConfiguration/ServiceManaged/Ipv4AddressesPerEni",
+    "/properties/ConnectionConfiguration/ServiceManaged/PortRanges"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/ConnectionConfiguration"
+  ],
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
+  "type": "object",
+  "title": "AWSDevOpsAgentPrivateConnectionProperties"
+}

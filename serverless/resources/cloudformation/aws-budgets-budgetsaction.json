@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Budgets::BudgetsAction",
-  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Subscriber": {
@@ -233,6 +233,37 @@
       },
       "additionalProperties": false,
       "title": "AWSBudgetsBudgetsActionDefinition"
+    },
+    "ResourceTag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBudgetsBudgetsActionResourceTagDefinition"
     }
   },
   "properties": {
@@ -312,6 +343,12 @@
     },
     "Definition": {
       "$ref": "#/definitions/Definition"
+    },
+    "ResourceTags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ResourceTag"
+      }
     }
   },
   "additionalProperties": false,
@@ -335,6 +372,18 @@
     "/properties/ActionId",
     "/properties/BudgetName"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/ResourceTags",
+    "permissions": [
+      "budgets:TagResource",
+      "budgets:UntagResource",
+      "budgets:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSBudgetsBudgetsActionProperties"
 }

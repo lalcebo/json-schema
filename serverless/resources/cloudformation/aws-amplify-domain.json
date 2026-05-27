@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Amplify::Domain",
-  "description": "The AWS::Amplify::Domain resource allows you to connect a custom domain to your app.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "The AWS::Amplify::Domain resource allows you to connect a custom domain to your app.. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "AppId": {
@@ -45,6 +45,9 @@
         }
       ]
     },
+    "CertificateSettings": {
+      "$ref": "#/definitions/CertificateSettings"
+    },
     "DomainName": {
       "oneOf": [
         {
@@ -70,6 +73,81 @@
     }
   },
   "definitions": {
+    "CertificateSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CertificateType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AMPLIFY_MANAGED",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomCertificateArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws:acm:[a-z0-9-]+:\\d{12}:certificate\\/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSAmplifyDomainCertificateSettingsDefinition"
+    },
+    "Certificate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CertificateType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AMPLIFY_MANAGED",
+                "CUSTOM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CertificateArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "\"^arn:aws:acm:[a-z0-9-]+:\\d{12}:certificate\\/.+$\""
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CertificateVerificationDNSRecord": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSAmplifyDomainCertificateDefinition"
+    },
     "SubDomainSetting": {
       "type": "object",
       "additionalProperties": false,
@@ -123,7 +201,12 @@
     "/properties/Arn",
     "/properties/DomainStatus",
     "/properties/StatusReason",
-    "/properties/CertificateRecord"
+    "/properties/CertificateRecord",
+    "/properties/Certificate",
+    "/properties/UpdateStatus"
+  ],
+  "writeOnlyProperties": [
+    "/properties/CertificateSettings"
   ],
   "type": "object",
   "title": "AWSAmplifyDomainProperties"

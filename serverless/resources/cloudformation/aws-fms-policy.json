@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::FMS::Policy",
-  "description": "Creates an AWS Firewall Manager policy.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-fms.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-fms.git",
+  "description": "Creates an AWS Firewall Manager policy.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-fms.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-fms.git",
   "definitions": {
     "AccountId": {
@@ -207,12 +207,171 @@
       "description": "Firewall deployment mode.",
       "title": "AWSFMSPolicyFirewallDeploymentModelDefinition"
     },
+    "NetworkAclEntry": {
+      "description": "Network ACL entry.",
+      "type": "object",
+      "properties": {
+        "CidrBlock": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "CIDR block."
+        },
+        "Egress": {
+          "description": "Whether the entry is an egress entry.",
+          "type": "boolean"
+        },
+        "IcmpTypeCode": {
+          "description": "ICMP type and code.",
+          "type": "object",
+          "properties": {
+            "Code": {
+              "description": "Code.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            "Type": {
+              "description": "Type.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "Code",
+            "Type"
+          ]
+        },
+        "Ipv6CidrBlock": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))(/(1[0-2]|[0-9]))?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IPv6 CIDR block."
+        },
+        "PortRange": {
+          "type": "object",
+          "description": "Port range.",
+          "properties": {
+            "From": {
+              "description": "From Port.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            },
+            "To": {
+              "description": "To Port.",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "From",
+            "To"
+          ]
+        },
+        "Protocol": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(tcp|udp|icmp|-1|([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]))$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Protocol."
+        },
+        "RuleAction": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "allow",
+                "deny"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Rule Action."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Egress",
+        "Protocol",
+        "RuleAction"
+      ],
+      "title": "AWSFMSPolicyNetworkAclEntryDefinition"
+    },
+    "NetworkAclEntryList": {
+      "description": "NetworkAcl entry list.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/NetworkAclEntry"
+      },
+      "insertionOrder": true,
+      "title": "AWSFMSPolicyNetworkAclEntryListDefinition"
+    },
+    "NetworkAclEntrySet": {
+      "description": "Network ACL entry set.",
+      "type": "object",
+      "properties": {
+        "FirstEntries": {
+          "$ref": "#/definitions/NetworkAclEntryList"
+        },
+        "ForceRemediateForFirstEntries": {
+          "type": "boolean"
+        },
+        "LastEntries": {
+          "$ref": "#/definitions/NetworkAclEntryList"
+        },
+        "ForceRemediateForLastEntries": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "ForceRemediateForFirstEntries",
+        "ForceRemediateForLastEntries"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "FirstEntries"
+          ]
+        },
+        {
+          "required": [
+            "LastEntries"
+          ]
+        }
+      ],
+      "title": "AWSFMSPolicyNetworkAclEntrySetDefinition"
+    },
     "ManagedServiceData": {
       "oneOf": [
         {
           "type": "string",
           "minLength": 1,
-          "maxLength": 8192
+          "maxLength": 30000
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -235,7 +394,8 @@
             "NETWORK_FIREWALL",
             "THIRD_PARTY_FIREWALL",
             "DNS_FIREWALL",
-            "IMPORT_NETWORK_FIREWALL"
+            "IMPORT_NETWORK_FIREWALL",
+            "NETWORK_ACL_COMMON"
           ]
         },
         {
@@ -273,6 +433,20 @@
       ],
       "title": "AWSFMSPolicyThirdPartyFirewallPolicyDefinition"
     },
+    "NetworkAclCommonPolicy": {
+      "description": "Network ACL common policy.",
+      "type": "object",
+      "properties": {
+        "NetworkAclEntrySet": {
+          "$ref": "#/definitions/NetworkAclEntrySet"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "NetworkAclEntrySet"
+      ],
+      "title": "AWSFMSPolicyNetworkAclCommonPolicyDefinition"
+    },
     "PolicyOption": {
       "description": "Firewall policy option.",
       "type": "object",
@@ -282,6 +456,9 @@
         },
         "ThirdPartyFirewallPolicy": {
           "$ref": "#/definitions/ThirdPartyFirewallPolicy"
+        },
+        "NetworkAclCommonPolicy": {
+          "$ref": "#/definitions/NetworkAclCommonPolicy"
         }
       },
       "additionalProperties": false,
@@ -294,6 +471,11 @@
         {
           "required": [
             "ThirdPartyFirewallPolicy"
+          ]
+        },
+        {
+          "required": [
+            "NetworkAclCommonPolicy"
           ]
         }
       ],
@@ -343,8 +525,22 @@
       "items": {
         "$ref": "#/definitions/ResourceTag"
       },
-      "maxItems": 8,
+      "maxItems": 50,
       "insertionOrder": true
+    },
+    "ResourceTagLogicalOperator": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AND",
+            "OR"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "ResourceType": {
       "$ref": "#/definitions/ResourceType"
@@ -380,6 +576,17 @@
       },
       "insertionOrder": true
     }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "fms:TagResource",
+      "fms:UntagResource"
+    ]
   },
   "additionalProperties": false,
   "required": [

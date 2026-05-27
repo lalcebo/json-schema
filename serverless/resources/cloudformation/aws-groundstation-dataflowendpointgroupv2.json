@@ -1,0 +1,484 @@
+{
+  "typeName": "AWS::GroundStation::DataflowEndpointGroupV2",
+  "description": "Resource Type definition for AWS Ground Station DataflowEndpointGroupV2. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ground-station.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ground-station.git",
+  "definitions": {
+    "SocketAddress": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IPv4 socket address."
+        },
+        "Port": {
+          "description": "Port of a socket address.",
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "Port"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2SocketAddressDefinition"
+    },
+    "AgentStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SUCCESS",
+            "FAILED",
+            "ACTIVE",
+            "INACTIVE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of AgentEndpoint.",
+      "title": "AWSGroundStationDataflowEndpointGroupV2AgentStatusDefinition"
+    },
+    "AuditResults": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "HEALTHY",
+            "UNHEALTHY"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The results of the audit.",
+      "title": "AWSGroundStationDataflowEndpointGroupV2AuditResultsDefinition"
+    },
+    "IntegerRange": {
+      "description": "An integer range that has a minimum and maximum value.",
+      "type": "object",
+      "properties": {
+        "Minimum": {
+          "description": "A minimum value.",
+          "type": "integer"
+        },
+        "Maximum": {
+          "description": "A maximum value.",
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Minimum",
+        "Maximum"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2IntegerRangeDefinition"
+    },
+    "RangedSocketAddress": {
+      "description": "A socket address with a port range.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IPv4 socket address."
+        },
+        "PortRange": {
+          "description": "Port range of a socket address.",
+          "$ref": "#/definitions/IntegerRange"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "PortRange"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2RangedSocketAddressDefinition"
+    },
+    "ConnectionDetails": {
+      "description": "Socket address of an uplink or downlink agent endpoint with an optional mtu.",
+      "type": "object",
+      "properties": {
+        "SocketAddress": {
+          "$ref": "#/definitions/SocketAddress"
+        },
+        "Mtu": {
+          "description": "Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.",
+          "type": "integer",
+          "minimum": 1400,
+          "maximum": 1500
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "SocketAddress"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2ConnectionDetailsDefinition"
+    },
+    "RangedConnectionDetails": {
+      "description": "Socket address of an uplink or downlink agent endpoint with a port range and an optional mtu.",
+      "type": "object",
+      "properties": {
+        "SocketAddress": {
+          "$ref": "#/definitions/RangedSocketAddress"
+        },
+        "Mtu": {
+          "description": "Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.",
+          "type": "integer",
+          "minimum": 1400,
+          "maximum": 1500
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "SocketAddress"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2RangedConnectionDetailsDefinition"
+    },
+    "UplinkConnectionDetails": {
+      "description": "Connection details for uplink, from ground station to agent, and customer to agent",
+      "type": "object",
+      "properties": {
+        "IngressAddressAndPort": {
+          "$ref": "#/definitions/ConnectionDetails"
+        },
+        "AgentIpAndPortAddress": {
+          "$ref": "#/definitions/RangedConnectionDetails"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "IngressAddressAndPort",
+        "AgentIpAndPortAddress"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2UplinkConnectionDetailsDefinition"
+    },
+    "UplinkDataflowDetails": {
+      "description": "Dataflow details for uplink",
+      "type": "object",
+      "properties": {
+        "AgentConnectionDetails": {
+          "$ref": "#/definitions/UplinkConnectionDetails"
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "AgentConnectionDetails"
+          ]
+        }
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2UplinkDataflowDetailsDefinition"
+    },
+    "UplinkAwsGroundStationAgentEndpoint": {
+      "description": "Information about UplinkAwsGroundStationAgentEndpoint used for create",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9_:-]{1,256}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DataflowDetails": {
+          "$ref": "#/definitions/UplinkDataflowDetails"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "DataflowDetails"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2UplinkAwsGroundStationAgentEndpointDefinition"
+    },
+    "UplinkAwsGroundStationAgentEndpointDetails": {
+      "description": "Information about UplinkAwsGroundStationAgentEndpoint",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9_:-]{1,256}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DataflowDetails": {
+          "$ref": "#/definitions/UplinkDataflowDetails"
+        },
+        "AgentStatus": {
+          "$ref": "#/definitions/AgentStatus"
+        },
+        "AuditResults": {
+          "$ref": "#/definitions/AuditResults"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "DataflowDetails"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2UplinkAwsGroundStationAgentEndpointDetailsDefinition"
+    },
+    "DownlinkConnectionDetails": {
+      "description": "Connection details for downlink, from ground station to agent, and customer to agent",
+      "type": "object",
+      "properties": {
+        "EgressAddressAndPort": {
+          "$ref": "#/definitions/ConnectionDetails"
+        },
+        "AgentIpAndPortAddress": {
+          "$ref": "#/definitions/RangedConnectionDetails"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "EgressAddressAndPort",
+        "AgentIpAndPortAddress"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2DownlinkConnectionDetailsDefinition"
+    },
+    "DownlinkDataflowDetails": {
+      "description": "Dataflow details for downlink",
+      "type": "object",
+      "properties": {
+        "AgentConnectionDetails": {
+          "$ref": "#/definitions/DownlinkConnectionDetails"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "AgentConnectionDetails"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSGroundStationDataflowEndpointGroupV2DownlinkDataflowDetailsDefinition"
+    },
+    "DownlinkAwsGroundStationAgentEndpoint": {
+      "description": "Information about DownlinkAwsGroundStationAgentEndpoint used for create",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9_:-]{1,256}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DataflowDetails": {
+          "$ref": "#/definitions/DownlinkDataflowDetails"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "DataflowDetails"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2DownlinkAwsGroundStationAgentEndpointDefinition"
+    },
+    "DownlinkAwsGroundStationAgentEndpointDetails": {
+      "description": "Information about DownlinkAwsGroundStationAgentEndpoint",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9_:-]{1,256}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DataflowDetails": {
+          "$ref": "#/definitions/DownlinkDataflowDetails"
+        },
+        "AgentStatus": {
+          "$ref": "#/definitions/AgentStatus"
+        },
+        "AuditResults": {
+          "$ref": "#/definitions/AuditResults"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "DataflowDetails"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2DownlinkAwsGroundStationAgentEndpointDetailsDefinition"
+    },
+    "EndpointDetails": {
+      "type": "object",
+      "properties": {
+        "UplinkAwsGroundStationAgentEndpoint": {
+          "$ref": "#/definitions/UplinkAwsGroundStationAgentEndpointDetails"
+        },
+        "DownlinkAwsGroundStationAgentEndpoint": {
+          "$ref": "#/definitions/DownlinkAwsGroundStationAgentEndpointDetails"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "UplinkAwsGroundStationAgentEndpoint"
+          ]
+        },
+        {
+          "required": [
+            "DownlinkAwsGroundStationAgentEndpoint"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSGroundStationDataflowEndpointGroupV2EndpointDetailsDefinition"
+    },
+    "CreateEndpointDetails": {
+      "type": "object",
+      "properties": {
+        "UplinkAwsGroundStationAgentEndpoint": {
+          "$ref": "#/definitions/UplinkAwsGroundStationAgentEndpoint"
+        },
+        "DownlinkAwsGroundStationAgentEndpoint": {
+          "$ref": "#/definitions/DownlinkAwsGroundStationAgentEndpoint"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "UplinkAwsGroundStationAgentEndpoint"
+          ]
+        },
+        {
+          "required": [
+            "DownlinkAwsGroundStationAgentEndpoint"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSGroundStationDataflowEndpointGroupV2CreateEndpointDetailsDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSGroundStationDataflowEndpointGroupV2TagDefinition"
+    }
+  },
+  "properties": {
+    "Endpoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/CreateEndpointDetails"
+      }
+    },
+    "ContactPrePassDurationSeconds": {
+      "type": "integer",
+      "description": "Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a PREPASS state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the PREPASS state.",
+      "minimum": 30,
+      "maximum": 480
+    },
+    "ContactPostPassDurationSeconds": {
+      "type": "integer",
+      "description": "Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a POSTPASS state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the POSTPASS state.",
+      "minimum": 30,
+      "maximum": 480
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "readOnlyProperties": [
+    "/properties/EndpointDetails",
+    "/properties/Id",
+    "/properties/Arn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Endpoints",
+    "/properties/ContactPrePassDurationSeconds",
+    "/properties/ContactPostPassDurationSeconds"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Endpoints"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "groundstation:TagResource",
+      "groundstation:UntagResource",
+      "groundstation:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSGroundStationDataflowEndpointGroupV2Properties"
+}

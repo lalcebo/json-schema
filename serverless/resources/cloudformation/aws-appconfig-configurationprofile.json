@@ -1,87 +1,46 @@
 {
-  "typeName": "AWS::AppConfig::ConfigurationProfile",
-  "description": "Resource Type definition for AWS::AppConfig::ConfigurationProfile. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "LocationUri": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Type": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Description": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Validators": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Validators"
-      }
-    },
-    "RetrievalRoleArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "ApplicationId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tags"
-      }
-    },
-    "Name": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    }
+  "tagging": {
+    "permissions": [
+      "appconfig:TagResource",
+      "appconfig:UntagResource",
+      "appconfig:ListTagsForResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
   },
+  "typeName": "AWS::AppConfig::ConfigurationProfile",
+  "readOnlyProperties": [
+    "/properties/ConfigurationProfileId",
+    "/properties/KmsKeyArn"
+  ],
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appconfig",
+  "createOnlyProperties": [
+    "/properties/LocationUri",
+    "/properties/Type",
+    "/properties/ApplicationId"
+  ],
+  "primaryIdentifier": [
+    "/properties/ApplicationId",
+    "/properties/ConfigurationProfileId"
+  ],
+  "required": [
+    "LocationUri",
+    "ApplicationId",
+    "Name"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-appconfig",
+  "writeOnlyProperties": [
+    "/properties/DeletionProtectionCheck"
+  ],
+  "additionalProperties": false,
   "definitions": {
     "Validators": {
-      "type": "object",
+      "description": "A list of methods for validating the configuration.",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Type": {
           "oneOf": [
@@ -91,65 +50,185 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "AWS AppConfig supports validators of type JSON_SCHEMA and LAMBDA."
         },
         "Content": {
           "oneOf": [
             {
-              "type": "string"
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 32768
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "Either the JSON Schema content or the Amazon Resource Name (ARN) of an Lambda function."
         }
       },
       "title": "AWSAppConfigConfigurationProfileValidatorsDefinition"
     },
     "Tags": {
-      "type": "object",
+      "description": "Metadata to assign to the configuration profile. Tags help organize and categorize your AWS AppConfig resources. Each tag consists of a key and an optional value, both of which you define.",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Value": {
           "oneOf": [
             {
-              "type": "string"
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 256
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The tag value can be up to 256 characters."
         },
         "Key": {
           "oneOf": [
             {
-              "type": "string"
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The key-value string map. The tag key can be up to 128 characters and must not start with aws:."
         }
       },
       "title": "AWSAppConfigConfigurationProfileTagsDefinition"
     }
   },
-  "required": [
-    "LocationUri",
-    "ApplicationId",
-    "Name"
-  ],
-  "createOnlyProperties": [
-    "/properties/LocationUri",
-    "/properties/Type",
-    "/properties/ApplicationId"
-  ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id"
-  ],
+  "properties": {
+    "LocationUri": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A URI to locate the configuration. You can specify the AWS AppConfig hosted configuration store, Systems Manager (SSM) document, an SSM Parameter Store parameter, or an Amazon S3 object."
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "pattern": "^[a-zA-Z\\.]+",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of configurations contained in the profile. When calling this API, enter one of the following values for Type: AWS.AppConfig.FeatureFlags, AWS.Freeform"
+    },
+    "KmsKeyIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AWS Key Management Service key identifier (key ID, key alias, or key ARN) provided when the resource was created or updated."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "minLength": 0,
+          "type": "string",
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the configuration profile."
+    },
+    "Validators": {
+      "maxItems": 2,
+      "uniqueItems": false,
+      "description": "A list of methods for validating the configuration.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Validators"
+      }
+    },
+    "RetrievalRoleArn": {
+      "oneOf": [
+        {
+          "minLength": 20,
+          "pattern": "^((arn):(aws|aws-cn|aws-iso|aws-iso-[a-z]{1}|aws-us-gov|aws-eusc):(iam)::\\d{12}:role[/].*)$",
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of an IAM role with permission to access the configuration at the specified LocationUri."
+    },
+    "DeletionProtectionCheck": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACCOUNT_DEFAULT",
+            "APPLY",
+            "BYPASS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "On resource deletion this controls whether the Deletion Protection check should be applied, bypassed, or (the default) whether the behavior should be controlled by the account-level Deletion Protection setting. See https://docs.aws.amazon.com/appconfig/latest/userguide/deletion-protection.html"
+    },
+    "ApplicationId": {
+      "oneOf": [
+        {
+          "pattern": "[a-z0-9]{4,7}",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The application ID."
+    },
+    "Tags": {
+      "uniqueItems": false,
+      "description": "Metadata to assign to the configuration profile. Tags help organize and categorize your AWS AppConfig resources. Each tag consists of a key and an optional value, both of which you define.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tags"
+      }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A name for the configuration profile."
+    }
+  },
   "type": "object",
   "title": "AWSAppConfigConfigurationProfileProperties"
 }

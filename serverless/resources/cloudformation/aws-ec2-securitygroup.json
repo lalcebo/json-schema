@@ -1,64 +1,52 @@
 {
-  "typeName": "AWS::EC2::SecurityGroup",
-  "description": "Resource Type definition for AWS::EC2::SecurityGroup. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "GroupDescription": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "GroupName": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "VpcId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "SecurityGroupIngress": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Ingress"
-      }
-    },
-    "SecurityGroupEgress": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Egress"
-      }
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
-    }
+  "tagging": {
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
   },
+  "$schema": "https://raw.githubusercontent.com/aws-cloudformation/cloudformation-resource-schema/master/src/main/resources/schema/provider.definition.schema.v1.json",
+  "deprecatedProperties": [
+    "/properties/SecurityGroupEgress/*/SourceSecurityGroupId"
+  ],
+  "typeName": "AWS::EC2::SecurityGroup",
+  "readOnlyProperties": [
+    "/properties/Id",
+    "/properties/GroupId"
+  ],
+  "description": "Resource Type definition for AWS::EC2::SecurityGroup. Source:- No source definition found, add manually please",
+  "createOnlyProperties": [
+    "/properties/GroupDescription",
+    "/properties/GroupName",
+    "/properties/VpcId"
+  ],
+  "primaryIdentifier": [
+    "/properties/Id"
+  ],
+  "required": [
+    "GroupDescription"
+  ],
+  "propertyTransform": {
+    "/properties/SecurityGroupEgress/*/FromPort": "($mapVal := $lookup({'1': 'icmp','6': 'tcp','17': 'udp','58': 'icmpv6'}, IpProtocol);$ipProtocol := $mapVal ? $mapVal : $lowercase(IpProtocol);$ipProtocol in ['imcp', 'tcp', 'udp', 'imcp'] ? FromPort : -1)",
+    "/properties/SecurityGroupIngress/*/ToPort": "($mapVal := $lookup({'1': 'icmp','6': 'tcp','17': 'udp','58': 'icmpv6'}, IpProtocol);$ipProtocol := $mapVal ? $mapVal : $lowercase(IpProtocol);$ipProtocol in ['imcp', 'tcp', 'udp', 'imcp'] ? ToPort : -1)",
+    "/properties/SecurityGroupIngress/*/IpProtocol": "($mapVal := $lookup({'1': 'icmp','6': 'tcp','17': 'udp','58': 'icmpv6'}, IpProtocol);$mapVal ? $mapVal : $lowercase(IpProtocol))",
+    "/properties/SecurityGroupEgress/*/IpProtocol": "($mapVal := $lookup({'1': 'icmp','6': 'tcp','17': 'udp','58': 'icmpv6'}, IpProtocol);$mapVal ? $mapVal : $lowercase(IpProtocol))",
+    "/properties/SecurityGroupIngress/*/FromPort": "($mapVal := $lookup({'1': 'icmp','6': 'tcp','17': 'udp','58': 'icmpv6'}, IpProtocol);$ipProtocol := $mapVal ? $mapVal : $lowercase(IpProtocol);$ipProtocol in ['imcp', 'tcp', 'udp', 'imcp'] ? FromPort : -1)",
+    "/properties/SecurityGroupEgress/*/ToPort": "($mapVal := $lookup({'1': 'icmp','6': 'tcp','17': 'udp','58': 'icmpv6'}, IpProtocol);$ipProtocol := $mapVal ? $mapVal : $lowercase(IpProtocol);$ipProtocol in ['imcp', 'tcp', 'udp', 'imcp'] ? ToPort : -1)"
+  },
+  "writeOnlyProperties": [
+    "/properties/SecurityGroupIngress/*/SourceSecurityGroupName"
+  ],
+  "additionalProperties": false,
   "definitions": {
     "Ingress": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "CidrIp": {
           "oneOf": [
@@ -153,8 +141,8 @@
       "title": "AWSEC2SecurityGroupIngressDefinition"
     },
     "Egress": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "CidrIp": {
           "oneOf": [
@@ -229,8 +217,8 @@
       "title": "AWSEC2SecurityGroupEgressDefinition"
     },
     "Tag": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Value": {
           "oneOf": [
@@ -260,21 +248,68 @@
       "title": "AWSEC2SecurityGroupTagDefinition"
     }
   },
-  "required": [
-    "GroupDescription"
-  ],
-  "createOnlyProperties": [
-    "/properties/GroupDescription",
-    "/properties/GroupName",
-    "/properties/VpcId"
-  ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id",
-    "/properties/GroupId"
-  ],
+  "properties": {
+    "GroupDescription": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description for the security group."
+    },
+    "GroupName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the security group."
+    },
+    "VpcId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the VPC for the security group."
+    },
+    "SecurityGroupIngress": {
+      "uniqueItems": false,
+      "description": "The inbound rules associated with the security group. There is a short interruption during which you cannot connect to the security group.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Ingress"
+      }
+    },
+    "SecurityGroupEgress": {
+      "uniqueItems": false,
+      "description": "[VPC only] The outbound rules associated with the security group. There is a short interruption during which you cannot connect to the security group.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Egress"
+      }
+    },
+    "Tags": {
+      "uniqueItems": false,
+      "description": "Any tags assigned to the security group.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
   "type": "object",
   "title": "AWSEC2SecurityGroupProperties"
 }

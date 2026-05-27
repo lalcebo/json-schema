@@ -2,7 +2,7 @@ const fs = require("fs/promises");
 const path = require("path");
 
 const CLOUDFORMATION_DIR = path.join(__dirname, "serverless/resources/cloudformation");
-const THIRD_PARTY_DIR = path.join(__dirname, "serverless/resources/third-party-resources");
+const THIRD_PARTY_DIR = path.join(__dirname, "serverless/resources/third-party");
 const AGGREGATE_OUTPUT = path.join(__dirname, "serverless/resources/resources.schema.json");
 
 const CF_FUNCTION_STRING_REF = "../../components/cf.functions.json#/Aws_CF_FunctionString";
@@ -38,11 +38,17 @@ const SHARED_ATTRIBUTES = {
 
 const THIRD_PARTY_SOURCES = [
   {
-    dir: path.join(THIRD_PARTY_DIR, "mongodbatlas-cloudformation-resources"),
+    // MongoDB Atlas: resource directories live under `cfn-resources/`, each
+    // containing a `mongodb-atlas-<flattened>.json` schema file.
+    dir: path.join(THIRD_PARTY_DIR, "mongodbatlas-cloudformation-resources", "cfn-resources"),
+    isResourceDir: () => true,
     outputName: (subdir) => `mongodb-atlas-${subdir.replaceAll("-", "")}.json`,
   },
   {
+    // Datadog: handler directories live at the submodule root, each suffixed
+    // `-handler` and containing `<base>.json` (with the `-handler` stripped).
     dir: path.join(THIRD_PARTY_DIR, "datadog-cloudformation-resources"),
+    isResourceDir: (name) => name.endsWith("-handler"),
     outputName: (subdir) => `${subdir.replaceAll("-handler", "")}.json`,
   },
 ];
@@ -60,23 +66,37 @@ async function writeJson(file, data) {
 }
 
 async function importThirdPartySchemas() {
-  for (const { dir, outputName } of THIRD_PARTY_SOURCES) {
-    let subdirs;
+  for (const { dir, isResourceDir, outputName } of THIRD_PARTY_SOURCES) {
+    let entries;
     try {
-      subdirs = await fs.readdir(dir);
+      entries = await fs.readdir(dir, { withFileTypes: true });
     } catch (err) {
-      throw new Error(
-        `Third-party submodule not available at ${dir}. ` +
-        `Run "git submodule update --init --recursive" first. (${err.message})`
-      );
+      // Submodule not checked out — third-party resources are optional;
+      // warn and continue rather than failing the whole transform.
+      if (err.code === "ENOENT") {
+        console.warn(
+          `Skipping third-party source ${dir} — submodule not present. ` +
+          `Run \`git submodule update --init --recursive\` to include it.`
+        );
+        continue;
+      }
+      throw err;
     }
-    for (const subdir of subdirs) {
-      const fileName = outputName(subdir);
-      const sourceFile = path.join(dir, subdir, fileName);
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      if (entry.name.startsWith(".")) continue;
+      if (!isResourceDir(entry.name)) continue;
+
+      const fileName = outputName(entry.name);
+      const sourceFile = path.join(dir, entry.name, fileName);
       try {
         const contents = await fs.readFile(sourceFile, "utf8");
         await fs.writeFile(path.join(CLOUDFORMATION_DIR, fileName), contents);
       } catch (err) {
+        // ENOENT is the normal signal that this directory isn't a resource
+        // (e.g. utility/build dirs under MongoDB's `cfn-resources/`). Real
+        // errors (permission, parse, disk full) still surface.
+        if (err.code === "ENOENT") continue;
         console.warn(`Skipped third-party resource ${sourceFile}: ${err.code || err.message}`);
       }
     }
@@ -174,13 +194,16 @@ function titleDefinitions(schema, resourceName) {
 async function transformResource(fileName) {
   const raw = await readJson(path.join(CLOUDFORMATION_DIR, fileName));
   const resourceName = raw.typeName.split("::").join("");
-  const description = raw.description || "No description available";
+  // Strip any previously-appended ". Source:- ..." suffix(es) before re-appending,
+  // so re-running the script doesn't duplicate the suffix every time.
+  const baseDescription =
+    (raw.description || "No description available").split(". Source:- ")[0];
   const sourceUrl = raw.sourceUrl || "No source definition found, add manually please";
 
   let modified = {
     ...raw,
     type: "object",
-    description: `${description}. Source:- ${sourceUrl}`,
+    description: `${baseDescription}. Source:- ${sourceUrl}`,
     title: `${resourceName}Properties`,
   };
   delete modified.handlers;

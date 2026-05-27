@@ -1,0 +1,195 @@
+{
+  "typeName": "AWS::VerifiedPermissions::Policy",
+  "description": "Definition of AWS::VerifiedPermissions::Policy Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-avp",
+  "definitions": {
+    "EntityIdentifier": {
+      "type": "object",
+      "properties": {
+        "EntityType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "EntityId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "EntityId",
+        "EntityType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsPolicyEntityIdentifierDefinition"
+    },
+    "PolicyDefinition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Static",
+          "properties": {
+            "Static": {
+              "$ref": "#/definitions/StaticPolicyDefinition"
+            }
+          },
+          "required": [
+            "Static"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "TemplateLinked",
+          "properties": {
+            "TemplateLinked": {
+              "$ref": "#/definitions/TemplateLinkedPolicyDefinition"
+            }
+          },
+          "required": [
+            "TemplateLinked"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSVerifiedPermissionsPolicyPolicyDefinition"
+    },
+    "PolicyType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STATIC",
+            "TEMPLATE_LINKED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSVerifiedPermissionsPolicyPolicyTypeDefinition"
+    },
+    "StaticPolicyDefinition": {
+      "type": "object",
+      "properties": {
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 150,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Statement": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 10000,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Statement"
+      ],
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsPolicyStaticPolicyDefinition"
+    },
+    "TemplateLinkedPolicyDefinition": {
+      "type": "object",
+      "properties": {
+        "PolicyTemplateId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Principal": {
+          "$ref": "#/definitions/EntityIdentifier"
+        },
+        "Resource": {
+          "$ref": "#/definitions/EntityIdentifier"
+        }
+      },
+      "required": [
+        "PolicyTemplateId"
+      ],
+      "additionalProperties": false,
+      "title": "AWSVerifiedPermissionsPolicyTemplateLinkedPolicyDefinition"
+    }
+  },
+  "properties": {
+    "Definition": {
+      "$ref": "#/definitions/PolicyDefinition"
+    },
+    "PolicyStoreId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9-]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "Definition",
+    "PolicyStoreId"
+  ],
+  "readOnlyProperties": [
+    "/properties/PolicyId",
+    "/properties/PolicyType"
+  ],
+  "createOnlyProperties": [
+    "/properties/PolicyStoreId"
+  ],
+  "primaryIdentifier": [
+    "/properties/PolicyId",
+    "/properties/PolicyStoreId"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-avp",
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSVerifiedPermissionsPolicyProperties"
+}

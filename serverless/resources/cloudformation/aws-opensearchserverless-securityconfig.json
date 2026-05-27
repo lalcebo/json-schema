@@ -1,6 +1,7 @@
 {
   "typeName": "AWS::OpenSearchServerless::SecurityConfig",
-  "description": "Amazon OpenSearchServerless security config resource. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-opensearchserverless",
+  "description": "Amazon OpenSearchServerless security config resource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-opensearchserverless",
   "tagging": {
     "taggable": false,
     "tagOnCreate": false,
@@ -16,7 +17,7 @@
           "oneOf": [
             {
               "type": "string",
-              "maxLength": 20480,
+              "maxLength": 51200,
               "minLength": 1,
               "pattern": "[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+"
             },
@@ -54,6 +55,20 @@
           ],
           "description": "Group attribute for this saml integration"
         },
+        "OpenSearchServerlessEntityId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1,
+              "pattern": "^aws:opensearch:[0-9]{12}:*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Custom entity id attribute to override default entity id for this saml integration"
+        },
         "SessionTimeout": {
           "type": "integer",
           "description": "Defines the session timeout in minutes"
@@ -70,7 +85,9 @@
         {
           "type": "string",
           "enum": [
-            "saml"
+            "saml",
+            "iamidentitycenter",
+            "iamfederation"
           ]
         },
         {
@@ -79,6 +96,129 @@
       ],
       "description": "Config type for security config",
       "title": "AWSOpenSearchServerlessSecurityConfigSecurityConfigTypeDefinition"
+    },
+    "IamIdentityCenterInstanceArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the IAM Identity Center instance used to integrate with OpenSearch Serverless",
+      "title": "AWSOpenSearchServerlessSecurityConfigIamIdentityCenterInstanceArnDefinition"
+    },
+    "IamIdentityCenterApplicationArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ARN of the IAM Identity Center application used to integrate with OpenSearch Serverless",
+      "title": "AWSOpenSearchServerlessSecurityConfigIamIdentityCenterApplicationArnDefinition"
+    },
+    "IamIdentityCenterUserAttribute": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "User attribute for this IAM Identity Center integration",
+      "title": "AWSOpenSearchServerlessSecurityConfigIamIdentityCenterUserAttributeDefinition"
+    },
+    "IamIdentityCenterGroupAttribute": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Group attribute for this IAM Identity Center integration",
+      "title": "AWSOpenSearchServerlessSecurityConfigIamIdentityCenterGroupAttributeDefinition"
+    },
+    "IamIdentityCenterConfigOptions": {
+      "type": "object",
+      "description": "Describes IAM Identity Center options for an OpenSearch Serverless security configuration in the form of a key-value map",
+      "properties": {
+        "InstanceArn": {
+          "$ref": "#/definitions/IamIdentityCenterInstanceArn"
+        },
+        "ApplicationArn": {
+          "$ref": "#/definitions/IamIdentityCenterApplicationArn"
+        },
+        "ApplicationName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the IAM Identity Center application used to integrate with OpenSearch Serverless"
+        },
+        "ApplicationDescription": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The description of the IAM Identity Center application used to integrate with OpenSearch Serverless"
+        },
+        "UserAttribute": {
+          "$ref": "#/definitions/IamIdentityCenterUserAttribute"
+        },
+        "GroupAttribute": {
+          "$ref": "#/definitions/IamIdentityCenterGroupAttribute"
+        }
+      },
+      "required": [
+        "InstanceArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSOpenSearchServerlessSecurityConfigIamIdentityCenterConfigOptionsDefinition"
+    },
+    "IamFederationConfigOptions": {
+      "type": "object",
+      "description": "Describe IAM federation options in form of key value map",
+      "properties": {
+        "GroupAttribute": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Group attribute for this IAM federation integration"
+        },
+        "UserAttribute": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "User attribute for this IAM federation integration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSOpenSearchServerlessSecurityConfigIamFederationConfigOptionsDefinition"
     }
   },
   "properties": {
@@ -112,19 +252,29 @@
     "SamlOptions": {
       "$ref": "#/definitions/SamlConfigOptions"
     },
+    "IamIdentityCenterOptions": {
+      "$ref": "#/definitions/IamIdentityCenterConfigOptions"
+    },
+    "IamFederationOptions": {
+      "$ref": "#/definitions/IamFederationConfigOptions"
+    },
     "Type": {
       "$ref": "#/definitions/SecurityConfigType"
     }
   },
   "readOnlyProperties": [
-    "/properties/Id"
+    "/properties/Id",
+    "/properties/IamIdentityCenterOptions/ApplicationArn",
+    "/properties/IamIdentityCenterOptions/ApplicationName",
+    "/properties/IamIdentityCenterOptions/ApplicationDescription"
   ],
   "writeOnlyProperties": [
     "/properties/Name"
   ],
   "createOnlyProperties": [
     "/properties/Type",
-    "/properties/Name"
+    "/properties/Name",
+    "/properties/IamIdentityCenterOptions/InstanceArn"
   ],
   "primaryIdentifier": [
     "/properties/Id"

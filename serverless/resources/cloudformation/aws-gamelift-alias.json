@@ -1,7 +1,19 @@
 {
   "typeName": "AWS::GameLift::Alias",
-  "description": "The AWS::GameLift::Alias resource creates an alias for an Amazon GameLift (GameLift) fleet destination.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
+  "description": "The AWS::GameLift::Alias resource creates an alias for an Amazon GameLift (GameLift) fleet destination.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-gamelift.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "gamelift:ListTagsForResource",
+      "gamelift:TagResource",
+      "gamelift:UntagResource"
+    ]
+  },
   "definitions": {
     "RoutingStrategy": {
       "type": "object",
@@ -21,7 +33,7 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^fleet-\\S+"
+              "pattern": "^[a-z]*fleet-[a-zA-Z0-9\\-]+"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -62,6 +74,44 @@
         }
       ],
       "title": "AWSGameLiftAliasRoutingStrategyDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSGameLiftAliasTagDefinition"
     }
   },
   "properties": {
@@ -95,6 +145,16 @@
     "RoutingStrategy": {
       "description": "A routing configuration that specifies where traffic is directed for this alias, such as to a fleet or to a message.",
       "$ref": "#/definitions/RoutingStrategy"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "maxItems": 200,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "additionalProperties": false,
@@ -103,12 +163,12 @@
     "RoutingStrategy"
   ],
   "readOnlyProperties": [
-    "/properties/AliasId"
+    "/properties/AliasId",
+    "/properties/AliasArn"
   ],
   "primaryIdentifier": [
     "/properties/AliasId"
   ],
-  "taggable": true,
   "type": "object",
   "title": "AWSGameLiftAliasProperties"
 }

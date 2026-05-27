@@ -1,0 +1,214 @@
+{
+  "typeName": "AWS::EC2::TransitGatewayConnectPeer",
+  "description": "Resource Type definition for AWS::EC2::TransitGatewayConnectPeer. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-myservice",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-myservice",
+  "replacementStrategy": "delete_then_create",
+  "properties": {
+    "TransitGatewayAttachmentId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the Connect attachment."
+    },
+    "ConnectPeerConfiguration": {
+      "description": "The Connect peer details.",
+      "$ref": "#/definitions/TransitGatewayConnectPeerConfiguration"
+    },
+    "Tags": {
+      "description": "The tags for the Connect Peer.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value of the tag. Constraints: Tag values are case-sensitive and accept a maximum of 256 Unicode characters."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key of the tag. Constraints: Tag keys are case-sensitive and accept a maximum of 127 Unicode characters. May not begin with aws: ."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSEC2TransitGatewayConnectPeerTagDefinition"
+    },
+    "TransitGatewayConnectPeerConfiguration": {
+      "type": "object",
+      "properties": {
+        "TransitGatewayAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Connect peer IP address on the transit gateway side of the tunnel."
+        },
+        "PeerAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The peer IP address (GRE outer IP address) on the appliance side of the Connect peer."
+        },
+        "InsideCidrBlocks": {
+          "description": "The range of interior BGP peer IP addresses.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Protocol": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The tunnel protocol."
+        },
+        "BgpConfigurations": {
+          "description": "The BGP configuration details.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TransitGatewayAttachmentBgpConfiguration"
+          }
+        }
+      },
+      "required": [
+        "PeerAddress",
+        "InsideCidrBlocks"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEC2TransitGatewayConnectPeerTransitGatewayConnectPeerConfigurationDefinition"
+    },
+    "TransitGatewayAttachmentBgpConfiguration": {
+      "type": "object",
+      "properties": {
+        "TransitGatewayAsn": {
+          "description": "The transit gateway Autonomous System Number (ASN).",
+          "type": "number"
+        },
+        "PeerAsn": {
+          "description": "The peer Autonomous System Number (ASN).",
+          "type": "number"
+        },
+        "TransitGatewayAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The interior BGP peer IP address for the transit gateway."
+        },
+        "PeerAddress": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The interior BGP peer IP address for the appliance."
+        },
+        "BgpStatus": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The BGP status."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSEC2TransitGatewayConnectPeerTransitGatewayAttachmentBgpConfigurationDefinition"
+    }
+  },
+  "required": [
+    "TransitGatewayAttachmentId",
+    "ConnectPeerConfiguration"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DeleteTags"
+    ]
+  },
+  "createOnlyProperties": [
+    "/properties/TransitGatewayAttachmentId",
+    "/properties/ConnectPeerConfiguration",
+    "/properties/ConnectPeerConfiguration/PeerAddress",
+    "/properties/ConnectPeerConfiguration/InsideCidrBlocks",
+    "/properties/ConnectPeerConfiguration/TransitGatewayAddress",
+    "/properties/ConnectPeerConfiguration/BgpConfigurations/*/PeerAsn"
+  ],
+  "primaryIdentifier": [
+    "/properties/TransitGatewayConnectPeerId"
+  ],
+  "readOnlyProperties": [
+    "/properties/TransitGatewayConnectPeerId",
+    "/properties/ConnectPeerConfiguration/Protocol",
+    "/properties/ConnectPeerConfiguration/BgpConfigurations",
+    "/properties/ConnectPeerConfiguration/BgpConfigurations/*/TransitGatewayAddress",
+    "/properties/ConnectPeerConfiguration/BgpConfigurations/*/BgpStatus",
+    "/properties/ConnectPeerConfiguration/BgpConfigurations/*/PeerAddress",
+    "/properties/ConnectPeerConfiguration/BgpConfigurations/*/TransitGatewayAsn",
+    "/properties/State",
+    "/properties/CreationTime"
+  ],
+  "type": "object",
+  "title": "AWSEC2TransitGatewayConnectPeerProperties"
+}

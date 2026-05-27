@@ -1,8 +1,7 @@
 {
   "typeName": "AWS::EC2::IPAMPool",
-  "description": "Resource Schema of AWS::EC2::IPAMPool Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ipam.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ipam.git",
+  "description": "Resource Schema of AWS::EC2::IPAMPool Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ipam.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ipam.git",
-  "taggable": true,
   "definitions": {
     "Cidr": {
       "oneOf": [
@@ -29,6 +28,60 @@
       ],
       "additionalProperties": false,
       "title": "AWSEC2IPAMPoolProvisionedCidrDefinition"
+    },
+    "SourceResource": {
+      "description": "The resource associated with this pool's space. Depending on the ResourceType, setting a SourceResource changes which space can be provisioned in this pool and which types of resources can receive allocations",
+      "type": "object",
+      "properties": {
+        "ResourceId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResourceType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResourceRegion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResourceOwner": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ResourceId",
+        "ResourceType",
+        "ResourceRegion",
+        "ResourceOwner"
+      ],
+      "additionalProperties": false,
+      "title": "AWSEC2IPAMPoolSourceResourceDefinition"
     },
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
@@ -111,7 +164,8 @@
         {
           "type": "string",
           "enum": [
-            "ec2"
+            "ec2",
+            "global-services"
           ]
         },
         {
@@ -191,6 +245,9 @@
       ],
       "description": "The Id of this pool's source. If set, all space provisioned in this pool must be free space provisioned in the parent pool."
     },
+    "SourceResource": {
+      "$ref": "#/definitions/SourceResource"
+    },
     "Tags": {
       "description": "An array of key-value pairs to apply to this resource.",
       "type": "array",
@@ -229,8 +286,20 @@
     "/properties/AddressFamily",
     "/properties/PubliclyAdvertisable",
     "/properties/PublicIpSource",
-    "/properties/AwsService"
+    "/properties/AwsService",
+    "/properties/SourceResource"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:DeleteTags",
+      "ec2:CreateTags"
+    ]
+  },
   "type": "object",
   "title": "AWSEC2IPAMPoolProperties"
 }

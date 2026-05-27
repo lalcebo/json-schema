@@ -1,0 +1,425 @@
+{
+  "typeName": "AWS::QBusiness::DataAccessor",
+  "description": "Definition of AWS::QBusiness::DataAccessor Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-qbusiness",
+  "definitions": {
+    "ActionConfiguration": {
+      "type": "object",
+      "properties": {
+        "Action": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^qbusiness:[a-zA-Z]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "FilterConfiguration": {
+          "$ref": "#/definitions/ActionFilterConfiguration"
+        }
+      },
+      "required": [
+        "Action"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQBusinessDataAccessorActionConfigurationDefinition"
+    },
+    "ActionFilterConfiguration": {
+      "type": "object",
+      "properties": {
+        "DocumentAttributeFilter": {
+          "$ref": "#/definitions/AttributeFilter"
+        }
+      },
+      "required": [
+        "DocumentAttributeFilter"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQBusinessDataAccessorActionFilterConfigurationDefinition"
+    },
+    "AttributeFilter": {
+      "type": "object",
+      "properties": {
+        "AndAllFilters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AttributeFilter"
+          }
+        },
+        "OrAllFilters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AttributeFilter"
+          }
+        },
+        "NotFilter": {
+          "$ref": "#/definitions/AttributeFilter"
+        },
+        "EqualsTo": {
+          "$ref": "#/definitions/DocumentAttribute"
+        },
+        "ContainsAll": {
+          "$ref": "#/definitions/DocumentAttribute"
+        },
+        "ContainsAny": {
+          "$ref": "#/definitions/DocumentAttribute"
+        },
+        "GreaterThan": {
+          "$ref": "#/definitions/DocumentAttribute"
+        },
+        "GreaterThanOrEquals": {
+          "$ref": "#/definitions/DocumentAttribute"
+        },
+        "LessThan": {
+          "$ref": "#/definitions/DocumentAttribute"
+        },
+        "LessThanOrEquals": {
+          "$ref": "#/definitions/DocumentAttribute"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQBusinessDataAccessorAttributeFilterDefinition"
+    },
+    "DataAccessorAuthenticationConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "IdcTrustedTokenIssuerConfiguration",
+          "properties": {
+            "IdcTrustedTokenIssuerConfiguration": {
+              "$ref": "#/definitions/DataAccessorIdcTrustedTokenIssuerConfiguration"
+            }
+          },
+          "required": [
+            "IdcTrustedTokenIssuerConfiguration"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSQBusinessDataAccessorDataAccessorAuthenticationConfigurationDefinition"
+    },
+    "DataAccessorAuthenticationDetail": {
+      "type": "object",
+      "properties": {
+        "AuthenticationType": {
+          "$ref": "#/definitions/DataAccessorAuthenticationType"
+        },
+        "AuthenticationConfiguration": {
+          "$ref": "#/definitions/DataAccessorAuthenticationConfiguration"
+        },
+        "ExternalIds": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 1000,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]*$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 1,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "AuthenticationType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQBusinessDataAccessorDataAccessorAuthenticationDetailDefinition"
+    },
+    "DataAccessorAuthenticationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS_IAM_IDC_TTI",
+            "AWS_IAM_IDC_AUTH_CODE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSQBusinessDataAccessorDataAccessorAuthenticationTypeDefinition"
+    },
+    "DataAccessorIdcTrustedTokenIssuerConfiguration": {
+      "type": "object",
+      "properties": {
+        "IdcTrustedTokenIssuerArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1284,
+              "minLength": 0,
+              "pattern": "^arn:aws:sso::[0-9]{12}:trustedTokenIssuer/(sso)?ins-[a-zA-Z0-9-.]{16}/tti-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "IdcTrustedTokenIssuerArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQBusinessDataAccessorDataAccessorIdcTrustedTokenIssuerConfigurationDefinition"
+    },
+    "DocumentAttribute": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "$ref": "#/definitions/DocumentAttributeValue"
+        }
+      },
+      "required": [
+        "Name",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQBusinessDataAccessorDocumentAttributeDefinition"
+    },
+    "DocumentAttributeValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "StringValue",
+          "properties": {
+            "StringValue": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2048
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "StringValue"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "StringListValue",
+          "properties": {
+            "StringListValue": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 2048,
+                    "minLength": 1
+                  },
+                  {
+                    "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "StringListValue"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "LongValue",
+          "properties": {
+            "LongValue": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "LongValue"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "DateValue",
+          "properties": {
+            "DateValue": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "DateValue"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSQBusinessDataAccessorDocumentAttributeValueDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQBusinessDataAccessorTagDefinition"
+    },
+    "Unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSQBusinessDataAccessorUnitDefinition"
+    }
+  },
+  "properties": {
+    "ActionConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ActionConfiguration"
+      },
+      "maxItems": 10,
+      "minItems": 1
+    },
+    "ApplicationId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]{35}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "AuthenticationDetail": {
+      "$ref": "#/definitions/DataAccessorAuthenticationDetail"
+    },
+    "DisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Principal": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1284,
+          "minLength": 1,
+          "pattern": "^arn:aws:iam::[0-9]{12}:role/[a-zA-Z0-9_/+=,.@-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0
+    }
+  },
+  "required": [
+    "ApplicationId",
+    "ActionConfigurations",
+    "DisplayName",
+    "Principal"
+  ],
+  "readOnlyProperties": [
+    "/properties/CreatedAt",
+    "/properties/DataAccessorArn",
+    "/properties/DataAccessorId",
+    "/properties/IdcApplicationArn",
+    "/properties/UpdatedAt"
+  ],
+  "createOnlyProperties": [
+    "/properties/ApplicationId",
+    "/properties/Principal"
+  ],
+  "primaryIdentifier": [
+    "/properties/ApplicationId",
+    "/properties/DataAccessorId"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagUpdatable": true,
+    "tagOnCreate": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "qbusiness:UntagResource",
+      "qbusiness:TagResource",
+      "qbusiness:ListTagsForResource"
+    ]
+  },
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-qbusiness",
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSQBusinessDataAccessorProperties"
+}

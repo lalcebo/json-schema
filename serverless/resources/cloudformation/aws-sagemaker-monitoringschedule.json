@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::SageMaker::MonitoringSchedule",
-  "description": "Resource Type definition for AWS::SageMaker::MonitoringSchedule. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::SageMaker::MonitoringSchedule. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "MonitoringScheduleName": {
@@ -383,6 +383,18 @@
             }
           ],
           "description": "Whether the Pipe or File is used as the input mode for transfering data for the monitoring job. Pipe mode is recommended for large datasets. File mode is useful for small files that fit in memory. Defaults to File."
+        },
+        "ExcludeFeaturesAttribute": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indexes or names of the features to be excluded from analysis"
         }
       },
       "required": [
@@ -454,6 +466,18 @@
             }
           ],
           "description": "Whether the Pipe or File is used as the input mode for transfering data for the monitoring job. Pipe mode is recommended for large datasets. File mode is useful for small files that fit in memory. Defaults to File."
+        },
+        "ExcludeFeaturesAttribute": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indexes or names of the features to be excluded from analysis"
         }
       },
       "required": [
@@ -726,13 +750,36 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "A cron expression that describes details about the monitoring schedule."
+          "description": "A cron expression or 'NOW' that describes details about the monitoring schedule."
+        },
+        "DataAnalysisStartTime": {
+          "description": "Data Analysis start time, e.g. -PT1H",
+          "$ref": "#/definitions/DataAnalysisTimeString"
+        },
+        "DataAnalysisEndTime": {
+          "description": "Data Analysis end time, e.g. PT0H",
+          "$ref": "#/definitions/DataAnalysisTimeString"
         }
       },
       "required": [
         "ScheduleExpression"
       ],
       "title": "AWSSageMakerMonitoringScheduleScheduleConfigDefinition"
+    },
+    "DataAnalysisTimeString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^.?P.*",
+          "minLength": 1,
+          "maxLength": 15
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Analysis time in ISO duration format",
+      "title": "AWSSageMakerMonitoringScheduleDataAnalysisTimeStringDefinition"
     },
     "Tag": {
       "description": "A key-value pair to associate with a resource.",

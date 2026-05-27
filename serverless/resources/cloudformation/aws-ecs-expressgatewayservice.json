@@ -1,0 +1,752 @@
+{
+  "tagging": {
+    "permissions": [
+      "ecs:TagResource",
+      "ecs:UntagResource",
+      "ecs:ListTagsForResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": false
+  },
+  "typeName": "AWS::ECS::ExpressGatewayService",
+  "readOnlyProperties": [
+    "/properties/ServiceArn",
+    "/properties/ActiveConfigurations",
+    "/properties/Status",
+    "/properties/CreatedAt",
+    "/properties/UpdatedAt",
+    "/properties/Endpoint",
+    "/properties/ECSManagedResourceArns",
+    "/properties/ECSManagedResourceArns/ServiceSecurityGroups",
+    "/properties/ECSManagedResourceArns/AutoScaling",
+    "/properties/ECSManagedResourceArns/AutoScaling/ScalableTarget",
+    "/properties/ECSManagedResourceArns/AutoScaling/ApplicationAutoScalingPolicies",
+    "/properties/ECSManagedResourceArns/LogGroups",
+    "/properties/ECSManagedResourceArns/MetricAlarms",
+    "/properties/ECSManagedResourceArns/IngressPath",
+    "/properties/ECSManagedResourceArns/IngressPath/CertificateArn",
+    "/properties/ECSManagedResourceArns/IngressPath/LoadBalancerSecurityGroups",
+    "/properties/ECSManagedResourceArns/IngressPath/ListenerRuleArn",
+    "/properties/ECSManagedResourceArns/IngressPath/ListenerArn",
+    "/properties/ECSManagedResourceArns/IngressPath/LoadBalancerArn",
+    "/properties/ECSManagedResourceArns/IngressPath/TargetGroupArns"
+  ],
+  "description": "Resource Type definition for AWS::ECS::ExpressGatewayService. Source:- No source definition found, add manually please",
+  "createOnlyProperties": [
+    "/properties/ServiceName",
+    "/properties/Cluster",
+    "/properties/InfrastructureRoleArn",
+    "/properties/Tags"
+  ],
+  "primaryIdentifier": [
+    "/properties/ServiceArn"
+  ],
+  "required": [
+    "ExecutionRoleArn",
+    "InfrastructureRoleArn",
+    "PrimaryContainer"
+  ],
+  "propertyTransform": {
+    "/properties/Cluster": "Cluster $OR $join([\"arn:(aws)[-]{0,1}[a-z]{0,3}[-]{0,1}[a-z]{0,3}:ecs:[a-z0-9-]+:[0-9]{12}:cluster/{1}\", Cluster])"
+  },
+  "writeOnlyProperties": [
+    "/properties/ExecutionRoleArn",
+    "/properties/TaskRoleArn",
+    "/properties/HealthCheckPath",
+    "/properties/PrimaryContainer",
+    "/properties/NetworkConfiguration",
+    "/properties/Cpu",
+    "/properties/Memory",
+    "/properties/ScalingTarget"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "IngressPathSummary": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Endpoint": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AccessType": {
+          "$ref": "#/definitions/AccessType"
+        }
+      },
+      "title": "AWSECSExpressGatewayServiceIngressPathSummaryDefinition"
+    },
+    "ExpressGatewayRepositoryCredentials": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "CredentialsParameter": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "CredentialsParameter"
+      ],
+      "title": "AWSECSExpressGatewayServiceExpressGatewayRepositoryCredentialsDefinition"
+    },
+    "ExpressGatewayScalingTarget": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "MinTaskCount": {
+          "default": 1,
+          "type": "integer"
+        },
+        "MaxTaskCount": {
+          "default": 1,
+          "type": "integer"
+        },
+        "AutoScalingMetric": {
+          "$ref": "#/definitions/ExpressGatewayServiceScalingMetric"
+        },
+        "AutoScalingTargetValue": {
+          "default": 60,
+          "type": "integer"
+        }
+      },
+      "title": "AWSECSExpressGatewayServiceExpressGatewayScalingTargetDefinition"
+    },
+    "KeyValuePair": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "Value"
+      ],
+      "title": "AWSECSExpressGatewayServiceKeyValuePairDefinition"
+    },
+    "ExpressGatewayContainer": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "RepositoryCredentials": {
+          "$ref": "#/definitions/ExpressGatewayRepositoryCredentials"
+        },
+        "Secrets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Secret"
+          }
+        },
+        "Command": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AwsLogsConfiguration": {
+          "$ref": "#/definitions/ExpressGatewayServiceAwsLogsConfiguration"
+        },
+        "ContainerPort": {
+          "default": 80,
+          "type": "integer"
+        },
+        "Environment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyValuePair"
+          }
+        },
+        "Image": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Image"
+      ],
+      "title": "AWSECSExpressGatewayServiceExpressGatewayContainerDefinition"
+    },
+    "ExpressGatewayServiceAwsLogsConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "LogStreamPrefix": {
+          "oneOf": [
+            {
+              "default": "ecs",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LogGroup": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "LogGroup",
+        "LogStreamPrefix"
+      ],
+      "title": "AWSECSExpressGatewayServiceExpressGatewayServiceAwsLogsConfigurationDefinition"
+    },
+    "ECSManagedResourceArns": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "LogGroups": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "ServiceSecurityGroups": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "MetricAlarms": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "IngressPath": {
+          "$ref": "#/definitions/IngressPathArns"
+        },
+        "AutoScaling": {
+          "$ref": "#/definitions/AutoScalingArns"
+        }
+      },
+      "title": "AWSECSExpressGatewayServiceECSManagedResourceArnsDefinition"
+    },
+    "AutoScalingArns": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ScalableTarget": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ApplicationAutoScalingPolicies": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSECSExpressGatewayServiceAutoScalingArnsDefinition"
+    },
+    "Secret": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ValueFrom": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "ValueFrom"
+      ],
+      "title": "AWSECSExpressGatewayServiceSecretDefinition"
+    },
+    "ExpressGatewayServiceScalingMetric": {
+      "oneOf": [
+        {
+          "default": "AVERAGE_CPU",
+          "type": "string",
+          "enum": [
+            "AVERAGE_CPU",
+            "AVERAGE_MEMORY",
+            "REQUEST_COUNT_PER_TARGET"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSECSExpressGatewayServiceExpressGatewayServiceScalingMetricDefinition"
+    },
+    "ExpressGatewayServiceConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ServiceRevisionArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExecutionRoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TaskRoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ScalingTarget": {
+          "$ref": "#/definitions/ExpressGatewayScalingTarget"
+        },
+        "IngressPaths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IngressPathSummary"
+          }
+        },
+        "PrimaryContainer": {
+          "$ref": "#/definitions/ExpressGatewayContainer"
+        },
+        "Memory": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HealthCheckPath": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CreatedAt": {
+          "oneOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Cpu": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "NetworkConfiguration": {
+          "$ref": "#/definitions/ExpressGatewayServiceNetworkConfiguration"
+        }
+      },
+      "title": "AWSECSExpressGatewayServiceExpressGatewayServiceConfigurationDefinition"
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSECSExpressGatewayServiceTagDefinition"
+    },
+    "ExpressGatewayServiceStatusCode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "DRAINING",
+            "INACTIVE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSECSExpressGatewayServiceExpressGatewayServiceStatusCodeDefinition"
+    },
+    "IngressPathArns": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ListenerArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoadBalancerArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetGroupArns": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "ListenerRuleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LoadBalancerSecurityGroups": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "CertificateArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSECSExpressGatewayServiceIngressPathArnsDefinition"
+    },
+    "ExpressGatewayServiceNetworkConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SecurityGroups": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Subnets": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSECSExpressGatewayServiceExpressGatewayServiceNetworkConfigurationDefinition"
+    },
+    "AccessType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "PRIVATE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSECSExpressGatewayServiceAccessTypeDefinition"
+    },
+    "ExpressGatewayServiceStatus": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "StatusCode": {
+          "$ref": "#/definitions/ExpressGatewayServiceStatusCode"
+        }
+      },
+      "title": "AWSECSExpressGatewayServiceExpressGatewayServiceStatusDefinition"
+    }
+  },
+  "properties": {
+    "TaskRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "PrimaryContainer": {
+      "$ref": "#/definitions/ExpressGatewayContainer"
+    },
+    "Memory": {
+      "oneOf": [
+        {
+          "default": "512",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "HealthCheckPath": {
+      "oneOf": [
+        {
+          "default": "HTTP:80/ping",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Cluster": {
+      "oneOf": [
+        {
+          "default": "default",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Cpu": {
+      "oneOf": [
+        {
+          "default": "256",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ExecutionRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "InfrastructureRoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ScalingTarget": {
+      "$ref": "#/definitions/ExpressGatewayScalingTarget"
+    },
+    "ServiceName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "NetworkConfiguration": {
+      "$ref": "#/definitions/ExpressGatewayServiceNetworkConfiguration"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "type": "object",
+  "title": "AWSECSExpressGatewayServiceProperties"
+}

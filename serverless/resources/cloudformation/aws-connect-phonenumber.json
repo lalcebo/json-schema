@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Connect::PhoneNumber",
-  "description": "Resource Type definition for AWS::Connect::PhoneNumber. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "description": "Resource Type definition for AWS::Connect::PhoneNumber. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "definitions": {
     "Tag": {
@@ -72,13 +72,13 @@
       "oneOf": [
         {
           "type": "string",
-          "pattern": "TOLL_FREE|DID"
+          "pattern": "TOLL_FREE|DID|UIFN|SHARED|THIRD_PARTY_DID|THIRD_PARTY_TF|SHORT_CODE"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The phone number type, either TOLL_FREE or DID."
+      "description": "The phone number type"
     },
     "CountryCode": {
       "oneOf": [
@@ -113,19 +113,32 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "SourcePhoneNumberArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The source phone number arn."
     }
   },
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "connect:UntagResource",
+      "connect:TagResource"
+    ]
   },
   "required": [
-    "TargetArn",
-    "Type",
-    "CountryCode"
+    "TargetArn"
   ],
   "additionalProperties": false,
   "primaryIdentifier": [
@@ -142,7 +155,7 @@
     "/properties/Type",
     "/properties/CountryCode",
     "/properties/Prefix",
-    "/properties/Description"
+    "/properties/SourcePhoneNumberArn"
   ],
   "type": "object",
   "title": "AWSConnectPhoneNumberProperties"

@@ -1,0 +1,177 @@
+{
+  "typeName": "AWS::SageMaker::MlflowTrackingServer",
+  "description": "Resource Type definition for AWS::SageMaker::MlflowTrackingServer. Source:- No source definition found, add manually please",
+  "additionalProperties": false,
+  "properties": {
+    "TrackingServerName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,255}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the MLFlow Tracking Server."
+    },
+    "TrackingServerSize": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Small",
+            "Medium",
+            "Large"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The size of the MLFlow Tracking Server."
+    },
+    "MlflowVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^\\d+(\\.\\d+)+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The MLFlow Version used on the MLFlow Tracking Server."
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 2048,
+          "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role\\/?[a-zA-Z_0-9+=,.@\\-_\\/]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker to perform tasks on behalf of the customer."
+    },
+    "ArtifactStoreUri": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "^s3:\\/\\/([^\\/]+)\\/?(.*)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon S3 URI for MLFlow Tracking Server artifacts."
+    },
+    "AutomaticModelRegistration": {
+      "type": "boolean",
+      "description": "A flag to enable Automatic SageMaker Model Registration."
+    },
+    "WeeklyMaintenanceWindowStart": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):([0-5]\\d)$",
+          "maxLength": 9
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The start of the time window for maintenance of the MLFlow Tracking Server in UTC time."
+    },
+    "Tags": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "description": "An array of key-value pairs to apply to this resource.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A key-value pair to associate with a resource.",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 1 to 255 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 127 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -. "
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSSageMakerMlflowTrackingServerTagDefinition"
+    }
+  },
+  "required": [
+    "TrackingServerName",
+    "ArtifactStoreUri",
+    "RoleArn"
+  ],
+  "conditionalCreateOnlyProperties": [
+    "/properties/MlflowVersion",
+    "/properties/RoleArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/TrackingServerName"
+  ],
+  "primaryIdentifier": [
+    "/properties/TrackingServerName"
+  ],
+  "readOnlyProperties": [
+    "/properties/TrackingServerArn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "sagemaker:AddTags",
+      "sagemaker:ListTags",
+      "sagemaker:DeleteTags"
+    ]
+  },
+  "type": "object",
+  "title": "AWSSageMakerMlflowTrackingServerProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EMRServerless::Application",
-  "description": "Resource schema for AWS::EMRServerless::Application Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Resource schema for AWS::EMRServerless::Application Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "Architecture": {
@@ -40,6 +40,199 @@
       },
       "additionalProperties": false,
       "title": "AWSEMRServerlessApplicationImageConfigurationInputDefinition"
+    },
+    "InteractiveConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "LivyEndpointEnabled": {
+          "description": "Enables an Apache Livy endpoint that you can connect to and run interactive jobs",
+          "type": "boolean",
+          "default": false
+        },
+        "StudioEnabled": {
+          "description": "Enabled you to connect an Application to Amazon EMR Studio to run interactive workloads in a notebook",
+          "type": "boolean",
+          "default": false
+        },
+        "SessionEnabled": {
+          "description": "Enables interactive sessions on the application",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "title": "AWSEMRServerlessApplicationInteractiveConfigurationDefinition"
+    },
+    "IdentityCenterConfiguration": {
+      "description": "The IAM IdentityCenter configuration for trusted-identity-propagation on this application. Supported with release labels emr-7.8.0 and above.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "IdentityCenterInstanceArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1,
+              "pattern": "^arn:(aws[a-zA-Z0-9-]*):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IAM IdentityCenter instance arn"
+        }
+      },
+      "title": "AWSEMRServerlessApplicationIdentityCenterConfigurationDefinition"
+    },
+    "ConfigurationList": {
+      "type": "array",
+      "description": "Runtime configuration for batch and interactive JobRun.",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/ConfigurationObject"
+      },
+      "title": "AWSEMRServerlessApplicationConfigurationListDefinition"
+    },
+    "SchedulerConfiguration": {
+      "type": "object",
+      "description": "The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.",
+      "additionalProperties": false,
+      "properties": {
+        "QueueTimeoutMinutes": {
+          "description": "The maximum duration in minutes for the job in QUEUED state. If scheduler configuration is enabled on your application, the default value is 360 minutes (6 hours). The valid range is from 15 to 720.",
+          "type": "integer"
+        },
+        "MaxConcurrentRuns": {
+          "description": "The maximum concurrent job runs on this application. If scheduler configuration is enabled on your application, the default value is 15. The valid range is 1 to 1000.",
+          "type": "integer"
+        }
+      },
+      "title": "AWSEMRServerlessApplicationSchedulerConfigurationDefinition"
+    },
+    "MonitoringConfiguration": {
+      "type": "object",
+      "description": "Monitoring configuration for batch and interactive JobRun.",
+      "additionalProperties": false,
+      "properties": {
+        "S3MonitoringConfiguration": {
+          "description": "S3 monitoring configurations for a JobRun.",
+          "$ref": "#/definitions/S3MonitoringConfiguration"
+        },
+        "ManagedPersistenceMonitoringConfiguration": {
+          "description": "Managed log persistence configurations for a JobRun.",
+          "$ref": "#/definitions/ManagedPersistenceMonitoringConfiguration"
+        },
+        "CloudWatchLoggingConfiguration": {
+          "description": "CloudWatch logging configurations for a JobRun.",
+          "$ref": "#/definitions/CloudWatchLoggingConfiguration"
+        },
+        "PrometheusMonitoringConfiguration": {
+          "description": "Prometheus monitoring configurations for a JobRun.",
+          "$ref": "#/definitions/PrometheusMonitoringConfiguration"
+        }
+      },
+      "title": "AWSEMRServerlessApplicationMonitoringConfigurationDefinition"
+    },
+    "S3MonitoringConfiguration": {
+      "additionalProperties": false,
+      "properties": {
+        "LogUri": {
+          "$ref": "#/definitions/UriString"
+        },
+        "EncryptionKeyArn": {
+          "description": "KMS key ARN to encrypt the logs stored in given s3",
+          "$ref": "#/definitions/EncryptionKeyArn"
+        }
+      },
+      "title": "AWSEMRServerlessApplicationS3MonitoringConfigurationDefinition"
+    },
+    "ManagedPersistenceMonitoringConfiguration": {
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "description": "If set to false, managed logging will be turned off. Defaults to true.",
+          "type": "boolean",
+          "default": true
+        },
+        "EncryptionKeyArn": {
+          "description": "KMS key ARN to encrypt the logs stored in managed persistence",
+          "$ref": "#/definitions/EncryptionKeyArn"
+        }
+      },
+      "title": "AWSEMRServerlessApplicationManagedPersistenceMonitoringConfigurationDefinition"
+    },
+    "CloudWatchLoggingConfiguration": {
+      "additionalProperties": false,
+      "properties": {
+        "Enabled": {
+          "description": "If set to false, CloudWatch logging will be turned off. Defaults to false.",
+          "type": "boolean",
+          "default": false
+        },
+        "LogGroupName": {
+          "description": "Log-group name to produce log-streams on CloudWatch. If undefined, logs will be produced in a default log-group /aws/emr-serverless",
+          "$ref": "#/definitions/LogGroupName"
+        },
+        "LogStreamNamePrefix": {
+          "description": "Log-stream name prefix by which log-stream names will start in the CloudWatch Log-group.",
+          "$ref": "#/definitions/LogStreamNamePrefix"
+        },
+        "EncryptionKeyArn": {
+          "description": "KMS key ARN to encrypt the logs stored in given CloudWatch log-group.",
+          "$ref": "#/definitions/EncryptionKeyArn"
+        },
+        "LogTypeMap": {
+          "description": "The specific log-streams which need to be uploaded to CloudWatch.",
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/LogTypeMapKeyValuePair"
+          }
+        }
+      },
+      "title": "AWSEMRServerlessApplicationCloudWatchLoggingConfigurationDefinition"
+    },
+    "PrometheusMonitoringConfiguration": {
+      "additionalProperties": false,
+      "properties": {
+        "RemoteWriteUrl": {
+          "description": "The remote write URL in the Amazon Managed Service for Prometheus workspace to send metrics to.",
+          "$ref": "#/definitions/RemoteWriteUrl"
+        }
+      },
+      "title": "AWSEMRServerlessApplicationPrometheusMonitoringConfigurationDefinition"
+    },
+    "LogTypeMapKeyValuePair": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "$ref": "#/definitions/WorkerTypeString"
+        },
+        "Value": {
+          "$ref": "#/definitions/LogTypeList"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSEMRServerlessApplicationLogTypeMapKeyValuePairDefinition"
+    },
+    "LogTypeList": {
+      "description": "List of Applicable values: [STDOUT, STDERR, HIVE_LOG, TEZ_AM, SYSTEM_LOGS]",
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/definitions/LogTypeString"
+      },
+      "title": "AWSEMRServerlessApplicationLogTypeListDefinition"
     },
     "InitialCapacityConfigMap": {
       "type": "array",
@@ -114,6 +307,10 @@
         "Disk": {
           "description": "Per worker Disk resource. GB is the only supported unit and specifying GB is optional",
           "$ref": "#/definitions/DiskSize"
+        },
+        "DiskType": {
+          "description": "Per worker DiskType resource. Shuffle optimized and Standard are only supported types and specifying diskType is optional",
+          "$ref": "#/definitions/DiskType"
         }
       },
       "required": [
@@ -237,6 +434,118 @@
       "description": "Identifier of a security group",
       "title": "AWSEMRServerlessApplicationSecurityGroupIdDefinition"
     },
+    "UriString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 10280,
+          "minLength": 1,
+          "pattern": "[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\r\\n\\t]*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationUriStringDefinition"
+    },
+    "RemoteWriteUrl": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 10280,
+          "minLength": 1,
+          "pattern": "^https://aps-workspaces.([a-z]{2}-[a-z-]{1,20}-[1-9]).amazonaws(.[0-9A-Za-z]{2,4})+/workspaces/[-_.0-9A-Za-z]{1,100}/api/v1/remote_write$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationRemoteWriteUrlDefinition"
+    },
+    "EncryptionKeyArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "minLength": 20,
+          "pattern": "^arn:(aws[a-zA-Z0-9-]*):kms:[a-zA-Z0-9\\-]*:(\\d{12})?:key\\/[a-zA-Z0-9-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationEncryptionKeyArnDefinition"
+    },
+    "Classification": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1024,
+          "minLength": 1,
+          "pattern": ".*\\S.*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationClassificationDefinition"
+    },
+    "LogGroupName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^[\\.\\-_/#A-Za-z0-9]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationLogGroupNameDefinition"
+    },
+    "LogStreamNamePrefix": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^[^:*]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationLogStreamNamePrefixDefinition"
+    },
+    "LogTypeString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z]+[-_]*[a-zA-Z]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationLogTypeStringDefinition"
+    },
+    "WorkerTypeString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 50,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z]+[-_]*[a-zA-Z]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationWorkerTypeStringDefinition"
+    },
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
       "type": "object",
@@ -276,6 +585,66 @@
         "Value"
       ],
       "title": "AWSEMRServerlessApplicationTagDefinition"
+    },
+    "ConfigurationObject": {
+      "type": "object",
+      "description": "Configuration for a JobRun.",
+      "additionalProperties": false,
+      "properties": {
+        "Classification": {
+          "description": "String with a maximum length of 1024.",
+          "$ref": "#/definitions/Classification"
+        },
+        "Properties": {
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[a-zA-Z]+[-a-zA-Z0-9_.]*$": {
+              "$ref": "#/definitions/SensitivePropertiesMap"
+            }
+          }
+        },
+        "Configurations": {
+          "type": "array",
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ConfigurationObject"
+          }
+        }
+      },
+      "required": [
+        "Classification"
+      ],
+      "title": "AWSEMRServerlessApplicationConfigurationObjectDefinition"
+    },
+    "SensitivePropertiesMap": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": ".*\\S.*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationSensitivePropertiesMapDefinition"
+    },
+    "SensitivePropertiesKeyValuePair": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": ".*\\S.*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSEMRServerlessApplicationSensitivePropertiesKeyValuePairDefinition"
     },
     "CpuSize": {
       "oneOf": [
@@ -321,6 +690,19 @@
       ],
       "description": "Per worker Disk resource. GB is the only supported unit and specifying GB is optional",
       "title": "AWSEMRServerlessApplicationDiskSizeDefinition"
+    },
+    "DiskType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(SHUFFLE_OPTIMIZED|[Ss]huffle_[Oo]ptimized|STANDARD|[Ss]tandard)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Per worker DiskType resource. Shuffle optimized and Standard are only supported types and specifying diskType is optional",
+      "title": "AWSEMRServerlessApplicationDiskTypeDefinition"
     },
     "WorkerTypeSpecificationInput": {
       "type": "object",
@@ -415,12 +797,30 @@
     "ImageConfiguration": {
       "$ref": "#/definitions/ImageConfigurationInput"
     },
+    "MonitoringConfiguration": {
+      "$ref": "#/definitions/MonitoringConfiguration"
+    },
+    "RuntimeConfiguration": {
+      "$ref": "#/definitions/ConfigurationList"
+    },
+    "InteractiveConfiguration": {
+      "$ref": "#/definitions/InteractiveConfiguration"
+    },
     "NetworkConfiguration": {
       "description": "Network Configuration for customer VPC connectivity.",
       "$ref": "#/definitions/NetworkConfiguration"
     },
     "WorkerTypeSpecifications": {
+      "description": "The key-value pairs that specify worker type to WorkerTypeSpecificationInput. This parameter must contain all valid worker types for a Spark or Hive application. Valid worker types include Driver and Executor for Spark applications and HiveDriver and TezTask for Hive applications. You can either set image details in this parameter for each worker type, or in imageConfiguration for all worker types.",
       "$ref": "#/definitions/WorkerTypeSpecificationInputMap"
+    },
+    "SchedulerConfiguration": {
+      "description": "The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.",
+      "$ref": "#/definitions/SchedulerConfiguration"
+    },
+    "IdentityCenterConfiguration": {
+      "description": "The IAM IdentityCenter configuration for trusted-identity-propagation on this application. Supported with release labels emr-7.8.0 and above.",
+      "$ref": "#/definitions/IdentityCenterConfiguration"
     }
   },
   "additionalProperties": false,
@@ -430,8 +830,22 @@
   ],
   "createOnlyProperties": [
     "/properties/Name",
-    "/properties/ReleaseLabel",
     "/properties/Type"
+  ],
+  "conditionalCreateOnlyProperties": [
+    "/properties/Architecture",
+    "/properties/ReleaseLabel",
+    "/properties/WorkerTypeSpecifications",
+    "/properties/MaximumCapacity",
+    "/properties/InitialCapacity",
+    "/properties/AutoStartConfiguration",
+    "/properties/AutoStopConfiguration",
+    "/properties/NetworkConfiguration",
+    "/properties/ImageConfiguration",
+    "/properties/MonitoringConfiguration",
+    "/properties/RuntimeConfiguration",
+    "/properties/InteractiveConfiguration",
+    "/properties/SchedulerConfiguration"
   ],
   "readOnlyProperties": [
     "/properties/Arn",
@@ -442,8 +856,16 @@
   ],
   "tagging": {
     "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "emr-serverless:TagResource",
+      "emr-serverless:UntagResource",
+      "kms:TagResource",
+      "kms:UntagResource"
+    ]
   },
   "type": "object",
   "title": "AWSEMRServerlessApplicationProperties"

@@ -1,0 +1,244 @@
+{
+  "typeName": "AWS::OpenSearchServerless::Index",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-opensearchserverless",
+  "description": "An OpenSearch Serverless index resource. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-opensearchserverless",
+  "tagging": {
+    "taggable": false
+  },
+  "definitions": {
+    "IndexSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Index": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "RefreshInterval": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "How often to perform refresh operation (e.g. '1s', '5s')"
+            },
+            "Knn": {
+              "type": "boolean",
+              "description": "Enable/disable k-nearest neighbor search capability"
+            },
+            "KnnAlgoParamEfSearch": {
+              "type": "integer",
+              "description": "Size of the dynamic list for the nearest neighbors"
+            }
+          }
+        }
+      },
+      "title": "AWSOpenSearchServerlessIndexIndexSettingsDefinition"
+    },
+    "PropertyMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Dimension": {
+          "type": "integer",
+          "description": "Dimension size for vector fields, defines the number of dimensions in the vector"
+        },
+        "Index": {
+          "type": "boolean",
+          "description": "Whether a field should be indexed"
+        },
+        "Method": {
+          "type": "object",
+          "description": "Configuration for k-NN search method",
+          "additionalProperties": false,
+          "properties": {
+            "Engine": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "nmslib",
+                    "faiss",
+                    "lucene"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The k-NN search engine to use"
+            },
+            "Name": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "hnsw",
+                    "ivf"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The algorithm name for k-NN search"
+            },
+            "SpaceType": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "l2",
+                    "l1",
+                    "linf",
+                    "cosinesimil",
+                    "innerproduct",
+                    "hamming"
+                  ]
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "The distance function used for k-NN search"
+            },
+            "Parameters": {
+              "type": "object",
+              "description": "Additional parameters for the k-NN algorithm",
+              "additionalProperties": false,
+              "properties": {
+                "EfConstruction": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "The size of the dynamic list used during k-NN graph creation"
+                },
+                "M": {
+                  "type": "integer",
+                  "description": "Number of neighbors to consider during k-NN search",
+                  "minimum": 2,
+                  "maximum": 100
+                }
+              }
+            }
+          },
+          "required": [
+            "Name"
+          ]
+        },
+        "Properties": {
+          "type": "object",
+          "description": "Nested fields within an object or nested field type",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[A-Za-z0-9_.-]{1,64}$": {
+              "$ref": "#/definitions/PropertyMapping",
+              "description": "Nested field name and its mapping configuration"
+            }
+          }
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "text",
+                "knn_vector"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The field data type. Must be a valid OpenSearch field type."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Default value for the field when not specified in a document"
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "title": "AWSOpenSearchServerlessIndexPropertyMappingDefinition"
+    }
+  },
+  "properties": {
+    "CollectionEndpoint": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The endpoint for the collection."
+    },
+    "IndexName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(?![_-])[a-z][a-z0-9_-]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the OpenSearch Serverless index."
+    },
+    "Settings": {
+      "$ref": "#/definitions/IndexSettings",
+      "description": "Index settings"
+    },
+    "Mappings": {
+      "type": "object",
+      "description": "Index Mappings",
+      "additionalProperties": false,
+      "properties": {
+        "Properties": {
+          "type": "object",
+          "description": "Defines the fields within the mapping, including their types and configurations",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[A-Za-z0-9_.-]{1,64}$": {
+              "$ref": "#/definitions/PropertyMapping",
+              "description": "Field name and its mapping configuration"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "CollectionEndpoint",
+    "IndexName"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/IndexName",
+    "/properties/CollectionEndpoint"
+  ],
+  "readOnlyProperties": [
+    "/properties/Uuid"
+  ],
+  "createOnlyProperties": [
+    "/properties/IndexName",
+    "/properties/CollectionEndpoint"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Settings/Index/RefreshInterval",
+    "/properties/Settings/Index/KnnAlgoParamEfSearch"
+  ],
+  "type": "object",
+  "title": "AWSOpenSearchServerlessIndexProperties"
+}

@@ -1,14 +1,116 @@
 {
   "typeName": "AWS::Route53Resolver::ResolverEndpoint",
-  "description": "Resource Type definition for AWS::Route53Resolver::ResolverEndpoint. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
+  "description": "Resource type definition for AWS::Route53Resolver::ResolverEndpoint. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-route53resolver",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-route53resolver",
+  "definitions": {
+    "IpAddressRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Ip": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IPv4 address that you want to use for DNS queries."
+        },
+        "Ipv6": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IPv6 address that you want to use for DNS queries."
+        },
+        "SubnetId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the subnet that contains the IP address."
+        }
+      },
+      "required": [
+        "SubnetId"
+      ],
+      "title": "AWSRoute53ResolverResolverEndpointIpAddressRequestDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name for the tag. For example, if you want to associate Resolver resources with the account IDs of your customers for billing purposes, the value of Key might be account-id."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. For example, if Key is account-id, then Value might be the ID of the customer account that you're creating the resource for."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSRoute53ResolverResolverEndpointTagDefinition"
+    }
+  },
   "properties": {
+    "Direction": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Indicates whether the Resolver endpoint allows inbound or outbound DNS queries:\n- INBOUND: allows DNS queries to your VPC from your network \n- OUTBOUND: allows DNS queries from your VPC to your network \n- INBOUND_DELEGATION: allows DNS queries to your VPC from your network with authoritative answers from private hosted zones"
+    },
     "IpAddresses": {
       "type": "array",
+      "description": "The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward DNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC.",
       "uniqueItems": false,
+      "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/IpAddressRequest"
       }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A friendly name that lets you easily find a configuration in the Resolver dashboard in the Route 53 console."
     },
     "OutpostArn": {
       "oneOf": [
@@ -18,7 +120,8 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The ARN (Amazon Resource Name) for the Outpost."
     },
     "PreferredInstanceType": {
       "oneOf": [
@@ -28,31 +131,62 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
+      ],
+      "description": "The Amazon EC2 instance type."
+    },
+    "TargetNameServerMetricsEnabled": {
+      "type": "boolean",
+      "description": "Specifies whether target name server metrics are enabled for the Outbound Resolver Endpoint. When set to true, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When set to false, metrics are not published. Default is false."
+    },
+    "RniEnhancedMetricsEnabled": {
+      "type": "boolean",
+      "description": "Specifies whether RNI enhanced metrics are enabled for the Resolver Endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each RNI associated with this endpoint. When set to false, metrics are not published. Default is false."
+    },
+    "Dns64Enabled": {
+      "type": "boolean",
+      "description": "Specifies whether DNS64 is enabled for the Inbound Resolver Endpoint. When set to true, if a DNS AAAA query is made for a domain that has only an A (IPv4) record, the resolver automatically synthesizes an AAAA (IPv6) response by embedding the IPv4 address into the well-known prefix 64:ff9b::/96. Default is false."
+    },
+    "Ipv6InternetAccessEnabled": {
+      "type": "boolean",
+      "description": "Specifies whether IPv6 Internet Gateway access is enabled through the Outbound Resolver Endpoint. When set to true, this property allows your Endpoint ENIs to reach public IPv6 target nameservers through an internet gateway. Default is false."
+    },
+    "Protocols": {
+      "type": "array",
+      "description": "Protocols used for the endpoint. DoH-FIPS is applicable for inbound endpoints only.",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
     },
     "ResolverEndpointType": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "IPV6",
+            "IPV4",
+            "DUALSTACK"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ]
-    },
-    "Direction": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
+      ],
+      "description": "The Resolver endpoint IP address type."
     },
     "SecurityGroupIds": {
       "type": "array",
+      "description": "The ID of one or more security groups that control access to this VPC. The security group must include one or more inbound rules (for inbound endpoints) or outbound rules (for outbound endpoints). Inbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port that you're using for DNS queries on your network.",
       "uniqueItems": false,
+      "insertionOrder": false,
       "items": {
         "oneOf": [
           {
@@ -66,115 +200,46 @@
     },
     "Tags": {
       "type": "array",
+      "description": "An array of key-value pairs to apply to this resource.",
       "uniqueItems": false,
+      "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
       }
-    },
-    "Name": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
     }
   },
-  "definitions": {
-    "IpAddressRequest": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "SubnetId": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Ipv6": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Ip": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "SubnetId"
-      ],
-      "title": "AWSRoute53ResolverResolverEndpointIpAddressRequestDefinition"
-    },
-    "Tag": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Value": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        }
-      },
-      "required": [
-        "Value",
-        "Key"
-      ],
-      "title": "AWSRoute53ResolverResolverEndpointTagDefinition"
-    }
-  },
+  "additionalProperties": false,
   "required": [
-    "IpAddresses",
     "Direction",
+    "IpAddresses",
     "SecurityGroupIds"
   ],
   "createOnlyProperties": [
-    "/properties/OutpostArn",
     "/properties/Direction",
-    "/properties/SecurityGroupIds",
-    "/properties/PreferredInstanceType"
+    "/properties/OutpostArn",
+    "/properties/PreferredInstanceType",
+    "/properties/SecurityGroupIds"
   ],
   "primaryIdentifier": [
     "/properties/ResolverEndpointId"
   ],
   "readOnlyProperties": [
-    "/properties/ResolverEndpointId",
-    "/properties/IpAddressCount",
     "/properties/Arn",
-    "/properties/HostVPCId"
+    "/properties/HostVPCId",
+    "/properties/IpAddressCount",
+    "/properties/ResolverEndpointId"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "route53resolver:TagResource",
+      "route53resolver:UntagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSRoute53ResolverResolverEndpointProperties"
 }

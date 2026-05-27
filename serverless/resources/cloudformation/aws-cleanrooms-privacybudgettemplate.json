@@ -1,0 +1,213 @@
+{
+  "typeName": "AWS::CleanRooms::PrivacyBudgetTemplate",
+  "description": "Represents a privacy budget within a collaboration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cleanrooms",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSCleanRoomsPrivacyBudgetTemplateTagDefinition"
+    },
+    "BudgetParameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CALENDAR_DAY",
+                "CALENDAR_MONTH",
+                "CALENDAR_WEEK",
+                "LIFETIME"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Budget": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "AutoRefresh": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type",
+        "Budget"
+      ],
+      "title": "AWSCleanRoomsPrivacyBudgetTemplateBudgetParameterDefinition"
+    }
+  },
+  "properties": {
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this cleanrooms privacy budget template.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "type": "array"
+    },
+    "AutoRefresh": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CALENDAR_MONTH",
+            "NONE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "PrivacyBudgetType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DIFFERENTIAL_PRIVACY",
+            "ACCESS_BUDGET"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Epsilon": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "UsersNoisePerQuery": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 100
+        },
+        "BudgetParameters": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/BudgetParameter"
+          },
+          "minItems": 1,
+          "maxItems": 2
+        },
+        "ResourceArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      }
+    },
+    "MembershipIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    }
+  },
+  "required": [
+    "AutoRefresh",
+    "PrivacyBudgetType",
+    "Parameters",
+    "MembershipIdentifier"
+  ],
+  "readOnlyProperties": [
+    "/properties/CollaborationArn",
+    "/properties/CollaborationIdentifier",
+    "/properties/PrivacyBudgetTemplateIdentifier",
+    "/properties/Arn",
+    "/properties/MembershipArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/MembershipIdentifier",
+    "/properties/PrivacyBudgetType",
+    "/properties/AutoRefresh",
+    "/properties/Parameters/ResourceArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/PrivacyBudgetTemplateIdentifier",
+    "/properties/MembershipIdentifier"
+  ],
+  "replacementStrategy": "delete_then_create",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cleanrooms:ListTagsForResource",
+      "cleanrooms:UntagResource",
+      "cleanrooms:TagResource"
+    ]
+  },
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cleanrooms",
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSCleanRoomsPrivacyBudgetTemplateProperties"
+}

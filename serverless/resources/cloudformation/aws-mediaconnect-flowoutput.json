@@ -1,8 +1,39 @@
 {
   "typeName": "AWS::MediaConnect::FlowOutput",
-  "description": "Resource schema for AWS::MediaConnect::FlowOutput. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediaconnect.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediaconnect.git",
+  "description": "Resource schema for AWS::MediaConnect::FlowOutput. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediaconnect.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-mediaconnect.git",
   "definitions": {
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSMediaConnectFlowOutputTagDefinition"
+    },
     "Encryption": {
       "type": "object",
       "description": "Information about the encryption of the flow.",
@@ -42,7 +73,8 @@
         "RoleArn": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -53,7 +85,8 @@
         "SecretArn": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "pattern": "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -87,12 +120,254 @@
       },
       "additionalProperties": false,
       "title": "AWSMediaConnectFlowOutputVpcInterfaceAttachmentDefinition"
+    },
+    "MediaStreamOutputConfiguration": {
+      "type": "object",
+      "description": "The media stream that is associated with the output, and the parameters for that association.",
+      "properties": {
+        "EncodingName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "jxsv",
+                "raw",
+                "smpte291",
+                "pcm"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The format that will be used to encode the data. For ancillary data streams, set the encoding name to smpte291. For audio streams, set the encoding name to pcm. For video streams on sources or outputs that use the CDI protocol, set the encoding name to raw. For video streams on sources or outputs that use the ST 2110 JPEG XS protocol, set the encoding name to jxsv."
+        },
+        "DestinationConfigurations": {
+          "type": "array",
+          "description": "The media streams that you want to associate with the output.",
+          "items": {
+            "$ref": "#/definitions/DestinationConfiguration"
+          }
+        },
+        "MediaStreamName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A name that helps you distinguish one media stream from another."
+        },
+        "EncodingParameters": {
+          "$ref": "#/definitions/EncodingParameters",
+          "description": "A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "EncodingName",
+        "MediaStreamName"
+      ],
+      "title": "AWSMediaConnectFlowOutputMediaStreamOutputConfigurationDefinition"
+    },
+    "DestinationConfiguration": {
+      "type": "object",
+      "description": "The definition of a media stream that is associated with the output.",
+      "properties": {
+        "DestinationIp": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IP address where contents of the media stream will be sent."
+        },
+        "DestinationPort": {
+          "type": "integer",
+          "description": "The port to use when the content of the media stream is distributed to the output."
+        },
+        "Interface": {
+          "$ref": "#/definitions/Interface",
+          "description": "The VPC interface that is used for the media stream associated with the output."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "DestinationIp",
+        "DestinationPort",
+        "Interface"
+      ],
+      "title": "AWSMediaConnectFlowOutputDestinationConfigurationDefinition"
+    },
+    "Interface": {
+      "type": "object",
+      "description": "The VPC interface that you want to use for the media stream associated with the output.",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the VPC interface that you want to use for the media stream associated with the output."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Name"
+      ],
+      "title": "AWSMediaConnectFlowOutputInterfaceDefinition"
+    },
+    "EncodingParameters": {
+      "type": "object",
+      "description": "A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source.",
+      "properties": {
+        "CompressionFactor": {
+          "type": "number",
+          "description": "A value that is used to calculate compression for an output. The bitrate of the output is calculated as follows: Output bitrate = (1 / compressionFactor) * (source bitrate) This property only applies to outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol. Valid values are in the range of 3.0 to 10.0, inclusive."
+        },
+        "EncoderProfile": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "main",
+                "high"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A setting on the encoder that drives compression settings. This property only applies to video media streams associated with outputs that use the ST 2110 JPEG XS protocol, with a flow source that uses the CDI protocol."
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "CompressionFactor"
+      ],
+      "title": "AWSMediaConnectFlowOutputEncodingParametersDefinition"
+    },
+    "FlowTransitEncryption": {
+      "type": "object",
+      "description": "The configuration that defines how content is encrypted during transit between the MediaConnect router and a MediaConnect flow.",
+      "properties": {
+        "EncryptionKeyType": {
+          "$ref": "#/definitions/FlowTransitEncryptionKeyType"
+        },
+        "EncryptionKeyConfiguration": {
+          "$ref": "#/definitions/FlowTransitEncryptionKeyConfiguration"
+        }
+      },
+      "required": [
+        "EncryptionKeyConfiguration"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaConnectFlowOutputFlowTransitEncryptionDefinition"
+    },
+    "FlowTransitEncryptionKeyConfiguration": {
+      "description": "Configuration settings for flow transit encryption keys.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "SecretsManager",
+          "properties": {
+            "SecretsManager": {
+              "$ref": "#/definitions/SecretsManagerEncryptionKeyConfiguration"
+            }
+          },
+          "required": [
+            "SecretsManager"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Automatic",
+          "properties": {
+            "Automatic": {
+              "$ref": "#/definitions/AutomaticEncryptionKeyConfiguration"
+            }
+          },
+          "required": [
+            "Automatic"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSMediaConnectFlowOutputFlowTransitEncryptionKeyConfigurationDefinition"
+    },
+    "FlowTransitEncryptionKeyType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SECRETS_MANAGER",
+            "AUTOMATIC"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSMediaConnectFlowOutputFlowTransitEncryptionKeyTypeDefinition"
+    },
+    "SecretsManagerEncryptionKeyConfiguration": {
+      "type": "object",
+      "description": "The configuration settings for transit encryption of a flow output using AWS Secrets Manager, including the secret ARN and role ARN.",
+      "properties": {
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the AWS Secrets Manager secret used for transit encryption to the router input."
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the IAM role used for transit encryption to the router input using AWS Secrets Manager."
+        }
+      },
+      "required": [
+        "RoleArn",
+        "SecretArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSMediaConnectFlowOutputSecretsManagerEncryptionKeyConfigurationDefinition"
+    },
+    "AutomaticEncryptionKeyConfiguration": {
+      "type": "object",
+      "description": "Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.",
+      "additionalProperties": false,
+      "title": "AWSMediaConnectFlowOutputAutomaticEncryptionKeyConfigurationDefinition"
     }
   },
   "properties": {
     "FlowArn": {
       "oneOf": [
         {
+          "pattern": "^arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:flow:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+$",
           "type": "string"
         },
         {
@@ -174,9 +449,11 @@
             "rtp",
             "zixi-pull",
             "rist",
-            "fujitsu-qos",
             "srt-listener",
-            "srt-caller"
+            "srt-caller",
+            "st2110-jpegxs",
+            "cdi",
+            "ndi-speed-hq"
           ]
         },
         {
@@ -214,15 +491,78 @@
     "VpcInterfaceAttachment": {
       "$ref": "#/definitions/VpcInterfaceAttachment",
       "description": "The name of the VPC interface attachment to use for this output."
+    },
+    "MediaStreamOutputConfigurations": {
+      "type": "array",
+      "description": "The definition for each media stream that is associated with the output.",
+      "items": {
+        "$ref": "#/definitions/MediaStreamOutputConfiguration"
+      }
+    },
+    "OutputStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "An indication of whether the output should transmit data or not."
+    },
+    "NdiProgramName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A suffix for the names of the NDI sources that the flow creates. If a custom name isn't specified, MediaConnect uses the output name."
+    },
+    "NdiSpeedHqQuality": {
+      "type": "integer",
+      "description": "A quality setting for the NDI Speed HQ encoder."
+    },
+    "RouterIntegrationState": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "RouterIntegrationTransitEncryption": {
+      "$ref": "#/definitions/FlowTransitEncryption"
+    },
+    "Tags": {
+      "type": "array",
+      "description": "Key-value pairs that can be used to tag and organize this flow output.",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
   },
   "additionalProperties": false,
   "required": [
-    "FlowArn",
-    "Protocol"
+    "FlowArn"
   ],
   "createOnlyProperties": [
-    "/properties/Name"
+    "/properties/Name",
+    "/properties/FlowArn"
   ],
   "readOnlyProperties": [
     "/properties/OutputArn"
@@ -230,6 +570,18 @@
   "primaryIdentifier": [
     "/properties/OutputArn"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "mediaconnect:TagResource",
+      "mediaconnect:UntagResource",
+      "mediaconnect:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSMediaConnectFlowOutputProperties"
 }

@@ -1,0 +1,336 @@
+{
+  "typeName": "AWS::CustomerProfiles::Recommender",
+  "description": "Resource Type definition for AWS::CustomerProfiles::Recommender. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-customer-profiles.git",
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCustomerProfilesRecommenderTagDefinition"
+    },
+    "DomainName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the domain for which the recommender will be created",
+      "title": "AWSCustomerProfilesRecommenderDomainNameDefinition"
+    },
+    "RecommenderRecipeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the recommender recipe.",
+      "title": "AWSCustomerProfilesRecommenderRecommenderRecipeNameDefinition"
+    },
+    "RecommenderConfig": {
+      "type": "object",
+      "description": "Configuration for the recommender",
+      "properties": {
+        "EventsConfig": {
+          "$ref": "#/definitions/EventsConfig"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSCustomerProfilesRecommenderRecommenderConfigDefinition"
+    },
+    "EventsConfig": {
+      "type": "object",
+      "description": "Configuration for events used in the recommender",
+      "properties": {
+        "EventParametersList": {
+          "type": "array",
+          "description": "List of event parameters with their value thresholds",
+          "items": {
+            "$ref": "#/definitions/EventParameters"
+          },
+          "minItems": 1,
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "EventParametersList"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCustomerProfilesRecommenderEventsConfigDefinition"
+    },
+    "EventParameters": {
+      "type": "object",
+      "description": "Event parameters with type and value threshold",
+      "properties": {
+        "EventType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of event"
+        },
+        "EventValueThreshold": {
+          "type": "number",
+          "description": "The threshold of the event type. Only events with a value greater or equal to this threshold will be considered for solution creation."
+        }
+      },
+      "required": [
+        "EventType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCustomerProfilesRecommenderEventParametersDefinition"
+    },
+    "RecommenderName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the recommender",
+      "title": "AWSCustomerProfilesRecommenderRecommenderNameDefinition"
+    },
+    "RecommenderStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "IN_PROGRESS",
+            "STOPPING",
+            "STARTING",
+            "ACTIVE",
+            "INACTIVE",
+            "FAILED",
+            "DELETING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the recommender",
+      "title": "AWSCustomerProfilesRecommenderRecommenderStatusDefinition"
+    },
+    "RecommenderUpdate": {
+      "type": "object",
+      "description": "Information about the latest recommender update",
+      "properties": {
+        "RecommenderConfig": {
+          "$ref": "#/definitions/RecommenderConfig"
+        },
+        "Status": {
+          "$ref": "#/definitions/RecommenderStatus"
+        },
+        "CreationDateTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The timestamp of when the update was created"
+        },
+        "LastUpdatedDateTime": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The timestamp of when the update was last modified"
+        },
+        "FailureReason": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The reason for update failure"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSCustomerProfilesRecommenderRecommenderUpdateDefinition"
+    },
+    "TrainingMetrics": {
+      "type": "object",
+      "properties": {
+        "Time": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Timestamp of the training metrics"
+        },
+        "Metrics": {
+          "type": "object",
+          "description": "Training metrics by type",
+          "properties": {
+            "hit": {
+              "type": "number"
+            },
+            "coverage": {
+              "type": "number"
+            },
+            "recall": {
+              "type": "number"
+            },
+            "popularity": {
+              "type": "number"
+            },
+            "freshness": {
+              "type": "number"
+            },
+            "similarity": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSCustomerProfilesRecommenderTrainingMetricsDefinition"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the recommender.",
+      "title": "AWSCustomerProfilesRecommenderDescriptionDefinition"
+    }
+  },
+  "properties": {
+    "DomainName": {
+      "$ref": "#/definitions/DomainName"
+    },
+    "RecommenderName": {
+      "$ref": "#/definitions/RecommenderName"
+    },
+    "RecommenderRecipeName": {
+      "$ref": "#/definitions/RecommenderRecipeName"
+    },
+    "RecommenderConfig": {
+      "$ref": "#/definitions/RecommenderConfig"
+    },
+    "Description": {
+      "$ref": "#/definitions/Description"
+    },
+    "Tags": {
+      "description": "The tags used to organize, track, or control access for this resource.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 50
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "DomainName",
+    "RecommenderName",
+    "RecommenderRecipeName"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "profile:TagResource",
+      "profile:UntagResource",
+      "profile:ListTagsForResource"
+    ]
+  },
+  "createOnlyProperties": [
+    "/properties/DomainName",
+    "/properties/RecommenderName",
+    "/properties/RecommenderRecipeName"
+  ],
+  "readOnlyProperties": [
+    "/properties/RecommenderArn",
+    "/properties/Status",
+    "/properties/CreatedAt",
+    "/properties/LastUpdatedAt",
+    "/properties/FailureReason",
+    "/properties/LatestRecommenderUpdate",
+    "/properties/TrainingMetrics"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainName",
+    "/properties/RecommenderName"
+  ],
+  "type": "object",
+  "title": "AWSCustomerProfilesRecommenderProperties"
+}

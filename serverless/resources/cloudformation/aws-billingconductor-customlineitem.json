@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::BillingConductor::CustomLineItem",
-  "description": "A custom line item is an one time charge that is applied to a specific billing group's bill.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
+  "description": "A custom line item is an one time charge that is applied to a specific billing group's bill.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
   "definitions": {
     "Tag": {
@@ -99,6 +99,98 @@
       ],
       "title": "AWSBillingConductorCustomLineItemCustomLineItemFlatChargeDetailsDefinition"
     },
+    "LineItemFilters": {
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/LineItemFilter"
+      },
+      "title": "AWSBillingConductorCustomLineItemLineItemFiltersDefinition"
+    },
+    "LineItemFilter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Attribute": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "LINE_ITEM_TYPE",
+                "SERVICE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MatchOption": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "NOT_EQUAL",
+                "EQUAL"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Values": {
+          "type": "array",
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/LineItemFilterValue"
+          }
+        },
+        "AttributeValues": {
+          "type": "array",
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/AttributeValue"
+          }
+        }
+      },
+      "required": [
+        "Attribute",
+        "MatchOption"
+      ],
+      "title": "AWSBillingConductorCustomLineItemLineItemFilterDefinition"
+    },
+    "LineItemFilterValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SAVINGS_PLAN_NEGATION"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBillingConductorCustomLineItemLineItemFilterValueDefinition"
+    },
+    "AttributeValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-zA-Z0-9]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSBillingConductorCustomLineItemAttributeValueDefinition"
+    },
     "CustomLineItemChargeDetails": {
       "type": "object",
       "additionalProperties": false,
@@ -111,6 +203,9 @@
         },
         "Type": {
           "$ref": "#/definitions/Type"
+        },
+        "LineItemFilters": {
+          "$ref": "#/definitions/LineItemFilters"
         }
       },
       "required": [
@@ -170,6 +265,41 @@
         }
       ]
     },
+    "ComputationRule": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CONSOLIDATED",
+            "ITEMIZED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The display settings of the Custom Line Item."
+    },
+    "PresentationDetails": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Service": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Service"
+      ]
+    },
     "Description": {
       "oneOf": [
         {
@@ -188,7 +318,7 @@
       "oneOf": [
         {
           "type": "string",
-          "pattern": "arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/?[0-9]{12}"
+          "pattern": "arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/?[a-zA-Z0-9]{10,12}"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -198,6 +328,18 @@
     },
     "BillingPeriodRange": {
       "$ref": "#/definitions/BillingPeriodRange"
+    },
+    "AccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "[0-9]{12}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The account which this custom line item will be charged to"
     },
     "Tags": {
       "type": "array",
@@ -214,7 +356,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "billingconductor:ListTagsForResource",
+      "billingconductor:TagResource",
+      "billingconductor:UntagResource"
+    ]
   },
   "required": [
     "Name",
@@ -230,6 +377,9 @@
   ],
   "createOnlyProperties": [
     "/properties/BillingGroupArn",
+    "/properties/AccountId",
+    "/properties/ComputationRule",
+    "/properties/PresentationDetails",
     "/properties/BillingPeriodRange/InclusiveStartBillingPeriod",
     "/properties/BillingPeriodRange/ExclusiveEndBillingPeriod",
     "/properties/CustomLineItemChargeDetails/Type"

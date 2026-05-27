@@ -1,0 +1,302 @@
+{
+  "typeName": "AWS::Wisdom::QuickResponse",
+  "description": "Definition of AWS::Wisdom::QuickResponse Resource Type.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wisdom",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wisdom",
+  "definitions": {
+    "ChannelType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Chat",
+            "Email"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWisdomQuickResponseChannelTypeDefinition"
+    },
+    "QuickResponseContentProvider": {
+      "description": "The container of quick response content.",
+      "type": "object",
+      "properties": {
+        "Content": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The content of the quick response."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomQuickResponseQuickResponseContentProviderDefinition"
+    },
+    "QuickResponseContents": {
+      "description": "The content of the quick response stored in different media types.",
+      "type": "object",
+      "properties": {
+        "Markdown": {
+          "$ref": "#/definitions/QuickResponseContentProvider"
+        },
+        "PlainText": {
+          "$ref": "#/definitions/QuickResponseContentProvider"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWisdomQuickResponseQuickResponseContentsDefinition"
+    },
+    "GroupingConfiguration": {
+      "description": "The configuration information of the user groups that the quick response is accessible to.",
+      "type": "object",
+      "properties": {
+        "Criteria": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The criteria used for grouping Amazon Q in Connect users."
+        },
+        "Values": {
+          "description": "The list of values that define different groups of Amazon Q in Connect users.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GroupingValue"
+          },
+          "insertionOrder": true,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "Criteria",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWisdomQuickResponseGroupingConfigurationDefinition"
+    },
+    "GroupingValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The value that define the group of Amazon Q in Connect users.",
+      "title": "AWSWisdomQuickResponseGroupingValueDefinition"
+    },
+    "Status": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATE_IN_PROGRESS",
+            "CREATE_FAILED",
+            "CREATED",
+            "DELETE_IN_PROGRESS",
+            "DELETE_FAILED",
+            "DELETED",
+            "UPDATE_IN_PROGRESS",
+            "UPDATE_FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the quick response data.",
+      "title": "AWSWisdomQuickResponseStatusDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWisdomQuickResponseTagDefinition"
+    }
+  },
+  "properties": {
+    "ContentType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(application/x\\.quickresponse;format=(plain|markdown))$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The media type of the quick response content.\n- Use application/x.quickresponse;format=plain for quick response written in plain text.\n- Use application/x.quickresponse;format=markdown for quick response written in richtext."
+    },
+    "KnowledgeBaseArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the knowledge base."
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the quick response."
+    },
+    "Channels": {
+      "description": "The Amazon Connect contact channels this quick response applies to.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ChannelType"
+      }
+    },
+    "Content": {
+      "$ref": "#/definitions/QuickResponseContentProvider"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the quick response."
+    },
+    "GroupingConfiguration": {
+      "$ref": "#/definitions/GroupingConfiguration"
+    },
+    "IsActive": {
+      "description": "Whether the quick response is active.",
+      "type": "boolean"
+    },
+    "Language": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 5
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The language code value for the language in which the quick response is written. The supported language codes include de_DE, en_US, es_ES, fr_FR, id_ID, it_IT, ja_JP, ko_KR, pt_BR, zh_CN, zh_TW"
+    },
+    "ShortcutKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The shortcut key of the quick response. The value should be unique across the knowledge base."
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "KnowledgeBaseArn",
+    "Content",
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/QuickResponseId",
+    "/properties/QuickResponseArn",
+    "/properties/Status",
+    "/properties/Contents"
+  ],
+  "primaryIdentifier": [
+    "/properties/QuickResponseArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/KnowledgeBaseArn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "wisdom:TagResource",
+      "wisdom:UntagResource"
+    ]
+  },
+  "replacementStrategy": "create_then_delete",
+  "type": "object",
+  "title": "AWSWisdomQuickResponseProperties"
+}

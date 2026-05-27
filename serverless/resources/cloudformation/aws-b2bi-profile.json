@@ -1,0 +1,153 @@
+{
+  "typeName": "AWS::B2BI::Profile",
+  "description": "Definition of AWS::B2BI::Profile Resource Type. Source:- No source definition found, add manually please",
+  "definitions": {
+    "Logging": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSB2BIProfileLoggingDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSB2BIProfileTagDefinition"
+    }
+  },
+  "properties": {
+    "BusinessName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 254,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Email": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 254,
+          "minLength": 5,
+          "pattern": "^[\\w\\.\\-]+@[\\w\\.\\-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Logging": {
+      "$ref": "#/definitions/Logging"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 254,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Phone": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 22,
+          "minLength": 7,
+          "pattern": "^\\+?([0-9 \\t\\-()\\/]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension) \\t*(\\d+))?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0
+    }
+  },
+  "required": [
+    "BusinessName",
+    "Logging",
+    "Name",
+    "Phone"
+  ],
+  "readOnlyProperties": [
+    "/properties/CreatedAt",
+    "/properties/LogGroupName",
+    "/properties/ModifiedAt",
+    "/properties/ProfileArn",
+    "/properties/ProfileId"
+  ],
+  "createOnlyProperties": [
+    "/properties/Logging"
+  ],
+  "primaryIdentifier": [
+    "/properties/ProfileId"
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": true,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "b2bi:ListTagsForResource",
+      "b2bi:TagResource",
+      "b2bi:UntagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSB2BIProfileProperties"
+}

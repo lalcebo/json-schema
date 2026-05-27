@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Transfer::Connector",
-  "description": "Resource Type definition for AWS::Transfer::Connector. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Transfer::Connector. Source:- No source definition found, add manually please",
   "definitions": {
     "Tag": {
       "description": "Creates a key-value pair for a specific resource.",
@@ -39,6 +39,157 @@
       ],
       "additionalProperties": false,
       "title": "AWSTransferConnectorTagDefinition"
+    },
+    "ServerId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^s-([0-9a-f]{17})$",
+          "minLength": 19,
+          "maxLength": 19
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique identifier for the server.",
+      "title": "AWSTransferConnectorServerIdDefinition"
+    },
+    "SftpConnectorTrustedHostKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The public host key for the external server to which you are connecting.",
+      "title": "AWSTransferConnectorSftpConnectorTrustedHostKeyDefinition"
+    },
+    "ConnectorEgressType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SERVICE_MANAGED",
+            "VPC_LATTICE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSTransferConnectorConnectorEgressTypeDefinition"
+    },
+    "ConnectorVpcLatticeEgressConfig": {
+      "type": "object",
+      "properties": {
+        "ResourceConfigurationArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:resourceconfiguration/rcfg-[0-9a-z]{17}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN of the VPC Lattice resource configuration"
+        },
+        "PortNumber": {
+          "type": "integer",
+          "description": "Port to connect to on the target VPC Lattice resource",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      },
+      "required": [
+        "ResourceConfigurationArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSTransferConnectorConnectorVpcLatticeEgressConfigDefinition"
+    },
+    "ConnectorEgressConfig": {
+      "type": "object",
+      "properties": {
+        "VpcLattice": {
+          "$ref": "#/definitions/ConnectorVpcLatticeEgressConfig"
+        }
+      },
+      "required": [
+        "VpcLattice"
+      ],
+      "additionalProperties": false,
+      "title": "AWSTransferConnectorConnectorEgressConfigDefinition"
+    },
+    "ConnectorStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "PENDING",
+            "ERRORED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSTransferConnectorConnectorStatusDefinition"
+    },
+    "ConnectorAsyncMdnConfig": {
+      "type": "object",
+      "properties": {
+        "Url": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "URL of the server to receive the MDN response on"
+        },
+        "ServerIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ServerId"
+          }
+        }
+      },
+      "required": [
+        "Url",
+        "ServerIds"
+      ],
+      "additionalProperties": false,
+      "title": "AWSTransferConnectorConnectorAsyncMdnConfigDefinition"
+    },
+    "IpAddressType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "DUALSTACK"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "IP address type for Connector",
+      "title": "AWSTransferConnectorIpAddressTypeDefinition"
     }
   },
   "properties": {
@@ -92,7 +243,7 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "^[\\p{Print}\\p{Blank}]+",
+              "pattern": "^[\\u0020-\\u007E\\t]+$",
               "minLength": 1,
               "maxLength": 1024
             },
@@ -125,7 +276,8 @@
                 "AES128_CBC",
                 "AES192_CBC",
                 "AES256_CBC",
-                "NONE"
+                "NONE",
+                "DES_EDE3_CBC"
               ]
             },
             {
@@ -177,6 +329,7 @@
               "type": "string",
               "enum": [
                 "SYNC",
+                "ASYNC",
                 "NONE"
               ]
             },
@@ -185,6 +338,83 @@
             }
           ],
           "description": "MDN Response setting for this AS2 connector configuration."
+        },
+        "BasicAuthSecretId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN or name of the secret in AWS Secrets Manager which contains the credentials for Basic authentication. If empty, Basic authentication is disabled for the AS2 connector"
+        },
+        "PreserveContentType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies whether to use the AWS S3 object content-type as the content-type for the AS2 message."
+        },
+        "AsyncMdnConfig": {
+          "description": "Configuration for an AS2 connector with ASYNC MDN Response",
+          "$ref": "#/definitions/ConnectorAsyncMdnConfig"
+        }
+      },
+      "additionalProperties": false
+    },
+    "EgressType": {
+      "description": "Specifies the egress type for the connector.",
+      "$ref": "#/definitions/ConnectorEgressType"
+    },
+    "EgressConfig": {
+      "description": "Egress configuration for the connector.",
+      "$ref": "#/definitions/ConnectorEgressConfig"
+    },
+    "SftpConfig": {
+      "description": "Configuration for an SFTP connector.",
+      "type": "object",
+      "properties": {
+        "UserSecretId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN or name of the secret in AWS Secrets Manager which contains the SFTP user's private keys or passwords."
+        },
+        "TrustedHostKeys": {
+          "description": "List of public host keys, for the external server to which you are connecting.",
+          "type": "array",
+          "maxItems": 10,
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/SftpConnectorTrustedHostKey"
+          }
+        },
+        "MaxConcurrentConnections": {
+          "description": "Specifies the number of active connections that your connector can establish with the remote server at the same time.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "default": 1
         }
       },
       "additionalProperties": false
@@ -204,7 +434,7 @@
       "description": "Specifies the logging role for the connector."
     },
     "Tags": {
-      "description": "Key-value pairs that can be used to group and search for workflows. Tags are metadata attached to workflows for any purpose.",
+      "description": "Key-value pairs that can be used to group and search for connectors. Tags are metadata attached to connectors for any purpose.",
       "type": "array",
       "maxItems": 50,
       "uniqueItems": true,
@@ -224,17 +454,34 @@
         }
       ],
       "description": "URL for Connector"
+    },
+    "SecurityPolicyName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "TransferSFTPConnectorSecurityPolicy-[A-Za-z0-9-]+",
+          "maxLength": 50
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Security policy for SFTP Connector"
+    },
+    "IpAddressType": {
+      "$ref": "#/definitions/IpAddressType"
     }
   },
   "additionalProperties": false,
   "required": [
-    "AccessRole",
-    "As2Config",
-    "Url"
+    "AccessRole"
   ],
   "readOnlyProperties": [
     "/properties/Arn",
-    "/properties/ConnectorId"
+    "/properties/ConnectorId",
+    "/properties/ServiceManagedEgressIpAddresses",
+    "/properties/Status",
+    "/properties/ErrorMessage"
   ],
   "primaryIdentifier": [
     "/properties/ConnectorId"
@@ -244,7 +491,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "transfer:ListTagsForResource",
+      "transfer:UnTagResource",
+      "transfer:TagResource"
+    ]
   },
   "type": "object",
   "title": "AWSTransferConnectorProperties"

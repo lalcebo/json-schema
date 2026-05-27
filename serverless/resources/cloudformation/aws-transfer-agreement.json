@@ -1,6 +1,7 @@
 {
   "typeName": "AWS::Transfer::Agreement",
-  "description": "Resource Type definition for AWS::Transfer::Agreement. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Transfer::Agreement. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-transfer",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-transfer",
   "definitions": {
     "Tag": {
       "description": "Creates a key-value pair for a specific resource.",
@@ -46,7 +47,7 @@
       "oneOf": [
         {
           "type": "string",
-          "pattern": "^[\\w\\- ]*$",
+          "pattern": "^[\\u0021-\\u007E]+$",
           "minLength": 1,
           "maxLength": 200
         },
@@ -102,7 +103,7 @@
       "oneOf": [
         {
           "type": "string",
-          "pattern": "^$|/.*",
+          "pattern": "^(|/.*)$",
           "maxLength": 1024
         },
         {
@@ -149,6 +150,110 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "PreserveFilename": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies whether to preserve the filename received for this agreement."
+    },
+    "EnforceMessageSigning": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies whether to enforce an AS2 message is signed for this agreement."
+    },
+    "CustomDirectories": {
+      "description": "Specifies a separate directory for each type of file to store for an AS2 message.",
+      "type": "object",
+      "properties": {
+        "FailedFilesDirectory": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(|/.*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a location to store the failed files for an AS2 message."
+        },
+        "MdnFilesDirectory": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(|/.*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a location to store the MDN file for an AS2 message."
+        },
+        "PayloadFilesDirectory": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(|/.*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a location to store the payload file for an AS2 message."
+        },
+        "StatusFilesDirectory": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(|/.*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a location to store the status file for an AS2 message."
+        },
+        "TemporaryFilesDirectory": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "(|/.*)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a location to store the temporary processing file for an AS2 message."
+        }
+      },
+      "required": [
+        "FailedFilesDirectory",
+        "MdnFilesDirectory",
+        "PayloadFilesDirectory",
+        "StatusFilesDirectory",
+        "TemporaryFilesDirectory"
+      ],
+      "additionalProperties": false
     }
   },
   "additionalProperties": false,
@@ -156,7 +261,6 @@
     "ServerId",
     "LocalProfileId",
     "PartnerProfileId",
-    "BaseDirectory",
     "AccessRole"
   ],
   "readOnlyProperties": [
@@ -175,7 +279,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "transfer:ListTagsForResource",
+      "transfer:UnTagResource",
+      "transfer:TagResource"
+    ]
   },
   "type": "object",
   "title": "AWSTransferAgreementProperties"

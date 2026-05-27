@@ -1,0 +1,717 @@
+{
+  "typeName": "AWS::DataZone::DataSource",
+  "description": "A data source is used to import technical metadata of assets (data) from the source databases or data warehouses into Amazon DataZone. . Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "definitions": {
+    "AccountId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 12,
+          "minLength": 12,
+          "pattern": "^\\d{12}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDataZoneDataSourceAccountIdDefinition"
+    },
+    "DataAccessRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The data access role included in the configuration details of the AWS Glue data source.",
+      "title": "AWSDataZoneDataSourceDataAccessRoleDefinition"
+    },
+    "DataSourceConfigurationInput": {
+      "description": "Specifies the configuration of the data source. It can be set to either glueRunConfiguration or redshiftRunConfiguration or sageMakerRunConfiguration.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "GlueRunConfiguration",
+          "properties": {
+            "GlueRunConfiguration": {
+              "$ref": "#/definitions/GlueRunConfigurationInput"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "RedshiftRunConfiguration",
+          "properties": {
+            "RedshiftRunConfiguration": {
+              "$ref": "#/definitions/RedshiftRunConfigurationInput"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "SageMakerRunConfiguration",
+          "properties": {
+            "SageMakerRunConfiguration": {
+              "$ref": "#/definitions/SageMakerRunConfigurationInput"
+            }
+          },
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDataZoneDataSourceDataSourceConfigurationInputDefinition"
+    },
+    "DataSourceStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "FAILED_CREATION",
+            "READY",
+            "UPDATING",
+            "FAILED_UPDATE",
+            "RUNNING",
+            "DELETING",
+            "FAILED_DELETION"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the data source.",
+      "title": "AWSDataZoneDataSourceDataSourceStatusDefinition"
+    },
+    "EnableSetting": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies whether the data source is enabled.",
+      "title": "AWSDataZoneDataSourceEnableSettingDefinition"
+    },
+    "FilterExpression": {
+      "type": "object",
+      "description": "The search filter expression.",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/FilterExpressionType"
+        },
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Expression",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceFilterExpressionDefinition"
+    },
+    "FilterExpressionType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "INCLUDE",
+            "EXCLUDE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The search filter expression type.",
+      "title": "AWSDataZoneDataSourceFilterExpressionTypeDefinition"
+    },
+    "FormName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the metadata form.",
+      "title": "AWSDataZoneDataSourceFormNameDefinition"
+    },
+    "FormInput": {
+      "type": "object",
+      "description": "The details of a metadata form.",
+      "properties": {
+        "FormName": {
+          "description": "The name of the metadata form.",
+          "$ref": "#/definitions/FormName"
+        },
+        "TypeIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 385,
+              "minLength": 1,
+              "pattern": "^(?!\\.)[\\w\\.]*\\w$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ID of the metadata form type."
+        },
+        "TypeRevision": {
+          "description": "The revision of the metadata form type.",
+          "$ref": "#/definitions/TypeRevision"
+        },
+        "Content": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 75000
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The content of the metadata form."
+        }
+      },
+      "required": [
+        "FormName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceFormInputDefinition"
+    },
+    "GlueRunConfigurationInput": {
+      "type": "object",
+      "properties": {
+        "AutoImportDataQualityResult": {
+          "description": "Specifies whether to automatically import data quality metrics as part of the data source run.",
+          "type": "boolean"
+        },
+        "CatalogName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The catalog name in the AWS Glue run configuration."
+        },
+        "DataAccessRole": {
+          "description": "The data access role included in the configuration details of the AWS Glue data source.",
+          "$ref": "#/definitions/DataAccessRole"
+        },
+        "RelationalFilterConfigurations": {
+          "type": "array",
+          "description": "The relational filter configurations included in the configuration details of the AWS Glue data source.",
+          "items": {
+            "$ref": "#/definitions/RelationalFilterConfiguration"
+          },
+          "insertionOrder": false
+        }
+      },
+      "required": [
+        "RelationalFilterConfigurations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceGlueRunConfigurationInputDefinition"
+    },
+    "RecommendationConfiguration": {
+      "type": "object",
+      "description": "The recommendation to be updated as part of the UpdateDataSource action.",
+      "properties": {
+        "EnableBusinessNameGeneration": {
+          "type": "boolean",
+          "description": "Specifies whether automatic business name generation is to be enabled or not as part of the recommendation configuration."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceRecommendationConfigurationDefinition"
+    },
+    "RedshiftClusterStorage": {
+      "type": "object",
+      "description": "The name of an Amazon Redshift cluster.",
+      "properties": {
+        "ClusterName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "minLength": 1,
+              "pattern": "^[0-9a-z].[a-z0-9\\-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of an Amazon Redshift cluster."
+        }
+      },
+      "required": [
+        "ClusterName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceRedshiftClusterStorageDefinition"
+    },
+    "RedshiftCredentialConfiguration": {
+      "type": "object",
+      "description": "The ARN of a secret manager for an Amazon Redshift cluster.",
+      "properties": {
+        "SecretManagerArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^arn:aws[^:]*:secretsmanager:[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]:\\d{12}:secret:.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of a secret manager for an Amazon Redshift cluster."
+        }
+      },
+      "required": [
+        "SecretManagerArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceRedshiftCredentialConfigurationDefinition"
+    },
+    "RedshiftRunConfigurationInput": {
+      "type": "object",
+      "description": "The configuration details of the Amazon Redshift data source.",
+      "properties": {
+        "DataAccessRole": {
+          "description": "The data access role included in the configuration details of the Amazon Redshift data source.",
+          "$ref": "#/definitions/DataAccessRole"
+        },
+        "RelationalFilterConfigurations": {
+          "$ref": "#/definitions/RelationalFilterConfigurations"
+        },
+        "RedshiftCredentialConfiguration": {
+          "description": "The details of the credentials required to access an Amazon Redshift cluster.",
+          "$ref": "#/definitions/RedshiftCredentialConfiguration"
+        },
+        "RedshiftStorage": {
+          "description": "The details of the Amazon Redshift storage as part of the configuration of an Amazon Redshift data source run.",
+          "$ref": "#/definitions/RedshiftStorage"
+        }
+      },
+      "required": [
+        "RelationalFilterConfigurations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceRedshiftRunConfigurationInputDefinition"
+    },
+    "RedshiftServerlessStorage": {
+      "type": "object",
+      "description": "The details of the Amazon Redshift Serverless workgroup storage.",
+      "properties": {
+        "WorkgroupName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 3,
+              "pattern": "^[a-z0-9-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the Amazon Redshift Serverless workgroup."
+        }
+      },
+      "required": [
+        "WorkgroupName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceRedshiftServerlessStorageDefinition"
+    },
+    "RedshiftStorage": {
+      "description": "The details of the Amazon Redshift storage as part of the configuration of an Amazon Redshift data source run.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "RedshiftClusterSource",
+          "description": "The details of the Amazon Redshift cluster source.",
+          "properties": {
+            "RedshiftClusterSource": {
+              "$ref": "#/definitions/RedshiftClusterStorage"
+            }
+          },
+          "required": [
+            "RedshiftClusterSource"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "RedshiftServerlessSource",
+          "description": "The details of the Amazon Redshift Serverless workgroup source.",
+          "properties": {
+            "RedshiftServerlessSource": {
+              "$ref": "#/definitions/RedshiftServerlessStorage"
+            }
+          },
+          "required": [
+            "RedshiftServerlessSource"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDataZoneDataSourceRedshiftStorageDefinition"
+    },
+    "Region": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 16,
+          "minLength": 4,
+          "pattern": "[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDataZoneDataSourceRegionDefinition"
+    },
+    "RelationalFilterConfiguration": {
+      "type": "object",
+      "description": "The relational filter configuration for the data source.",
+      "properties": {
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The database name specified in the relational filter configuration for the data source."
+        },
+        "SchemaName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The schema name specified in the relational filter configuration for the data source."
+        },
+        "FilterExpressions": {
+          "type": "array",
+          "description": "The filter expressions specified in the relational filter configuration for the data source.",
+          "items": {
+            "$ref": "#/definitions/FilterExpression"
+          },
+          "insertionOrder": false
+        }
+      },
+      "required": [
+        "DatabaseName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceRelationalFilterConfigurationDefinition"
+    },
+    "RelationalFilterConfigurations": {
+      "type": "array",
+      "description": "The relational filter configurations included in the configuration details of the Amazon Redshift data source.",
+      "items": {
+        "$ref": "#/definitions/RelationalFilterConfiguration"
+      },
+      "insertionOrder": false,
+      "title": "AWSDataZoneDataSourceRelationalFilterConfigurationsDefinition"
+    },
+    "SageMakerRunConfigurationInput": {
+      "type": "object",
+      "description": "The configuration details of the Amazon SageMaker data source.",
+      "properties": {
+        "TrackingAssets": {
+          "description": "The tracking assets of the Amazon SageMaker run.",
+          "$ref": "#/definitions/TrackingAssets"
+        }
+      },
+      "required": [
+        "TrackingAssets"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceSageMakerRunConfigurationInputDefinition"
+    },
+    "ScheduleConfiguration": {
+      "type": "object",
+      "description": "The schedule of the data source runs.",
+      "properties": {
+        "Timezone": {
+          "description": "The timezone of the data source run.",
+          "$ref": "#/definitions/Timezone"
+        },
+        "Schedule": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) (.*){1,5} (.*){1,5} (.*){1,5} (.*){1,5}\\)"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The schedule of the data source runs."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceScheduleConfigurationDefinition"
+    },
+    "Timezone": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDataZoneDataSourceTimezoneDefinition"
+    },
+    "TrackingAssets": {
+      "type": "object",
+      "description": "The tracking assets of the Amazon SageMaker run.",
+      "patternProperties": {
+        "^.{1,64}$": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^arn:aws[^:]*:sagemaker:[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]:\\d{12}:[\\w+=,.@-]{1,128}/[\\w+=,.@-]{1,256}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 500
+        }
+      },
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "title": "AWSDataZoneDataSourceTrackingAssetsDefinition"
+    },
+    "TypeRevision": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The revision of the metadata form type.",
+      "title": "AWSDataZoneDataSourceTypeRevisionDefinition"
+    }
+  },
+  "properties": {
+    "AssetFormsInput": {
+      "type": "array",
+      "description": "The metadata forms that are to be attached to the assets that this data source works with.",
+      "items": {
+        "$ref": "#/definitions/FormInput"
+      },
+      "maxItems": 10,
+      "minItems": 0,
+      "insertionOrder": false
+    },
+    "ConnectionIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The unique identifier of a connection used to fetch relevant parameters from connection during Datasource run"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 2048
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the data source."
+    },
+    "DomainIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^dzd[-_][a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of the Amazon DataZone domain where the data source is created."
+    },
+    "EnableSetting": {
+      "description": "Specifies whether the data source is enabled.",
+      "$ref": "#/definitions/EnableSetting"
+    },
+    "EnvironmentIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The unique identifier of the Amazon DataZone environment to which the data source publishes assets."
+    },
+    "Configuration": {
+      "description": "Configuration of the data source. It can be set to either glueRunConfiguration or redshiftRunConfiguration.",
+      "$ref": "#/definitions/DataSourceConfigurationInput"
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the data source."
+    },
+    "ProjectIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the Amazon DataZone project in which you want to add the data source."
+    },
+    "PublishOnImport": {
+      "type": "boolean",
+      "description": "Specifies whether the assets that this data source creates in the inventory are to be also automatically published to the catalog."
+    },
+    "Recommendation": {
+      "$ref": "#/definitions/RecommendationConfiguration",
+      "description": "Specifies whether the business name generation is to be enabled for this data source."
+    },
+    "Schedule": {
+      "description": "The schedule of the data source runs.",
+      "$ref": "#/definitions/ScheduleConfiguration"
+    },
+    "Type": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 256,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The type of the data source."
+    }
+  },
+  "required": [
+    "Name",
+    "DomainIdentifier",
+    "ProjectIdentifier",
+    "Type"
+  ],
+  "readOnlyProperties": [
+    "/properties/ConnectionId",
+    "/properties/CreatedAt",
+    "/properties/DomainId",
+    "/properties/EnvironmentId",
+    "/properties/Id",
+    "/properties/LastRunAssetCount",
+    "/properties/LastRunAt",
+    "/properties/LastRunStatus",
+    "/properties/ProjectId",
+    "/properties/Status",
+    "/properties/UpdatedAt"
+  ],
+  "writeOnlyProperties": [
+    "/properties/AssetFormsInput",
+    "/properties/ConnectionIdentifier",
+    "/properties/EnvironmentIdentifier",
+    "/properties/DomainIdentifier",
+    "/properties/Configuration",
+    "/properties/ProjectIdentifier"
+  ],
+  "createOnlyProperties": [
+    "/properties/ConnectionIdentifier",
+    "/properties/EnvironmentIdentifier",
+    "/properties/DomainIdentifier",
+    "/properties/ProjectIdentifier",
+    "/properties/Type"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainId",
+    "/properties/Id"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDataZoneDataSourceProperties"
+}

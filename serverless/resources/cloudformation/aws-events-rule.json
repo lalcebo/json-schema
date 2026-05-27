@@ -1,90 +1,33 @@
 {
-  "typeName": "AWS::Events::Rule",
-  "description": "Resource Type definition for AWS::Events::Rule. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
-  "additionalProperties": false,
-  "properties": {
-    "EventBusName": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "EventPattern": {
-      "type": "object"
-    },
-    "ScheduleExpression": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Description": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "State": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Targets": {
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "$ref": "#/definitions/Target"
-      }
-    },
-    "RoleArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "Name": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    }
+  "tagging": {
+    "permissions": [
+      "events:UntagResource",
+      "events:TagResource",
+      "events:ListTagsForResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
   },
+  "typeName": "AWS::Events::Rule",
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "description": "Resource Type definition for AWS::Events::Rule. Source:- No source definition found, add manually please",
+  "createOnlyProperties": [
+    "/properties/Name"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
   "definitions": {
     "CapacityProviderStrategyItem": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "Base": {
-          "type": "integer"
-        },
-        "Weight": {
-          "type": "integer"
-        },
         "CapacityProvider": {
           "oneOf": [
             {
@@ -94,6 +37,12 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "Base": {
+          "type": "integer"
+        },
+        "Weight": {
+          "type": "integer"
         }
       },
       "required": [
@@ -102,12 +51,13 @@
       "title": "AWSEventsRuleCapacityProviderStrategyItemDefinition"
     },
     "HttpParameters": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "PathParameterValues": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "oneOf": [
               {
@@ -120,7 +70,6 @@
           }
         },
         "HeaderParameters": {
-          "type": "object",
           "patternProperties": {
             "[a-zA-Z0-9]+": {
               "oneOf": [
@@ -132,10 +81,11 @@
                 }
               ]
             }
-          }
+          },
+          "additionalProperties": false,
+          "type": "object"
         },
         "QueryStringParameters": {
-          "type": "object",
           "patternProperties": {
             "[a-zA-Z0-9]+": {
               "oneOf": [
@@ -147,14 +97,16 @@
                 }
               ]
             }
-          }
+          },
+          "additionalProperties": false,
+          "type": "object"
         }
       },
       "title": "AWSEventsRuleHttpParametersDefinition"
     },
     "DeadLetterConfig": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Arn": {
           "oneOf": [
@@ -170,12 +122,13 @@
       "title": "AWSEventsRuleDeadLetterConfigDefinition"
     },
     "RunCommandParameters": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "RunCommandTargets": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "$ref": "#/definitions/RunCommandTarget"
           }
@@ -187,8 +140,8 @@
       "title": "AWSEventsRuleRunCommandParametersDefinition"
     },
     "PlacementStrategy": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Field": {
           "oneOf": [
@@ -214,21 +167,10 @@
       "title": "AWSEventsRulePlacementStrategyDefinition"
     },
     "InputTransformer": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "InputTemplate": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
         "InputPathsMap": {
-          "type": "object",
           "patternProperties": {
             "[a-zA-Z0-9]+": {
               "oneOf": [
@@ -240,7 +182,19 @@
                 }
               ]
             }
-          }
+          },
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "InputTemplate": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
       "required": [
@@ -249,8 +203,8 @@
       "title": "AWSEventsRuleInputTransformerDefinition"
     },
     "KinesisParameters": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "PartitionKeyPath": {
           "oneOf": [
@@ -269,8 +223,8 @@
       "title": "AWSEventsRuleKinesisParametersDefinition"
     },
     "BatchRetryStrategy": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Attempts": {
           "type": "integer"
@@ -279,8 +233,8 @@
       "title": "AWSEventsRuleBatchRetryStrategyDefinition"
     },
     "RedshiftDataParameters": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "StatementName": {
           "oneOf": [
@@ -291,6 +245,21 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "Sqls": {
+          "uniqueItems": false,
+          "insertionOrder": true,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
         },
         "Database": {
           "oneOf": [
@@ -337,14 +306,33 @@
         }
       },
       "required": [
-        "Database",
-        "Sql"
+        "Database"
       ],
       "title": "AWSEventsRuleRedshiftDataParametersDefinition"
     },
-    "Target": {
-      "type": "object",
+    "AppSyncParameters": {
       "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "GraphQLOperation": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "GraphQLOperation"
+      ],
+      "title": "AWSEventsRuleAppSyncParametersDefinition"
+    },
+    "Target": {
+      "additionalProperties": false,
+      "type": "object",
       "properties": {
         "InputPath": {
           "oneOf": [
@@ -383,6 +371,9 @@
         },
         "RedshiftDataParameters": {
           "$ref": "#/definitions/RedshiftDataParameters"
+        },
+        "AppSyncParameters": {
+          "$ref": "#/definitions/AppSyncParameters"
         },
         "Input": {
           "oneOf": [
@@ -437,10 +428,10 @@
       "title": "AWSEventsRuleTargetDefinition"
     },
     "PlacementConstraint": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "Expression": {
+        "Type": {
           "oneOf": [
             {
               "type": "string"
@@ -450,7 +441,7 @@
             }
           ]
         },
-        "Type": {
+        "Expression": {
           "oneOf": [
             {
               "type": "string"
@@ -464,12 +455,13 @@
       "title": "AWSEventsRulePlacementConstraintDefinition"
     },
     "AwsVpcConfiguration": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "SecurityGroups": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "oneOf": [
               {
@@ -482,8 +474,9 @@
           }
         },
         "Subnets": {
+          "uniqueItems": false,
+          "insertionOrder": true,
           "type": "array",
-          "uniqueItems": true,
           "items": {
             "oneOf": [
               {
@@ -512,8 +505,8 @@
       "title": "AWSEventsRuleAwsVpcConfigurationDefinition"
     },
     "SqsParameters": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "MessageGroupId": {
           "oneOf": [
@@ -532,12 +525,13 @@
       "title": "AWSEventsRuleSqsParametersDefinition"
     },
     "RunCommandTarget": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Values": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "oneOf": [
               {
@@ -567,8 +561,8 @@
       "title": "AWSEventsRuleRunCommandTargetDefinition"
     },
     "EcsParameters": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "PlatformVersion": {
           "oneOf": [
@@ -597,8 +591,9 @@
           "type": "boolean"
         },
         "PlacementConstraints": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "$ref": "#/definitions/PlacementConstraint"
           }
@@ -617,15 +612,17 @@
           "type": "integer"
         },
         "PlacementStrategies": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "$ref": "#/definitions/PlacementStrategy"
           }
         },
         "CapacityProviderStrategy": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "$ref": "#/definitions/CapacityProviderStrategyItem"
           }
@@ -651,8 +648,9 @@
           ]
         },
         "TagList": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "$ref": "#/definitions/Tag"
           }
@@ -677,9 +675,12 @@
       "title": "AWSEventsRuleEcsParametersDefinition"
     },
     "BatchParameters": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
+        "ArrayProperties": {
+          "$ref": "#/definitions/BatchArrayProperties"
+        },
         "JobName": {
           "oneOf": [
             {
@@ -692,9 +693,6 @@
         },
         "RetryStrategy": {
           "$ref": "#/definitions/BatchRetryStrategy"
-        },
-        "ArrayProperties": {
-          "$ref": "#/definitions/BatchArrayProperties"
         },
         "JobDefinition": {
           "oneOf": [
@@ -714,8 +712,8 @@
       "title": "AWSEventsRuleBatchParametersDefinition"
     },
     "NetworkConfiguration": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "AwsVpcConfiguration": {
           "$ref": "#/definitions/AwsVpcConfiguration"
@@ -724,8 +722,8 @@
       "title": "AWSEventsRuleNetworkConfigurationDefinition"
     },
     "Tag": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Value": {
           "oneOf": [
@@ -751,12 +749,13 @@
       "title": "AWSEventsRuleTagDefinition"
     },
     "SageMakerPipelineParameters": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "PipelineParameterList": {
-          "type": "array",
           "uniqueItems": true,
+          "insertionOrder": true,
+          "type": "array",
           "items": {
             "$ref": "#/definitions/SageMakerPipelineParameter"
           }
@@ -765,21 +764,21 @@
       "title": "AWSEventsRuleSageMakerPipelineParametersDefinition"
     },
     "RetryPolicy": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
-        "MaximumEventAgeInSeconds": {
+        "MaximumRetryAttempts": {
           "type": "integer"
         },
-        "MaximumRetryAttempts": {
+        "MaximumEventAgeInSeconds": {
           "type": "integer"
         }
       },
       "title": "AWSEventsRuleRetryPolicyDefinition"
     },
     "BatchArrayProperties": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Size": {
           "type": "integer"
@@ -788,8 +787,8 @@
       "title": "AWSEventsRuleBatchArrayPropertiesDefinition"
     },
     "SageMakerPipelineParameter": {
-      "type": "object",
       "additionalProperties": false,
+      "type": "object",
       "properties": {
         "Value": {
           "oneOf": [
@@ -819,16 +818,106 @@
       "title": "AWSEventsRuleSageMakerPipelineParameterDefinition"
     }
   },
-  "createOnlyProperties": [
-    "/properties/Name",
+  "properties": {
+    "EventBusName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name or ARN of the event bus associated with the rule. If you omit this, the default event bus is used."
+    },
+    "EventPattern": {
+      "description": "The event pattern of the rule. For more information, see Events and Event Patterns in the Amazon EventBridge User Guide.",
+      "type": [
+        "string",
+        "object"
+      ]
+    },
+    "ScheduleExpression": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The scheduling expression. For example, \"cron(0 20 * * ? *)\", \"rate(5 minutes)\". For more information, see Creating an Amazon EventBridge rule that runs on a schedule."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the rule."
+    },
+    "State": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DISABLED",
+            "ENABLED",
+            "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The state of the rule."
+    },
+    "Targets": {
+      "uniqueItems": true,
+      "description": "Adds the specified targets to the specified rule, or updates the targets if they are already associated with the rule.\nTargets are the resources that are invoked when a rule is triggered.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Target"
+      }
+    },
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the role that is used for target invocation."
+    },
+    "Tags": {
+      "uniqueItems": false,
+      "description": "Any tags assigned to the event rule.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the rule."
+    }
+  },
+  "conditionalCreateOnlyProperties": [
     "/properties/EventBusName"
-  ],
-  "primaryIdentifier": [
-    "/properties/Id"
-  ],
-  "readOnlyProperties": [
-    "/properties/Id",
-    "/properties/Arn"
   ],
   "type": "object",
   "title": "AWSEventsRuleProperties"

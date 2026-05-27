@@ -1,12 +1,27 @@
 {
   "typeName": "AWS::GuardDuty::ThreatIntelSet",
-  "description": "Resource Type definition for AWS::GuardDuty::ThreatIntelSet. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::GuardDuty::ThreatIntelSet. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-guardduty",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-guardduty",
   "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "guardduty:TagResource",
+      "guardduty:UntagResource",
+      "guardduty:ListTagsForResource"
+    ]
+  },
   "properties": {
     "Format": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -19,19 +34,14 @@
     "DetectorId": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
-    },
-    "Tags": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/Tag"
-      }
     },
     "Name": {
       "oneOf": [
@@ -46,33 +56,55 @@
     "Location": {
       "oneOf": [
         {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ExpectedBucketOwner": {
+      "oneOf": [
+        {
           "type": "string"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TagItem"
+      }
     }
   },
   "definitions": {
-    "Tag": {
+    "TagItem": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Value": {
+        "Key": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
         },
-        "Key": {
+        "Value": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -81,27 +113,29 @@
         }
       },
       "required": [
-        "Value",
-        "Key"
+        "Key",
+        "Value"
       ],
-      "title": "AWSGuardDutyThreatIntelSetTagDefinition"
+      "title": "AWSGuardDutyThreatIntelSetTagItemDefinition"
     }
   },
   "required": [
     "Format",
-    "Activate",
-    "DetectorId",
     "Location"
   ],
-  "createOnlyProperties": [
-    "/properties/DetectorId",
-    "/properties/Format"
-  ],
   "primaryIdentifier": [
-    "/properties/Id"
+    "/properties/Id",
+    "/properties/DetectorId"
   ],
   "readOnlyProperties": [
     "/properties/Id"
+  ],
+  "createOnlyProperties": [
+    "/properties/Format",
+    "/properties/DetectorId"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Activate"
   ],
   "type": "object",
   "title": "AWSGuardDutyThreatIntelSetProperties"

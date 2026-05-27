@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoT::DomainConfiguration",
-  "description": "Create and manage a Domain Configuration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "Create and manage a Domain Configuration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "definitions": {
     "AuthorizerConfig": {
@@ -25,6 +25,41 @@
       },
       "additionalProperties": false,
       "title": "AWSIoTDomainConfigurationAuthorizerConfigDefinition"
+    },
+    "ServerCertificateConfig": {
+      "type": "object",
+      "properties": {
+        "EnableOCSPCheck": {
+          "type": "boolean"
+        },
+        "OcspLambdaArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 170
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "OcspAuthorizedResponderArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws(-cn|-us-gov|-iso-b|-iso)?:acm:[a-z]{2}-(gov-|iso-|isob-)?[a-z]{4,9}-\\d{1}:\\d{12}:certificate/[a-zA-Z0-9/-]+$",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTDomainConfigurationServerCertificateConfigDefinition"
     },
     "ServerCertificateSummary": {
       "type": "object",
@@ -87,6 +122,25 @@
       },
       "additionalProperties": false,
       "title": "AWSIoTDomainConfigurationTlsConfigDefinition"
+    },
+    "ClientCertificateConfig": {
+      "type": "object",
+      "properties": {
+        "ClientCertificateCallbackArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 170
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTDomainConfigurationClientCertificateConfigDefinition"
     },
     "Tag": {
       "type": "object",
@@ -208,12 +262,52 @@
         }
       ]
     },
+    "ServerCertificateConfig": {
+      "$ref": "#/definitions/ServerCertificateConfig"
+    },
     "TlsConfig": {
       "$ref": "#/definitions/TlsConfig"
     },
+    "AuthenticationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AWS_X509",
+            "CUSTOM_AUTH",
+            "AWS_SIGV4",
+            "CUSTOM_AUTH_X509",
+            "DEFAULT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ApplicationProtocol": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SECURE_MQTT",
+            "MQTT_WSS",
+            "HTTPS",
+            "DEFAULT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ClientCertificateConfig": {
+      "$ref": "#/definitions/ClientCertificateConfig"
+    },
     "Tags": {
       "type": "array",
-      "insertionOrder": true,
+      "uniqueItems": true,
+      "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
       }
@@ -223,8 +317,13 @@
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iot:ListTagsForResource",
+      "iot:TagResource",
+      "iot:UntagResource"
+    ]
   },
   "additionalProperties": false,
   "required": [],

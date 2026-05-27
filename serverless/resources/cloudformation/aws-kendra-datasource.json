@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Kendra::DataSource",
-  "description": "Kendra DataSource. Source:- https://docs.aws.amazon.com/kendra/latest/dg/hiw-data-source.html. Source:- https://docs.aws.amazon.com/kendra/latest/dg/hiw-data-source.html",
+  "description": "Kendra DataSource. Source:- https://docs.aws.amazon.com/kendra/latest/dg/hiw-data-source.html",
   "sourceUrl": "https://docs.aws.amazon.com/kendra/latest/dg/hiw-data-source.html",
   "definitions": {
     "IndexId": {
@@ -1799,6 +1799,19 @@
       ],
       "title": "AWSKendraDataSourceWorkDocsConfigurationDefinition"
     },
+    "TemplateConfiguration": {
+      "type": "object",
+      "properties": {
+        "Template": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Template"
+      ],
+      "title": "AWSKendraDataSourceTemplateConfigurationDefinition"
+    },
     "DataSourceConfiguration": {
       "type": "object",
       "properties": {
@@ -1831,6 +1844,9 @@
         },
         "WorkDocsConfiguration": {
           "$ref": "#/definitions/WorkDocsConfiguration"
+        },
+        "TemplateConfiguration": {
+          "$ref": "#/definitions/TemplateConfiguration"
         }
       },
       "additionalProperties": false,
@@ -1884,6 +1900,11 @@
           "required": [
             "WorkDocsConfiguration"
           ]
+        },
+        {
+          "required": [
+            "TemplateConfiguration"
+          ]
         }
       ],
       "title": "AWSKendraDataSourceDataSourceConfigurationDefinition"
@@ -1917,7 +1938,8 @@
             "CONFLUENCE",
             "GOOGLEDRIVE",
             "WEBCRAWLER",
-            "WORKDOCS"
+            "WORKDOCS",
+            "TEMPLATE"
           ]
         },
         {
@@ -1940,6 +1962,21 @@
       ],
       "description": "Description of data source",
       "title": "AWSKendraDataSourceDescriptionDefinition"
+    },
+    "LanguageCode": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 10,
+          "pattern": "[a-zA-Z-]*"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The code for a language.",
+      "title": "AWSKendraDataSourceLanguageCodeDefinition"
     },
     "RoleArn": {
       "oneOf": [
@@ -2232,6 +2269,9 @@
     },
     "CustomDocumentEnrichmentConfiguration": {
       "$ref": "#/definitions/CustomDocumentEnrichmentConfiguration"
+    },
+    "LanguageCode": {
+      "$ref": "#/definitions/LanguageCode"
     }
   },
   "required": [
@@ -2239,6 +2279,18 @@
     "IndexId",
     "Type"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagUpdatable": true,
+    "tagOnCreate": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "kendra:UntagResource",
+      "kendra:TagResource",
+      "kendra:ListTagsForResource"
+    ]
+  },
   "additionalProperties": false,
   "primaryIdentifier": [
     "/properties/Id",
@@ -2249,7 +2301,20 @@
     "/properties/Arn"
   ],
   "createOnlyProperties": [
-    "/properties/Type"
+    "/properties/Type",
+    "/properties/IndexId"
+  ],
+  "deprecatedProperties": [
+    "/properties/DataSourceConfiguration/S3Configuration",
+    "/properties/DataSourceConfiguration/SharePointConfiguration",
+    "/properties/DataSourceConfiguration/SalesforceConfiguration",
+    "/properties/DataSourceConfiguration/OneDriveConfiguration",
+    "/properties/DataSourceConfiguration/ServiceNowConfiguration",
+    "/properties/DataSourceConfiguration/DatabaseConfiguration",
+    "/properties/DataSourceConfiguration/ConfluenceConfiguration",
+    "/properties/DataSourceConfiguration/GoogleDriveConfiguration",
+    "/properties/DataSourceConfiguration/WebCrawlerConfiguration",
+    "/properties/DataSourceConfiguration/WorkDocsConfiguration"
   ],
   "type": "object",
   "title": "AWSKendraDataSourceProperties"

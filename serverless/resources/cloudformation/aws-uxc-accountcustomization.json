@@ -1,0 +1,81 @@
+{
+  "typeName": "AWS::UXC::AccountCustomization",
+  "description": "Resource schema for managing AWS account-level UX customization settings, including account color, visible services, and visible regions.. Source:- https://code.amazon.com/packages/AWSCloudFormationResourceProvidersUserExperienceCustomization",
+  "sourceUrl": "https://code.amazon.com/packages/AWSCloudFormationResourceProvidersUserExperienceCustomization",
+  "definitions": {},
+  "properties": {
+    "AccountColor": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "none",
+            "pink",
+            "purple",
+            "darkBlue",
+            "lightBlue",
+            "teal",
+            "green",
+            "yellow",
+            "orange",
+            "red"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The color theme assigned to the account for visual identification in the AWS Console."
+    },
+    "VisibleServices": {
+      "description": "A list of AWS service identifiers visible to the account in the AWS Console.",
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 500
+    },
+    "VisibleRegions": {
+      "description": "A list of AWS region identifiers visible to the account in the AWS Console.",
+      "type": "array",
+      "insertionOrder": false,
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^[a-z]{2}(-[a-z]{1,10}){1,2}-[1-9]$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 100
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": false
+  },
+  "readOnlyProperties": [
+    "/properties/AccountId"
+  ],
+  "primaryIdentifier": [
+    "/properties/AccountId"
+  ],
+  "replacementStrategy": "delete_then_create",
+  "type": "object",
+  "title": "AWSUXCAccountCustomizationProperties"
+}

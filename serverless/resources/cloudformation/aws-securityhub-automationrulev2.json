@@ -1,0 +1,699 @@
+{
+  "typeName": "AWS::SecurityHub::AutomationRuleV2",
+  "description": "Resource schema for AWS::SecurityHub::AutomationRuleV2. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-securityhub",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-securityhub",
+  "definitions": {
+    "Tags": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^(?!aws:)[a-zA-Z+-=._:/]{1,128}$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "title": "AWSSecurityHubAutomationRuleV2TagsDefinition"
+    },
+    "OcsfFindingFilters": {
+      "description": "The filtering conditions that align with OCSF standards",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CompositeFilters": {
+          "description": "Enables the creation of complex filtering conditions by combining filter",
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/CompositeFilter"
+          }
+        },
+        "CompositeOperator": {
+          "$ref": "#/definitions/AllowedOperators"
+        }
+      },
+      "title": "AWSSecurityHubAutomationRuleV2OcsfFindingFiltersDefinition"
+    },
+    "CompositeFilter": {
+      "description": "Enables the creation of filtering criteria for security findings",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "StringFilters": {
+          "description": "Enables filtering based on string field values",
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/OcsfStringFilter"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "DateFilters": {
+          "description": "Enables filtering based on date and timestamp fields",
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/OcsfDateFilter"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "BooleanFilters": {
+          "description": "Enables filtering based on boolean field values",
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/OcsfBooleanFilter"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "NumberFilters": {
+          "description": "Enables filtering based on numerical field values",
+          "type": "array",
+          "insertionOrder": true,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/OcsfNumberFilter"
+          },
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "MapFilters": {
+          "description": "Enables filtering based on map field value",
+          "items": {
+            "$ref": "#/definitions/OcsfMapFilter"
+          },
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20
+        },
+        "Operator": {
+          "$ref": "#/definitions/AllowedOperators"
+        }
+      },
+      "title": "AWSSecurityHubAutomationRuleV2CompositeFilterDefinition"
+    },
+    "OcsfStringFilter": {
+      "description": "Enables filtering of security findings based on string field values in OCSF",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FieldName": {
+          "$ref": "#/definitions/OcsfStringField"
+        },
+        "Filter": {
+          "$ref": "#/definitions/StringFilter"
+        }
+      },
+      "required": [
+        "FieldName",
+        "Filter"
+      ],
+      "title": "AWSSecurityHubAutomationRuleV2OcsfStringFilterDefinition"
+    },
+    "OcsfDateFilter": {
+      "description": "Enables filtering of security findings based on date and timestamp fields in OCSF",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FieldName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "finding_info.created_time_dt",
+                "finding_info.first_seen_time_dt",
+                "finding_info.last_seen_time_dt",
+                "finding_info.modified_time_dt"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the field"
+        },
+        "Filter": {
+          "$ref": "#/definitions/DateFilter"
+        }
+      },
+      "required": [
+        "FieldName",
+        "Filter"
+      ],
+      "title": "AWSSecurityHubAutomationRuleV2OcsfDateFilterDefinition"
+    },
+    "OcsfBooleanFilter": {
+      "description": "Enables filtering of security findings based on boolean field values in OCSF",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FieldName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "compliance.assessments.meets_criteria",
+                "vulnerabilities.is_exploit_available",
+                "vulnerabilities.is_fix_available"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the field"
+        },
+        "Filter": {
+          "$ref": "#/definitions/BooleanFilter"
+        }
+      },
+      "required": [
+        "FieldName",
+        "Filter"
+      ],
+      "title": "AWSSecurityHubAutomationRuleV2OcsfBooleanFilterDefinition"
+    },
+    "OcsfNumberFilter": {
+      "description": "Enables filtering of security findings based on numerical field values in OCSF",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FieldName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "activity_id",
+                "compliance.status_id",
+                "confidence_score",
+                "finding_info.related_events_count",
+                "vendor_attributes.severity_id"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the field"
+        },
+        "Filter": {
+          "$ref": "#/definitions/NumberFilter"
+        }
+      },
+      "required": [
+        "FieldName",
+        "Filter"
+      ],
+      "title": "AWSSecurityHubAutomationRuleV2OcsfNumberFilterDefinition"
+    },
+    "OcsfMapFilter": {
+      "description": "Enables filtering of security findings based on map field values in OCSF",
+      "properties": {
+        "FieldName": {
+          "oneOf": [
+            {
+              "enum": [
+                "resources.tags"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the field"
+        },
+        "Filter": {
+          "$ref": "#/definitions/MapFilter"
+        }
+      },
+      "required": [
+        "FieldName",
+        "Filter"
+      ],
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSSecurityHubAutomationRuleV2OcsfMapFilterDefinition"
+    },
+    "StringFilter": {
+      "description": "A string filter for filtering findings",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The string filter value"
+        },
+        "Comparison": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "EQUALS",
+                "PREFIX",
+                "NOT_EQUALS",
+                "PREFIX_NOT_EQUALS",
+                "CONTAINS"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The condition to apply to a string value when filtering findings"
+        }
+      },
+      "required": [
+        "Value",
+        "Comparison"
+      ],
+      "title": "AWSSecurityHubAutomationRuleV2StringFilterDefinition"
+    },
+    "DateFilter": {
+      "description": "A date filter for querying findings",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DateRange": {
+          "$ref": "#/definitions/DateRange"
+        },
+        "End": {
+          "$ref": "#/definitions/ISO8601DateString"
+        },
+        "Start": {
+          "$ref": "#/definitions/ISO8601DateString"
+        }
+      },
+      "title": "AWSSecurityHubAutomationRuleV2DateFilterDefinition"
+    },
+    "DateRange": {
+      "description": "A date range for the date filter",
+      "properties": {
+        "Unit": {
+          "oneOf": [
+            {
+              "enum": [
+                "DAYS"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "A date range unit for the date filter"
+        },
+        "Value": {
+          "description": "A date range value for the date filter",
+          "type": "number"
+        }
+      },
+      "required": [
+        "Unit",
+        "Value"
+      ],
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSSecurityHubAutomationRuleV2DateRangeDefinition"
+    },
+    "BooleanFilter": {
+      "description": "Boolean filter for querying findings",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "description": "The value of the boolean",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Value"
+      ],
+      "title": "AWSSecurityHubAutomationRuleV2BooleanFilterDefinition"
+    },
+    "NumberFilter": {
+      "type": "object",
+      "description": "A number filter for querying findings",
+      "additionalProperties": false,
+      "properties": {
+        "Eq": {
+          "description": "The equal-to condition to be applied to a single field when querying for findings",
+          "type": "number"
+        },
+        "Gte": {
+          "description": "The greater-than-equal condition to be applied to a single field when querying for findings",
+          "type": "number"
+        },
+        "Lte": {
+          "description": "The less-than-equal condition to be applied to a single field when querying for findings",
+          "type": "number"
+        }
+      },
+      "title": "AWSSecurityHubAutomationRuleV2NumberFilterDefinition"
+    },
+    "MapFilter": {
+      "description": "A map filter for filtering findings",
+      "properties": {
+        "Comparison": {
+          "oneOf": [
+            {
+              "enum": [
+                "EQUALS",
+                "NOT_EQUALS"
+              ],
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The condition to apply to the key value when filtering findings with a map filter"
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key of the map filter"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the key in the map filter"
+        }
+      },
+      "required": [
+        "Comparison",
+        "Key",
+        "Value"
+      ],
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSSecurityHubAutomationRuleV2MapFilterDefinition"
+    },
+    "OcsfStringField": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "activity_name",
+            "cloud.account.name",
+            "cloud.account.uid",
+            "cloud.provider",
+            "cloud.region",
+            "compliance.assessments.category",
+            "compliance.assessments.name",
+            "compliance.control",
+            "compliance.status",
+            "compliance.standards",
+            "finding_info.desc",
+            "finding_info.src_url",
+            "finding_info.title",
+            "finding_info.types",
+            "finding_info.uid",
+            "finding_info.related_events.uid",
+            "finding_info.related_events.product.uid",
+            "finding_info.related_events.title",
+            "metadata.product.feature.uid",
+            "metadata.product.name",
+            "metadata.product.uid",
+            "metadata.product.vendor_name",
+            "remediation.desc",
+            "remediation.references",
+            "resources.cloud_partition",
+            "resources.name",
+            "resources.region",
+            "resources.type",
+            "resources.uid",
+            "vulnerabilities.fix_coverage",
+            "class_name",
+            "vendor_attributes.severity"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the field",
+      "title": "AWSSecurityHubAutomationRuleV2OcsfStringFieldDefinition"
+    },
+    "AllowedOperators": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AND",
+            "OR"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The logical operator used to combine multiple conditions",
+      "title": "AWSSecurityHubAutomationRuleV2AllowedOperatorsDefinition"
+    },
+    "ISO8601DateString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(\\d\\d\\d\\d)-([0][1-9]|[1][0-2])-([0][1-9]|[1-2](\\d)|[3][0-1])[T](?:([0-1](\\d)|[2][0-3]):[0-5](\\d):[0-5](\\d)|23:59:60)(?:\\.(\\d)+)?([Z]|[+-](\\d\\d)(:?(\\d\\d))?)$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The timestamp formatted in ISO8601",
+      "title": "AWSSecurityHubAutomationRuleV2ISO8601DateStringDefinition"
+    },
+    "Criteria": {
+      "type": "object",
+      "description": "Defines the parameters and conditions used to evaluate and filter security findings",
+      "additionalProperties": false,
+      "properties": {
+        "OcsfFindingCriteria": {
+          "$ref": "#/definitions/OcsfFindingFilters"
+        }
+      },
+      "title": "AWSSecurityHubAutomationRuleV2CriteriaDefinition"
+    },
+    "AutomationRulesActionV2": {
+      "description": "Allows you to configure automated responses",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "FINDING_FIELDS_UPDATE",
+                "EXTERNAL_INTEGRATION"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The category of action to be executed by the automation rule"
+        },
+        "FindingFieldsUpdate": {
+          "$ref": "#/definitions/AutomationRulesFindingFieldsUpdateV2"
+        },
+        "ExternalIntegrationConfiguration": {
+          "$ref": "#/definitions/ExternalIntegrationConfiguration"
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "title": "AWSSecurityHubAutomationRuleV2AutomationRulesActionV2Definition"
+    },
+    "AutomationRulesFindingFieldsUpdateV2": {
+      "description": "The changes to be applied to fields in a security finding when an automation rule is triggered",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SeverityId": {
+          "description": "The severity level to be assigned to findings that match the automation rule criteria",
+          "type": "integer"
+        },
+        "Comment": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Notes or contextual information for findings that are modified by the automation rule"
+        },
+        "StatusId": {
+          "description": "The status to be applied to findings that match automation rule criteria",
+          "type": "integer"
+        }
+      },
+      "title": "AWSSecurityHubAutomationRuleV2AutomationRulesFindingFieldsUpdateV2Definition"
+    },
+    "ExternalIntegrationConfiguration": {
+      "description": "The settings for integrating automation rule actions with external systems or service",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ConnectorArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the connector that establishes the integration"
+        }
+      },
+      "title": "AWSSecurityHubAutomationRuleV2ExternalIntegrationConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "RuleName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": ".*\\S.*",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the automation rule"
+    },
+    "RuleStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The status of the automation rule"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": ".*\\S.*",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A description of the automation rule"
+    },
+    "RuleOrder": {
+      "description": "The value for the rule priority",
+      "type": "number",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "Criteria": {
+      "$ref": "#/definitions/Criteria"
+    },
+    "Actions": {
+      "description": "A list of actions to be performed when the rule criteria is met",
+      "type": "array",
+      "insertionOrder": true,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/AutomationRulesActionV2"
+      },
+      "minItems": 1,
+      "maxItems": 1
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    }
+  },
+  "required": [
+    "RuleName",
+    "Description",
+    "RuleOrder",
+    "Criteria",
+    "Actions"
+  ],
+  "readOnlyProperties": [
+    "/properties/RuleArn",
+    "/properties/RuleId",
+    "/properties/CreatedAt",
+    "/properties/UpdatedAt"
+  ],
+  "primaryIdentifier": [
+    "/properties/RuleArn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "securityhub:ListTagsForResource",
+      "securityhub:TagResource",
+      "securityhub:UntagResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSSecurityHubAutomationRuleV2Properties"
+}

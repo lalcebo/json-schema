@@ -1,7 +1,7 @@
 {
   "typeName": "AWS::EC2::SubnetCidrBlock",
   "$schema": "https://schema.cloudformation.us-east-1.amazonaws.com/provider.definition.schema.v1.json",
-  "description": "The AWS::EC2::SubnetCidrBlock resource creates association between subnet and IPv6 CIDR. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2/subnetcidrblock. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2/subnetcidrblock",
+  "description": "The AWS::EC2::SubnetCidrBlock resource creates association between subnet and IPv6 CIDR. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2/subnetcidrblock",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2/subnetcidrblock",
   "additionalProperties": false,
   "properties": {
@@ -17,6 +17,23 @@
       ],
       "description": "The IPv6 network range for the subnet, in CIDR notation. The subnet size must use a /64 prefix length"
     },
+    "Ipv6IpamPoolId": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID of an IPv6 Amazon VPC IP Address Manager (IPAM) pool from which to allocate, to get the subnet's CIDR"
+    },
+    "Ipv6NetmaskLength": {
+      "description": "The netmask length of the IPv6 CIDR to allocate to the subnet from an IPAM pool",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 128
+    },
     "SubnetId": {
       "oneOf": [
         {
@@ -30,15 +47,22 @@
     }
   },
   "required": [
-    "Ipv6CidrBlock",
     "SubnetId"
   ],
   "createOnlyProperties": [
     "/properties/Ipv6CidrBlock",
-    "/properties/SubnetId"
+    "/properties/SubnetId",
+    "/properties/Ipv6IpamPoolId",
+    "/properties/Ipv6NetmaskLength"
   ],
   "readOnlyProperties": [
-    "/properties/Id"
+    "/properties/Id",
+    "/properties/Ipv6AddressAttribute",
+    "/properties/IpSource"
+  ],
+  "writeOnlyProperties": [
+    "/properties/Ipv6IpamPoolId",
+    "/properties/Ipv6NetmaskLength"
   ],
   "primaryIdentifier": [
     "/properties/Id"

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::BillingConductor::BillingGroup",
-  "description": "A billing group is a set of linked account which belong to the same end customer. It can be seen as a virtual consolidated billing family.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
+  "description": "A billing group is a set of linked account which belong to the same end customer. It can be seen as a virtual consolidated billing family.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-billing-conductor.git",
   "definitions": {
     "BillingGroupStatus": {
@@ -26,7 +26,7 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": "arn:aws(-cn)?:billingconductor::[0-9]{12}:pricingplan/[a-zA-Z0-9]{10}"
+              "pattern": "arn:aws(-cn)?:billingconductor::(aws|[0-9]{12}):pricingplan/(BasicPricingPlan|Passthrough|[a-zA-Z0-9]{10})"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -60,11 +60,22 @@
             ]
           },
           "minItems": 1
+        },
+        "ResponsibilityTransferArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "arn:[a-z0-9][a-z0-9-.]{0,62}:organizations::[0-9]{12}:transfer/o-[a-z0-9]{10,32}/(billing)/(inbound|outbound)/rt-[0-9a-z]{8,32}"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AutoAssociate": {
+          "type": "boolean"
         }
       },
-      "required": [
-        "LinkedAccountIds"
-      ],
       "title": "AWSBillingConductorBillingGroupAccountGroupingDefinition"
     },
     "Tag": {
@@ -161,13 +172,43 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "billingconductor:ListTagsForResource",
+      "billingconductor:TagResource",
+      "billingconductor:UntagResource"
+    ]
   },
   "required": [
     "Name",
     "AccountGrouping",
-    "PrimaryAccountId",
     "ComputationPreference"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "PrimaryAccountId"
+      ],
+      "properties": {
+        "AccountGrouping": {
+          "required": [
+            "LinkedAccountIds"
+          ]
+        }
+      }
+    },
+    {
+      "required": [
+        "AccountGrouping"
+      ],
+      "properties": {
+        "AccountGrouping": {
+          "required": [
+            "ResponsibilityTransferArn"
+          ]
+        }
+      }
+    }
   ],
   "readOnlyProperties": [
     "/properties/Arn",

@@ -1,0 +1,295 @@
+{
+  "typeName": "AWS::S3Vectors::Index",
+  "description": "Resource Type definition for AWS::S3Vectors::Index. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "CreationTime": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Date and time when the vector index was created.",
+      "title": "AWSS3VectorsIndexCreationTimeDefinition"
+    },
+    "DataType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "float32"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The data type of the vectors to be inserted into the vector index.",
+      "title": "AWSS3VectorsIndexDataTypeDefinition"
+    },
+    "Dimension": {
+      "description": "The dimensions of the vectors to be inserted into the vector index.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4096,
+      "title": "AWSS3VectorsIndexDimensionDefinition"
+    },
+    "DistanceMetric": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "cosine",
+            "euclidean"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The distance metric to be used for similarity search.",
+      "title": "AWSS3VectorsIndexDistanceMetricDefinition"
+    },
+    "EncryptionConfiguration": {
+      "type": "object",
+      "description": "The encryption configuration for the index.",
+      "properties": {
+        "SseType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AES256",
+                "aws:kms"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Defines the server-side encryption type for index encryption configuration. Defaults to the parent vector bucket's encryption settings when unspecified."
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(arn:aws[-a-z0-9]*:kms:[-a-z0-9]*:[0-9]{12}:key/.+)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS Key Management Service (KMS) customer managed key ID to use for the encryption configuration. This parameter is allowed if and only if sseType is set to aws:kms"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSS3VectorsIndexEncryptionConfigurationDefinition"
+    },
+    "IndexArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "examples": [
+            "arn:aws:s3vectors:us-east-1:123456789012:bucket/myvectorbucket/index/myindex"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the index",
+      "title": "AWSS3VectorsIndexIndexArnDefinition"
+    },
+    "IndexName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the vector index to create.",
+      "title": "AWSS3VectorsIndexIndexNameDefinition"
+    },
+    "MetadataConfiguration": {
+      "description": "The metadata configuration for the vector index.",
+      "type": "object",
+      "properties": {
+        "NonFilterableMetadataKeys": {
+          "description": "Non-filterable metadata keys allow you to enrich vectors with additional context during storage and retrieval. Unlike default metadata keys, these keys cannot be used as query filters. Non-filterable metadata keys can be retrieved but cannot be searched, queried, or filtered. You can access non-filterable metadata keys of your vectors after finding the vectors.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 63
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "insertionOrder": false,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSS3VectorsIndexMetadataConfigurationDefinition"
+    },
+    "VectorBucketArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "examples": [
+            "arn:aws:s3vectors:us-east-1:123456789012:bucket/myvectorbucket"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the vector bucket.",
+      "title": "AWSS3VectorsIndexVectorBucketArnDefinition"
+    },
+    "VectorBucketName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the vector bucket that contains the vector index.",
+      "title": "AWSS3VectorsIndexVectorBucketNameDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag key must be between 1 to 128 characters in length. Tag key cannot start with 'aws:' and can only contain alphanumeric characters, spaces, _, ., /, =, +, -, and @."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag value must be between 0 to 256 characters in length. Tag value can only contain alphanumeric characters, spaces, _, ., /, =, +, -, and @."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSS3VectorsIndexTagDefinition"
+    }
+  },
+  "properties": {
+    "DataType": {
+      "$ref": "#/definitions/DataType"
+    },
+    "Dimension": {
+      "$ref": "#/definitions/Dimension"
+    },
+    "DistanceMetric": {
+      "$ref": "#/definitions/DistanceMetric"
+    },
+    "EncryptionConfiguration": {
+      "$ref": "#/definitions/EncryptionConfiguration"
+    },
+    "IndexName": {
+      "$ref": "#/definitions/IndexName"
+    },
+    "MetadataConfiguration": {
+      "$ref": "#/definitions/MetadataConfiguration"
+    },
+    "VectorBucketArn": {
+      "$ref": "#/definitions/VectorBucketArn"
+    },
+    "VectorBucketName": {
+      "$ref": "#/definitions/VectorBucketName"
+    },
+    "Tags": {
+      "description": "User tags (key-value pairs) to associate with the index.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "DataType",
+    "Dimension",
+    "DistanceMetric"
+  ],
+  "readOnlyProperties": [
+    "/properties/CreationTime",
+    "/properties/IndexArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/DataType",
+    "/properties/Dimension",
+    "/properties/DistanceMetric",
+    "/properties/EncryptionConfiguration",
+    "/properties/IndexName",
+    "/properties/MetadataConfiguration",
+    "/properties/VectorBucketArn",
+    "/properties/VectorBucketName"
+  ],
+  "primaryIdentifier": [
+    "/properties/IndexArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/IndexName",
+      "/properties/VectorBucketName"
+    ]
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "s3vectors:TagResource",
+      "s3vectors:UntagResource",
+      "s3vectors:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSS3VectorsIndexProperties"
+}

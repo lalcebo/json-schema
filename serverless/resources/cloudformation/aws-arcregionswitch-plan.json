@@ -1,0 +1,2065 @@
+{
+  "typeName": "AWS::ARCRegionSwitch::Plan",
+  "description": "Represents a plan that specifies Regions, IAM roles, and workflows of logic required to perform the desired change to your multi-Region application. Source:- No source definition found, add manually please",
+  "definitions": {
+    "AlarmCondition": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "red",
+            "green"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanAlarmConditionDefinition"
+    },
+    "AlarmType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "applicationHealth",
+            "trigger"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanAlarmTypeDefinition"
+    },
+    "ArcRoutingControlConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RegionAndRoutingControls": {
+          "$ref": "#/definitions/RegionAndRoutingControls"
+        }
+      },
+      "required": [
+        "RegionAndRoutingControls"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanArcRoutingControlConfigurationDefinition"
+    },
+    "ArcRoutingControlState": {
+      "type": "object",
+      "properties": {
+        "RoutingControlArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "State": {
+          "$ref": "#/definitions/RoutingControlStateChange"
+        }
+      },
+      "required": [
+        "RoutingControlArn",
+        "State"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanArcRoutingControlStateDefinition"
+    },
+    "Asg": {
+      "type": "object",
+      "properties": {
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:autoscaling:[a-z0-9-]+:\\d{12}:autoScalingGroup:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}:autoScalingGroupName/[\\S\\s]{1,255}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanAsgDefinition"
+    },
+    "AssociatedAlarm": {
+      "type": "object",
+      "properties": {
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ResourceIdentifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AlarmType": {
+          "$ref": "#/definitions/AlarmType"
+        }
+      },
+      "required": [
+        "AlarmType",
+        "ResourceIdentifier"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanAssociatedAlarmDefinition"
+    },
+    "AssociatedAlarmMap": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "$ref": "#/definitions/AssociatedAlarm"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanAssociatedAlarmMapDefinition"
+    },
+    "CustomActionLambdaConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "Lambdas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Lambdas"
+          },
+          "maxItems": 2,
+          "minItems": 1
+        },
+        "RetryIntervalMinutes": {
+          "type": "number"
+        },
+        "RegionToRun": {
+          "$ref": "#/definitions/RegionToRunIn"
+        },
+        "Ungraceful": {
+          "$ref": "#/definitions/LambdaUngraceful"
+        }
+      },
+      "required": [
+        "Lambdas",
+        "RegionToRun",
+        "RetryIntervalMinutes"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanCustomActionLambdaConfigurationDefinition"
+    },
+    "DocumentDbConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Behavior": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/DocumentDbDefaultBehavior"
+            },
+            {
+              "default": "switchoverOnly"
+            }
+          ]
+        },
+        "Ungraceful": {
+          "$ref": "#/definitions/DocumentDbUngraceful"
+        },
+        "GlobalClusterIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z][0-9A-Za-z-:._]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DatabaseClusterArns": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^arn:aws[a-zA-Z-]*:rds:[a-z0-9-]+:\\d{12}:cluster:[a-zA-Z0-9][a-zA-Z0-9-_]{0,99}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "Behavior",
+        "DatabaseClusterArns",
+        "GlobalClusterIdentifier"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanDocumentDbConfigurationDefinition"
+    },
+    "DocumentDbDefaultBehavior": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "switchoverOnly",
+            "failover"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanDocumentDbDefaultBehaviorDefinition"
+    },
+    "DocumentDbUngraceful": {
+      "type": "object",
+      "properties": {
+        "Ungraceful": {
+          "$ref": "#/definitions/DocumentDbUngracefulBehavior"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanDocumentDbUngracefulDefinition"
+    },
+    "DocumentDbUngracefulBehavior": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "failover"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanDocumentDbUngracefulBehaviorDefinition"
+    },
+    "Ec2AsgCapacityIncreaseConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "Asgs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Asg"
+          },
+          "maxItems": 2,
+          "minItems": 2
+        },
+        "Ungraceful": {
+          "$ref": "#/definitions/Ec2Ungraceful"
+        },
+        "TargetPercent": {
+          "type": "number",
+          "default": 100
+        },
+        "CapacityMonitoringApproach": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/Ec2AsgCapacityMonitoringApproach"
+            },
+            {
+              "default": "sampledMaxInLast24Hours"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Asgs"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanEc2AsgCapacityIncreaseConfigurationDefinition"
+    },
+    "Ec2AsgCapacityMonitoringApproach": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "sampledMaxInLast24Hours",
+            "autoscalingMaxInLast24Hours"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanEc2AsgCapacityMonitoringApproachDefinition"
+    },
+    "Ec2Ungraceful": {
+      "type": "object",
+      "properties": {
+        "MinimumSuccessPercentage": {
+          "type": "number",
+          "maximum": 99,
+          "minimum": 0
+        }
+      },
+      "required": [
+        "MinimumSuccessPercentage"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanEc2UngracefulDefinition"
+    },
+    "EcsCapacityIncreaseConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "Services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Service"
+          },
+          "maxItems": 2,
+          "minItems": 2
+        },
+        "Ungraceful": {
+          "$ref": "#/definitions/EcsUngraceful"
+        },
+        "TargetPercent": {
+          "type": "number",
+          "default": 100
+        },
+        "CapacityMonitoringApproach": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/EcsCapacityMonitoringApproach"
+            },
+            {
+              "default": "sampledMaxInLast24Hours"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Services"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanEcsCapacityIncreaseConfigurationDefinition"
+    },
+    "EcsCapacityMonitoringApproach": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "sampledMaxInLast24Hours",
+            "containerInsightsMaxInLast24Hours"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanEcsCapacityMonitoringApproachDefinition"
+    },
+    "EcsUngraceful": {
+      "type": "object",
+      "properties": {
+        "MinimumSuccessPercentage": {
+          "type": "number",
+          "maximum": 99,
+          "minimum": 0
+        }
+      },
+      "required": [
+        "MinimumSuccessPercentage"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanEcsUngracefulDefinition"
+    },
+    "EksCapacityMonitoringApproach": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "sampledMaxInLast24Hours"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanEksCapacityMonitoringApproachDefinition"
+    },
+    "EksCluster": {
+      "type": "object",
+      "properties": {
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ClusterArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:eks:[a-z0-9-]+:\\d{12}:cluster/[a-zA-Z0-9][a-zA-Z0-9-_]{0,99}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ClusterArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanEksClusterDefinition"
+    },
+    "EksResourceScalingConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "KubernetesResourceType": {
+          "$ref": "#/definitions/KubernetesResourceType"
+        },
+        "ScalingResources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KubernetesScalingApplication"
+          },
+          "minItems": 1
+        },
+        "EksClusters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EksCluster"
+          },
+          "minItems": 2
+        },
+        "Ungraceful": {
+          "$ref": "#/definitions/EksResourceScalingUngraceful"
+        },
+        "TargetPercent": {
+          "type": "number",
+          "default": 100,
+          "minimum": 1
+        },
+        "CapacityMonitoringApproach": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/EksCapacityMonitoringApproach"
+            },
+            {
+              "default": "sampledMaxInLast24Hours"
+            }
+          ]
+        }
+      },
+      "required": [
+        "KubernetesResourceType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanEksResourceScalingConfigurationDefinition"
+    },
+    "EksResourceScalingUngraceful": {
+      "type": "object",
+      "properties": {
+        "MinimumSuccessPercentage": {
+          "type": "number",
+          "maximum": 99,
+          "minimum": 0
+        }
+      },
+      "required": [
+        "MinimumSuccessPercentage"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanEksResourceScalingUngracefulDefinition"
+    },
+    "EventSourceMapping": {
+      "type": "object",
+      "properties": {
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:lambda:[a-z0-9-]+:\\d{12}:event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Arn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanEventSourceMappingDefinition"
+    },
+    "ExecutionApprovalConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "ApprovalRole": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ApprovalRole"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanExecutionApprovalConfigurationDefinition"
+    },
+    "ExecutionBlockConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "CustomActionLambdaConfig",
+          "properties": {
+            "CustomActionLambdaConfig": {
+              "$ref": "#/definitions/CustomActionLambdaConfiguration"
+            }
+          },
+          "required": [
+            "CustomActionLambdaConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Ec2AsgCapacityIncreaseConfig",
+          "properties": {
+            "Ec2AsgCapacityIncreaseConfig": {
+              "$ref": "#/definitions/Ec2AsgCapacityIncreaseConfiguration"
+            }
+          },
+          "required": [
+            "Ec2AsgCapacityIncreaseConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "ExecutionApprovalConfig",
+          "properties": {
+            "ExecutionApprovalConfig": {
+              "$ref": "#/definitions/ExecutionApprovalConfiguration"
+            }
+          },
+          "required": [
+            "ExecutionApprovalConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "ArcRoutingControlConfig",
+          "properties": {
+            "ArcRoutingControlConfig": {
+              "$ref": "#/definitions/ArcRoutingControlConfiguration"
+            }
+          },
+          "required": [
+            "ArcRoutingControlConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "GlobalAuroraConfig",
+          "properties": {
+            "GlobalAuroraConfig": {
+              "$ref": "#/definitions/GlobalAuroraConfiguration"
+            }
+          },
+          "required": [
+            "GlobalAuroraConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "ParallelConfig",
+          "properties": {
+            "ParallelConfig": {
+              "$ref": "#/definitions/ParallelExecutionBlockConfiguration"
+            }
+          },
+          "required": [
+            "ParallelConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "RegionSwitchPlanConfig",
+          "properties": {
+            "RegionSwitchPlanConfig": {
+              "$ref": "#/definitions/RegionSwitchPlanConfiguration"
+            }
+          },
+          "required": [
+            "RegionSwitchPlanConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "EcsCapacityIncreaseConfig",
+          "properties": {
+            "EcsCapacityIncreaseConfig": {
+              "$ref": "#/definitions/EcsCapacityIncreaseConfiguration"
+            }
+          },
+          "required": [
+            "EcsCapacityIncreaseConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "EksResourceScalingConfig",
+          "properties": {
+            "EksResourceScalingConfig": {
+              "$ref": "#/definitions/EksResourceScalingConfiguration"
+            }
+          },
+          "required": [
+            "EksResourceScalingConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Route53HealthCheckConfig",
+          "properties": {
+            "Route53HealthCheckConfig": {
+              "$ref": "#/definitions/Route53HealthCheckConfiguration"
+            }
+          },
+          "required": [
+            "Route53HealthCheckConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "DocumentDbConfig",
+          "properties": {
+            "DocumentDbConfig": {
+              "$ref": "#/definitions/DocumentDbConfiguration"
+            }
+          },
+          "required": [
+            "DocumentDbConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "RdsPromoteReadReplicaConfig",
+          "properties": {
+            "RdsPromoteReadReplicaConfig": {
+              "$ref": "#/definitions/RdsPromoteReadReplicaConfiguration"
+            }
+          },
+          "required": [
+            "RdsPromoteReadReplicaConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "RdsCreateCrossRegionReadReplicaConfig",
+          "properties": {
+            "RdsCreateCrossRegionReadReplicaConfig": {
+              "$ref": "#/definitions/RdsCreateCrossRegionReplicaConfiguration"
+            }
+          },
+          "required": [
+            "RdsCreateCrossRegionReadReplicaConfig"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "LambdaEventSourceMappingConfig",
+          "properties": {
+            "LambdaEventSourceMappingConfig": {
+              "$ref": "#/definitions/LambdaEventSourceMappingConfiguration"
+            }
+          },
+          "required": [
+            "LambdaEventSourceMappingConfig"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanExecutionBlockConfigurationDefinition"
+    },
+    "ExecutionBlockType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ARCRegionSwitchPlan",
+            "ARCRoutingControl",
+            "AuroraGlobalDatabase",
+            "CustomActionLambda",
+            "DocumentDb",
+            "EC2AutoScaling",
+            "ECSServiceScaling",
+            "EKSResourceScaling",
+            "LambdaEventSourceMapping",
+            "ManualApproval",
+            "Parallel",
+            "RdsCreateCrossRegionReplica",
+            "RdsPromoteReadReplica",
+            "Route53HealthCheck"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanExecutionBlockTypeDefinition"
+    },
+    "GlobalAuroraConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Behavior": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/GlobalAuroraDefaultBehavior"
+            },
+            {
+              "default": "switchoverOnly"
+            }
+          ]
+        },
+        "Ungraceful": {
+          "$ref": "#/definitions/GlobalAuroraUngraceful"
+        },
+        "GlobalClusterIdentifier": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DatabaseClusterArns": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "Behavior",
+        "DatabaseClusterArns",
+        "GlobalClusterIdentifier"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanGlobalAuroraConfigurationDefinition"
+    },
+    "GlobalAuroraDefaultBehavior": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "switchoverOnly",
+            "failover"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanGlobalAuroraDefaultBehaviorDefinition"
+    },
+    "GlobalAuroraUngraceful": {
+      "type": "object",
+      "properties": {
+        "Ungraceful": {
+          "$ref": "#/definitions/GlobalAuroraUngracefulBehavior"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanGlobalAuroraUngracefulDefinition"
+    },
+    "GlobalAuroraUngracefulBehavior": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "failover"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanGlobalAuroraUngracefulBehaviorDefinition"
+    },
+    "KubernetesResourceType": {
+      "type": "object",
+      "properties": {
+        "ApiVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Kind": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ApiVersion",
+        "Kind"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanKubernetesResourceTypeDefinition"
+    },
+    "KubernetesScalingApplication": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "$ref": "#/definitions/RegionalScalingResource"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanKubernetesScalingApplicationDefinition"
+    },
+    "KubernetesScalingResource": {
+      "type": "object",
+      "properties": {
+        "Namespace": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HpaName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "Namespace"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanKubernetesScalingResourceDefinition"
+    },
+    "LambdaEventSourceMappingConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "Action": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "enable",
+                "disable"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RegionEventSourceMappings": {
+          "$ref": "#/definitions/RegionEventSourceMappingMap"
+        },
+        "Ungraceful": {
+          "$ref": "#/definitions/LambdaEventSourceMappingUngraceful"
+        }
+      },
+      "required": [
+        "Action",
+        "RegionEventSourceMappings"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanLambdaEventSourceMappingConfigurationDefinition"
+    },
+    "LambdaEventSourceMappingUngraceful": {
+      "type": "object",
+      "properties": {
+        "Behavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "default": "skip",
+              "enum": [
+                "skip"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanLambdaEventSourceMappingUngracefulDefinition"
+    },
+    "LambdaUngraceful": {
+      "type": "object",
+      "properties": {
+        "Behavior": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/LambdaUngracefulBehavior"
+            },
+            {
+              "default": "skip"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanLambdaUngracefulDefinition"
+    },
+    "LambdaUngracefulBehavior": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "skip"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanLambdaUngracefulBehaviorDefinition"
+    },
+    "Lambdas": {
+      "type": "object",
+      "properties": {
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanLambdasDefinition"
+    },
+    "ParallelExecutionBlockConfiguration": {
+      "type": "object",
+      "properties": {
+        "Steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Step"
+          }
+        }
+      },
+      "required": [
+        "Steps"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanParallelExecutionBlockConfigurationDefinition"
+    },
+    "RdsCreateCrossRegionReplicaConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DbInstanceArnMap": {
+          "$ref": "#/definitions/RdsDbInstanceArnMap"
+        }
+      },
+      "required": [
+        "DbInstanceArnMap"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRdsCreateCrossRegionReplicaConfigurationDefinition"
+    },
+    "RdsDbInstanceArnMap": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z]{2}-[a-z-]+-\\d+$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:rds:[a-z0-9-]+:\\d{12}:db:[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRdsDbInstanceArnMapDefinition"
+    },
+    "RdsPromoteReadReplicaConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "DbInstanceArnMap": {
+          "$ref": "#/definitions/RdsDbInstanceArnMap"
+        }
+      },
+      "required": [
+        "DbInstanceArnMap"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRdsPromoteReadReplicaConfigurationDefinition"
+    },
+    "RecoveryApproach": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "activeActive",
+            "activePassive"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanRecoveryApproachDefinition"
+    },
+    "RegionAndRoutingControls": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ArcRoutingControlState"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRegionAndRoutingControlsDefinition"
+    },
+    "RegionEventSourceMappingMap": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "$ref": "#/definitions/EventSourceMapping"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRegionEventSourceMappingMapDefinition"
+    },
+    "RegionSwitchPlanConfiguration": {
+      "type": "object",
+      "properties": {
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:arc-region-switch::[0-9]{12}:plan/([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,30}[a-zA-Z0-9])?):([a-z0-9]{6})$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Arn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRegionSwitchPlanConfigurationDefinition"
+    },
+    "RegionToRunIn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "activatingRegion",
+            "deactivatingRegion",
+            "activeRegion",
+            "inactiveRegion"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanRegionToRunInDefinition"
+    },
+    "RegionalScalingResource": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z]{2}-[a-z-]+-\\d+$": {
+          "$ref": "#/definitions/KubernetesScalingResource"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRegionalScalingResourceDefinition"
+    },
+    "ReportConfiguration": {
+      "type": "object",
+      "properties": {
+        "ReportOutput": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReportOutputConfiguration"
+          },
+          "maxItems": 1,
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanReportConfigurationDefinition"
+    },
+    "ReportOutputConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "S3Configuration",
+          "properties": {
+            "S3Configuration": {
+              "$ref": "#/definitions/S3ReportOutputConfiguration"
+            }
+          },
+          "required": [
+            "S3Configuration"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanReportOutputConfigurationDefinition"
+    },
+    "Route53HealthCheckConfiguration": {
+      "type": "object",
+      "properties": {
+        "TimeoutMinutes": {
+          "type": "number",
+          "default": 60,
+          "minimum": 1
+        },
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "HostedZoneId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 32,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RecordName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RecordSets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Route53ResourceRecordSet"
+          }
+        }
+      },
+      "required": [
+        "HostedZoneId",
+        "RecordName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRoute53HealthCheckConfigurationDefinition"
+    },
+    "Route53ResourceRecordSet": {
+      "type": "object",
+      "properties": {
+        "RecordSetIdentifier": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z]{2}-[a-z-]+-\\d+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanRoute53ResourceRecordSetDefinition"
+    },
+    "RoutingControlStateChange": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "On",
+            "Off"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanRoutingControlStateChangeDefinition"
+    },
+    "S3ReportOutputConfiguration": {
+      "type": "object",
+      "properties": {
+        "BucketPath": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "minLength": 3,
+              "pattern": "^(?:s3://)?[a-z0-9][a-z0-9-]{1,61}[a-z0-9](?:/[^/ ][^/]*)*/?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BucketOwner": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanS3ReportOutputConfigurationDefinition"
+    },
+    "Service": {
+      "type": "object",
+      "properties": {
+        "CrossAccountRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExternalId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ClusterArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:ecs:[a-z0-9-]+:\\d{12}:cluster/[a-zA-Z0-9_-]{1,255}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ServiceArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws[a-zA-Z-]*:ecs:[a-z0-9-]+:\\d{12}:service/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]{1,255}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanServiceDefinition"
+    },
+    "Step": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExecutionBlockConfiguration": {
+          "$ref": "#/definitions/ExecutionBlockConfiguration"
+        },
+        "ExecutionBlockType": {
+          "$ref": "#/definitions/ExecutionBlockType"
+        }
+      },
+      "required": [
+        "ExecutionBlockConfiguration",
+        "ExecutionBlockType",
+        "Name"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanStepDefinition"
+    },
+    "Tags": {
+      "type": "object",
+      "maxProperties": 200,
+      "minProperties": 0,
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanTagsDefinition"
+    },
+    "Trigger": {
+      "type": "object",
+      "properties": {
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetRegion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z]{2}-[a-z-]+-\\d+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Action": {
+          "$ref": "#/definitions/WorkflowTargetAction"
+        },
+        "Conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TriggerCondition"
+          },
+          "maxItems": 10,
+          "minItems": 1
+        },
+        "MinDelayMinutesBetweenExecutions": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "Action",
+        "Conditions",
+        "MinDelayMinutesBetweenExecutions",
+        "TargetRegion"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanTriggerDefinition"
+    },
+    "TriggerCondition": {
+      "type": "object",
+      "properties": {
+        "AssociatedAlarmName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Condition": {
+          "$ref": "#/definitions/AlarmCondition"
+        }
+      },
+      "required": [
+        "AssociatedAlarmName",
+        "Condition"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanTriggerConditionDefinition"
+    },
+    "Workflow": {
+      "type": "object",
+      "properties": {
+        "Steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Step"
+          }
+        },
+        "WorkflowTargetAction": {
+          "$ref": "#/definitions/WorkflowTargetAction"
+        },
+        "WorkflowTargetRegion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z]{2}-[a-z-]+-\\d+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "WorkflowDescription": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "WorkflowTargetAction"
+      ],
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanWorkflowDefinition"
+    },
+    "WorkflowTargetAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "activate",
+            "deactivate",
+            "postRecovery"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSARCRegionSwitchPlanWorkflowTargetActionDefinition"
+    },
+    "HealthCheckState": {
+      "type": "object",
+      "properties": {
+        "HealthCheckId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Region": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSARCRegionSwitchPlanHealthCheckStateDefinition"
+    },
+    "HealthChecks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/HealthCheckState"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "AWSARCRegionSwitchPlanHealthChecksDefinition"
+    },
+    "HealthCheckIds": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "title": "AWSARCRegionSwitchPlanHealthCheckIdsDefinition"
+    },
+    "HealthCheckRecordNames": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "title": "AWSARCRegionSwitchPlanHealthCheckRecordNamesDefinition"
+    },
+    "HealthCheckRegions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "title": "AWSARCRegionSwitchPlanHealthCheckRegionsDefinition"
+    },
+    "HostedZoneIds": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "title": "AWSARCRegionSwitchPlanHostedZoneIdsDefinition"
+    }
+  },
+  "properties": {
+    "AssociatedAlarms": {
+      "$ref": "#/definitions/AssociatedAlarmMap"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ExecutionRole": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[a-zA-Z0-9-]*:iam::[0-9]{12}:role/.+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,30}[a-zA-Z0-9])?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "PrimaryRegion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z]{2}-[a-z-]+-\\d+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "RecoveryApproach": {
+      "$ref": "#/definitions/RecoveryApproach"
+    },
+    "RecoveryTimeObjectiveMinutes": {
+      "type": "number",
+      "maximum": 10080,
+      "minimum": 1
+    },
+    "Regions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "pattern": "^[a-z]{2}-[a-z-]+-\\d+$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 2,
+      "minItems": 2
+    },
+    "ReportConfiguration": {
+      "$ref": "#/definitions/ReportConfiguration"
+    },
+    "Tags": {
+      "$ref": "#/definitions/Tags"
+    },
+    "Triggers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Trigger"
+      }
+    },
+    "Workflows": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Workflow"
+      }
+    }
+  },
+  "required": [
+    "ExecutionRole",
+    "Name",
+    "RecoveryApproach",
+    "Regions",
+    "Workflows"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/Owner",
+    "/properties/Version",
+    "/properties/HealthChecksForPlan",
+    "/properties/Route53HealthChecks",
+    "/properties/PlanHealthChecks"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/PrimaryRegion",
+    "/properties/RecoveryApproach",
+    "/properties/Regions"
+  ],
+  "deprecatedProperties": [
+    "/properties/HealthChecksForPlan",
+    "/properties/Route53HealthChecks"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "arc-region-switch:TagResource",
+      "arc-region-switch:UntagResource",
+      "arc-region-switch:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSARCRegionSwitchPlanProperties"
+}

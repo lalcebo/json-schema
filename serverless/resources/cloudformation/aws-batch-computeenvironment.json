@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Batch::ComputeEnvironment",
-  "description": "Resource Type definition for AWS::Batch::ComputeEnvironment. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Batch::ComputeEnvironment. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "ComputeEnvironmentName": {
@@ -75,6 +75,16 @@
     },
     "EksConfiguration": {
       "$ref": "#/definitions/EksConfiguration"
+    },
+    "Context": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     }
   },
   "definitions": {
@@ -170,6 +180,9 @@
             }
           ]
         },
+        "ScalingPolicy": {
+          "$ref": "#/definitions/ComputeScalingPolicy"
+        },
         "SecurityGroupIds": {
           "type": "array",
           "uniqueItems": false,
@@ -249,6 +262,16 @@
       ],
       "title": "AWSBatchComputeEnvironmentComputeResourcesDefinition"
     },
+    "ComputeScalingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MinScaleDownDelayMinutes": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSBatchComputeEnvironmentComputeScalingPolicyDefinition"
+    },
     "Ec2ConfigurationObject": {
       "type": "object",
       "additionalProperties": false,
@@ -274,6 +297,16 @@
           ]
         },
         "ImageKubernetesVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BatchImageStatus": {
           "oneOf": [
             {
               "type": "string"
@@ -322,9 +355,97 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "UserdataType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "EKS_BOOTSTRAP_SH",
+                "EKS_NODEADM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Overrides": {
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/LaunchTemplateSpecificationOverride"
+          }
         }
       },
       "title": "AWSBatchComputeEnvironmentLaunchTemplateSpecificationDefinition"
+    },
+    "LaunchTemplateSpecificationOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "LaunchTemplateId": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LaunchTemplateName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Version": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UserdataType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "EKS_BOOTSTRAP_SH",
+                "EKS_NODEADM"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TargetInstanceTypes": {
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSBatchComputeEnvironmentLaunchTemplateSpecificationOverrideDefinition"
     },
     "UpdatePolicy": {
       "type": "object",
@@ -380,7 +501,11 @@
     "tagOnCreate": true,
     "tagUpdatable": false,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "Batch:TagResource",
+      "Batch:UnTagResource"
+    ]
   },
   "required": [
     "Type"
@@ -402,6 +527,7 @@
     "/properties/ComputeResources/InstanceTypes",
     "/properties/ComputeResources/LaunchTemplate",
     "/properties/ComputeResources/PlacementGroup",
+    "/properties/ComputeResources/ScalingPolicy",
     "/properties/ComputeResources/SecurityGroupIds",
     "/properties/ComputeResources/Subnets",
     "/properties/ComputeResources/Tags",
@@ -416,7 +542,8 @@
     "/properties/ComputeEnvironmentArn"
   ],
   "readOnlyProperties": [
-    "/properties/ComputeEnvironmentArn"
+    "/properties/ComputeEnvironmentArn",
+    "/properties/ComputeResources/Ec2Configuration/*/BatchImageStatus"
   ],
   "additionalIdentifiers": [
     [

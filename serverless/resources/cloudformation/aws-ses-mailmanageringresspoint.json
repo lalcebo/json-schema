@@ -1,0 +1,416 @@
+{
+  "typeName": "AWS::SES::MailManagerIngressPoint",
+  "description": "Definition of AWS::SES::MailManagerIngressPoint Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses-mailmanager",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses-mailmanager",
+  "definitions": {
+    "IngressPointConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "SmtpPassword",
+          "properties": {
+            "SmtpPassword": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64,
+                  "minLength": 8,
+                  "pattern": "^[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{}|.,?]+$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "SmtpPassword"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "SecretArn",
+          "properties": {
+            "SecretArn": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):secretsmanager:[a-z0-9-]+:\\d{12}:secret:[a-zA-Z0-9/_+=,.@-]+$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "SecretArn"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "TlsAuthConfiguration",
+          "properties": {
+            "TlsAuthConfiguration": {
+              "$ref": "#/definitions/TlsAuthConfiguration"
+            }
+          },
+          "required": [
+            "TlsAuthConfiguration"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerIngressPointIngressPointConfigurationDefinition"
+    },
+    "TlsAuthConfiguration": {
+      "type": "object",
+      "properties": {
+        "TrustStore": {
+          "$ref": "#/definitions/TrustStore"
+        }
+      },
+      "required": [
+        "TrustStore"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerIngressPointTlsAuthConfigurationDefinition"
+    },
+    "TrustStore": {
+      "type": "object",
+      "properties": {
+        "CAContent": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500000,
+              "pattern": "^[\\P{C}\\s]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CrlContent": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500000,
+              "pattern": "^[\\P{C}\\s]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-eusc):kms:[a-z0-9-]+:\\d{12}:(key|alias)/[a-zA-Z0-9/_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "CAContent"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerIngressPointTrustStoreDefinition"
+    },
+    "TlsPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "REQUIRED",
+            "OPTIONAL",
+            "FIPS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerIngressPointTlsPolicyDefinition"
+    },
+    "IngressPointStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "PROVISIONING",
+            "DEPROVISIONING",
+            "UPDATING",
+            "ACTIVE",
+            "CLOSED",
+            "FAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerIngressPointIngressPointStatusDefinition"
+    },
+    "IngressPointStatusToUpdate": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "CLOSED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerIngressPointIngressPointStatusToUpdateDefinition"
+    },
+    "IngressPointType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "OPEN",
+            "AUTH",
+            "MTLS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerIngressPointIngressPointTypeDefinition"
+    },
+    "IpType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "IPV4",
+            "DUAL_STACK"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSSESMailManagerIngressPointIpTypeDefinition"
+    },
+    "NetworkConfiguration": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "PublicNetworkConfiguration",
+          "properties": {
+            "PublicNetworkConfiguration": {
+              "$ref": "#/definitions/PublicNetworkConfiguration"
+            }
+          },
+          "required": [
+            "PublicNetworkConfiguration"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "PrivateNetworkConfiguration",
+          "properties": {
+            "PrivateNetworkConfiguration": {
+              "$ref": "#/definitions/PrivateNetworkConfiguration"
+            }
+          },
+          "required": [
+            "PrivateNetworkConfiguration"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSSESMailManagerIngressPointNetworkConfigurationDefinition"
+    },
+    "PrivateNetworkConfiguration": {
+      "type": "object",
+      "properties": {
+        "VpcEndpointId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^vpce-[a-zA-Z0-9]{17}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "VpcEndpointId"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerIngressPointPrivateNetworkConfigurationDefinition"
+    },
+    "PublicNetworkConfiguration": {
+      "type": "object",
+      "properties": {
+        "IpType": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/IpType"
+            },
+            {
+              "default": "IPV4"
+            }
+          ]
+        }
+      },
+      "required": [
+        "IpType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerIngressPointPublicNetworkConfigurationDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9/_\\+=\\.:@\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9/_\\+=\\.:@\\-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESMailManagerIngressPointTagDefinition"
+    }
+  },
+  "properties": {
+    "TrafficPolicyId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "IngressPointConfiguration": {
+      "$ref": "#/definitions/IngressPointConfiguration"
+    },
+    "IngressPointName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 63,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9_\\-]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "NetworkConfiguration": {
+      "$ref": "#/definitions/NetworkConfiguration"
+    },
+    "RuleSetId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "StatusToUpdate": {
+      "$ref": "#/definitions/IngressPointStatusToUpdate"
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 0
+    },
+    "TlsPolicy": {
+      "$ref": "#/definitions/TlsPolicy"
+    },
+    "Type": {
+      "$ref": "#/definitions/IngressPointType"
+    }
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ses:TagResource",
+      "ses:UntagResource"
+    ]
+  },
+  "required": [
+    "Type",
+    "TrafficPolicyId",
+    "RuleSetId"
+  ],
+  "readOnlyProperties": [
+    "/properties/IngressPointId",
+    "/properties/IngressPointArn",
+    "/properties/Status",
+    "/properties/ARecord"
+  ],
+  "createOnlyProperties": [
+    "/properties/NetworkConfiguration",
+    "/properties/Type"
+  ],
+  "writeOnlyProperties": [
+    "/properties/IngressPointConfiguration"
+  ],
+  "primaryIdentifier": [
+    "/properties/IngressPointId"
+  ],
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSSESMailManagerIngressPointProperties"
+}

@@ -1,6 +1,28 @@
 {
   "typeName": "MongoDB::Atlas::CloudBackUpRestoreJobs",
-  "description": "Returns, starts, and cancels Cloud Backup restore jobs.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Returns, starts, and cancels Cloud Backup restore jobs.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/cloud-backup-restore-jobs",
+  "definitions": {
+    "SynchronousCreationOptions": {
+      "type": "object",
+      "description": "Options that needs to be set to control the synchronous creation flow, this options need to be set if EnableSynchronousCreation is se to TRUE",
+      "properties": {
+        "TimeOutInSeconds": {
+          "type": "integer",
+          "description": "The amount of time the process will wait until exiting with a success, default (1200 seconds)"
+        },
+        "CallbackDelaySeconds": {
+          "type": "integer",
+          "description": "Represents the time interval, measured in seconds, for the synchronous process to wait before checking again to verify if the job has been completed. example: if set to 20, it will chek every 20 seconds if the resource is completed, default (30 seconds)"
+        },
+        "ReturnSuccessIfTimeOut": {
+          "type": "boolean",
+          "description": "if set to true, the process will return success, in the event of a timeOut, default false"
+        }
+      },
+      "additionalProperties": false,
+      "title": "MongoDBAtlasCloudBackUpRestoreJobsSynchronousCreationOptionsDefinition"
+    }
+  },
   "properties": {
     "ProjectId": {
       "oneOf": [
@@ -13,16 +35,19 @@
       ],
       "description": "The unique identifier of the project for the Atlas cluster."
     },
-    "ClusterName": {
+    "InstanceType": {
       "oneOf": [
         {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "cluster"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The name of the Atlas cluster whose snapshot you want to restore or you want to retrieve restore jobs."
+      "description": "Type of instance specified on the Instance Name."
     },
     "InstanceName": {
       "oneOf": [
@@ -33,7 +58,7 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "The instance name of the Serverless cluster whose snapshot you want to restore or you want to retrieve restore jobs."
+      "description": "Human-readable label that identifies the cluster."
     },
     "DeliveryType": {
       "oneOf": [
@@ -121,23 +146,35 @@
         }
       ],
       "description": "Profile used to provide credentials information, (a secret with the cfn/atlas/profile/{Profile}, is required), if not provided default is used"
+    },
+    "EnableSynchronousCreation": {
+      "description": "If set to true, the CloudFormation resource will wait until the job is completed, WARNING: if the snapshot has a big load of data, the cloud formation resource might take a long time to finish leading to high costs",
+      "type": "boolean"
+    },
+    "SynchronousCreationOptions": {
+      "description": "Options that needs to be set to control the synchronous creation flow, this options need to be set if EnableSynchronousCreation is se to TRUE",
+      "$ref": "#/definitions/SynchronousCreationOptions"
     }
   },
   "additionalProperties": false,
   "required": [
     "ProjectId",
-    "ClusterName"
+    "InstanceName",
+    "InstanceType",
+    "SnapshotId",
+    "DeliveryType"
   ],
   "createOnlyProperties": [
     "/properties/ProjectId",
-    "/properties/ClusterName",
-    "/properties/Profile"
+    "/properties/Profile",
+    "/properties/InstanceType",
+    "/properties/InstanceName"
   ],
   "readOnlyProperties": [
     "/properties/Id",
     "/properties/DeliveryUrl",
     "/properties/Cancelled",
-    "/properties/CreatedAt",
+    "/properties/Failed",
     "/properties/Expired",
     "/properties/ExpiresAt",
     "/properties/FinishedAt",
@@ -146,10 +183,16 @@
   ],
   "primaryIdentifier": [
     "/properties/ProjectId",
-    "/properties/ClusterName",
+    "/properties/InstanceType",
+    "/properties/InstanceName",
     "/properties/Id",
     "/properties/Profile"
   ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/cloud-backup-restore-jobs/README.md",
+  "tagging": {
+    "taggable": false
+  },
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/cloud-backup-restore-jobs",
   "type": "object",
   "title": "MongoDBAtlasCloudBackUpRestoreJobsProperties"
 }

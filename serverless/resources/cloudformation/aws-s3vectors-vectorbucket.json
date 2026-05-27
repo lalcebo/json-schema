@@ -1,0 +1,170 @@
+{
+  "typeName": "AWS::S3Vectors::VectorBucket",
+  "description": "Resource Type definition for AWS::S3Vectors::VectorBucket. Source:- No source definition found, add manually please",
+  "definitions": {
+    "VectorBucketName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the vector bucket.",
+      "title": "AWSS3VectorsVectorBucketVectorBucketNameDefinition"
+    },
+    "VectorBucketArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "examples": [
+            "arn:aws:s3vectors:us-east-1:123456789012:bucket/myvectorbucket"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the vector bucket.",
+      "title": "AWSS3VectorsVectorBucketVectorBucketArnDefinition"
+    },
+    "CreationTime": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Date and time when the vector bucket was created.",
+      "title": "AWSS3VectorsVectorBucketCreationTimeDefinition"
+    },
+    "EncryptionConfiguration": {
+      "type": "object",
+      "description": "The encryption configuration for the vector bucket.",
+      "properties": {
+        "SseType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AES256",
+                "aws:kms"
+              ],
+              "default": "AES256"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The server-side encryption type to use for the encryption configuration of the vector bucket. By default, if you don't specify, all new vectors in Amazon S3 vector buckets use server-side encryption with Amazon S3 managed keys (SSE-S3), specifically AES256."
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(arn:aws[-a-z0-9]*:kms:[-a-z0-9]*:[0-9]{12}:key/.+)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "AWS Key Management Service (KMS) customer managed key ID to use for the encryption configuration. This parameter is allowed if and only if sseType is set to aws:kms"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSS3VectorsVectorBucketEncryptionConfigurationDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag key must be between 1 to 128 characters in length. Tag key cannot start with 'aws:' and can only contain alphanumeric characters, spaces, _, ., /, =, +, -, and @."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag value must be between 0 to 256 characters in length. Tag value can only contain alphanumeric characters, spaces, _, ., /, =, +, -, and @."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSS3VectorsVectorBucketTagDefinition"
+    }
+  },
+  "properties": {
+    "VectorBucketName": {
+      "$ref": "#/definitions/VectorBucketName"
+    },
+    "EncryptionConfiguration": {
+      "$ref": "#/definitions/EncryptionConfiguration"
+    },
+    "Tags": {
+      "description": "User tags (key-value pairs) to associate with the vector bucket.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "readOnlyProperties": [
+    "/properties/VectorBucketArn",
+    "/properties/CreationTime"
+  ],
+  "createOnlyProperties": [
+    "/properties/VectorBucketName",
+    "/properties/EncryptionConfiguration"
+  ],
+  "primaryIdentifier": [
+    "/properties/VectorBucketArn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/VectorBucketName"
+    ]
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "s3vectors:TagResource",
+      "s3vectors:UntagResource",
+      "s3vectors:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSS3VectorsVectorBucketProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::NetworkManager::ConnectPeer",
-  "description": "AWS::NetworkManager::ConnectPeer Resource Type Definition.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager/aws-networkmanager-connectpeer. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager/aws-networkmanager-connectpeer",
+  "description": "AWS::NetworkManager::ConnectPeer Resource Type Definition.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager/aws-networkmanager-connectpeer",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager/aws-networkmanager-connectpeer",
   "properties": {
     "PeerAddress": {
@@ -54,6 +54,17 @@
         }
       ],
       "description": "The ID of the attachment to connect."
+    },
+    "SubnetArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The subnet ARN for the connect peer."
     },
     "Tags": {
       "description": "An array of key-value pairs to apply to this resource.",
@@ -129,7 +140,7 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "description": "Tunnel protocol type (Only support GRE for now)",
+      "description": "The protocol used for a Connect peer configuration.",
       "title": "AWSNetworkManagerConnectPeerTunnelProtocolDefinition"
     },
     "BgpOptions": {
@@ -221,12 +232,16 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "networkmanager:TagResource",
+      "networkmanager:UntagResource",
+      "networkmanager:ListTagsForResource"
+    ]
   },
   "required": [
     "ConnectAttachmentId",
-    "PeerAddress",
-    "InsideCidrBlocks"
+    "PeerAddress"
   ],
   "additionalProperties": false,
   "createOnlyProperties": [
@@ -234,11 +249,13 @@
     "/properties/CoreNetworkAddress",
     "/properties/BgpOptions",
     "/properties/InsideCidrBlocks",
-    "/properties/ConnectAttachmentId"
+    "/properties/ConnectAttachmentId",
+    "/properties/SubnetArn"
   ],
   "writeOnlyProperties": [
     "/properties/CoreNetworkAddress",
-    "/properties/BgpOptions"
+    "/properties/BgpOptions",
+    "/properties/SubnetArn"
   ],
   "readOnlyProperties": [
     "/properties/ConnectPeerId",
@@ -246,7 +263,8 @@
     "/properties/CreatedAt",
     "/properties/Configuration",
     "/properties/CoreNetworkId",
-    "/properties/EdgeLocation"
+    "/properties/EdgeLocation",
+    "/properties/LastModificationErrors"
   ],
   "primaryIdentifier": [
     "/properties/ConnectPeerId"

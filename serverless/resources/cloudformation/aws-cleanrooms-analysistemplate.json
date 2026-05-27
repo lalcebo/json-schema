@@ -1,0 +1,584 @@
+{
+  "typeName": "AWS::CleanRooms::AnalysisTemplate",
+  "description": "Represents a stored analysis within a collaboration. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cleanrooms",
+  "definitions": {
+    "AnalysisParameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DefaultValue": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 1000
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "[0-9a-zA-Z_]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SMALLINT",
+                "INTEGER",
+                "BIGINT",
+                "DECIMAL",
+                "REAL",
+                "DOUBLE_PRECISION",
+                "BOOLEAN",
+                "CHAR",
+                "VARCHAR",
+                "DATE",
+                "TIMESTAMP",
+                "TIMESTAMPTZ",
+                "TIME",
+                "TIMETZ",
+                "VARBYTE",
+                "BINARY",
+                "BYTE",
+                "CHARACTER",
+                "DOUBLE",
+                "FLOAT",
+                "INT",
+                "LONG",
+                "NUMERIC",
+                "SHORT",
+                "STRING",
+                "TIMESTAMP_LTZ",
+                "TIMESTAMP_NTZ",
+                "TINYINT"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "Type"
+      ],
+      "title": "AWSCleanRoomsAnalysisTemplateAnalysisParameterDefinition"
+    },
+    "TableName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSCleanRoomsAnalysisTemplateTableNameDefinition"
+    },
+    "ReferencedTables": {
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/TableName"
+      },
+      "minItems": 0,
+      "title": "AWSCleanRoomsAnalysisTemplateReferencedTablesDefinition"
+    },
+    "AnalysisSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ReferencedTables": {
+          "$ref": "#/definitions/ReferencedTables"
+        }
+      },
+      "required": [
+        "ReferencedTables"
+      ],
+      "title": "AWSCleanRoomsAnalysisTemplateAnalysisSchemaDefinition"
+    },
+    "AnalysisSource": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Text",
+          "properties": {
+            "Text": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 90000,
+                  "minLength": 0
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "Text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "Artifacts",
+          "properties": {
+            "Artifacts": {
+              "$ref": "#/definitions/AnalysisTemplateArtifacts"
+            }
+          },
+          "required": [
+            "Artifacts"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSCleanRoomsAnalysisTemplateAnalysisSourceDefinition"
+    },
+    "AnalysisTemplateArtifacts": {
+      "type": "object",
+      "properties": {
+        "EntryPoint": {
+          "$ref": "#/definitions/AnalysisTemplateArtifact"
+        },
+        "AdditionalArtifacts": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/AnalysisTemplateArtifact"
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "minLength": 32
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "EntryPoint",
+        "RoleArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateAnalysisTemplateArtifactsDefinition"
+    },
+    "AnalysisTemplateArtifact": {
+      "type": "object",
+      "properties": {
+        "Location": {
+          "$ref": "#/definitions/S3Location"
+        }
+      },
+      "required": [
+        "Location"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateAnalysisTemplateArtifactDefinition"
+    },
+    "S3Location": {
+      "type": "object",
+      "properties": {
+        "Bucket": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "minLength": 3
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Bucket",
+        "Key"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateS3LocationDefinition"
+    },
+    "AnalysisSourceMetadata": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Artifacts",
+          "properties": {
+            "Artifacts": {
+              "$ref": "#/definitions/AnalysisTemplateArtifactMetadata"
+            }
+          },
+          "required": [
+            "Artifacts"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSCleanRoomsAnalysisTemplateAnalysisSourceMetadataDefinition"
+    },
+    "AnalysisTemplateArtifactMetadata": {
+      "type": "object",
+      "properties": {
+        "EntryPointHash": {
+          "$ref": "#/definitions/Hash"
+        },
+        "AdditionalArtifactHashes": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/Hash"
+          }
+        }
+      },
+      "required": [
+        "EntryPointHash"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateAnalysisTemplateArtifactMetadataDefinition"
+    },
+    "Hash": {
+      "type": "object",
+      "properties": {
+        "Sha256": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateHashDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Value",
+        "Key"
+      ],
+      "title": "AWSCleanRoomsAnalysisTemplateTagDefinition"
+    },
+    "ErrorMessageConfiguration": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DETAILED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateErrorMessageConfigurationDefinition"
+    },
+    "SyntheticDataParameters": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "MlSyntheticDataParameters",
+          "properties": {
+            "MlSyntheticDataParameters": {
+              "$ref": "#/definitions/MLSyntheticDataParameters"
+            }
+          },
+          "required": [
+            "MlSyntheticDataParameters"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSCleanRoomsAnalysisTemplateSyntheticDataParametersDefinition"
+    },
+    "MLSyntheticDataParameters": {
+      "type": "object",
+      "properties": {
+        "Epsilon": {
+          "type": "number",
+          "minimum": 0.0001,
+          "maximum": 10
+        },
+        "MaxMembershipInferenceAttackScore": {
+          "type": "number",
+          "minimum": 0.5,
+          "maximum": 1
+        },
+        "ColumnClassification": {
+          "$ref": "#/definitions/ColumnClassificationDetails"
+        }
+      },
+      "required": [
+        "Epsilon",
+        "MaxMembershipInferenceAttackScore",
+        "ColumnClassification"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateMLSyntheticDataParametersDefinition"
+    },
+    "ColumnClassificationDetails": {
+      "type": "object",
+      "properties": {
+        "ColumnMapping": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/SyntheticDataColumnProperties"
+          },
+          "minItems": 5,
+          "maxItems": 1000
+        }
+      },
+      "required": [
+        "ColumnMapping"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateColumnClassificationDetailsDefinition"
+    },
+    "SyntheticDataColumnProperties": {
+      "type": "object",
+      "properties": {
+        "ColumnName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[a-z0-9_](([a-z0-9_]+-)*([a-z0-9_]+))?$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ColumnType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CATEGORICAL",
+                "NUMERICAL"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IsPredictiveValue": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ColumnName",
+        "ColumnType",
+        "IsPredictiveValue"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCleanRoomsAnalysisTemplateSyntheticDataColumnPropertiesDefinition"
+    }
+  },
+  "properties": {
+    "Tags": {
+      "description": "An arbitrary set of tags (key-value pairs) for this cleanrooms analysis template.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "type": "array"
+    },
+    "AnalysisParameters": {
+      "description": "The member who can query can provide this placeholder for a literal data value in an analysis template",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/AnalysisParameter"
+      },
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 50
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 255,
+          "pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "MembershipIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 36,
+          "minLength": 36,
+          "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_](([a-zA-Z0-9_ ]+-)*([a-zA-Z0-9_ ]+))?$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "Schema": {
+      "$ref": "#/definitions/AnalysisSchema"
+    },
+    "Source": {
+      "$ref": "#/definitions/AnalysisSource"
+    },
+    "SourceMetadata": {
+      "$ref": "#/definitions/AnalysisSourceMetadata"
+    },
+    "Format": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SQL",
+            "PYSPARK_1_0"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ErrorMessageConfiguration": {
+      "$ref": "#/definitions/ErrorMessageConfiguration"
+    },
+    "SyntheticDataParameters": {
+      "$ref": "#/definitions/SyntheticDataParameters"
+    }
+  },
+  "required": [
+    "Source",
+    "Format",
+    "Name",
+    "MembershipIdentifier"
+  ],
+  "readOnlyProperties": [
+    "/properties/CollaborationArn",
+    "/properties/CollaborationIdentifier",
+    "/properties/AnalysisTemplateIdentifier",
+    "/properties/Arn",
+    "/properties/MembershipArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Name",
+    "/properties/MembershipIdentifier",
+    "/properties/Source",
+    "/properties/Format",
+    "/properties/AnalysisParameters",
+    "/properties/Schema",
+    "/properties/ErrorMessageConfiguration",
+    "/properties/SyntheticDataParameters"
+  ],
+  "primaryIdentifier": [
+    "/properties/AnalysisTemplateIdentifier",
+    "/properties/MembershipIdentifier"
+  ],
+  "replacementStrategy": "delete_then_create",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "cleanrooms:ListTagsForResource",
+      "cleanrooms:UntagResource",
+      "cleanrooms:TagResource"
+    ]
+  },
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-cleanrooms",
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSCleanRoomsAnalysisTemplateProperties"
+}

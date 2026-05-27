@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::EC2::VerifiedAccessInstance",
-  "description": "The AWS::EC2::VerifiedAccessInstance resource creates an AWS EC2 Verified Access Instance.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-verified-access.aws-ec2-verifiedaccessinstance. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-verified-access.aws-ec2-verifiedaccessinstance",
+  "description": "The AWS::EC2::VerifiedAccessInstance resource creates an AWS EC2 Verified Access Instance.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-verified-access.aws-ec2-verifiedaccessinstance",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ec2-verified-access.aws-ec2-verifiedaccessinstance",
   "properties": {
     "VerifiedAccessTrustProviders": {
@@ -44,6 +44,21 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "FipsEnabled": {
+      "description": "Indicates whether FIPS is enabled",
+      "type": "boolean"
+    },
+    "CidrEndpointsCustomSubDomain": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Introduce CidrEndpointsCustomSubDomain property to represent the domain (say, ava.my-company.com)"
     }
   },
   "definitions": {
@@ -126,6 +141,21 @@
       "description": "The configuration options for AWS Verified Access instances.",
       "type": "object",
       "properties": {
+        "LogVersion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Select log version for Verified Access logs."
+        },
+        "IncludeTrustContext": {
+          "description": "Include claims from trust providers in Verified Access logs.",
+          "type": "boolean"
+        },
         "CloudWatchLogs": {
           "description": "Sends Verified Access logs to CloudWatch Logs.",
           "type": "object",
@@ -255,13 +285,26 @@
       ],
       "additionalProperties": false,
       "title": "AWSEC2VerifiedAccessInstanceTagDefinition"
+    },
+    "Nameserver": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The value of the name server",
+      "title": "AWSEC2VerifiedAccessInstanceNameserverDefinition"
     }
   },
   "additionalProperties": false,
   "readOnlyProperties": [
     "/properties/VerifiedAccessInstanceId",
     "/properties/CreationTime",
-    "/properties/LastUpdatedTime"
+    "/properties/LastUpdatedTime",
+    "/properties/CidrEndpointsCustomSubDomainNameServers"
   ],
   "primaryIdentifier": [
     "/properties/VerifiedAccessInstanceId"
@@ -271,7 +314,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ec2:CreateTags",
+      "ec2:DescribeTags",
+      "ec2:DeleteTags"
+    ]
   },
   "type": "object",
   "title": "AWSEC2VerifiedAccessInstanceProperties"

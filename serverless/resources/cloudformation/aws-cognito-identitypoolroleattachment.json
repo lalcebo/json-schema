@@ -1,7 +1,130 @@
 {
   "typeName": "AWS::Cognito::IdentityPoolRoleAttachment",
-  "description": "Resource Type definition for AWS::Cognito::IdentityPoolRoleAttachment. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Cognito::IdentityPoolRoleAttachment. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "additionalProperties": false,
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "definitions": {
+    "MappingRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Claim": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MatchType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RoleARN": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Claim",
+        "MatchType",
+        "RoleARN",
+        "Value"
+      ],
+      "title": "AWSCognitoIdentityPoolRoleAttachmentMappingRuleDefinition"
+    },
+    "RulesConfigurationType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Rules": {
+          "type": "array",
+          "uniqueItems": false,
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/MappingRule"
+          }
+        }
+      },
+      "required": [
+        "Rules"
+      ],
+      "title": "AWSCognitoIdentityPoolRoleAttachmentRulesConfigurationTypeDefinition"
+    },
+    "RoleMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AmbiguousRoleResolution": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RulesConfiguration": {
+          "$ref": "#/definitions/RulesConfigurationType"
+        },
+        "IdentityProvider": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "title": "AWSCognitoIdentityPoolRoleAttachmentRoleMappingDefinition"
+    }
+  },
   "properties": {
     "IdentityPoolId": {
       "oneOf": [
@@ -14,10 +137,27 @@
       ]
     },
     "Roles": {
-      "type": "object"
+      "patternProperties": {
+        "^.+$": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "RoleMappings": {
-      "type": "object"
+      "patternProperties": {
+        "^.+$": {
+          "$ref": "#/definitions/RoleMapping"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "required": [
@@ -31,6 +171,11 @@
   ],
   "readOnlyProperties": [
     "/properties/Id"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/IdentityPoolId"
+    ]
   ],
   "type": "object",
   "title": "AWSCognitoIdentityPoolRoleAttachmentProperties"

@@ -1,47 +1,24 @@
 {
   "typeName": "AWS::QuickSight::VPCConnection",
-  "description": "Definition of the AWS::QuickSight::VPCConnection Resource Type.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of the AWS::QuickSight::VPCConnection Resource Type.. Source:- No source definition found, add manually please",
   "definitions": {
-    "Arn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSQuickSightVPCConnectionArnDefinition"
-    },
-    "DnsResolvers": {
-      "type": "array",
-      "items": {
-        "oneOf": [
-          {
-            "type": "string"
-          },
-          {
-            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-          }
-        ]
-      },
-      "insertionOrder": false,
-      "title": "AWSQuickSightVPCConnectionDnsResolversDefinition"
-    },
-    "NetworkInterfaces": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/NetworkInterface"
-      },
-      "maxItems": 15,
-      "insertionOrder": false,
-      "title": "AWSQuickSightVPCConnectionNetworkInterfacesDefinition"
-    },
     "NetworkInterface": {
       "type": "object",
+      "description": "<p>The structure that contains information about a network interface.</p>",
       "properties": {
         "SubnetId": {
-          "$ref": "#/definitions/SubnetId"
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "minLength": 1,
+              "pattern": "^subnet-[0-9a-z]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The subnet ID associated with the network interface.</p>"
         },
         "AvailabilityZone": {
           "oneOf": [
@@ -51,7 +28,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "<p>The availability zone that the network interface resides in.</p>"
         },
         "ErrorMessage": {
           "oneOf": [
@@ -61,135 +39,57 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "<p>An error message.</p>"
         },
         "Status": {
+          "$ref": "#/definitions/NetworkInterfaceStatus"
+        },
+        "NetworkInterfaceId": {
           "oneOf": [
             {
               "type": "string",
-              "enum": [
-                "CREATING",
-                "AVAILABLE",
-                "CREATION_FAILED",
-                "UPDATING",
-                "UPDATE_FAILED",
-                "DELETING",
-                "DELETED",
-                "DELETION_FAILED",
-                "DELETION_SCHEDULED",
-                "ATTACHMENT_FAILED_ROLLBACK_FAILED"
-              ]
+              "maxLength": 255,
+              "minLength": 0,
+              "pattern": "^eni-[0-9a-z]*$"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
-        },
-        "NetworkInterfaceId": {
-          "$ref": "#/definitions/NetworkInterfaceId"
+          ],
+          "description": "<p>The network interface ID.</p>"
         }
       },
       "additionalProperties": false,
-      "required": [],
       "title": "AWSQuickSightVPCConnectionNetworkInterfaceDefinition"
     },
-    "NetworkInterfaceId": {
+    "NetworkInterfaceStatus": {
       "oneOf": [
         {
           "type": "string",
-          "pattern": "^eni-[0-9a-z]*$",
-          "maxLength": 255
+          "enum": [
+            "CREATING",
+            "AVAILABLE",
+            "CREATION_FAILED",
+            "UPDATING",
+            "UPDATE_FAILED",
+            "DELETING",
+            "DELETED",
+            "DELETION_FAILED",
+            "DELETION_SCHEDULED",
+            "ATTACHMENT_FAILED_ROLLBACK_FAILED"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "title": "AWSQuickSightVPCConnectionNetworkInterfaceIdDefinition"
-    },
-    "RoleArn": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSQuickSightVPCConnectionRoleArnDefinition"
-    },
-    "SecurityGroupIds": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/SecurityGroupId"
-      },
-      "maxItems": 16,
-      "minItems": 1,
-      "insertionOrder": false,
-      "title": "AWSQuickSightVPCConnectionSecurityGroupIdsDefinition"
-    },
-    "SecurityGroupId": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^sg-[0-9a-z]*$",
-          "maxItems": 255,
-          "minItems": 1
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSQuickSightVPCConnectionSecurityGroupIdDefinition"
-    },
-    "SubnetIds": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/SubnetId"
-      },
-      "maxItems": 15,
-      "minItems": 2,
-      "insertionOrder": false,
-      "title": "AWSQuickSightVPCConnectionSubnetIdsDefinition"
-    },
-    "SubnetId": {
-      "oneOf": [
-        {
-          "type": "string",
-          "pattern": "^subnet-[0-9a-z]*$",
-          "maxLength": 255,
-          "minLength": 1
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSQuickSightVPCConnectionSubnetIdDefinition"
-    },
-    "Tags": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Tag"
-      },
-      "maxItems": 200,
-      "minItems": 1,
-      "insertionOrder": false,
-      "title": "AWSQuickSightVPCConnectionTagsDefinition"
+      "title": "AWSQuickSightVPCConnectionNetworkInterfaceStatusDefinition"
     },
     "Tag": {
       "type": "object",
+      "description": "<p>The key or keys of the key-value pairs for the resource tag or tags assigned to the\n            resource.</p>",
       "properties": {
-        "Value": {
-          "oneOf": [
-            {
-              "type": "string",
-              "maxLength": 256,
-              "minLength": 1
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
         "Key": {
           "oneOf": [
             {
@@ -200,40 +100,45 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "<p>Tag key.</p>"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>Tag value.</p>"
         }
       },
-      "additionalProperties": false,
       "required": [
         "Key",
         "Value"
       ],
+      "additionalProperties": false,
       "title": "AWSQuickSightVPCConnectionTagDefinition"
     },
-    "VPCConnectionId": {
+    "VPCConnectionAvailabilityStatus": {
       "oneOf": [
         {
           "type": "string",
-          "maxLength": 1000,
-          "minLength": 1,
-          "pattern": "[\\w\\-]+"
+          "enum": [
+            "AVAILABLE",
+            "UNAVAILABLE",
+            "PARTIALLY_AVAILABLE"
+          ]
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ],
-      "title": "AWSQuickSightVPCConnectionVPCConnectionIdDefinition"
-    },
-    "VPCId": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSQuickSightVPCConnectionVPCIdDefinition"
+      "title": "AWSQuickSightVPCConnectionVPCConnectionAvailabilityStatusDefinition"
     },
     "VPCConnectionResourceStatus": {
       "oneOf": [
@@ -256,25 +161,12 @@
         }
       ],
       "title": "AWSQuickSightVPCConnectionVPCConnectionResourceStatusDefinition"
-    },
-    "VPCConnectionAvailabilityStatus": {
-      "oneOf": [
-        {
-          "type": "string",
-          "enum": [
-            "AVAILABLE",
-            "UNAVAILABLE",
-            "PARTIALLY_AVAILABLE"
-          ]
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "title": "AWSQuickSightVPCConnectionVPCConnectionAvailabilityStatusDefinition"
     }
   },
   "properties": {
+    "AvailabilityStatus": {
+      "$ref": "#/definitions/VPCConnectionAvailabilityStatus"
+    },
     "AwsAccountId": {
       "oneOf": [
         {
@@ -288,6 +180,20 @@
         }
       ]
     },
+    "DnsResolvers": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "insertionOrder": false
+    },
     "Name": {
       "oneOf": [
         {
@@ -300,43 +206,77 @@
         }
       ]
     },
-    "VPCConnectionId": {
-      "$ref": "#/definitions/VPCConnectionId"
+    "RoleArn": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     },
     "SecurityGroupIds": {
-      "$ref": "#/definitions/SecurityGroupIds"
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "pattern": "^sg-[0-9a-z]*$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "insertionOrder": false
     },
     "SubnetIds": {
-      "$ref": "#/definitions/SubnetIds"
-    },
-    "DnsResolvers": {
-      "$ref": "#/definitions/DnsResolvers"
-    },
-    "AvailabilityStatus": {
-      "$ref": "#/definitions/VPCConnectionAvailabilityStatus"
-    },
-    "RoleArn": {
-      "$ref": "#/definitions/RoleArn"
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "pattern": "^subnet-[0-9a-z]*$"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 15,
+      "minItems": 2,
+      "insertionOrder": false
     },
     "Tags": {
-      "$ref": "#/definitions/Tags"
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 1,
+      "insertionOrder": false
+    },
+    "VPCConnectionId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 1000,
+          "minLength": 1,
+          "pattern": "[\\w\\-]+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
     }
   },
-  "additionalProperties": false,
-  "tagging": {
-    "taggable": true,
-    "tagOnCreate": true,
-    "tagUpdatable": true,
-    "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
-  },
-  "createOnlyProperties": [
-    "/properties/AwsAccountId",
-    "/properties/VPCConnectionId"
-  ],
-  "writeOnlyProperties": [
-    "/properties/SubnetIds"
-  ],
   "readOnlyProperties": [
     "/properties/Arn",
     "/properties/CreatedTime",
@@ -345,10 +285,30 @@
     "/properties/Status",
     "/properties/VPCId"
   ],
+  "writeOnlyProperties": [
+    "/properties/SubnetIds"
+  ],
+  "createOnlyProperties": [
+    "/properties/AwsAccountId",
+    "/properties/VPCConnectionId"
+  ],
   "primaryIdentifier": [
     "/properties/AwsAccountId",
     "/properties/VPCConnectionId"
   ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "quicksight:TagResource",
+      "quicksight:UntagResource",
+      "quicksight:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSQuickSightVPCConnectionProperties"
 }

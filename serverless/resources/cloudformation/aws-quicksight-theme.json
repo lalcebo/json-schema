@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::QuickSight::Theme",
-  "description": "Definition of the AWS::QuickSight::Theme Resource Type.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of the AWS::QuickSight::Theme Resource Type.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-quicksight",
   "definitions": {
     "BorderStyle": {
       "type": "object",
@@ -8,6 +8,7 @@
       "properties": {
         "Show": {
           "type": "boolean",
+          "default": null,
           "description": "<p>The option to enable display of borders for visuals.</p>"
         }
       },
@@ -18,18 +19,6 @@
       "type": "object",
       "description": "<p>The theme colors that are used for data colors in charts. The colors description is a\n            hexadecimal color code that consists of six alphanumerical characters, prefixed with\n                <code>#</code>, for example #37BFF5. </p>",
       "properties": {
-        "EmptyFillColor": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^#[A-F0-9]{6}$"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The hexadecimal code of a color that applies to charts where a lack of data is\n            highlighted.</p>"
-        },
         "Colors": {
           "type": "array",
           "items": {
@@ -63,6 +52,18 @@
           "maxItems": 100,
           "minItems": 0,
           "description": "<p>The minimum and maximum hexadecimal codes that describe a color gradient. </p>"
+        },
+        "EmptyFillColor": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^#[A-F0-9]{6}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The hexadecimal code of a color that applies to charts where a lack of data is\n            highlighted.</p>"
         }
       },
       "additionalProperties": false,
@@ -91,6 +92,7 @@
       "properties": {
         "Show": {
           "type": "boolean",
+          "default": null,
           "description": "<p>This Boolean value controls whether to display a gutter space between sheet tiles.\n        </p>"
         }
       },
@@ -103,6 +105,7 @@
       "properties": {
         "Show": {
           "type": "boolean",
+          "default": null,
           "description": "<p>This Boolean value controls whether to display sheet margins.</p>"
         }
       },
@@ -113,6 +116,19 @@
       "type": "object",
       "description": "<p>Permission for the resource.</p>",
       "properties": {
+        "Principal": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The Amazon Resource Name (ARN) of the principal. This can be one of the\n            following:</p>\n         <ul>\n            <li>\n               <p>The ARN of an Amazon QuickSight user or group associated with a data source or dataset. (This is common.)</p>\n            </li>\n            <li>\n               <p>The ARN of an Amazon QuickSight user, group, or namespace associated with an analysis, dashboard, template, or theme. (This is common.)</p>\n            </li>\n            <li>\n               <p>The ARN of an Amazon Web Services account root: This is an IAM ARN rather than a QuickSight\n                    ARN. Use this option only to share resources (templates) across Amazon Web Services accounts.\n                    (This is less common.) </p>\n            </li>\n         </ul>"
+        },
         "Actions": {
           "type": "array",
           "items": {
@@ -125,22 +141,9 @@
               }
             ]
           },
-          "maxItems": 16,
+          "maxItems": 20,
           "minItems": 1,
           "description": "<p>The IAM action to grant or revoke permissions on.</p>"
-        },
-        "Principal": {
-          "oneOf": [
-            {
-              "type": "string",
-              "maxLength": 256,
-              "minLength": 1
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The Amazon Resource Name (ARN) of the principal. This can be one of the\n            following:</p>\n        <ul>\n            <li>\n                <p>The ARN of an Amazon QuickSight user or group associated with a data source or dataset. (This is common.)</p>\n            </li>\n            <li>\n                <p>The ARN of an Amazon QuickSight user, group, or namespace associated with an analysis, dashboard, template, or theme. (This is common.)</p>\n            </li>\n            <li>\n                <p>The ARN of an AWS account root: This is an IAM ARN rather than a QuickSight\n                    ARN. Use this option only to share resources (templates) across AWS accounts.\n                    (This is less common.) </p>\n            </li>\n         </ul>"
         }
       },
       "required": [
@@ -161,6 +164,7 @@
             "UPDATE_IN_PROGRESS",
             "UPDATE_SUCCESSFUL",
             "UPDATE_FAILED",
+            "PENDING_UPDATE",
             "DELETED"
           ]
         },
@@ -174,11 +178,11 @@
       "type": "object",
       "description": "<p>The theme display options for sheets. </p>",
       "properties": {
-        "TileLayout": {
-          "$ref": "#/definitions/TileLayoutStyle"
-        },
         "Tile": {
           "$ref": "#/definitions/TileStyle"
+        },
+        "TileLayout": {
+          "$ref": "#/definitions/TileLayoutStyle"
         }
       },
       "additionalProperties": false,
@@ -188,19 +192,6 @@
       "type": "object",
       "description": "<p>The key or keys of the key-value pairs for the resource tag or tags assigned to the\n            resource.</p>",
       "properties": {
-        "Value": {
-          "oneOf": [
-            {
-              "type": "string",
-              "maxLength": 256,
-              "minLength": 1
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>Tag value.</p>"
-        },
         "Key": {
           "oneOf": [
             {
@@ -213,6 +204,19 @@
             }
           ],
           "description": "<p>Tag key.</p>"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>Tag value.</p>"
         }
       },
       "required": [
@@ -253,7 +257,7 @@
           "oneOf": [
             {
               "type": "string",
-              "pattern": ".*\\S.*"
+              "pattern": "\\S"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -299,16 +303,21 @@
       "type": "object",
       "description": "<p>A version of a theme.</p>",
       "properties": {
-        "Status": {
-          "$ref": "#/definitions/ResourceStatus"
+        "VersionNumber": {
+          "type": "number",
+          "minimum": 1,
+          "description": "<p>The version number of the theme.</p>"
         },
-        "Errors": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ThemeError"
-          },
-          "minItems": 1,
-          "description": "<p>Errors associated with the theme.</p>"
+        "Arn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The Amazon Resource Name (ARN) of the resource.</p>"
         },
         "Description": {
           "oneOf": [
@@ -323,11 +332,25 @@
           ],
           "description": "<p>The description of the theme.</p>"
         },
+        "BaseThemeId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "minLength": 1,
+              "pattern": "^[\\w\\-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The Amazon QuickSight-defined ID of the theme that a custom theme inherits from. All\n            themes initially inherit from a default Amazon QuickSight theme.</p>"
+        },
         "CreatedTime": {
           "oneOf": [
             {
               "type": "string",
-              "format": "string"
+              "format": "date-time"
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -338,35 +361,16 @@
         "Configuration": {
           "$ref": "#/definitions/ThemeConfiguration"
         },
-        "BaseThemeId": {
-          "oneOf": [
-            {
-              "type": "string",
-              "maxLength": 2048,
-              "minLength": 1,
-              "pattern": "[\\w\\-]+"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The Amazon QuickSight-defined ID of the theme that a custom theme inherits from. All\n            themes initially inherit from a default QuickSight theme.</p>"
+        "Errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ThemeError"
+          },
+          "minItems": 1,
+          "description": "<p>Errors associated with the theme.</p>"
         },
-        "Arn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The Amazon Resource Name (ARN) of the resource.</p>"
-        },
-        "VersionNumber": {
-          "type": "number",
-          "minimum": 1,
-          "description": "<p>The version number of the theme.</p>"
+        "Status": {
+          "$ref": "#/definitions/ResourceStatus"
         }
       },
       "additionalProperties": false,
@@ -399,7 +403,6 @@
     },
     "Typography": {
       "type": "object",
-      "description": "<p>The typeface for the theme.</p>",
       "properties": {
         "FontFamilies": {
           "type": "array",
@@ -415,9 +418,9 @@
     },
     "UIColorPalette": {
       "type": "object",
-      "description": "<p>The theme colors that apply to UI and to charts, excluding data colors. The colors\n            description is a hexadecimal color code that consists of six alphanumerical characters,\n            prefixed with <code>#</code>, for example #37BFF5. For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/themes-in-quicksight.html\">Using Themes in Amazon QuickSight</a> in the <i>Amazon QuickSight User\n                Guide.</i>\n        </p>",
+      "description": "<p>The theme colors that apply to UI and to charts, excluding data colors. The colors\n            description is a hexadecimal color code that consists of six alphanumerical characters,\n            prefixed with <code>#</code>, for example #37BFF5. For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/themes-in-quicksight.html\">Using Themes in Amazon QuickSight</a> in the <i>Amazon QuickSight User\n                Guide.</i>\n         </p>",
       "properties": {
-        "Warning": {
+        "PrimaryForeground": {
           "oneOf": [
             {
               "type": "string",
@@ -427,7 +430,43 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "<p>This color that applies to warning and informational messages.</p>"
+          "description": "<p>The color of text and other foreground elements that appear over the primary\n            background regions, such as grid lines, borders, table banding, icons, and so on.</p>"
+        },
+        "PrimaryBackground": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^#[A-F0-9]{6}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The background color that applies to visuals and other high emphasis UI.</p>"
+        },
+        "SecondaryForeground": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^#[A-F0-9]{6}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The foreground color that applies to any sheet title, sheet control text, or UI that\n            appears over the secondary background.</p>"
+        },
+        "SecondaryBackground": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^#[A-F0-9]{6}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The background color that applies to the sheet background and sheet controls.</p>"
         },
         "Accent": {
           "oneOf": [
@@ -453,7 +492,7 @@
           ],
           "description": "<p>The foreground color that applies to any text or other elements that appear over the\n            accent color.</p>"
         },
-        "SecondaryBackground": {
+        "Danger": {
           "oneOf": [
             {
               "type": "string",
@@ -463,7 +502,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "<p>The background color that applies to the sheet background and sheet controls.</p>"
+          "description": "<p>The color that applies to error messages.</p>"
         },
         "DangerForeground": {
           "oneOf": [
@@ -477,7 +516,7 @@
           ],
           "description": "<p>The foreground color that applies to any text or other elements that appear over the\n            error color.</p>"
         },
-        "PrimaryBackground": {
+        "Warning": {
           "oneOf": [
             {
               "type": "string",
@@ -487,31 +526,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "<p>The background color that applies to visuals and other high emphasis UI.</p>"
-        },
-        "Dimension": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^#[A-F0-9]{6}$"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The color that applies to the names of fields that are identified as\n            dimensions.</p>"
-        },
-        "SecondaryForeground": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^#[A-F0-9]{6}$"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The foreground color that applies to any sheet title, sheet control text, or UI that\n            appears over the secondary background.</p>"
+          "description": "<p>This color that applies to warning and informational messages.</p>"
         },
         "WarningForeground": {
           "oneOf": [
@@ -525,30 +540,6 @@
           ],
           "description": "<p>The foreground color that applies to any text or other elements that appear over the\n            warning color.</p>"
         },
-        "DimensionForeground": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^#[A-F0-9]{6}$"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The foreground color that applies to any text or other elements that appear over the\n            dimension color.</p>"
-        },
-        "PrimaryForeground": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^#[A-F0-9]{6}$"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The color of text and other foreground elements that appear over the primary\n            background regions, such as grid lines, borders, table banding, icons, and so on.</p>"
-        },
         "Success": {
           "oneOf": [
             {
@@ -561,18 +552,6 @@
           ],
           "description": "<p>The color that applies to success messages, for example the check mark for a\n            successful download.</p>"
         },
-        "Danger": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^#[A-F0-9]{6}$"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "<p>The color that applies to error messages.</p>"
-        },
         "SuccessForeground": {
           "oneOf": [
             {
@@ -584,6 +563,30 @@
             }
           ],
           "description": "<p>The foreground color that applies to any text or other elements that appear over the\n            success color.</p>"
+        },
+        "Dimension": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^#[A-F0-9]{6}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The color that applies to the names of fields that are identified as\n            dimensions.</p>"
+        },
+        "DimensionForeground": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^#[A-F0-9]{6}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>The foreground color that applies to any text or other elements that appear over the\n            dimension color.</p>"
         },
         "Measure": {
           "oneOf": [
@@ -632,15 +635,14 @@
       "oneOf": [
         {
           "type": "string",
-          "maxLength": 2048,
+          "maxLength": 512,
           "minLength": 1,
-          "pattern": "[\\w\\-]+"
+          "pattern": "^[\\w\\-]+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ],
-      "description": "<p>The ID of the theme that a custom theme will inherit from. All themes inherit from one of\n\t\t\tthe starting themes defined by Amazon QuickSight. For a list of the starting themes, use\n\t\t\t\t<code>ListThemes</code> or choose <b>Themes</b> from\n\t\t\twithin a QuickSight analysis. </p>"
+      ]
     },
     "Configuration": {
       "$ref": "#/definitions/ThemeConfiguration"
@@ -655,8 +657,7 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ],
-      "description": "<p>A display name for the theme.</p>"
+      ]
     },
     "Permissions": {
       "type": "array",
@@ -664,8 +665,7 @@
         "$ref": "#/definitions/ResourcePermission"
       },
       "maxItems": 64,
-      "minItems": 1,
-      "description": "<p>A valid grouping of resource permissions to apply to the new theme.\n\t\t\t</p>"
+      "minItems": 1
     },
     "Tags": {
       "type": "array",
@@ -673,16 +673,15 @@
         "$ref": "#/definitions/Tag"
       },
       "maxItems": 200,
-      "minItems": 1,
-      "description": "<p>A map of the key-value pairs for the resource tag or tags that you want to add to the\n\t\t\tresource.</p>"
+      "minItems": 1
     },
     "ThemeId": {
       "oneOf": [
         {
           "type": "string",
-          "maxLength": 2048,
+          "maxLength": 512,
           "minLength": 1,
-          "pattern": "[\\w\\-]+"
+          "pattern": "^[\\w\\-]+$"
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -699,36 +698,45 @@
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
-      ],
-      "description": "<p>A description of the first version of the theme that you're creating. Every time\n\t\t\t\t<code>UpdateTheme</code> is called, a new version is created. Each version of the\n\t\t\ttheme has a description of the version in the <code>VersionDescription</code>\n\t\t\tfield.</p>"
+      ]
     }
   },
   "required": [
     "AwsAccountId",
-    "ThemeId"
+    "ThemeId",
+    "BaseThemeId",
+    "Configuration",
+    "Name"
   ],
-  "additionalProperties": false,
   "readOnlyProperties": [
-    "/properties/ThemeError",
     "/properties/CreatedTime",
     "/properties/Version",
     "/properties/LastUpdatedTime",
     "/properties/Arn",
     "/properties/Type"
   ],
-  "writeOnlyProperties": [
-    "/properties/VersionDescription",
-    "/properties/Configuration",
-    "/properties/BaseThemeId"
-  ],
   "createOnlyProperties": [
-    "/properties/ThemeId",
-    "/properties/AwsAccountId"
+    "/properties/AwsAccountId",
+    "/properties/ThemeId"
   ],
   "primaryIdentifier": [
     "/properties/ThemeId",
     "/properties/AwsAccountId"
   ],
+  "additionalProperties": false,
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-quicksight",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "quicksight:TagResource",
+      "quicksight:UntagResource",
+      "quicksight:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSQuickSightThemeProperties"
 }

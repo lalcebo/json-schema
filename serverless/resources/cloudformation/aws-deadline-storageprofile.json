@@ -1,0 +1,138 @@
+{
+  "typeName": "AWS::Deadline::StorageProfile",
+  "description": "Resource Type definition for AWS::Deadline::StorageProfile. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-deadline",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-deadline",
+  "definitions": {
+    "FileSystemLocation": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[0-9A-Za-z ]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Path": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1024,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Type": {
+          "$ref": "#/definitions/FileSystemLocationType"
+        }
+      },
+      "required": [
+        "Name",
+        "Path",
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDeadlineStorageProfileFileSystemLocationDefinition"
+    },
+    "FileSystemLocationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SHARED",
+            "LOCAL"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineStorageProfileFileSystemLocationTypeDefinition"
+    },
+    "StorageProfileOperatingSystemFamily": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "WINDOWS",
+            "LINUX",
+            "MACOS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSDeadlineStorageProfileStorageProfileOperatingSystemFamilyDefinition"
+    }
+  },
+  "properties": {
+    "DisplayName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "FarmId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^farm-[0-9a-f]{32}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "FileSystemLocations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FileSystemLocation"
+      },
+      "maxItems": 20,
+      "minItems": 0
+    },
+    "OsFamily": {
+      "$ref": "#/definitions/StorageProfileOperatingSystemFamily"
+    }
+  },
+  "required": [
+    "DisplayName",
+    "FarmId",
+    "OsFamily"
+  ],
+  "readOnlyProperties": [
+    "/properties/StorageProfileId"
+  ],
+  "createOnlyProperties": [
+    "/properties/FarmId"
+  ],
+  "primaryIdentifier": [
+    "/properties/FarmId",
+    "/properties/StorageProfileId"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDeadlineStorageProfileProperties"
+}

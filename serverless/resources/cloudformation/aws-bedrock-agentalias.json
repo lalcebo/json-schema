@@ -1,0 +1,202 @@
+{
+  "typeName": "AWS::Bedrock::AgentAlias",
+  "description": "Definition of AWS::Bedrock::AgentAlias Resource Type. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-bedrock-agents",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-bedrock-agents",
+  "definitions": {
+    "AgentAliasHistoryEvent": {
+      "type": "object",
+      "description": "History event for an alias for an Agent.",
+      "properties": {
+        "RoutingConfiguration": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AgentAliasRoutingConfigurationListItem"
+          },
+          "maxItems": 1,
+          "description": "Routing configuration for an Agent alias.",
+          "insertionOrder": false
+        },
+        "EndDate": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Time Stamp."
+        },
+        "StartDate": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Time Stamp."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentAliasAgentAliasHistoryEventDefinition"
+    },
+    "AgentAliasRoutingConfigurationListItem": {
+      "type": "object",
+      "description": "Details about the routing configuration for an Agent alias.",
+      "properties": {
+        "AgentVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 5,
+              "minLength": 1,
+              "pattern": "^(DRAFT|[0-9]{0,4}[1-9][0-9]{0,4})$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Agent Version."
+        }
+      },
+      "required": [
+        "AgentVersion"
+      ],
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentAliasAgentAliasRoutingConfigurationListItemDefinition"
+    },
+    "AgentAliasStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "PREPARED",
+            "FAILED",
+            "UPDATING",
+            "DELETING"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The statuses an Agent Alias can be in.",
+      "title": "AWSBedrockAgentAliasAgentAliasStatusDefinition"
+    },
+    "TagsMap": {
+      "type": "object",
+      "description": "A map of tag keys and values",
+      "patternProperties": {
+        "^[a-zA-Z0-9\\s._:/=+@-]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0,
+              "pattern": "^[a-zA-Z0-9\\s._:/=+@-]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Value of a tag"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSBedrockAgentAliasTagsMapDefinition"
+    }
+  },
+  "properties": {
+    "AgentAliasName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^([0-9a-zA-Z][_-]?){1,100}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Name for a resource."
+    },
+    "AgentId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-zA-Z]{10}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Identifier for a resource."
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Description of the Resource."
+    },
+    "RoutingConfiguration": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AgentAliasRoutingConfigurationListItem"
+      },
+      "maxItems": 1,
+      "description": "Routing configuration for an Agent alias.",
+      "insertionOrder": false
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagsMap"
+    }
+  },
+  "required": [
+    "AgentAliasName",
+    "AgentId"
+  ],
+  "readOnlyProperties": [
+    "/properties/AgentAliasArn",
+    "/properties/AgentAliasHistoryEvents",
+    "/properties/AgentAliasId",
+    "/properties/AgentAliasStatus",
+    "/properties/CreatedAt",
+    "/properties/UpdatedAt"
+  ],
+  "createOnlyProperties": [
+    "/properties/AgentId"
+  ],
+  "primaryIdentifier": [
+    "/properties/AgentId",
+    "/properties/AgentAliasId"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/AgentAliasArn"
+    ]
+  ],
+  "tagging": {
+    "cloudFormationSystemTags": true,
+    "tagOnCreate": true,
+    "tagProperty": "/properties/Tags",
+    "tagUpdatable": true,
+    "taggable": true,
+    "permissions": [
+      "bedrock:TagResource",
+      "bedrock:UntagResource",
+      "bedrock:ListTagsForResource"
+    ]
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSBedrockAgentAliasProperties"
+}

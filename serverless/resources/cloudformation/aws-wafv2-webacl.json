@@ -1,8 +1,90 @@
 {
   "typeName": "AWS::WAFv2::WebACL",
-  "description": "Contains the Rules that identify the requests that you want to allow, block, or count. In a WebACL, you also specify a default action (ALLOW or BLOCK), and the action for each Rule that you add to a WebACL, for example, block requests from specified IP addresses or block requests from specified referrers. You also associate the WebACL with a CloudFront distribution to identify the requests that you want AWS WAF to filter. If you add more than one Rule to a WebACL, a request needs to match only one of the specifications to be allowed, blocked, or counted.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wafv2.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wafv2.git",
+  "description": "Contains the Rules that identify the requests that you want to allow, block, or count. In a WebACL, you also specify a default action (ALLOW or BLOCK), and the action for each Rule that you add to a WebACL, for example, block requests from specified IP addresses or block requests from specified referrers. You also associate the WebACL with a CloudFront distribution to identify the requests that you want AWS WAF to filter. If you add more than one Rule to a WebACL, a request needs to match only one of the specifications to be allowed, blocked, or counted.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wafv2.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wafv2.git",
   "definitions": {
+    "ApplicationConfig": {
+      "description": "Configures the ability for the WAF; console to store and retrieve application attributes during the webacl; creation process. Application attributes help WAF; give recommendations for protection packs.",
+      "type": "object",
+      "properties": {
+        "Attributes": {
+          "$ref": "#/definitions/ApplicationAttributes"
+        }
+      },
+      "required": [
+        "Attributes"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLApplicationConfigDefinition"
+    },
+    "ApplicationAttributes": {
+      "description": "Contains the attribute name and a list of values for that attribute.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ApplicationAttribute"
+      },
+      "minItems": 1,
+      "maxItems": 10,
+      "title": "AWSWAFv2WebACLApplicationAttributesDefinition"
+    },
+    "ApplicationAttribute": {
+      "description": "Application details defined during the &webacl; creation process. Application attributes help WAF; give recommendations for protection packs.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "$ref": "#/definitions/AttributeName"
+        },
+        "Values": {
+          "$ref": "#/definitions/AttributeValues"
+        }
+      },
+      "required": [
+        "Name",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLApplicationAttributeDefinition"
+    },
+    "AttributeValues": {
+      "description": "Contains a list of values for that attribute",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/AttributeValue"
+      },
+      "minItems": 1,
+      "maxItems": 10,
+      "title": "AWSWAFv2WebACLAttributeValuesDefinition"
+    },
+    "AttributeValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[\\w\\-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the attribute value.",
+      "title": "AWSWAFv2WebACLAttributeValueDefinition"
+    },
+    "AttributeName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[\\w\\-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Specifies the attribute name.",
+      "title": "AWSWAFv2WebACLAttributeNameDefinition"
+    },
     "AndStatement": {
       "type": "object",
       "properties": {
@@ -210,6 +292,18 @@
         },
         "Cookies": {
           "$ref": "#/definitions/Cookies"
+        },
+        "JA3Fingerprint": {
+          "$ref": "#/definitions/JA3Fingerprint"
+        },
+        "JA4Fingerprint": {
+          "$ref": "#/definitions/JA4Fingerprint"
+        },
+        "UriFragment": {
+          "$ref": "#/definitions/UriFragment"
+        },
+        "HeaderOrder": {
+          "$ref": "#/definitions/HeaderOrder"
         }
       },
       "additionalProperties": false,
@@ -409,7 +503,6 @@
           "items": {
             "$ref": "#/definitions/RuleActionOverride"
           },
-          "minItems": 1,
           "maxItems": 100
         }
       },
@@ -494,19 +587,32 @@
         "Limit": {
           "$ref": "#/definitions/RateLimit"
         },
+        "EvaluationWindowSec": {
+          "$ref": "#/definitions/EvaluationWindowSec"
+        },
         "AggregateKeyType": {
           "oneOf": [
             {
               "type": "string",
               "enum": [
+                "CONSTANT",
                 "IP",
-                "FORWARDED_IP"
+                "FORWARDED_IP",
+                "CUSTOM_KEYS"
               ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "CustomKeys": {
+          "description": "Specifies the aggregate keys to use in a rate-base rule.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RateBasedStatementCustomKey"
+          },
+          "maxItems": 5
         },
         "ScopeDownStatement": {
           "$ref": "#/definitions/Statement"
@@ -522,11 +628,288 @@
       "additionalProperties": false,
       "title": "AWSWAFv2WebACLRateBasedStatementDefinition"
     },
+    "RateBasedStatementCustomKey": {
+      "description": "Specifies a single custom aggregate key for a rate-base rule.",
+      "type": "object",
+      "properties": {
+        "Cookie": {
+          "$ref": "#/definitions/RateLimitCookie"
+        },
+        "ForwardedIP": {
+          "$ref": "#/definitions/RateLimitForwardedIP"
+        },
+        "Header": {
+          "$ref": "#/definitions/RateLimitHeader"
+        },
+        "HTTPMethod": {
+          "$ref": "#/definitions/RateLimitHTTPMethod"
+        },
+        "IP": {
+          "$ref": "#/definitions/RateLimitIP"
+        },
+        "LabelNamespace": {
+          "$ref": "#/definitions/RateLimitLabelNamespace"
+        },
+        "QueryArgument": {
+          "$ref": "#/definitions/RateLimitQueryArgument"
+        },
+        "QueryString": {
+          "$ref": "#/definitions/RateLimitQueryString"
+        },
+        "UriPath": {
+          "$ref": "#/definitions/RateLimitUriPath"
+        },
+        "JA3Fingerprint": {
+          "$ref": "#/definitions/RateLimitJA3Fingerprint"
+        },
+        "JA4Fingerprint": {
+          "$ref": "#/definitions/RateLimitJA4Fingerprint"
+        },
+        "ASN": {
+          "$ref": "#/definitions/RateLimitAsn"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateBasedStatementCustomKeyDefinition"
+    },
+    "RateLimitCookie": {
+      "description": "Specifies a cookie as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the cookie to use."
+        },
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateLimitCookieDefinition"
+    },
+    "RateLimitForwardedIP": {
+      "description": "Specifies the first IP address in an HTTP header as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "title": "AWSWAFv2WebACLRateLimitForwardedIPDefinition"
+    },
+    "RateLimitHeader": {
+      "description": "Specifies a header as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the header to use."
+        },
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateLimitHeaderDefinition"
+    },
+    "RateLimitHTTPMethod": {
+      "description": "Specifies the request's HTTP method as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "title": "AWSWAFv2WebACLRateLimitHTTPMethodDefinition"
+    },
+    "RateLimitIP": {
+      "description": "Specifies the IP address in the web request as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "title": "AWSWAFv2WebACLRateLimitIPDefinition"
+    },
+    "RateLimitLabelNamespace": {
+      "description": "Specifies a label namespace to use as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "Namespace": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9A-Za-z_:-]{1,1024}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The namespace to use for aggregation."
+        }
+      },
+      "required": [
+        "Namespace"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateLimitLabelNamespaceDefinition"
+    },
+    "RateLimitQueryArgument": {
+      "description": "Specifies a query argument in the request as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the query argument to use."
+        },
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateLimitQueryArgumentDefinition"
+    },
+    "RateLimitQueryString": {
+      "description": "Specifies the request's query string as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateLimitQueryStringDefinition"
+    },
+    "RateLimitUriPath": {
+      "description": "Specifies the request's URI Path as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateLimitUriPathDefinition"
+    },
+    "RateLimitJA3Fingerprint": {
+      "description": "Specifies the request's JA3 fingerprint as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FallbackBehavior"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateLimitJA3FingerprintDefinition"
+    },
+    "RateLimitJA4Fingerprint": {
+      "description": "Specifies the request's JA4 fingerprint as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FallbackBehavior"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRateLimitJA4FingerprintDefinition"
+    },
+    "RateLimitAsn": {
+      "description": "Specifies the request's ASN as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "title": "AWSWAFv2WebACLRateLimitAsnDefinition"
+    },
     "RateLimit": {
       "type": "integer",
-      "minimum": 100,
+      "minimum": 10,
       "maximum": 2000000000,
       "title": "AWSWAFv2WebACLRateLimitDefinition"
+    },
+    "EvaluationWindowSec": {
+      "type": "integer",
+      "enum": [
+        60,
+        120,
+        300,
+        600
+      ],
+      "title": "AWSWAFv2WebACLEvaluationWindowSecDefinition"
     },
     "RegexPatternSetReferenceStatement": {
       "type": "object",
@@ -970,7 +1353,6 @@
           "items": {
             "$ref": "#/definitions/RuleActionOverride"
           },
-          "minItems": 1,
           "maxItems": 100
         }
       },
@@ -1178,6 +1560,9 @@
         },
         "RegexMatchStatement": {
           "$ref": "#/definitions/RegexMatchStatement"
+        },
+        "AsnMatchStatement": {
+          "$ref": "#/definitions/AsnMatchStatement"
         }
       },
       "additionalProperties": false,
@@ -1308,6 +1693,115 @@
       "additionalProperties": false,
       "title": "AWSWAFv2WebACLVisibilityConfigDefinition"
     },
+    "DataProtectionConfig": {
+      "type": "object",
+      "properties": {
+        "DataProtections": {
+          "$ref": "#/definitions/DataProtections"
+        }
+      },
+      "required": [
+        "DataProtections"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLDataProtectionConfigDefinition"
+    },
+    "DataProtections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DataProtect"
+      },
+      "minItems": 1,
+      "title": "AWSWAFv2WebACLDataProtectionsDefinition"
+    },
+    "DataProtect": {
+      "type": "object",
+      "properties": {
+        "Field": {
+          "$ref": "#/definitions/FieldToProtect"
+        },
+        "Action": {
+          "$ref": "#/definitions/DataProtectionAction"
+        },
+        "ExcludeRuleMatchDetails": {
+          "type": "boolean"
+        },
+        "ExcludeRateBasedDetails": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Field",
+        "Action"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLDataProtectDefinition"
+    },
+    "DataProtectionAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SUBSTITUTION",
+            "HASH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWAFv2WebACLDataProtectionActionDefinition"
+    },
+    "FieldToProtect": {
+      "description": "Field in log to protect.",
+      "type": "object",
+      "properties": {
+        "FieldType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "SINGLE_HEADER",
+                "SINGLE_COOKIE",
+                "SINGLE_QUERY_ARGUMENT",
+                "QUERY_STRING",
+                "BODY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Field type to protect"
+        },
+        "FieldKeys": {
+          "description": "List of field keys to protect",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FieldToProtectKeyName"
+          }
+        }
+      },
+      "required": [
+        "FieldType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLFieldToProtectDefinition"
+    },
+    "FieldToProtectKeyName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Key of the field to protect.",
+      "title": "AWSWAFv2WebACLFieldToProtectKeyNameDefinition"
+    },
     "XssMatchStatement": {
       "description": "Xss Match Statement.",
       "type": "object",
@@ -1432,6 +1926,24 @@
       "additionalProperties": false,
       "title": "AWSWAFv2WebACLRegexMatchStatementDefinition"
     },
+    "AsnMatchStatement": {
+      "type": "object",
+      "properties": {
+        "AsnList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295
+          }
+        },
+        "ForwardedIPConfig": {
+          "$ref": "#/definitions/ForwardedIPConfiguration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLAsnMatchStatementDefinition"
+    },
     "CaptchaConfig": {
       "type": "object",
       "properties": {
@@ -1509,6 +2021,12 @@
         },
         "AWSManagedRulesATPRuleSet": {
           "$ref": "#/definitions/AWSManagedRulesATPRuleSet"
+        },
+        "AWSManagedRulesACFPRuleSet": {
+          "$ref": "#/definitions/AWSManagedRulesACFPRuleSet"
+        },
+        "AWSManagedRulesAntiDDoSRuleSet": {
+          "$ref": "#/definitions/AWSManagedRulesAntiDDoSRuleSet"
         }
       },
       "additionalProperties": false,
@@ -1531,6 +2049,9 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "EnableMachineLearning": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -1553,6 +2074,9 @@
             }
           ]
         },
+        "EnableRegexInPath": {
+          "type": "boolean"
+        },
         "RequestInspection": {
           "$ref": "#/definitions/RequestInspection"
         },
@@ -1565,6 +2089,160 @@
       ],
       "additionalProperties": false,
       "title": "AWSWAFv2WebACLAWSManagedRulesATPRuleSetDefinition"
+    },
+    "AWSManagedRulesACFPRuleSet": {
+      "description": "Configures how to use the Account creation fraud prevention managed rule group in the web ACL",
+      "type": "object",
+      "properties": {
+        "CreationPath": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RegistrationPagePath": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RequestInspection": {
+          "$ref": "#/definitions/RequestInspectionACFP"
+        },
+        "ResponseInspection": {
+          "$ref": "#/definitions/ResponseInspection"
+        },
+        "EnableRegexInPath": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "CreationPath",
+        "RegistrationPagePath",
+        "RequestInspection"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLAWSManagedRulesACFPRuleSetDefinition"
+    },
+    "AWSManagedRulesAntiDDoSRuleSet": {
+      "description": "Configures how to use the AntiDDOS AWS managed rule group in the web ACL",
+      "type": "object",
+      "properties": {
+        "ClientSideActionConfig": {
+          "$ref": "#/definitions/ClientSideActionConfig"
+        },
+        "SensitivityToBlock": {
+          "$ref": "#/definitions/SensitivityToAct"
+        }
+      },
+      "required": [
+        "ClientSideActionConfig"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLAWSManagedRulesAntiDDoSRuleSetDefinition"
+    },
+    "ClientSideActionConfig": {
+      "description": "Client side action config for AntiDDOS AMR.",
+      "type": "object",
+      "properties": {
+        "Challenge": {
+          "$ref": "#/definitions/ClientSideAction"
+        }
+      },
+      "required": [
+        "Challenge"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLClientSideActionConfigDefinition"
+    },
+    "ClientSideAction": {
+      "description": "Client side action config for AntiDDOS AMR.",
+      "type": "object",
+      "properties": {
+        "UsageOfAction": {
+          "$ref": "#/definitions/UsageOfAction"
+        },
+        "Sensitivity": {
+          "$ref": "#/definitions/SensitivityToAct"
+        },
+        "ExemptUriRegularExpressions": {
+          "$ref": "#/definitions/RegularExpressionList"
+        }
+      },
+      "required": [
+        "UsageOfAction"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLClientSideActionDefinition"
+    },
+    "UsageOfAction": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ENABLED",
+            "DISABLED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWAFv2WebACLUsageOfActionDefinition"
+    },
+    "SensitivityToAct": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWAFv2WebACLSensitivityToActDefinition"
+    },
+    "RegularExpressionList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Regex"
+      },
+      "title": "AWSWAFv2WebACLRegularExpressionListDefinition"
+    },
+    "Regex": {
+      "description": "Regex",
+      "type": "object",
+      "properties": {
+        "RegexString": {
+          "$ref": "#/definitions/RegexPatternString"
+        }
+      },
+      "title": "AWSWAFv2WebACLRegexDefinition"
+    },
+    "RegexPatternString": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWAFv2WebACLRegexPatternStringDefinition"
     },
     "RequestInspection": {
       "description": "Configures the inspection of login requests",
@@ -1598,6 +2276,52 @@
       ],
       "additionalProperties": false,
       "title": "AWSWAFv2WebACLRequestInspectionDefinition"
+    },
+    "RequestInspectionACFP": {
+      "description": "Configures the inspection of sign-up requests",
+      "type": "object",
+      "properties": {
+        "PayloadType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "JSON",
+                "FORM_ENCODED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "UsernameField": {
+          "$ref": "#/definitions/FieldIdentifier"
+        },
+        "PasswordField": {
+          "$ref": "#/definitions/FieldIdentifier"
+        },
+        "EmailField": {
+          "$ref": "#/definitions/FieldIdentifier"
+        },
+        "PhoneNumberFields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PhoneNumberField"
+          }
+        },
+        "AddressFields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AddressField"
+          }
+        }
+      },
+      "required": [
+        "PayloadType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRequestInspectionACFPDefinition"
     },
     "ResponseInspection": {
       "description": "Configures the inspection of login responses",
@@ -1841,6 +2565,67 @@
       },
       "title": "AWSWAFv2WebACLTokenDomainsDefinition"
     },
+    "AssociationConfig": {
+      "description": "AssociationConfig for body inspection",
+      "type": "object",
+      "properties": {
+        "RequestBody": {
+          "$ref": "#/definitions/RequestBody"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLAssociationConfigDefinition"
+    },
+    "RequestBody": {
+      "type": "object",
+      "description": "Map of AssociatedResourceType and RequestBodyAssociatedResourceTypeConfig",
+      "patternProperties": {
+        "^(CLOUDFRONT|API_GATEWAY|COGNITO_USER_POOL|APP_RUNNER_SERVICE|VERIFIED_ACCESS_INSTANCE)$": {
+          "$ref": "#/definitions/RequestBodyAssociatedResourceTypeConfig"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRequestBodyDefinition"
+    },
+    "RequestBodyAssociatedResourceTypeConfig": {
+      "description": "Configures the inspection size in the request body.",
+      "type": "object",
+      "properties": {
+        "DefaultSizeInspectionLimit": {
+          "$ref": "#/definitions/SizeInspectionLimit"
+        }
+      },
+      "required": [
+        "DefaultSizeInspectionLimit"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLRequestBodyAssociatedResourceTypeConfigDefinition"
+    },
+    "SizeInspectionLimit": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "KB_16",
+            "KB_32",
+            "KB_48",
+            "KB_64"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSWAFv2WebACLSizeInspectionLimitDefinition"
+    },
+    "PhoneNumberField": {
+      "$ref": "#/definitions/FieldIdentifier",
+      "title": "AWSWAFv2WebACLPhoneNumberFieldDefinition"
+    },
+    "AddressField": {
+      "$ref": "#/definitions/FieldIdentifier",
+      "title": "AWSWAFv2WebACLAddressFieldDefinition"
+    },
     "FieldIdentifier": {
       "type": "object",
       "properties": {
@@ -1887,7 +2672,7 @@
       "title": "AWSWAFv2WebACLHeadersDefinition"
     },
     "Cookies": {
-      "description": "Includes headers of a web request.",
+      "description": "Includes cookies of a web request.",
       "type": "object",
       "properties": {
         "MatchPattern": {
@@ -2053,6 +2838,117 @@
       ],
       "description": "Sensitivity Level current only used for sqli match statements.",
       "title": "AWSWAFv2WebACLSensitivityLevelDefinition"
+    },
+    "JA3Fingerprint": {
+      "description": "Includes the JA3 fingerprint of a web request.",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FallbackBehavior"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLJA3FingerprintDefinition"
+    },
+    "JA4Fingerprint": {
+      "description": "Includes the JA4 fingerprint of a web request.",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FallbackBehavior"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLJA4FingerprintDefinition"
+    },
+    "UriFragment": {
+      "description": "The path component of the URI Fragment. This is the part of a web request that identifies a fragment uri, for example, /abcd#introduction",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLUriFragmentDefinition"
+    },
+    "HeaderOrder": {
+      "description": "The string containing the list of a web request's header names, ordered as they appear in the web request, separated by colons.",
+      "type": "object",
+      "properties": {
+        "OversizeHandling": {
+          "$ref": "#/definitions/OversizeHandling"
+        }
+      },
+      "required": [
+        "OversizeHandling"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLHeaderOrderDefinition"
+    },
+    "OnSourceDDoSProtectionConfig": {
+      "description": "Configures the options for on-source DDoS protection provided by supported resource type.",
+      "type": "object",
+      "properties": {
+        "ALBLowReputationMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ACTIVE_UNDER_DDOS",
+                "ALWAYS_ON"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ALBLowReputationMode"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2WebACLOnSourceDDoSProtectionConfigDefinition"
     }
   },
   "properties": {
@@ -2078,6 +2974,14 @@
     "VisibilityConfig": {
       "$ref": "#/definitions/VisibilityConfig"
     },
+    "DataProtectionConfig": {
+      "description": "Collection of dataProtects.",
+      "$ref": "#/definitions/DataProtectionConfig"
+    },
+    "ApplicationConfig": {
+      "description": "Collection of application attributes.",
+      "$ref": "#/definitions/ApplicationConfig"
+    },
     "Tags": {
       "type": "array",
       "items": {
@@ -2096,6 +3000,12 @@
     },
     "TokenDomains": {
       "$ref": "#/definitions/TokenDomains"
+    },
+    "AssociationConfig": {
+      "$ref": "#/definitions/AssociationConfig"
+    },
+    "OnSourceDDoSProtectionConfig": {
+      "$ref": "#/definitions/OnSourceDDoSProtectionConfig"
     }
   },
   "required": [
@@ -2119,6 +3029,18 @@
     "/properties/LabelNamespace"
   ],
   "additionalProperties": false,
+  "tagging": {
+    "cloudFormationSystemTags": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "taggable": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "wafv2:TagResource",
+      "wafv2:UntagResource",
+      "wafv2:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSWAFv2WebACLProperties"
 }

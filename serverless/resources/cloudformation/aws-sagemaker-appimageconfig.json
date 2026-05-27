@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::SageMaker::AppImageConfig",
-  "description": "Resource Type definition for AWS::SageMaker::AppImageConfig. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::SageMaker::AppImageConfig. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
     "AppImageConfigName": {
@@ -20,6 +20,14 @@
     "KernelGatewayImageConfig": {
       "$ref": "#/definitions/KernelGatewayImageConfig",
       "description": "The KernelGatewayImageConfig."
+    },
+    "JupyterLabAppImageConfig": {
+      "$ref": "#/definitions/JupyterLabAppImageConfig",
+      "description": "The JupyterLabAppImageConfig."
+    },
+    "CodeEditorAppImageConfig": {
+      "$ref": "#/definitions/CodeEditorAppImageConfig",
+      "description": "The CodeEditorAppImageConfig."
     },
     "Tags": {
       "type": "array",
@@ -56,6 +64,135 @@
         "KernelSpecs"
       ],
       "title": "AWSSageMakerAppImageConfigKernelGatewayImageConfigDefinition"
+    },
+    "JupyterLabAppImageConfig": {
+      "type": "object",
+      "description": "The configuration for the kernels in a SageMaker image running as a JupyterLab app.",
+      "additionalProperties": false,
+      "properties": {
+        "ContainerConfig": {
+          "$ref": "#/definitions/ContainerConfig",
+          "description": "The container configuration for a SageMaker image."
+        }
+      },
+      "title": "AWSSageMakerAppImageConfigJupyterLabAppImageConfigDefinition"
+    },
+    "CodeEditorAppImageConfig": {
+      "type": "object",
+      "description": "The configuration for the kernels in a SageMaker image running as a CodeEditor app.",
+      "additionalProperties": false,
+      "properties": {
+        "ContainerConfig": {
+          "$ref": "#/definitions/ContainerConfig",
+          "description": "The container configuration for a SageMaker image."
+        }
+      },
+      "title": "AWSSageMakerAppImageConfigCodeEditorAppImageConfigDefinition"
+    },
+    "ContainerConfig": {
+      "type": "object",
+      "description": "The container configuration for a SageMaker image.",
+      "additionalProperties": false,
+      "properties": {
+        "ContainerArguments": {
+          "type": "array",
+          "description": "A list of arguments to apply to the container.",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CustomImageContainerArguments"
+          },
+          "minItems": 0,
+          "maxItems": 50
+        },
+        "ContainerEntrypoint": {
+          "type": "array",
+          "description": "The custom entry point to use on container.",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CustomImageContainerEntrypoint"
+          },
+          "minItems": 0,
+          "maxItems": 1
+        },
+        "ContainerEnvironmentVariables": {
+          "type": "array",
+          "description": "A list of variables to apply to the custom container.",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CustomImageContainerEnvironmentVariable"
+          },
+          "minItems": 0,
+          "maxItems": 25
+        }
+      },
+      "title": "AWSSageMakerAppImageConfigContainerConfigDefinition"
+    },
+    "CustomImageContainerArguments": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^(?!\\s*$).+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The container image arguments",
+      "title": "AWSSageMakerAppImageConfigCustomImageContainerArgumentsDefinition"
+    },
+    "CustomImageContainerEntrypoint": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^(?!\\s*$).+"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The container entry point",
+      "title": "AWSSageMakerAppImageConfigCustomImageContainerEntrypointDefinition"
+    },
+    "CustomImageContainerEnvironmentVariable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^(?!\\s*$).+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^(?!\\s*$).+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSSageMakerAppImageConfigCustomImageContainerEnvironmentVariableDefinition"
     },
     "FileSystemConfig": {
       "type": "object",
@@ -167,11 +304,7 @@
     "AppImageConfigName"
   ],
   "createOnlyProperties": [
-    "/properties/AppImageConfigName",
-    "/properties/Tags"
-  ],
-  "writeOnlyProperties": [
-    "/properties/Tags"
+    "/properties/AppImageConfigName"
   ],
   "readOnlyProperties": [
     "/properties/AppImageConfigArn"
@@ -179,6 +312,21 @@
   "primaryIdentifier": [
     "/properties/AppImageConfigName"
   ],
+  "propertyTransform": {
+    "/properties/AppImageConfigName": "$lowercase(AppImageConfigName) $OR AppImageConfigName"
+  },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "sagemaker:AddTags",
+      "sagemaker:ListTags",
+      "sagemaker:DeleteTags"
+    ]
+  },
   "type": "object",
   "title": "AWSSageMakerAppImageConfigProperties"
 }

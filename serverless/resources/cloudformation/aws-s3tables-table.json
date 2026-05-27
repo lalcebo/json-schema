@@ -1,0 +1,691 @@
+{
+  "tagging": {
+    "permissions": [
+      "s3tables:TagResource",
+      "s3tables:UntagResource",
+      "s3tables:ListTagsForResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": false
+  },
+  "typeName": "AWS::S3Tables::Table",
+  "readOnlyProperties": [
+    "/properties/TableARN",
+    "/properties/WarehouseLocation",
+    "/properties/VersionToken"
+  ],
+  "description": "Resource Type definition for AWS::S3Tables::Table. Source:- No source definition found, add manually please",
+  "writeOnlyProperties": [
+    "/properties/IcebergMetadata",
+    "/properties/WithoutMetadata"
+  ],
+  "createOnlyProperties": [
+    "/properties/TableBucketARN",
+    "/properties/OpenTableFormat",
+    "/properties/IcebergMetadata",
+    "/properties/WithoutMetadata",
+    "/properties/StorageClassConfiguration"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/TableARN"
+  ],
+  "definitions": {
+    "StorageClassConfiguration": {
+      "description": "Specifies storage class settings for the table",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "StorageClass": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "STANDARD",
+                "INTELLIGENT_TIERING"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The storage class for the table"
+        }
+      },
+      "title": "AWSS3TablesTableStorageClassConfigurationDefinition"
+    },
+    "IcebergSortFieldList": {
+      "description": "List of sort fields for an Iceberg table",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/IcebergSortField"
+      },
+      "title": "AWSS3TablesTableIcebergSortFieldListDefinition"
+    },
+    "IcebergSortOrder": {
+      "description": "Sort order specification for an Iceberg table",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Fields": {
+          "description": "List of sort fields",
+          "$ref": "#/definitions/IcebergSortFieldList"
+        },
+        "OrderId": {
+          "description": "The sort order ID (defaults to 1 if not specified, 0 is reserved for unsorted)",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Fields"
+      ],
+      "title": "AWSS3TablesTableIcebergSortOrderDefinition"
+    },
+    "IcebergPartitionFieldList": {
+      "description": "List of partition fields for an Iceberg table",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/IcebergPartitionField"
+      },
+      "title": "AWSS3TablesTableIcebergPartitionFieldListDefinition"
+    },
+    "IcebergSchemaV2": {
+      "description": "Contains details about the schema version 2 (V2) for an Iceberg table that supports Apache Iceberg Nested Types (struct, list, map). Primitive types are also supported.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SchemaV2FieldList": {
+          "description": "The schema fields for the table",
+          "$ref": "#/definitions/SchemaV2FieldList"
+        },
+        "SchemaV2FieldType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "struct"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of the top-level schema, which is always 'struct'"
+        },
+        "SchemaId": {
+          "description": "An optional unique identifier for the schema",
+          "type": "integer"
+        },
+        "IdentifierFieldIds": {
+          "description": "A list of field IDs that are used as the identifier fields for the table. Identifier fields uniquely identify a row in the table.",
+          "insertionOrder": false,
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "SchemaV2FieldList",
+        "SchemaV2FieldType"
+      ],
+      "title": "AWSS3TablesTableIcebergSchemaV2Definition"
+    },
+    "IcebergPartitionSpec": {
+      "description": "Partition specification for an Iceberg table",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Fields": {
+          "description": "List of partition fields",
+          "$ref": "#/definitions/IcebergPartitionFieldList"
+        },
+        "SpecId": {
+          "description": "The partition spec ID (defaults to 0 if not specified)",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Fields"
+      ],
+      "title": "AWSS3TablesTableIcebergPartitionSpecDefinition"
+    },
+    "Compaction": {
+      "description": "Settings governing the Compaction maintenance action. Contains details about the compaction settings for an Iceberg table.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "enabled",
+                "disabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indicates whether the Compaction maintenance action is enabled."
+        },
+        "TargetFileSizeMB": {
+          "description": "The target file size for the table in MB.",
+          "type": "integer",
+          "minimum": 64
+        }
+      },
+      "title": "AWSS3TablesTableCompactionDefinition"
+    },
+    "TableBucketARN": {
+      "oneOf": [
+        {
+          "examples": [
+            "arn:aws:s3tables:us-west-2:123456789012:bucket/mytablebucket"
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the specified table bucket.",
+      "title": "AWSS3TablesTableTableBucketARNDefinition"
+    },
+    "WarehouseLocation": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The warehouse location of the table.",
+      "title": "AWSS3TablesTableWarehouseLocationDefinition"
+    },
+    "SnapshotManagement": {
+      "description": "Contains details about the snapshot management settings for an Iceberg table. A snapshot is expired when it exceeds MinSnapshotsToKeep and MaxSnapshotAgeHours.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "enabled",
+                "disabled"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Indicates whether the SnapshotManagement maintenance action is enabled."
+        },
+        "MinSnapshotsToKeep": {
+          "description": "The minimum number of snapshots to keep.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "MaxSnapshotAgeHours": {
+          "description": "The maximum age of a snapshot before it can be expired.",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "title": "AWSS3TablesTableSnapshotManagementDefinition"
+    },
+    "WithoutMetadata": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "Yes"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Indicates that you don't want to specify a schema for the table. This property is mutually exclusive to 'IcebergMetadata', and its only possible value is 'Yes'.",
+      "title": "AWSS3TablesTableWithoutMetadataDefinition"
+    },
+    "SchemaV2Field": {
+      "description": "Contains details about a schema field for an Iceberg table that supports nested types (struct, list, map)",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            },
+            {
+              "type": "object"
+            }
+          ],
+          "description": "The field type. For primitive types, use a string (e.g., 'int', 'string', 'long'). For nested types, use an object (e.g., {'type': 'struct', 'fields': [...]} for struct, {'type': 'list', 'element-id': N, 'element': 'type'} for list, {'type': 'map', 'key-id': N, 'key': 'type', 'value-id': N, 'value': 'type'} for map)."
+        },
+        "Required": {
+          "description": "A Boolean value that specifies whether values are required for each row in this field",
+          "type": "boolean"
+        },
+        "Doc": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Optional documentation for the field"
+        },
+        "Id": {
+          "description": "The unique identifier for the field",
+          "type": "integer"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the field"
+        }
+      },
+      "required": [
+        "Id",
+        "Name",
+        "Type",
+        "Required"
+      ],
+      "title": "AWSS3TablesTableSchemaV2FieldDefinition"
+    },
+    "SchemaV2FieldList": {
+      "description": "List of schema fields that support nested types",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SchemaV2Field"
+      },
+      "title": "AWSS3TablesTableSchemaV2FieldListDefinition"
+    },
+    "Namespace": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The namespace that the table belongs to.",
+      "title": "AWSS3TablesTableNamespaceDefinition"
+    },
+    "SchemaField": {
+      "description": "Contains details about the schema for an Iceberg table",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The field type"
+        },
+        "Required": {
+          "description": "A Boolean value that specifies whether values are required for each row in this field",
+          "type": "boolean"
+        },
+        "Id": {
+          "description": "The unique identifier for the field",
+          "type": "integer"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the field"
+        }
+      },
+      "required": [
+        "Name",
+        "Type"
+      ],
+      "title": "AWSS3TablesTableSchemaFieldDefinition"
+    },
+    "TableName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name for the table.",
+      "title": "AWSS3TablesTableTableNameDefinition"
+    },
+    "IcebergSchema": {
+      "description": "Contains details about the schema for an Iceberg table",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SchemaFieldList": {
+          "$ref": "#/definitions/SchemaFieldList"
+        }
+      },
+      "required": [
+        "SchemaFieldList"
+      ],
+      "title": "AWSS3TablesTableIcebergSchemaDefinition"
+    },
+    "SchemaFieldList": {
+      "description": "Contains details about the schema for an Iceberg table",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SchemaField"
+      },
+      "title": "AWSS3TablesTableSchemaFieldListDefinition"
+    },
+    "VersionToken": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The version token of the table",
+      "title": "AWSS3TablesTableVersionTokenDefinition"
+    },
+    "TableARN": {
+      "oneOf": [
+        {
+          "examples": [
+            "arn:aws:s3tables:us-west-2:123456789012:bucket/mytablebucket/table/813aadd1-a378-4d0f-8467-e3247306f309"
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The Amazon Resource Name (ARN) of the specified table.",
+      "title": "AWSS3TablesTableTableARNDefinition"
+    },
+    "OpenTableFormat": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "ICEBERG"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Format of the table.",
+      "title": "AWSS3TablesTableOpenTableFormatDefinition"
+    },
+    "IcebergSortField": {
+      "description": "A sort field specification for an Iceberg table",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SourceId": {
+          "description": "The source column ID to sort on",
+          "type": "integer"
+        },
+        "NullOrder": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "nulls-first",
+                "nulls-last"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Null value ordering (nulls-first or nulls-last)"
+        },
+        "Transform": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The sort transform function"
+        },
+        "Direction": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Sort direction (asc or desc)"
+        }
+      },
+      "required": [
+        "SourceId",
+        "Transform",
+        "Direction",
+        "NullOrder"
+      ],
+      "title": "AWSS3TablesTableIcebergSortFieldDefinition"
+    },
+    "IcebergMetadata": {
+      "description": "Contains details about the metadata for an Iceberg table. Specify either IcebergSchema (for simple flat schemas with primitive types only) or IcebergSchemaV2 (for schemas with nested types like struct, list, map), but not both.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "IcebergSchema": {
+          "description": "Schema definition for flat tables with primitive types only. Mutually exclusive with IcebergSchemaV2.",
+          "$ref": "#/definitions/IcebergSchema"
+        },
+        "IcebergSortOrder": {
+          "$ref": "#/definitions/IcebergSortOrder"
+        },
+        "IcebergSchemaV2": {
+          "description": "Schema definition that supports Apache Iceberg nested types (struct, list, map) and primitive types. Mutually exclusive with IcebergSchema.",
+          "$ref": "#/definitions/IcebergSchemaV2"
+        },
+        "IcebergPartitionSpec": {
+          "$ref": "#/definitions/IcebergPartitionSpec"
+        },
+        "TableProperties": {
+          "$ref": "#/definitions/TableProperties"
+        }
+      },
+      "title": "AWSS3TablesTableIcebergMetadataDefinition"
+    },
+    "IcebergPartitionField": {
+      "description": "A partition field specification for an Iceberg table",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SourceId": {
+          "description": "The source column ID to partition on",
+          "type": "integer"
+        },
+        "FieldId": {
+          "description": "The partition field ID (auto-assigned starting from 1000 if not specified)",
+          "type": "integer"
+        },
+        "Transform": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The partition transform function (identity, bucket[N], truncate[N], year, month, day, hour)"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the partition field"
+        }
+      },
+      "required": [
+        "SourceId",
+        "Transform",
+        "Name"
+      ],
+      "title": "AWSS3TablesTableIcebergPartitionFieldDefinition"
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag value must be between 0 to 256 characters in length. Tag value can only contain alphanumeric characters, spaces, _, ., /, =, +, -, and @."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Tag key must be between 1 to 128 characters in length. Tag key cannot start with 'aws:' and can only contain alphanumeric characters, spaces, _, ., /, =, +, -, and @."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSS3TablesTableTagDefinition"
+    },
+    "TableProperties": {
+      "patternProperties": {
+        "^.+$": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "description": "Iceberg table properties (e.g., format-version, write.parquet.compression-codec)",
+      "additionalProperties": false,
+      "type": "object",
+      "title": "AWSS3TablesTableTablePropertiesDefinition"
+    }
+  },
+  "required": [
+    "TableBucketARN",
+    "Namespace",
+    "TableName",
+    "OpenTableFormat"
+  ],
+  "properties": {
+    "WithoutMetadata": {
+      "$ref": "#/definitions/WithoutMetadata"
+    },
+    "StorageClassConfiguration": {
+      "$ref": "#/definitions/StorageClassConfiguration"
+    },
+    "Compaction": {
+      "$ref": "#/definitions/Compaction"
+    },
+    "Namespace": {
+      "$ref": "#/definitions/Namespace"
+    },
+    "TableName": {
+      "$ref": "#/definitions/TableName"
+    },
+    "TableBucketARN": {
+      "$ref": "#/definitions/TableBucketARN"
+    },
+    "OpenTableFormat": {
+      "$ref": "#/definitions/OpenTableFormat"
+    },
+    "IcebergMetadata": {
+      "$ref": "#/definitions/IcebergMetadata"
+    },
+    "SnapshotManagement": {
+      "$ref": "#/definitions/SnapshotManagement"
+    },
+    "Tags": {
+      "uniqueItems": true,
+      "description": "User tags (key-value pairs) to associate with the table.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "type": "object",
+  "title": "AWSS3TablesTableProperties"
+}

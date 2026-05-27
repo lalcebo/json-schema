@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::WAFv2::RuleGroup",
-  "description": "Contains the Rules that identify the requests that you want to allow, block, or count. In a RuleGroup, you also specify a default action (ALLOW or BLOCK), and the action for each Rule that you add to a RuleGroup, for example, block requests from specified IP addresses or block requests from specified referrers. You also associate the RuleGroup with a CloudFront distribution to identify the requests that you want AWS WAF to filter. If you add more than one Rule to a RuleGroup, a request needs to match only one of the specifications to be allowed, blocked, or counted.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wafv2.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wafv2.git",
+  "description": "Contains the Rules that identify the requests that you want to allow, block, or count. In a RuleGroup, you also specify a default action (ALLOW or BLOCK), and the action for each Rule that you add to a RuleGroup, for example, block requests from specified IP addresses or block requests from specified referrers. You also associate the RuleGroup with a CloudFront distribution to identify the requests that you want AWS WAF to filter. If you add more than one Rule to a RuleGroup, a request needs to match only one of the specifications to be allowed, blocked, or counted.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wafv2.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-wafv2.git",
   "definitions": {
     "AndStatement": {
@@ -146,6 +146,18 @@
         },
         "Cookies": {
           "$ref": "#/definitions/Cookies"
+        },
+        "JA3Fingerprint": {
+          "$ref": "#/definitions/JA3Fingerprint"
+        },
+        "JA4Fingerprint": {
+          "$ref": "#/definitions/JA4Fingerprint"
+        },
+        "UriFragment": {
+          "$ref": "#/definitions/UriFragment"
+        },
+        "HeaderOrder": {
+          "$ref": "#/definitions/HeaderOrder"
         }
       },
       "additionalProperties": false,
@@ -348,19 +360,32 @@
         "Limit": {
           "$ref": "#/definitions/RateLimit"
         },
+        "EvaluationWindowSec": {
+          "$ref": "#/definitions/EvaluationWindowSec"
+        },
         "AggregateKeyType": {
           "oneOf": [
             {
               "type": "string",
               "enum": [
                 "IP",
-                "FORWARDED_IP"
+                "FORWARDED_IP",
+                "CONSTANT",
+                "CUSTOM_KEYS"
               ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "CustomKeys": {
+          "description": "Specifies the aggregate keys to use in a rate-base rule.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RateBasedStatementCustomKey"
+          },
+          "maxItems": 5
         },
         "ScopeDownStatement": {
           "$ref": "#/definitions/Statement"
@@ -376,11 +401,288 @@
       "additionalProperties": false,
       "title": "AWSWAFv2RuleGroupRateBasedStatementDefinition"
     },
+    "RateBasedStatementCustomKey": {
+      "description": "Specifies a single custom aggregate key for a rate-base rule.",
+      "type": "object",
+      "properties": {
+        "Cookie": {
+          "$ref": "#/definitions/RateLimitCookie"
+        },
+        "ForwardedIP": {
+          "$ref": "#/definitions/RateLimitForwardedIP"
+        },
+        "Header": {
+          "$ref": "#/definitions/RateLimitHeader"
+        },
+        "HTTPMethod": {
+          "$ref": "#/definitions/RateLimitHTTPMethod"
+        },
+        "IP": {
+          "$ref": "#/definitions/RateLimitIP"
+        },
+        "LabelNamespace": {
+          "$ref": "#/definitions/RateLimitLabelNamespace"
+        },
+        "QueryArgument": {
+          "$ref": "#/definitions/RateLimitQueryArgument"
+        },
+        "QueryString": {
+          "$ref": "#/definitions/RateLimitQueryString"
+        },
+        "UriPath": {
+          "$ref": "#/definitions/RateLimitUriPath"
+        },
+        "JA3Fingerprint": {
+          "$ref": "#/definitions/RateLimitJA3Fingerprint"
+        },
+        "JA4Fingerprint": {
+          "$ref": "#/definitions/RateLimitJA4Fingerprint"
+        },
+        "ASN": {
+          "$ref": "#/definitions/RateLimitAsn"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateBasedStatementCustomKeyDefinition"
+    },
+    "RateLimitCookie": {
+      "description": "Specifies a cookie as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the cookie to use."
+        },
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateLimitCookieDefinition"
+    },
+    "RateLimitForwardedIP": {
+      "description": "Specifies the first IP address in an HTTP header as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "title": "AWSWAFv2RuleGroupRateLimitForwardedIPDefinition"
+    },
+    "RateLimitHeader": {
+      "description": "Specifies a header as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the header to use."
+        },
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateLimitHeaderDefinition"
+    },
+    "RateLimitHTTPMethod": {
+      "description": "Specifies the request's HTTP method as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "title": "AWSWAFv2RuleGroupRateLimitHTTPMethodDefinition"
+    },
+    "RateLimitIP": {
+      "description": "Specifies the IP address in the web request as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "title": "AWSWAFv2RuleGroupRateLimitIPDefinition"
+    },
+    "RateLimitLabelNamespace": {
+      "description": "Specifies a label namespace to use as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "Namespace": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9A-Za-z_:-]{1,1024}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The namespace to use for aggregation."
+        }
+      },
+      "required": [
+        "Namespace"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateLimitLabelNamespaceDefinition"
+    },
+    "RateLimitQueryArgument": {
+      "description": "Specifies a query argument in the request as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": ".*\\S.*",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the query argument to use."
+        },
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "Name",
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateLimitQueryArgumentDefinition"
+    },
+    "RateLimitQueryString": {
+      "description": "Specifies the request's query string as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateLimitQueryStringDefinition"
+    },
+    "RateLimitUriPath": {
+      "description": "Specifies the request's URI Path as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "TextTransformations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextTransformation"
+          }
+        }
+      },
+      "required": [
+        "TextTransformations"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateLimitUriPathDefinition"
+    },
+    "RateLimitJA3Fingerprint": {
+      "description": "Specifies the request's JA3 fingerprint as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FallbackBehavior"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateLimitJA3FingerprintDefinition"
+    },
+    "RateLimitJA4Fingerprint": {
+      "description": "Specifies the request's JA4 fingerprint as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FallbackBehavior"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupRateLimitJA4FingerprintDefinition"
+    },
+    "RateLimitAsn": {
+      "description": "Specifies the request's ASN as an aggregate key for a rate-based rule.",
+      "type": "object",
+      "title": "AWSWAFv2RuleGroupRateLimitAsnDefinition"
+    },
     "RateLimit": {
       "type": "integer",
-      "minimum": 100,
+      "minimum": 10,
       "maximum": 2000000000,
       "title": "AWSWAFv2RuleGroupRateLimitDefinition"
+    },
+    "EvaluationWindowSec": {
+      "type": "integer",
+      "enum": [
+        60,
+        120,
+        300,
+        600
+      ],
+      "title": "AWSWAFv2RuleGroupEvaluationWindowSecDefinition"
     },
     "RegexPatternSetReferenceStatement": {
       "type": "object",
@@ -986,6 +1288,9 @@
         },
         "RegexMatchStatement": {
           "$ref": "#/definitions/RegexMatchStatement"
+        },
+        "AsnMatchStatement": {
+          "$ref": "#/definitions/AsnMatchStatement"
         }
       },
       "additionalProperties": false,
@@ -1246,6 +1551,24 @@
       "additionalProperties": false,
       "title": "AWSWAFv2RuleGroupRegexMatchStatementDefinition"
     },
+    "AsnMatchStatement": {
+      "type": "object",
+      "properties": {
+        "AsnList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295
+          }
+        },
+        "ForwardedIPConfig": {
+          "$ref": "#/definitions/ForwardedIPConfiguration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupAsnMatchStatementDefinition"
+    },
     "CaptchaConfig": {
       "type": "object",
       "properties": {
@@ -1315,7 +1638,7 @@
       "title": "AWSWAFv2RuleGroupHeadersDefinition"
     },
     "Cookies": {
-      "description": "Includes headers of a web request.",
+      "description": "Includes cookies of a web request.",
       "type": "object",
       "properties": {
         "MatchPattern": {
@@ -1481,6 +1804,92 @@
       ],
       "description": "Sensitivity Level current only used for sqli match statements.",
       "title": "AWSWAFv2RuleGroupSensitivityLevelDefinition"
+    },
+    "JA3Fingerprint": {
+      "description": "Includes the JA3 fingerprint of a web request.",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FallbackBehavior"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupJA3FingerprintDefinition"
+    },
+    "JA4Fingerprint": {
+      "description": "Includes the JA4 fingerprint of a web request.",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "FallbackBehavior"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupJA4FingerprintDefinition"
+    },
+    "UriFragment": {
+      "description": "The path component of the URI Fragment. This is the part of a web request that identifies a fragment uri, for example, /abcd#introduction",
+      "type": "object",
+      "properties": {
+        "FallbackBehavior": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MATCH",
+                "NO_MATCH"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupUriFragmentDefinition"
+    },
+    "HeaderOrder": {
+      "description": "The string containing the list of a web request's header names, ordered as they appear in the web request, separated by colons.",
+      "type": "object",
+      "properties": {
+        "OversizeHandling": {
+          "$ref": "#/definitions/OversizeHandling"
+        }
+      },
+      "required": [
+        "OversizeHandling"
+      ],
+      "additionalProperties": false,
+      "title": "AWSWAFv2RuleGroupHeaderOrderDefinition"
     }
   },
   "properties": {
@@ -1554,6 +1963,18 @@
     "/properties/ConsumedLabels/*/Name"
   ],
   "additionalProperties": false,
+  "tagging": {
+    "cloudFormationSystemTags": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "taggable": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "wafv2:TagResource",
+      "wafv2:UntagResource",
+      "wafv2:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSWAFv2RuleGroupProperties"
 }

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::VpcLattice::ServiceNetworkVpcAssociation",
-  "description": "Associates a VPC with a service network.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Associates a VPC with a service network.. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "definitions": {
     "Tag": {
@@ -37,6 +37,48 @@
         "Value"
       ],
       "title": "AWSVpcLatticeServiceNetworkVpcAssociationTagDefinition"
+    },
+    "DnsOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PrivateDnsPreference": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "VERIFIED_DOMAINS_ONLY",
+                "ALL_DOMAINS",
+                "VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS",
+                "SPECIFIED_DOMAINS_ONLY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PrivateDnsSpecifiedDomains": {
+          "type": "array",
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "title": "AWSVpcLatticeServiceNetworkVpcAssociationDnsOptionsDefinition"
     }
   },
   "properties": {
@@ -93,6 +135,12 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "PrivateDnsEnabled": {
+      "type": "boolean"
+    },
+    "DnsOptions": {
+      "$ref": "#/definitions/DnsOptions"
     }
   },
   "readOnlyProperties": [
@@ -111,7 +159,11 @@
   ],
   "createOnlyProperties": [
     "/properties/ServiceNetworkIdentifier",
-    "/properties/VpcIdentifier"
+    "/properties/VpcIdentifier",
+    "/properties/PrivateDnsEnabled",
+    "/properties/DnsOptions",
+    "/properties/DnsOptions/PrivateDnsPreference",
+    "/properties/DnsOptions/PrivateDnsSpecifiedDomains"
   ],
   "primaryIdentifier": [
     "/properties/Arn"
@@ -130,7 +182,12 @@
     "tagOnCreate": true,
     "tagUpdatable": true,
     "cloudFormationSystemTags": true,
-    "tagProperty": "/properties/Tags"
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "vpc-lattice:UntagResource",
+      "vpc-lattice:TagResource",
+      "vpc-lattice:ListTagsForResource"
+    ]
   },
   "type": "object",
   "title": "AWSVpcLatticeServiceNetworkVpcAssociationProperties"

@@ -1,0 +1,130 @@
+{
+  "typeName": "AWS::SES::Tenant",
+  "description": "Resource Type definition for AWS::SES::Tenant. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-ses.git",
+  "definitions": {
+    "Tag": {
+      "description": "An object that defines the tags (keys and values) that you want to associate with the tenant.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key of the key-value tag."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value of the key-value tag."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESTenantTagDefinition"
+    },
+    "ResourceAssociation": {
+      "description": "The resource to associate with the tenant",
+      "type": "object",
+      "properties": {
+        "ResourceArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the resource to associate with the tenant"
+        }
+      },
+      "required": [
+        "ResourceArn"
+      ],
+      "additionalProperties": false,
+      "title": "AWSSESTenantResourceAssociationDefinition"
+    }
+  },
+  "properties": {
+    "TenantName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[\\w\\-_]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the tenant."
+    },
+    "ResourceAssociations": {
+      "description": "The list of resources to associate with the tenant.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/ResourceAssociation"
+      },
+      "minItems": 0
+    },
+    "Tags": {
+      "description": "The tags (keys and values) associated with the tenant.",
+      "type": "array",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "minItems": 0,
+      "maxItems": 50
+    }
+  },
+  "required": [
+    "TenantName"
+  ],
+  "createOnlyProperties": [
+    "/properties/TenantName"
+  ],
+  "primaryIdentifier": [
+    "/properties/TenantName"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn"
+  ],
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "ses:TagResource",
+      "ses:UntagResource",
+      "ses:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSSESTenantProperties"
+}

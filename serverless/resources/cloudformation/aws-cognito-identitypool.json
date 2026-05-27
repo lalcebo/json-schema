@@ -1,83 +1,58 @@
 {
   "typeName": "AWS::Cognito::IdentityPool",
-  "description": "Resource Type definition for AWS::Cognito::IdentityPool. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::Cognito::IdentityPool. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
   "additionalProperties": false,
-  "properties": {
-    "PushSync": {
-      "$ref": "#/definitions/PushSync"
-    },
-    "CognitoIdentityProviders": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "$ref": "#/definitions/CognitoIdentityProvider"
-      }
-    },
-    "DeveloperProviderName": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "CognitoStreams": {
-      "$ref": "#/definitions/CognitoStreams"
-    },
-    "SupportedLoginProviders": {
-      "type": "object"
-    },
-    "CognitoEvents": {
-      "type": "object"
-    },
-    "IdentityPoolName": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ]
-    },
-    "AllowUnauthenticatedIdentities": {
-      "type": "boolean"
-    },
-    "SamlProviderARNs": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "oneOf": [
-          {
-            "type": "string"
-          },
-          {
-            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-          }
-        ]
-      }
-    },
-    "OpenIdConnectProviderARNs": {
-      "type": "array",
-      "uniqueItems": false,
-      "items": {
-        "oneOf": [
-          {
-            "type": "string"
-          },
-          {
-            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-          }
-        ]
-      }
-    },
-    "AllowClassicFlow": {
-      "type": "boolean"
-    }
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/IdentityPoolTags",
+    "permissions": [
+      "cognito-identity:TagResource",
+      "cognito-identity:UntagResource"
+    ]
   },
   "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSCognitoIdentityPoolTagDefinition"
+    },
     "PushSync": {
       "type": "object",
       "additionalProperties": false,
@@ -85,6 +60,7 @@
         "ApplicationArns": {
           "type": "array",
           "uniqueItems": false,
+          "insertionOrder": false,
           "items": {
             "oneOf": [
               {
@@ -137,6 +113,10 @@
           ]
         }
       },
+      "required": [
+        "ProviderName",
+        "ClientId"
+      ],
       "title": "AWSCognitoIdentityPoolCognitoIdentityProviderDefinition"
     },
     "CognitoStreams": {
@@ -177,6 +157,93 @@
       "title": "AWSCognitoIdentityPoolCognitoStreamsDefinition"
     }
   },
+  "properties": {
+    "PushSync": {
+      "$ref": "#/definitions/PushSync"
+    },
+    "CognitoIdentityProviders": {
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/CognitoIdentityProvider"
+      }
+    },
+    "DeveloperProviderName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "CognitoStreams": {
+      "$ref": "#/definitions/CognitoStreams"
+    },
+    "SupportedLoginProviders": {
+      "type": "object"
+    },
+    "CognitoEvents": {
+      "type": "object"
+    },
+    "IdentityPoolName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "AllowUnauthenticatedIdentities": {
+      "type": "boolean"
+    },
+    "SamlProviderARNs": {
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "OpenIdConnectProviderARNs": {
+      "type": "array",
+      "uniqueItems": false,
+      "insertionOrder": false,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      }
+    },
+    "AllowClassicFlow": {
+      "type": "boolean"
+    },
+    "IdentityPoolTags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
   "required": [
     "AllowUnauthenticatedIdentities"
   ],
@@ -186,6 +253,11 @@
   "readOnlyProperties": [
     "/properties/Id",
     "/properties/Name"
+  ],
+  "writeOnlyProperties": [
+    "/properties/PushSync",
+    "/properties/CognitoStreams",
+    "/properties/CognitoEvents"
   ],
   "type": "object",
   "title": "AWSCognitoIdentityPoolProperties"

@@ -1,0 +1,335 @@
+{
+  "typeName": "AWS::Transfer::WebApp",
+  "description": "Resource Type definition for AWS::Transfer::WebApp. Source:- No source definition found, add manually please",
+  "definitions": {
+    "EndpointDetails": {
+      "type": "object",
+      "properties": {
+        "Vpc": {
+          "$ref": "#/definitions/Vpc"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSTransferWebAppEndpointDetailsDefinition"
+    },
+    "Vpc": {
+      "type": "object",
+      "description": "You can provide a structure that contains the details for the VPC endpoint to use with your web app.",
+      "properties": {
+        "SubnetIds": {
+          "type": "array",
+          "maxItems": 10,
+          "insertionOrder": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 24,
+                "minLength": 15,
+                "pattern": "^subnet-[0-9a-f]{8,17}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "VpcId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 21,
+              "minLength": 12,
+              "pattern": "^vpc-[0-9a-f]{8,17}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SecurityGroupIds": {
+          "type": "array",
+          "maxItems": 10,
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "minLength": 11,
+                "pattern": "^sg-[0-9a-f]{8,17}$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "IpAddressType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "IPV4",
+                "DUALSTACK"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IP address type for the VPC endpoint used by the web app."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSTransferWebAppVpcDefinition"
+    },
+    "IdentityProviderDetails": {
+      "type": "object",
+      "description": "You can provide a structure that contains the details for the identity provider to use with your web app.",
+      "properties": {
+        "ApplicationArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1224,
+              "minLength": 10,
+              "pattern": "^arn:[\\w-]+:sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "InstanceArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 1224,
+              "minLength": 10,
+              "pattern": "^arn:[\\w-]+:sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon Resource Name (ARN) for the IAM Identity Center used for the web app."
+        },
+        "Role": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 20,
+              "pattern": "^arn:[a-z-]+:iam::[0-9]{12}:role[:/]\\S+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The IAM role in IAM Identity Center used for the web app."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSTransferWebAppIdentityProviderDetailsDefinition"
+    },
+    "Tag": {
+      "type": "object",
+      "description": "Key-value pair that can be used to group and search for web apps.",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSTransferWebAppTagDefinition"
+    },
+    "WebAppCustomization": {
+      "type": "object",
+      "properties": {
+        "Title": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 100,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a title to display on the web app."
+        },
+        "LogoFile": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 51200
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a logo to display on the web app."
+        },
+        "FaviconFile": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20960
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies a favicon to display in the browser tab."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSTransferWebAppWebAppCustomizationDefinition"
+    },
+    "WebAppEndpointPolicy": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "STANDARD",
+            "FIPS"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSTransferWebAppWebAppEndpointPolicyDefinition"
+    },
+    "WebAppUnits": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "A union that contains the value for number of concurrent connections or the user sessions on your web app.",
+          "title": "Provisioned",
+          "properties": {
+            "Provisioned": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "Provisioned"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSTransferWebAppWebAppUnitsDefinition"
+    }
+  },
+  "properties": {
+    "IdentityProviderDetails": {
+      "$ref": "#/definitions/IdentityProviderDetails"
+    },
+    "EndpointDetails": {
+      "$ref": "#/definitions/EndpointDetails"
+    },
+    "AccessEndpoint": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The AccessEndpoint is the URL that you provide to your users for them to interact with the Transfer Family web app. You can specify a custom URL or use the default value."
+    },
+    "WebAppUnits": {
+      "$ref": "#/definitions/WebAppUnits"
+    },
+    "WebAppCustomization": {
+      "$ref": "#/definitions/WebAppCustomization"
+    },
+    "WebAppEndpointPolicy": {
+      "$ref": "#/definitions/WebAppEndpointPolicy"
+    },
+    "Tags": {
+      "type": "array",
+      "description": "Key-value pairs that can be used to group and search for web apps.",
+      "maxItems": 50,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "IdentityProviderDetails"
+  ],
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/WebAppId",
+    "/properties/IdentityProviderDetails/ApplicationArn",
+    "/properties/VpcEndpointId"
+  ],
+  "createOnlyProperties": [
+    "/properties/WebAppEndpointPolicy",
+    "/properties/IdentityProviderDetails/InstanceArn",
+    "/properties/EndpointDetails/Vpc/VpcId",
+    "/properties/EndpointDetails/Vpc/SecurityGroupIds"
+  ],
+  "writeOnlyProperties": [
+    "/properties/EndpointDetails/Vpc/SecurityGroupIds",
+    "/properties/EndpointDetails/Vpc/IpAddressType"
+  ],
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/WebAppId"
+    ]
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "transfer:TagResource",
+      "transfer:UnTagResource",
+      "transfer:ListTagsForResource"
+    ]
+  },
+  "type": "object",
+  "title": "AWSTransferWebAppProperties"
+}

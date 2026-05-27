@@ -1,13 +1,21 @@
 {
   "typeName": "AWS::KinesisAnalyticsV2::Application",
-  "description": "Creates an Amazon Kinesis Data Analytics application. For information about creating a Kinesis Data Analytics application, see [Creating an Application](https://docs.aws.amazon.com/kinesisanalytics/latest/java/getting-started.html).. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesisanalyticsv2.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesisanalyticsv2.git",
+  "description": "Creates an Amazon Kinesis Data Analytics application. For information about creating a Kinesis Data Analytics application, see [Creating an Application](https://docs.aws.amazon.com/kinesisanalytics/latest/java/getting-started.html).. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesisanalyticsv2.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kinesisanalyticsv2.git",
+  "propertyTransform": {
+    "/properties/ApplicationConfiguration/ApplicationEncryptionConfiguration/KeyId": "\"arn:aws[-a-z]*:kms:[a-z0-9-]+:[0-9]{12}:key/[a-zA-Z0-9-]+\""
+  },
   "tagging": {
     "taggable": true,
     "tagOnCreate": true,
     "tagUpdatable": true,
-    "cloudFormationSystemTags": false,
-    "tagProperty": "/properties/Tags"
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "kinesisanalytics:TagResource",
+      "kinesisanalytics:UntagResource",
+      "kinesisanalytics:ListTagsForResource"
+    ]
   },
   "properties": {
     "ApplicationConfiguration": {
@@ -117,9 +125,17 @@
           "description": "The code location and type parameters for a Flink-based Kinesis Data Analytics application.",
           "$ref": "#/definitions/ApplicationCodeConfiguration"
         },
+        "ApplicationEncryptionConfiguration": {
+          "description": "Describes whether customer managed key is enabled and key details for customer data encryption",
+          "$ref": "#/definitions/ApplicationEncryptionConfiguration"
+        },
         "ApplicationSnapshotConfiguration": {
           "description": "Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.",
           "$ref": "#/definitions/ApplicationSnapshotConfiguration"
+        },
+        "ApplicationSystemRollbackConfiguration": {
+          "description": "Describes whether system initiated rollbacks are enabled for a Flink-based Kinesis Data Analytics application.",
+          "$ref": "#/definitions/ApplicationSystemRollbackConfiguration"
         },
         "EnvironmentProperties": {
           "description": "Describes execution properties for a Flink-based Kinesis Data Analytics application.",
@@ -322,6 +338,46 @@
       ],
       "title": "AWSKinesisAnalyticsV2ApplicationS3ContentLocationDefinition"
     },
+    "ApplicationEncryptionConfiguration": {
+      "description": "Describes whether customer managed key is enabled and key details for customer data encryption",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "KeyId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048,
+              "pattern": "^(?:arn:.*:kms:.*:.*:(?:key\\/.*|alias\\/.*)|alias\\/.*|(?i)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "KMS KeyId. Can be either key uuid or full key arn or key alias arn or short key alias"
+        },
+        "KeyType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "AWS_OWNED_KEY",
+                "CUSTOMER_MANAGED_KEY"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies whether application data is encrypted using service key: AWS_OWNED_KEY or customer key: CUSTOMER_MANAGED_KEY"
+        }
+      },
+      "required": [
+        "KeyType"
+      ],
+      "title": "AWSKinesisAnalyticsV2ApplicationApplicationEncryptionConfigurationDefinition"
+    },
     "ApplicationSnapshotConfiguration": {
       "description": "Describes whether snapshots are enabled for a Flink-based Kinesis Data Analytics application.",
       "type": "object",
@@ -336,6 +392,21 @@
         "SnapshotsEnabled"
       ],
       "title": "AWSKinesisAnalyticsV2ApplicationApplicationSnapshotConfigurationDefinition"
+    },
+    "ApplicationSystemRollbackConfiguration": {
+      "description": "Describes whether system initiated rollbacks are enabled for a Flink-based Kinesis Data Analytics application.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RollbackEnabled": {
+          "description": "Describes whether system initiated rollbacks are enabled for a Flink-based Kinesis Data Analytics application.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "RollbackEnabled"
+      ],
+      "title": "AWSKinesisAnalyticsV2ApplicationApplicationSystemRollbackConfigurationDefinition"
     },
     "EnvironmentProperties": {
       "description": "Describes execution properties for a Flink-based Kinesis Data Analytics application.",
@@ -1244,8 +1315,7 @@
   ],
   "createOnlyProperties": [
     "/properties/ApplicationName",
-    "/properties/ApplicationMode",
-    "/properties/RuntimeEnvironment"
+    "/properties/ApplicationMode"
   ],
   "writeOnlyProperties": [
     "/properties/RunConfiguration",

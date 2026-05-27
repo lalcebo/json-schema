@@ -1,0 +1,431 @@
+{
+  "typeName": "AWS::APS::Scraper",
+  "description": "Resource Type definition for AWS::APS::Scraper. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-aps",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-aps",
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSScraperTagDefinition"
+    },
+    "ScrapeConfiguration": {
+      "description": "Scraper configuration",
+      "type": "object",
+      "properties": {
+        "ConfigurationBlob": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Prometheus compatible scrape configuration in base64 encoded blob format"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "ConfigurationBlob"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSScraperScrapeConfigurationDefinition"
+    },
+    "RoleConfiguration": {
+      "description": "Role configuration",
+      "type": "object",
+      "properties": {
+        "SourceRoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IAM Role in source account"
+        },
+        "TargetRoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "IAM Role in the target account"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAPSScraperRoleConfigurationDefinition"
+    },
+    "Source": {
+      "description": "Scraper metrics source",
+      "type": "object",
+      "properties": {
+        "EksConfiguration": {
+          "description": "Configuration for EKS metrics source",
+          "type": "object",
+          "properties": {
+            "ClusterArn": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^arn:aws[-a-z]*:eks:[-a-z0-9]+:[0-9]{12}:cluster/.+$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "ARN of an EKS cluster"
+            },
+            "SecurityGroupIds": {
+              "description": "List of security group IDs",
+              "type": "array",
+              "insertionOrder": false,
+              "items": {
+                "$ref": "#/definitions/SecurityGroupId"
+              }
+            },
+            "SubnetIds": {
+              "description": "List of subnet IDs",
+              "type": "array",
+              "insertionOrder": false,
+              "items": {
+                "$ref": "#/definitions/SubnetId"
+              }
+            }
+          },
+          "required": [
+            "ClusterArn",
+            "SubnetIds"
+          ],
+          "additionalProperties": false
+        },
+        "VpcConfiguration": {
+          "description": "Configuration for VPC metrics source",
+          "type": "object",
+          "properties": {
+            "SecurityGroupIds": {
+              "description": "List of security group IDs",
+              "type": "array",
+              "insertionOrder": false,
+              "items": {
+                "$ref": "#/definitions/SecurityGroupId"
+              }
+            },
+            "SubnetIds": {
+              "description": "List of subnet IDs",
+              "type": "array",
+              "insertionOrder": false,
+              "items": {
+                "$ref": "#/definitions/SubnetId"
+              }
+            }
+          },
+          "required": [
+            "SecurityGroupIds",
+            "SubnetIds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "EksConfiguration"
+          ]
+        },
+        {
+          "required": [
+            "VpcConfiguration"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSScraperSourceDefinition"
+    },
+    "Destination": {
+      "description": "Scraper metrics destination",
+      "type": "object",
+      "properties": {
+        "AmpConfiguration": {
+          "description": "Configuration for Amazon Managed Prometheus metrics destination",
+          "type": "object",
+          "properties": {
+            "WorkspaceArn": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^arn:aws[-a-z]*:aps:[-a-z0-9]+:[0-9]{12}:workspace/.+$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ],
+              "description": "ARN of an Amazon Managed Prometheus workspace"
+            }
+          },
+          "required": [
+            "WorkspaceArn"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "AmpConfiguration"
+          ]
+        }
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSScraperDestinationDefinition"
+    },
+    "SecurityGroupId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^sg-[0-9a-z]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "ID of a security group",
+      "title": "AWSAPSScraperSecurityGroupIdDefinition"
+    },
+    "SubnetId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^subnet-[0-9a-z]+$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "ID of a subnet",
+      "title": "AWSAPSScraperSubnetIdDefinition"
+    },
+    "CloudWatchLogDestination": {
+      "description": "Represents a cloudwatch logs destination for scraper logging",
+      "type": "object",
+      "properties": {
+        "LogGroupArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "ARN of the CloudWatch log group"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAPSScraperCloudWatchLogDestinationDefinition"
+    },
+    "ScraperComponentType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "SERVICE_DISCOVERY",
+            "COLLECTOR",
+            "EXPORTER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Type of scraper component",
+      "title": "AWSAPSScraperScraperComponentTypeDefinition"
+    },
+    "ComponentConfig": {
+      "type": "object",
+      "properties": {
+        "Options": {
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z0-9]+$": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAPSScraperComponentConfigDefinition"
+    },
+    "ScraperComponent": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "$ref": "#/definitions/ScraperComponentType"
+        },
+        "Config": {
+          "$ref": "#/definitions/ComponentConfig"
+        }
+      },
+      "required": [
+        "Type"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSScraperScraperComponentDefinition"
+    },
+    "ScraperLoggingDestination": {
+      "description": "Destination for scraper logging",
+      "type": "object",
+      "properties": {
+        "CloudWatchLogs": {
+          "$ref": "#/definitions/CloudWatchLogDestination"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSAPSScraperScraperLoggingDestinationDefinition"
+    },
+    "ScraperLoggingConfiguration": {
+      "description": "Configuration for scraper logging",
+      "type": "object",
+      "properties": {
+        "ScraperComponents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ScraperComponent"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "LoggingDestination": {
+          "$ref": "#/definitions/ScraperLoggingDestination"
+        }
+      },
+      "required": [
+        "ScraperComponents",
+        "LoggingDestination"
+      ],
+      "additionalProperties": false,
+      "title": "AWSAPSScraperScraperLoggingConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "Alias": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z][-.0-9A-Z_a-z]*$",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Scraper alias."
+    },
+    "ScraperLoggingConfiguration": {
+      "$ref": "#/definitions/ScraperLoggingConfiguration"
+    },
+    "ScrapeConfiguration": {
+      "$ref": "#/definitions/ScrapeConfiguration"
+    },
+    "RoleConfiguration": {
+      "$ref": "#/definitions/RoleConfiguration"
+    },
+    "Source": {
+      "$ref": "#/definitions/Source"
+    },
+    "Destination": {
+      "$ref": "#/definitions/Destination"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ScrapeConfiguration",
+    "Source",
+    "Destination"
+  ],
+  "readOnlyProperties": [
+    "/properties/ScraperId",
+    "/properties/Arn",
+    "/properties/RoleArn"
+  ],
+  "createOnlyProperties": [
+    "/properties/Source"
+  ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "aps:TagResource",
+      "aps:UntagResource"
+    ]
+  },
+  "primaryIdentifier": [
+    "/properties/Arn"
+  ],
+  "type": "object",
+  "title": "AWSAPSScraperProperties"
+}

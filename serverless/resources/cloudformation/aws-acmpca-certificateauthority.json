@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::ACMPCA::CertificateAuthority",
-  "description": "Private certificate authority.. Source:- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ACMPCA.html. Source:- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ACMPCA.html",
+  "description": "Private certificate authority.. Source:- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ACMPCA.html",
   "sourceUrl": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_ACMPCA.html",
   "definitions": {
     "Arn": {
@@ -39,6 +39,9 @@
           ]
         }
       },
+      "required": [
+        "Key"
+      ],
       "title": "AWSACMPCACertificateAuthorityTagDefinition"
     },
     "Subject": {
@@ -225,6 +228,20 @@
       ],
       "title": "AWSACMPCACertificateAuthorityCustomAttributeDefinition"
     },
+    "CrlDistributionPointExtensionConfiguration": {
+      "description": "Configures the default behavior of the CRL Distribution Point extension for certificates issued by your certificate authority",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "OmitExtension": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "OmitExtension"
+      ],
+      "title": "AWSACMPCACertificateAuthorityCrlDistributionPointExtensionConfigurationDefinition"
+    },
     "CrlConfiguration": {
       "description": "Your certificate authority can create and maintain a certificate revocation list (CRL). A CRL contains information about certificates that have been revoked.",
       "type": "object",
@@ -265,8 +282,34 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "CrlDistributionPointExtensionConfiguration": {
+          "$ref": "#/definitions/CrlDistributionPointExtensionConfiguration"
+        },
+        "CrlType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CustomPath": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
+      "required": [
+        "Enabled"
+      ],
       "title": "AWSACMPCACertificateAuthorityCrlConfigurationDefinition"
     },
     "OcspConfiguration": {
@@ -288,6 +331,9 @@
           ]
         }
       },
+      "required": [
+        "Enabled"
+      ],
       "title": "AWSACMPCACertificateAuthorityOcspConfigurationDefinition"
     },
     "RevocationConfiguration": {
@@ -462,8 +508,7 @@
         }
       },
       "required": [
-        "PartyName",
-        "NameAssigner"
+        "PartyName"
       ],
       "title": "AWSACMPCACertificateAuthorityEdiPartyNameDefinition"
     },
@@ -639,6 +684,17 @@
       "description": "Usage mode of the ceritificate authority."
     }
   },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "acm-pca:TagCertificateAuthority",
+      "acm-pca:UntagCertificateAuthority"
+    ]
+  },
   "additionalProperties": false,
   "required": [
     "Type",
@@ -651,7 +707,10 @@
     "/properties/CertificateSigningRequest"
   ],
   "writeOnlyProperties": [
-    "/properties/Subject"
+    "/properties/Subject",
+    "/properties/CsrExtensions",
+    "/properties/RevocationConfiguration",
+    "/properties/KeyStorageSecurityStandard"
   ],
   "createOnlyProperties": [
     "/properties/Type",

@@ -1,8 +1,30 @@
 {
   "typeName": "AWS::DLM::LifecyclePolicy",
-  "description": "Resource Type definition for AWS::DLM::LifecyclePolicy. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::DLM::LifecyclePolicy. Source:- No source definition found, add manually please",
   "additionalProperties": false,
   "properties": {
+    "CreateInterval": {
+      "type": "integer"
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ExtendDeletion": {
+      "type": "boolean"
+    },
+    "Exclusions": {
+      "$ref": "#/definitions/Exclusions"
+    },
+    "RetainInterval": {
+      "type": "integer"
+    },
     "ExecutionRoleArn": {
       "oneOf": [
         {
@@ -13,7 +35,7 @@
         }
       ]
     },
-    "Description": {
+    "DefaultPolicy": {
       "oneOf": [
         {
           "type": "string"
@@ -33,6 +55,13 @@
         }
       ]
     },
+    "CrossRegionCopyTargets": {
+      "type": "array",
+      "uniqueItems": false,
+      "items": {
+        "$ref": "#/definitions/CrossRegionCopyTarget"
+      }
+    },
     "PolicyDetails": {
       "$ref": "#/definitions/PolicyDetails"
     },
@@ -42,9 +71,62 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "CopyTags": {
+      "type": "boolean"
     }
   },
   "definitions": {
+    "Script": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ExecutionHandlerService": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ExecutionTimeout": {
+          "type": "integer"
+        },
+        "Stages": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "ExecutionHandler": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MaximumRetryCount": {
+          "type": "integer"
+        },
+        "ExecuteOperationOnScriptFailure": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSDLMLifecyclePolicyScriptDefinition"
+    },
     "Action": {
       "type": "object",
       "additionalProperties": false,
@@ -92,6 +174,47 @@
         }
       },
       "title": "AWSDLMLifecyclePolicyParametersDefinition"
+    },
+    "CrossRegionCopyTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "TargetRegion": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSDLMLifecyclePolicyCrossRegionCopyTargetDefinition"
+    },
+    "Exclusions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ExcludeTags": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/Tag"
+          }
+        },
+        "ExcludeVolumeTypes": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/VolumeTypeValues"
+          }
+        },
+        "ExcludeBootVolumes": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSDLMLifecyclePolicyExclusionsDefinition"
     },
     "CrossRegionCopyRule": {
       "type": "object",
@@ -397,15 +520,12 @@
             }
           ]
         },
-        "CronExpression": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "Scripts": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/Script"
+          }
         },
         "Times": {
           "type": "array",
@@ -420,6 +540,16 @@
               }
             ]
           }
+        },
+        "CronExpression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
         "Interval": {
           "type": "integer"
@@ -517,6 +647,20 @@
         "Count": {
           "type": "integer"
         },
+        "AvailabilityZoneIds": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
         "AvailabilityZones": {
           "type": "array",
           "uniqueItems": false,
@@ -541,6 +685,16 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "PolicyLanguage": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
         "ResourceTypes": {
           "type": "array",
           "uniqueItems": false,
@@ -572,17 +726,46 @@
             }
           ]
         },
-        "EventSource": {
-          "$ref": "#/definitions/EventSource"
+        "CreateInterval": {
+          "type": "integer"
         },
         "Parameters": {
           "$ref": "#/definitions/Parameters"
+        },
+        "ExtendDeletion": {
+          "type": "boolean"
+        },
+        "Exclusions": {
+          "$ref": "#/definitions/Exclusions"
         },
         "Actions": {
           "type": "array",
           "uniqueItems": false,
           "items": {
             "$ref": "#/definitions/Action"
+          }
+        },
+        "ResourceType": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RetainInterval": {
+          "type": "integer"
+        },
+        "EventSource": {
+          "$ref": "#/definitions/EventSource"
+        },
+        "CrossRegionCopyTargets": {
+          "type": "array",
+          "uniqueItems": false,
+          "items": {
+            "$ref": "#/definitions/CrossRegionCopyTarget"
           }
         },
         "TargetTags": {
@@ -605,6 +788,9 @@
               }
             ]
           }
+        },
+        "CopyTags": {
+          "type": "boolean"
         }
       },
       "title": "AWSDLMLifecyclePolicyPolicyDetailsDefinition"
@@ -696,6 +882,11 @@
         }
       },
       "title": "AWSDLMLifecyclePolicyShareRuleDefinition"
+    },
+    "VolumeTypeValues": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "AWSDLMLifecyclePolicyVolumeTypeValuesDefinition"
     }
   },
   "primaryIdentifier": [

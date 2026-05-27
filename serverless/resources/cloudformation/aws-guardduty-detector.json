@@ -1,7 +1,14 @@
 {
   "typeName": "AWS::GuardDuty::Detector",
-  "description": "Resource Type definition for AWS::GuardDuty::Detector. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::GuardDuty::Detector. Source:- No source definition found, add manually please",
   "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags"
+  },
   "properties": {
     "FindingPublishingFrequency": {
       "oneOf": [
@@ -21,38 +28,42 @@
     },
     "Features": {
       "type": "array",
-      "uniqueItems": false,
+      "insertionOrder": false,
       "items": {
-        "$ref": "#/definitions/FeatureConfigurations"
+        "$ref": "#/definitions/CFNFeatureConfiguration"
       }
     },
     "Tags": {
       "type": "array",
-      "uniqueItems": false,
+      "insertionOrder": false,
       "items": {
-        "$ref": "#/definitions/Tag"
+        "$ref": "#/definitions/TagItem"
       }
     }
   },
   "definitions": {
-    "FeatureAdditionalConfiguration": {
+    "TagItem": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Status": {
+        "Key": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
         },
-        "Name": {
+        "Value": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -60,41 +71,66 @@
           ]
         }
       },
-      "title": "AWSGuardDutyDetectorFeatureAdditionalConfigurationDefinition"
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSGuardDutyDetectorTagItemDefinition"
     },
-    "FeatureConfigurations": {
+    "CFNS3LogsConfiguration": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Status": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "AdditionalConfiguration": {
-          "type": "array",
-          "uniqueItems": false,
-          "items": {
-            "$ref": "#/definitions/FeatureAdditionalConfiguration"
-          }
-        },
-        "Name": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "Enable": {
+          "type": "boolean"
         }
       },
-      "title": "AWSGuardDutyDetectorFeatureConfigurationsDefinition"
+      "required": [
+        "Enable"
+      ],
+      "title": "AWSGuardDutyDetectorCFNS3LogsConfigurationDefinition"
+    },
+    "CFNKubernetesAuditLogsConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Enable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Enable"
+      ],
+      "title": "AWSGuardDutyDetectorCFNKubernetesAuditLogsConfigurationDefinition"
+    },
+    "CFNKubernetesConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "AuditLogs": {
+          "$ref": "#/definitions/CFNKubernetesAuditLogsConfiguration"
+        }
+      },
+      "required": [
+        "AuditLogs"
+      ],
+      "title": "AWSGuardDutyDetectorCFNKubernetesConfigurationDefinition"
+    },
+    "CFNDataSourceConfigurations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "S3Logs": {
+          "$ref": "#/definitions/CFNS3LogsConfiguration"
+        },
+        "Kubernetes": {
+          "$ref": "#/definitions/CFNKubernetesConfiguration"
+        },
+        "MalwareProtection": {
+          "$ref": "#/definitions/CFNMalwareProtectionConfiguration"
+        }
+      },
+      "title": "AWSGuardDutyDetectorCFNDataSourceConfigurationsDefinition"
     },
     "CFNMalwareProtectionConfiguration": {
       "type": "object",
@@ -106,16 +142,6 @@
       },
       "title": "AWSGuardDutyDetectorCFNMalwareProtectionConfigurationDefinition"
     },
-    "CFNS3LogsConfiguration": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Enable": {
-          "type": "boolean"
-        }
-      },
-      "title": "AWSGuardDutyDetectorCFNS3LogsConfigurationDefinition"
-    },
     "CFNScanEc2InstanceWithFindingsConfiguration": {
       "type": "object",
       "additionalProperties": false,
@@ -126,72 +152,79 @@
       },
       "title": "AWSGuardDutyDetectorCFNScanEc2InstanceWithFindingsConfigurationDefinition"
     },
-    "CFNKubernetesAuditLogsConfiguration": {
+    "CFNFeatureConfiguration": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "Enable": {
-          "type": "boolean"
-        }
-      },
-      "title": "AWSGuardDutyDetectorCFNKubernetesAuditLogsConfigurationDefinition"
-    },
-    "Tag": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "Value": {
+        "Name": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "maxLength": 128
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
         },
-        "Key": {
+        "Status": {
           "oneOf": [
             {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "AdditionalConfiguration": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/CFNFeatureAdditionalConfiguration"
+          }
         }
       },
       "required": [
-        "Value",
-        "Key"
+        "Name",
+        "Status"
       ],
-      "title": "AWSGuardDutyDetectorTagDefinition"
+      "title": "AWSGuardDutyDetectorCFNFeatureConfigurationDefinition"
     },
-    "CFNKubernetesConfiguration": {
+    "CFNFeatureAdditionalConfiguration": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "AuditLogs": {
-          "$ref": "#/definitions/CFNKubernetesAuditLogsConfiguration"
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         }
       },
-      "title": "AWSGuardDutyDetectorCFNKubernetesConfigurationDefinition"
-    },
-    "CFNDataSourceConfigurations": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "MalwareProtection": {
-          "$ref": "#/definitions/CFNMalwareProtectionConfiguration"
-        },
-        "S3Logs": {
-          "$ref": "#/definitions/CFNS3LogsConfiguration"
-        },
-        "Kubernetes": {
-          "$ref": "#/definitions/CFNKubernetesConfiguration"
-        }
-      },
-      "title": "AWSGuardDutyDetectorCFNDataSourceConfigurationsDefinition"
+      "title": "AWSGuardDutyDetectorCFNFeatureAdditionalConfigurationDefinition"
     }
   },
   "required": [

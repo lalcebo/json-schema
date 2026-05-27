@@ -1,0 +1,433 @@
+{
+  "typeName": "AWS::Connect::SecurityProfile",
+  "description": "Resource Type definition for AWS::Connect::SecurityProfile. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "definitions": {
+    "Permission": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A permission associated with the security profile.",
+      "title": "AWSConnectSecurityProfilePermissionDefinition"
+    },
+    "ResourceName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A resource that a security profile applies tag or hierarchy restrictions to in Amazon Connect.",
+      "title": "AWSConnectSecurityProfileResourceNameDefinition"
+    },
+    "ApplicationPermission": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The permissions that the agent is granted on the application.",
+      "title": "AWSConnectSecurityProfileApplicationPermissionDefinition"
+    },
+    "Application": {
+      "description": "A third-party application's metadata.",
+      "type": "object",
+      "properties": {
+        "ApplicationPermissions": {
+          "type": "array",
+          "maxItems": 10,
+          "uniqueItems": true,
+          "insertionOrder": false,
+          "description": "The permissions that the agent is granted on the application",
+          "items": {
+            "$ref": "#/definitions/ApplicationPermission"
+          }
+        },
+        "Namespace": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Namespace of the application that you want to give access to."
+        },
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "MCP",
+                "THIRD_PARTY_APPLICATION"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of the application."
+        }
+      },
+      "required": [
+        "ApplicationPermissions",
+        "Namespace"
+      ],
+      "additionalProperties": false,
+      "title": "AWSConnectSecurityProfileApplicationDefinition"
+    },
+    "FlowModule": {
+      "description": "A first-party application's metadata.",
+      "type": "object",
+      "properties": {
+        "Type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of the first-party application"
+        },
+        "FlowModuleId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The identifier of the application that you want to give access to."
+        }
+      },
+      "required": [
+        "Type",
+        "FlowModuleId"
+      ],
+      "additionalProperties": false,
+      "title": "AWSConnectSecurityProfileFlowModuleDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^(?!aws:)[a-zA-Z+-=._:/]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSConnectSecurityProfileTagDefinition"
+    },
+    "DataTableAccessControlConfiguration": {
+      "description": "Defines the access control configuration for data tables.",
+      "type": "object",
+      "properties": {
+        "PrimaryAttributeAccessControlConfiguration": {
+          "$ref": "#/definitions/PrimaryAttributeAccessControlConfigurationItem"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSConnectSecurityProfileDataTableAccessControlConfigurationDefinition"
+    },
+    "PrimaryAttributeAccessControlConfigurationItem": {
+      "description": "Contains the configuration for record-based access control.",
+      "type": "object",
+      "properties": {
+        "PrimaryAttributeValues": {
+          "description": "An array of PrimaryAttributeValue objects.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PrimaryAttributeValue"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "PrimaryAttributeValues"
+      ],
+      "additionalProperties": false,
+      "title": "AWSConnectSecurityProfilePrimaryAttributeAccessControlConfigurationItemDefinition"
+    },
+    "PrimaryAttributeValue": {
+      "description": "An object defining the access control for a specific attribute and its values.",
+      "type": "object",
+      "properties": {
+        "AccessType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ALLOW"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "Specifies the type of access granted. Currently, only \"ALLOW\" is supported"
+        },
+        "AttributeName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 127,
+              "pattern": "^(?!aws:|connect:)[\\p{L}\\p{Z}\\p{N}\\-_.:=@'|]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the primary attribute."
+        },
+        "Values": {
+          "description": "An array of allowed primary values for the specified primary attribute.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000,
+                "pattern": "^[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 2,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "AccessType",
+        "AttributeName",
+        "Values"
+      ],
+      "additionalProperties": false,
+      "title": "AWSConnectSecurityProfilePrimaryAttributeValueDefinition"
+    }
+  },
+  "properties": {
+    "AllowedAccessControlTags": {
+      "type": "array",
+      "maxItems": 2,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "The list of tags that a security profile uses to restrict access to resources in Amazon Connect.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 250
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the security profile."
+    },
+    "InstanceArn": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^arn:aws[-a-z0-9]*:connect:[-a-z0-9]*:[0-9]{12}:instance/[-a-zA-Z0-9]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the Amazon Connect instance."
+    },
+    "Permissions": {
+      "type": "array",
+      "maxItems": 500,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "Permissions assigned to the security profile.",
+      "items": {
+        "$ref": "#/definitions/Permission"
+      }
+    },
+    "SecurityProfileName": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[ a-zA-Z0-9_@-]+$",
+          "minLength": 1,
+          "maxLength": 127
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the security profile."
+    },
+    "TagRestrictedResources": {
+      "type": "array",
+      "maxItems": 10,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "The list of resources that a security profile applies tag restrictions to in Amazon Connect.",
+      "items": {
+        "$ref": "#/definitions/ResourceName"
+      }
+    },
+    "HierarchyRestrictedResources": {
+      "type": "array",
+      "maxItems": 10,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "The list of resources that a security profile applies hierarchy restrictions to in Amazon Connect.",
+      "items": {
+        "$ref": "#/definitions/ResourceName"
+      }
+    },
+    "AllowedAccessControlHierarchyGroupId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9-]+$",
+          "minLength": 0,
+          "maxLength": 127
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the hierarchy group that a security profile uses to restrict access to resources in Amazon Connect."
+    },
+    "Applications": {
+      "type": "array",
+      "maxItems": 10,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "A list of third-party applications that the security profile will give access to.",
+      "items": {
+        "$ref": "#/definitions/Application"
+      }
+    },
+    "AllowedFlowModules": {
+      "type": "array",
+      "maxItems": 10,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "The list of flow-module resources to be linked to a security profile in Amazon Connect.",
+      "items": {
+        "$ref": "#/definitions/FlowModule"
+      }
+    },
+    "Tags": {
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "description": "The tags used to organize, track, or control access for this resource.",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "GranularAccessControlConfiguration": {
+      "type": "object",
+      "properties": {
+        "DataTableAccessControlConfiguration": {
+          "$ref": "#/definitions/DataTableAccessControlConfiguration"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "connect:TagResource",
+      "connect:UntagResource"
+    ]
+  },
+  "required": [
+    "InstanceArn",
+    "SecurityProfileName"
+  ],
+  "createOnlyProperties": [
+    "/properties/SecurityProfileName",
+    "/properties/InstanceArn"
+  ],
+  "readOnlyProperties": [
+    "/properties/SecurityProfileArn",
+    "/properties/LastModifiedRegion",
+    "/properties/LastModifiedTime"
+  ],
+  "primaryIdentifier": [
+    "/properties/SecurityProfileArn"
+  ],
+  "type": "object",
+  "title": "AWSConnectSecurityProfileProperties"
+}

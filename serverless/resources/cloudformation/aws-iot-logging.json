@@ -1,9 +1,66 @@
 {
   "typeName": "AWS::IoT::Logging",
-  "description": "Logging Options enable you to configure your IoT V2 logging role and default logging level so that you can monitor progress events logs as it passes from your devices through Iot core service.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
+  "description": "Logging Options enable you to configure your IoT V2 logging role and default logging level so that you can monitor progress events logs as it passes from your devices through Iot core service.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
   "documentationUrl": "https://docs.aws.amazon.com/iot/latest/developerguide/configure-logging.html",
-  "definitions": {},
+  "definitions": {
+    "EventConfiguration": {
+      "description": "Configuration for event-based logging that specifies which event types to log and their logging settings. Used for account-level logging overrides.",
+      "type": "object",
+      "properties": {
+        "EventType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The type of event to log. These include event types like Connect, Publish, and Disconnect."
+        },
+        "LogLevel": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ERROR",
+                "WARN",
+                "INFO",
+                "DEBUG",
+                "DISABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The logging level for the specified event type. Determines the verbosity of log messages generated for this event type."
+        },
+        "LogDestination": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^(?!aws/)[a-zA-Z0-9_\\-/.#]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "CloudWatch Log Group for event-based logging. Specifies where log events should be sent. The log destination for event-based logging overrides default Log Group for the specified event type and applies to all resources associated with that event."
+        }
+      },
+      "required": [
+        "EventType"
+      ],
+      "additionalProperties": false,
+      "title": "AWSIoTLoggingEventConfigurationDefinition"
+    }
+  },
   "properties": {
     "AccountId": {
       "oneOf": [
@@ -49,6 +106,14 @@
         }
       ],
       "description": "The log level to use. Valid values are: ERROR, WARN, INFO, DEBUG, or DISABLED."
+    },
+    "EventConfigurations": {
+      "description": "Configurations for event-based logging that specifies which event types to log and their logging settings. Overrides account-level logging for the specified event",
+      "type": "array",
+      "insertionOrder": true,
+      "items": {
+        "$ref": "#/definitions/EventConfiguration"
+      }
     }
   },
   "additionalProperties": false,
@@ -57,7 +122,9 @@
     "RoleArn",
     "DefaultLogLevel"
   ],
-  "taggable": false,
+  "tagging": {
+    "taggable": false
+  },
   "primaryIdentifier": [
     "/properties/AccountId"
   ],

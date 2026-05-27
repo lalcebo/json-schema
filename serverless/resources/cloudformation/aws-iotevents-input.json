@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoTEvents::Input",
-  "description": "The AWS::IoTEvents::Input resource creates an input. To monitor your devices and processes, they must have a way to get telemetry data into AWS IoT Events. This is done by sending messages as *inputs* to AWS IoT Events. For more information, see [How to Use AWS IoT Events](https://docs.aws.amazon.com/iotevents/latest/developerguide/how-to-use-iotevents.html) in the *AWS IoT Events Developer Guide*.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iotevents.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iotevents.git",
+  "description": "The AWS::IoTEvents::Input resource creates an input. To monitor your devices and processes, they must have a way to get telemetry data into ITE. This is done by sending messages as *inputs* to ITE. For more information, see [How to Use](https://docs.aws.amazon.com/iotevents/latest/developerguide/how-to-use-iotevents.html) in the *Developer Guide*.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iotevents.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iotevents.git",
   "definitions": {
     "InputDefinition": {
@@ -12,7 +12,7 @@
           "type": "array",
           "uniqueItems": true,
           "insertionOrder": false,
-          "description": "The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using `BatchPutMessage`. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the `condition` expressions used by detectors that monitor this input.",
+          "description": "The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the ITE system using ``BatchPutMessage``. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the ``condition`` expressions used by detectors that monitor this input.",
           "minItems": 1,
           "maxItems": 200,
           "items": {
@@ -28,7 +28,7 @@
     "Attribute": {
       "type": "object",
       "additionalProperties": false,
-      "description": "The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the AWS IoT Events system using `BatchPutMessage`. Each such message contains a JSON payload, and those attributes (and their paired values) specified here are available for use in the `condition` expressions used by detectors that monitor this input.",
+      "description": "The attributes from the JSON payload that are made available by the input. Inputs are derived from messages sent to the ITE system using ``BatchPutMessage``. Each such message contains a JSON payload. Those attributes (and their paired values) specified here are available for use in the ``condition`` expressions used by detectors.",
       "properties": {
         "JsonPath": {
           "oneOf": [
@@ -42,7 +42,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "An expression that specifies an attribute-value pair in a JSON structure. Use this to specify an attribute from the JSON payload that is made available by the input. Inputs are derived from messages sent to AWS IoT Events (`BatchPutMessage`). Each such message contains a JSON payload. The attribute (and its paired value) specified here are available for use in the `condition` expressions used by detectors.\n\n_Syntax_: `<field-name>.<field-name>...`"
+          "description": "An expression that specifies an attribute-value pair in a JSON structure. Use this to specify an attribute from the JSON payload that is made available by the input. Inputs are derived from messages sent to ITE (``BatchPutMessage``). Each such message contains a JSON payload. The attribute (and its paired value) specified here are available for use in the ``condition`` expressions used by detectors. \n Syntax: ``<field-name>.<field-name>...``"
         }
       },
       "required": [
@@ -53,7 +53,7 @@
     "Tag": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Tags to be applied to Input.",
+      "description": "Metadata that can be used to manage the resource.",
       "properties": {
         "Key": {
           "oneOf": [
@@ -64,7 +64,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Key of the Tag."
+          "description": "The tag's key."
         },
         "Value": {
           "oneOf": [
@@ -75,7 +75,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Value of the Tag."
+          "description": "The tag's value."
         }
       },
       "required": [
@@ -87,13 +87,14 @@
   },
   "properties": {
     "InputDefinition": {
-      "$ref": "#/definitions/InputDefinition"
+      "$ref": "#/definitions/InputDefinition",
+      "description": "The definition of the input."
     },
     "InputDescription": {
       "oneOf": [
         {
           "minLength": 1,
-          "maxLength": 128,
+          "maxLength": 1024,
           "type": "string"
         },
         {
@@ -120,7 +121,7 @@
       "type": "array",
       "uniqueItems": false,
       "insertionOrder": false,
-      "description": "An array of key-value pairs to apply to this resource.\n\nFor more information, see [Tag](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html).",
+      "description": "An array of key-value pairs to apply to this resource.\n For more information, see [Tag](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html).",
       "items": {
         "$ref": "#/definitions/Tag"
       }
@@ -136,7 +137,18 @@
   "createOnlyProperties": [
     "/properties/InputName"
   ],
-  "taggable": true,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iotevents:UntagResource",
+      "iotevents:TagResource",
+      "iotevents:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSIoTEventsInputProperties"
 }

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::Connect::Instance",
-  "description": "Resource Type definition for AWS::Connect::Instance. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
+  "description": "Resource Type definition for AWS::Connect::Instance. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-connect",
   "definitions": {
     "InboundCalls": {
@@ -38,6 +38,36 @@
       "type": "boolean",
       "title": "AWSConnectInstanceEarlyMediaDefinition"
     },
+    "MultiPartyConference": {
+      "description": "Boolean flag which enables MULTI_PARTY_CONFERENCE on an instance.",
+      "type": "boolean",
+      "title": "AWSConnectInstanceMultiPartyConferenceDefinition"
+    },
+    "HighVolumeOutBound": {
+      "description": "Boolean flag which enables HIGH_VOLUME_OUTBOUND on an instance.",
+      "type": "boolean",
+      "title": "AWSConnectInstanceHighVolumeOutBoundDefinition"
+    },
+    "EnhancedContactMonitoring": {
+      "description": "Boolean flag which enables ENHANCED_CONTACT_MONITORING on an instance.",
+      "type": "boolean",
+      "title": "AWSConnectInstanceEnhancedContactMonitoringDefinition"
+    },
+    "EnhancedChatMonitoring": {
+      "description": "Boolean flag which enables ENHANCED_CHAT_MONITORING on an instance.",
+      "type": "boolean",
+      "title": "AWSConnectInstanceEnhancedChatMonitoringDefinition"
+    },
+    "MultiPartyChatConference": {
+      "description": "Boolean flag which enables MULTI_PARTY_CHAT_CONFERENCE on an instance.",
+      "type": "boolean",
+      "title": "AWSConnectInstanceMultiPartyChatConferenceDefinition"
+    },
+    "MessageStreaming": {
+      "description": "Boolean flag which enables MESSAGE_STREAMING on an instance.",
+      "type": "boolean",
+      "title": "AWSConnectInstanceMessageStreamingDefinition"
+    },
     "Attributes": {
       "type": "object",
       "additionalProperties": false,
@@ -62,6 +92,24 @@
         },
         "EarlyMedia": {
           "$ref": "#/definitions/EarlyMedia"
+        },
+        "MultiPartyConference": {
+          "$ref": "#/definitions/MultiPartyConference"
+        },
+        "HighVolumeOutBound": {
+          "$ref": "#/definitions/HighVolumeOutBound"
+        },
+        "EnhancedContactMonitoring": {
+          "$ref": "#/definitions/EnhancedContactMonitoring"
+        },
+        "EnhancedChatMonitoring": {
+          "$ref": "#/definitions/EnhancedChatMonitoring"
+        },
+        "MultiPartyChatConference": {
+          "$ref": "#/definitions/MultiPartyChatConference"
+        },
+        "MessageStreaming": {
+          "$ref": "#/definitions/MessageStreaming"
         }
       },
       "required": [
@@ -69,6 +117,44 @@
         "OutboundCalls"
       ],
       "title": "AWSConnectInstanceAttributesDefinition"
+    },
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "type": "object",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 0,
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSConnectInstanceTagDefinition"
     }
   },
   "properties": {
@@ -94,7 +180,7 @@
           "type": "string",
           "pattern": "^(?!d-)([\\da-zA-Z]+)([-]*[\\da-zA-Z])*$",
           "minLength": 1,
-          "maxLength": 62
+          "maxLength": 45
         },
         {
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -119,13 +205,16 @@
     "Attributes": {
       "description": "The attributes for the instance.",
       "$ref": "#/definitions/Attributes"
+    },
+    "Tags": {
+      "description": "An array of key-value pairs to apply to this resource.",
+      "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
     }
-  },
-  "tagging": {
-    "taggable": false,
-    "tagOnCreate": false,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": false
   },
   "additionalProperties": false,
   "required": [
@@ -150,6 +239,18 @@
   "primaryIdentifier": [
     "/properties/Arn"
   ],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "connect:ListTagsForResource",
+      "connect:UntagResource",
+      "connect:TagResource"
+    ]
+  },
   "type": "object",
   "title": "AWSConnectInstanceProperties"
 }

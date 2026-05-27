@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::QuickSight::Topic",
-  "description": "Definition of the AWS::QuickSight::Topic Resource Type.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Definition of the AWS::QuickSight::Topic Resource Type.. Source:- No source definition found, add manually please",
   "definitions": {
     "AggregationFunctionParameters": {
       "type": "object",
@@ -202,6 +202,28 @@
       ],
       "title": "AWSQuickSightTopicConstantTypeDefinition"
     },
+    "CustomInstructions": {
+      "type": "object",
+      "properties": {
+        "CustomInstructionsString": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 5000,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "CustomInstructionsString"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightTopicCustomInstructionsDefinition"
+    },
     "DataAggregation": {
       "type": "object",
       "properties": {
@@ -305,7 +327,12 @@
             "MIN",
             "COUNT",
             "DISTINCT_COUNT",
-            "AVERAGE"
+            "AVERAGE",
+            "MEDIAN",
+            "STDEV",
+            "STDEVP",
+            "VAR",
+            "VARP"
           ]
         },
         {
@@ -625,7 +652,9 @@
             "THOUSANDS",
             "MILLIONS",
             "BILLIONS",
-            "TRILLIONS"
+            "TRILLIONS",
+            "LAKHS",
+            "CRORES"
           ]
         },
         {
@@ -810,6 +839,44 @@
       "additionalProperties": false,
       "title": "AWSQuickSightTopicSemanticTypeDefinition"
     },
+    "Tag": {
+      "type": "object",
+      "description": "<p>The key or keys of the key-value pairs for the resource tag or tags assigned to the\n            resource.</p>",
+      "properties": {
+        "Key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>Tag key.</p>"
+        },
+        "Value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "<p>Tag value.</p>"
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "additionalProperties": false,
+      "title": "AWSQuickSightTopicTagDefinition"
+    },
     "TopicCalculatedField": {
       "type": "object",
       "properties": {
@@ -868,6 +935,9 @@
           "type": "boolean",
           "default": false
         },
+        "DisableIndexing": {
+          "type": "boolean"
+        },
         "ColumnDataRole": {
           "$ref": "#/definitions/ColumnDataRole"
         },
@@ -907,6 +977,10 @@
           "items": {
             "$ref": "#/definitions/CellValueSynonym"
           }
+        },
+        "NonAdditive": {
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
@@ -1025,6 +1099,9 @@
           "type": "boolean",
           "default": false
         },
+        "DisableIndexing": {
+          "type": "boolean"
+        },
         "ComparativeOrder": {
           "$ref": "#/definitions/ComparativeOrder"
         },
@@ -1058,6 +1135,10 @@
           "items": {
             "$ref": "#/definitions/CellValueSynonym"
           }
+        },
+        "NonAdditive": {
+          "type": "boolean",
+          "default": false
         }
       },
       "required": [
@@ -1065,6 +1146,17 @@
       ],
       "additionalProperties": false,
       "title": "AWSQuickSightTopicTopicColumnDefinition"
+    },
+    "TopicConfigOptions": {
+      "type": "object",
+      "description": "Model for configuration of a Topic",
+      "properties": {
+        "QBusinessInsightsEnabled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSQuickSightTopicTopicConfigOptionsDefinition"
     },
     "TopicDateRangeFilter": {
       "type": "object",
@@ -1107,11 +1199,17 @@
             }
           ]
         },
+        "UserExperienceVersion": {
+          "$ref": "#/definitions/TopicUserExperienceVersion"
+        },
         "DataSets": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/DatasetMetadata"
           }
+        },
+        "ConfigOptions": {
+          "$ref": "#/definitions/TopicConfigOptions"
         }
       },
       "additionalProperties": false,
@@ -1393,6 +1491,21 @@
       ],
       "title": "AWSQuickSightTopicTopicTimeGranularityDefinition"
     },
+    "TopicUserExperienceVersion": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "LEGACY",
+            "NEW_READER_EXPERIENCE"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSQuickSightTopicTopicUserExperienceVersionDefinition"
+    },
     "TypeParameters": {
       "type": "object",
       "patternProperties": {
@@ -1442,6 +1555,12 @@
         }
       ]
     },
+    "ConfigOptions": {
+      "$ref": "#/definitions/TopicConfigOptions"
+    },
+    "CustomInstructions": {
+      "$ref": "#/definitions/CustomInstructions"
+    },
     "DataSets": {
       "type": "array",
       "items": {
@@ -1460,6 +1579,21 @@
         }
       ]
     },
+    "FolderArns": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+          }
+        ]
+      },
+      "maxItems": 20,
+      "minItems": 0
+    },
     "Name": {
       "oneOf": [
         {
@@ -1471,6 +1605,14 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      },
+      "maxItems": 200,
+      "minItems": 1
     },
     "TopicId": {
       "oneOf": [
@@ -1484,26 +1626,39 @@
           "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
         }
       ]
+    },
+    "UserExperienceVersion": {
+      "$ref": "#/definitions/TopicUserExperienceVersion"
     }
   },
   "readOnlyProperties": [
     "/properties/Arn"
   ],
+  "writeOnlyProperties": [
+    "/properties/FolderArns"
+  ],
   "createOnlyProperties": [
     "/properties/AwsAccountId",
-    "/properties/TopicId"
+    "/properties/FolderArns",
+    "/properties/TopicId",
+    "/properties/Tags"
   ],
   "primaryIdentifier": [
     "/properties/AwsAccountId",
     "/properties/TopicId"
   ],
-  "tagging": {
-    "taggable": false,
-    "tagOnCreate": false,
-    "tagUpdatable": false,
-    "cloudFormationSystemTags": false
-  },
   "additionalProperties": false,
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "quicksight:TagResource",
+      "quicksight:ListTagsForResource"
+    ]
+  },
   "type": "object",
   "title": "AWSQuickSightTopicProperties"
 }

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoT::AccountAuditConfiguration",
-  "description": "Configures the Device Defender audit settings for this account. Settings include how audit notifications are sent and which audit checks are enabled or disabled.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
+  "description": "Configures the Device Defender audit settings for this account. Settings include how audit notifications are sent and which audit checks are enabled or disabled.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
   "definitions": {
     "AuditCheckConfigurations": {
@@ -20,7 +20,7 @@
           "$ref": "#/definitions/AuditCheckConfiguration"
         },
         "DeviceCertificateExpiringCheck": {
-          "$ref": "#/definitions/AuditCheckConfiguration"
+          "$ref": "#/definitions/DeviceCertExpirationAuditCheckConfiguration"
         },
         "DeviceCertificateKeyQualityCheck": {
           "$ref": "#/definitions/AuditCheckConfiguration"
@@ -54,6 +54,9 @@
         },
         "IoTPolicyPotentialMisConfigurationCheck": {
           "$ref": "#/definitions/AuditCheckConfiguration"
+        },
+        "DeviceCertificateAgeCheck": {
+          "$ref": "#/definitions/DeviceCertAgeAuditCheckConfiguration"
         }
       },
       "additionalProperties": false,
@@ -81,6 +84,36 @@
       },
       "additionalProperties": false,
       "title": "AWSIoTAccountAuditConfigurationAuditCheckConfigurationDefinition"
+    },
+    "DeviceCertAgeAuditCheckConfiguration": {
+      "description": "A structure containing the configName and corresponding configValue for configuring DeviceCertAgeCheck.",
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "description": "True if the check is enabled.",
+          "type": "boolean"
+        },
+        "Configuration": {
+          "$ref": "#/definitions/CertAgeCheckCustomConfiguration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTAccountAuditConfigurationDeviceCertAgeAuditCheckConfigurationDefinition"
+    },
+    "DeviceCertExpirationAuditCheckConfiguration": {
+      "description": "A structure containing the configName and corresponding configValue for configuring DeviceCertExpirationCheck.",
+      "type": "object",
+      "properties": {
+        "Enabled": {
+          "description": "True if the check is enabled.",
+          "type": "boolean"
+        },
+        "Configuration": {
+          "$ref": "#/definitions/CertExpirationCheckCustomConfiguration"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTAccountAuditConfigurationDeviceCertExpirationAuditCheckConfigurationDefinition"
     },
     "AuditNotificationTarget": {
       "type": "object",
@@ -117,6 +150,42 @@
       },
       "additionalProperties": false,
       "title": "AWSIoTAccountAuditConfigurationAuditNotificationTargetDefinition"
+    },
+    "ConfigValue": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The configValue for configuring audit checks.",
+      "title": "AWSIoTAccountAuditConfigurationConfigValueDefinition"
+    },
+    "CertAgeCheckCustomConfiguration": {
+      "type": "object",
+      "description": "A structure containing the configName and corresponding configValue for configuring audit checks.",
+      "properties": {
+        "CertAgeThresholdInDays": {
+          "$ref": "#/definitions/ConfigValue"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTAccountAuditConfigurationCertAgeCheckCustomConfigurationDefinition"
+    },
+    "CertExpirationCheckCustomConfiguration": {
+      "type": "object",
+      "description": "A structure containing the configName and corresponding configValue for configuring audit checks.",
+      "properties": {
+        "CertExpirationThresholdInDays": {
+          "$ref": "#/definitions/ConfigValue"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSIoTAccountAuditConfigurationCertExpirationCheckCustomConfigurationDefinition"
     }
   },
   "properties": {
@@ -152,6 +221,9 @@
       ],
       "description": "The ARN of the role that grants permission to AWS IoT to access information about your devices, policies, certificates and other items as required when performing an audit."
     }
+  },
+  "tagging": {
+    "taggable": false
   },
   "additionalProperties": false,
   "primaryIdentifier": [

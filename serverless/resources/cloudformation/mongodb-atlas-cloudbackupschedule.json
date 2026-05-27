@@ -1,7 +1,7 @@
 {
   "typeName": "MongoDB::Atlas::CloudBackupSchedule",
-  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
-  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "description": "An example resource schema demonstrating some basic constructs and validation rules.. Source:- https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/cloud-backup-schedule",
+  "sourceUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/tree/master/cfn-resources/cloud-backup-schedule",
   "definitions": {
     "Export": {
       "type": "object",
@@ -26,7 +26,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Frequency associated with the export policy. Value can be daily, weekly, or monthly."
+          "description": "Frequency associated with the export policy. Value can be daily, weekly, monthly or yearly."
         }
       },
       "additionalProperties": false,
@@ -55,7 +55,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Frequency associated with the backup policy item. One of the following values: hourly, daily, weekly or monthly."
+          "description": "Frequency associated with the backup policy item. One of the following values: hourly, daily, weekly, monthly or yearly."
         },
         "FrequencyInterval": {
           "description": "Desired frequency of the new backup policy item specified by frequencyType.",
@@ -74,7 +74,7 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ],
-          "description": "Metric of duration of the backup policy item: days, weeks, or months."
+          "description": "Metric of duration of the backup policy item: days, weeks, months or years."
         }
       },
       "additionalProperties": false,
@@ -246,6 +246,17 @@
       ],
       "description": "The unique identifier of the project for the Atlas cluster."
     },
+    "ClusterName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the Atlas cluster that contains the snapshots you want to retrieve."
+    },
     "Id": {
       "oneOf": [
         {
@@ -338,7 +349,6 @@
     "/properties/ClusterId",
     "/properties/NextSnapshot",
     "/properties/Policies/*/PolicyItems/*/ID",
-    "/properties/ClusterName",
     "/properties/Links"
   ],
   "createOnlyProperties": [
@@ -350,6 +360,10 @@
     "/properties/ClusterName",
     "/properties/Profile"
   ],
+  "documentationUrl": "https://github.com/mongodb/mongodbatlas-cloudformation-resources/blob/master/cfn-resources/cloud-backup-schedule/README.md",
+  "tagging": {
+    "taggable": false
+  },
   "type": "object",
   "title": "MongoDBAtlasCloudBackupScheduleProperties"
 }

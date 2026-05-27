@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::NetworkManager::Link",
-  "description": "The AWS::NetworkManager::Link type describes a link.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager.git",
+  "description": "The AWS::NetworkManager::Link type describes a link.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-networkmanager.git",
   "definitions": {
     "Tag": {
@@ -15,7 +15,8 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         },
         "Value": {
           "oneOf": [
@@ -25,9 +26,14 @@
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
-          ]
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
+      "required": [
+        "Key",
+        "Value"
+      ],
       "additionalProperties": false,
       "title": "AWSNetworkManagerLinkTagDefinition"
     },
@@ -100,6 +106,8 @@
     "Tags": {
       "description": "The tags for the link.",
       "type": "array",
+      "uniqueItems": true,
+      "insertionOrder": false,
       "items": {
         "$ref": "#/definitions/Tag"
       }
@@ -116,6 +124,18 @@
       "description": "The type of the link."
     }
   },
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": false,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "networkmanager:TagResource",
+      "networkmanager:UntagResource",
+      "networkmanager:ListTagsForResource"
+    ]
+  },
   "additionalProperties": false,
   "required": [
     "GlobalNetworkId",
@@ -124,7 +144,9 @@
   ],
   "readOnlyProperties": [
     "/properties/LinkId",
-    "/properties/LinkArn"
+    "/properties/LinkArn",
+    "/properties/CreatedAt",
+    "/properties/State"
   ],
   "createOnlyProperties": [
     "/properties/GlobalNetworkId",

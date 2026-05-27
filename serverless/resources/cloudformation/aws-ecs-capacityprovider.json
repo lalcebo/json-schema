@@ -1,18 +1,82 @@
 {
+  "tagging": {
+    "permissions": [
+      "ecs:TagResource",
+      "ecs:UntagResource",
+      "ecs:ListTagsForResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "propertyTransform": {
+    "/properties/AutoScalingGroupProvider/AutoScalingGroupArn": "$split(AutoScalingGroupProvider.AutoScalingGroupArn, \"autoScalingGroupName/\")[-1] $OR $split(AutoScalingGroupArn, \"autoScalingGroupName/\")[-1]"
+  },
   "typeName": "AWS::ECS::CapacityProvider",
-  "description": "Resource Type definition for AWS::ECS::CapacityProvider.. Source:- No source definition found, add manually please. Source:- No source definition found, add manually please",
+  "description": "Resource Type definition for AWS::ECS::CapacityProvider.. Source:- No source definition found, add manually please",
+  "createOnlyProperties": [
+    "/properties/AutoScalingGroupProvider/AutoScalingGroupArn",
+    "/properties/ManagedInstancesProvider/InstanceLaunchTemplate/FipsEnabled",
+    "/properties/Name",
+    "/properties/ClusterName"
+  ],
+  "additionalProperties": false,
+  "primaryIdentifier": [
+    "/properties/Name"
+  ],
   "definitions": {
-    "ManagedScaling": {
-      "description": "The managed scaling settings for the Auto Scaling group capacity provider.",
+    "CapacityReservationRequest": {
+      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "MinimumScalingStepSize": {
-          "type": "integer"
+        "ReservationGroupArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
         },
-        "MaximumScalingStepSize": {
-          "type": "integer"
+        "ReservationPreference": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "RESERVATIONS_ONLY",
+                "RESERVATIONS_FIRST",
+                "RESERVATIONS_EXCLUDED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "title": "AWSECSCapacityProviderCapacityReservationRequestDefinition"
+    },
+    "AutoScalingGroupProvider": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ManagedScaling": {
+          "$ref": "#/definitions/ManagedScaling"
         },
-        "Status": {
+        "AutoScalingGroupArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ManagedTerminationProtection": {
           "oneOf": [
             {
               "type": "string",
@@ -26,33 +90,7 @@
             }
           ]
         },
-        "TargetCapacity": {
-          "type": "integer"
-        },
-        "InstanceWarmupPeriod": {
-          "type": "integer"
-        }
-      },
-      "additionalProperties": false,
-      "title": "AWSECSCapacityProviderManagedScalingDefinition"
-    },
-    "AutoScalingGroupProvider": {
-      "type": "object",
-      "properties": {
-        "AutoScalingGroupArn": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
-        },
-        "ManagedScaling": {
-          "$ref": "#/definitions/ManagedScaling"
-        },
-        "ManagedTerminationProtection": {
+        "ManagedDraining": {
           "oneOf": [
             {
               "type": "string",
@@ -70,28 +108,33 @@
       "required": [
         "AutoScalingGroupArn"
       ],
-      "additionalProperties": false,
       "title": "AWSECSCapacityProviderAutoScalingGroupProviderDefinition"
     },
-    "Tag": {
+    "AcceleratorCountRequest": {
+      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 1
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ]
+        "Min": {
+          "type": "integer"
         },
-        "Value": {
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSECSCapacityProviderAcceleratorCountRequestDefinition"
+    },
+    "AutoRepairConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "ActionsStatus": {
           "oneOf": [
             {
               "type": "string",
-              "minLength": 1
+              "enum": [
+                "ENABLED",
+                "DISABLED"
+              ]
             },
             {
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
@@ -99,15 +142,632 @@
           ]
         }
       },
+      "title": "AWSECSCapacityProviderAutoRepairConfigurationDefinition"
+    },
+    "MemoryGiBPerVCpuRequest": {
       "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "number"
+        },
+        "Max": {
+          "type": "number"
+        }
+      },
+      "title": "AWSECSCapacityProviderMemoryGiBPerVCpuRequestDefinition"
+    },
+    "ManagedInstancesNetworkConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "SecurityGroups": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "Subnets": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "SecurityGroups",
+        "Subnets"
+      ],
+      "title": "AWSECSCapacityProviderManagedInstancesNetworkConfigurationDefinition"
+    },
+    "InstanceRequirementsRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "LocalStorageTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "hdd",
+                  "ssd"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "InstanceGenerations": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "current",
+                  "previous"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "NetworkInterfaceCount": {
+          "$ref": "#/definitions/NetworkInterfaceCountRequest"
+        },
+        "MemoryGiBPerVCpu": {
+          "$ref": "#/definitions/MemoryGiBPerVCpuRequest"
+        },
+        "AcceleratorTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "gpu",
+                  "fpga",
+                  "inference"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "VCpuCount": {
+          "$ref": "#/definitions/VCpuCountRangeRequest"
+        },
+        "ExcludedInstanceTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "minLength": 1,
+                "pattern": "[a-zA-Z0-9\\.\\*]+",
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AcceleratorManufacturers": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "amazon-web-services",
+                  "amd",
+                  "habana",
+                  "nvidia",
+                  "xilinx"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AllowedInstanceTypes": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "minLength": 1,
+                "pattern": "[a-zA-Z0-9\\.\\*]+",
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "LocalStorage": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "included",
+                "required",
+                "excluded"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CpuManufacturers": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "intel",
+                  "amd",
+                  "amazon-web-services"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "NetworkBandwidthGbps": {
+          "$ref": "#/definitions/NetworkBandwidthGbpsRequest"
+        },
+        "AcceleratorCount": {
+          "$ref": "#/definitions/AcceleratorCountRequest"
+        },
+        "BareMetal": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "included",
+                "required",
+                "excluded"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RequireHibernateSupport": {
+          "type": "boolean"
+        },
+        "MaxSpotPriceAsPercentageOfOptimalOnDemandPrice": {
+          "type": "integer"
+        },
+        "SpotMaxPricePercentageOverLowestPrice": {
+          "type": "integer"
+        },
+        "BaselineEbsBandwidthMbps": {
+          "$ref": "#/definitions/BaselineEbsBandwidthMbpsRequest"
+        },
+        "OnDemandMaxPricePercentageOverLowestPrice": {
+          "type": "integer"
+        },
+        "AcceleratorNames": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "a10g",
+                  "a100",
+                  "h100",
+                  "inferentia",
+                  "k520",
+                  "k80",
+                  "m60",
+                  "radeon-pro-v520",
+                  "t4",
+                  "t4g",
+                  "vu9p",
+                  "v100",
+                  "l40s"
+                ]
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        },
+        "AcceleratorTotalMemoryMiB": {
+          "$ref": "#/definitions/AcceleratorTotalMemoryMiBRequest"
+        },
+        "BurstablePerformance": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "included",
+                "required",
+                "excluded"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MemoryMiB": {
+          "$ref": "#/definitions/MemoryMiBRequest"
+        },
+        "TotalLocalStorageGB": {
+          "$ref": "#/definitions/TotalLocalStorageGBRequest"
+        }
+      },
+      "required": [
+        "VCpuCount",
+        "MemoryMiB"
+      ],
+      "title": "AWSECSCapacityProviderInstanceRequirementsRequestDefinition"
+    },
+    "MemoryMiBRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Min"
+      ],
+      "title": "AWSECSCapacityProviderMemoryMiBRequestDefinition"
+    },
+    "TotalLocalStorageGBRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "number"
+        },
+        "Max": {
+          "type": "number"
+        }
+      },
+      "title": "AWSECSCapacityProviderTotalLocalStorageGBRequestDefinition"
+    },
+    "ManagedInstancesMonitoringOptions": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BASIC",
+            "DETAILED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "title": "AWSECSCapacityProviderManagedInstancesMonitoringOptionsDefinition"
+    },
+    "NetworkBandwidthGbpsRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "number"
+        },
+        "Max": {
+          "type": "number"
+        }
+      },
+      "title": "AWSECSCapacityProviderNetworkBandwidthGbpsRequestDefinition"
+    },
+    "VCpuCountRangeRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Min"
+      ],
+      "title": "AWSECSCapacityProviderVCpuCountRangeRequestDefinition"
+    },
+    "BaselineEbsBandwidthMbpsRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSECSCapacityProviderBaselineEbsBandwidthMbpsRequestDefinition"
+    },
+    "ManagedScaling": {
+      "description": "The managed scaling settings for the Auto Scaling group capacity provider.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "DISABLED",
+                "ENABLED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MinimumScalingStepSize": {
+          "type": "integer"
+        },
+        "InstanceWarmupPeriod": {
+          "type": "integer"
+        },
+        "TargetCapacity": {
+          "type": "integer"
+        },
+        "MaximumScalingStepSize": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSECSCapacityProviderManagedScalingDefinition"
+    },
+    "NetworkInterfaceCountRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSECSCapacityProviderNetworkInterfaceCountRequestDefinition"
+    },
+    "ManagedInstancesLocalStorageConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "UseLocalStorage": {
+          "type": "boolean"
+        }
+      },
+      "title": "AWSECSCapacityProviderManagedInstancesLocalStorageConfigurationDefinition"
+    },
+    "ManagedInstancesStorageConfiguration": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "StorageSizeGiB": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "StorageSizeGiB"
+      ],
+      "title": "AWSECSCapacityProviderManagedInstancesStorageConfigurationDefinition"
+    },
+    "AcceleratorTotalMemoryMiBRequest": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        }
+      },
+      "title": "AWSECSCapacityProviderAcceleratorTotalMemoryMiBRequestDefinition"
+    },
+    "Tag": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
       "title": "AWSECSCapacityProviderTagDefinition"
+    },
+    "InstanceLaunchTemplate": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Ec2InstanceProfileArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "CapacityOptionType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "ON_DEMAND",
+                "SPOT",
+                "RESERVED"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "FipsEnabled": {
+          "type": "boolean"
+        },
+        "InstanceMetadataTagsPropagation": {
+          "type": "boolean"
+        },
+        "StorageConfiguration": {
+          "$ref": "#/definitions/ManagedInstancesStorageConfiguration"
+        },
+        "NetworkConfiguration": {
+          "$ref": "#/definitions/ManagedInstancesNetworkConfiguration"
+        },
+        "InstanceRequirements": {
+          "$ref": "#/definitions/InstanceRequirementsRequest"
+        },
+        "CapacityReservations": {
+          "$ref": "#/definitions/CapacityReservationRequest"
+        },
+        "LocalStorageConfiguration": {
+          "$ref": "#/definitions/ManagedInstancesLocalStorageConfiguration"
+        },
+        "Monitoring": {
+          "$ref": "#/definitions/ManagedInstancesMonitoringOptions"
+        }
+      },
+      "required": [
+        "Ec2InstanceProfileArn",
+        "NetworkConfiguration"
+      ],
+      "title": "AWSECSCapacityProviderInstanceLaunchTemplateDefinition"
+    },
+    "ManagedInstancesProvider": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "InfrastructureRoleArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AutoRepairConfiguration": {
+          "$ref": "#/definitions/AutoRepairConfiguration"
+        },
+        "PropagateTags": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "CAPACITY_PROVIDER",
+                "NONE"
+              ]
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "InfrastructureOptimization": {
+          "description": "Defines how Amazon ECS Managed Instances optimizes the infrastructure in your capacity provider. Configure it to turn on or off the infrastructure optimization in your capacity provider, and to control the idle EC2 instances optimization delay.",
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "ScaleInAfter": {
+              "description": "This parameter defines the number of seconds Amazon ECS Managed Instances waits before optimizing EC2 instances that have become idle or underutilized. A longer delay increases the likelihood of placing new tasks on idle instances, reducing startup time. A shorter delay helps reduce infrastructure costs by optimizing idle instances more quickly. Valid values are: Not set (null) - Uses the default optimization behavior, `-1` - Disables automatic infrastructure optimization, `0` to `3600` (inclusive) - Specifies the number of seconds to wait before optimizing instances.",
+              "maximum": 3600,
+              "type": "integer",
+              "minimum": -1
+            }
+          }
+        },
+        "InstanceLaunchTemplate": {
+          "$ref": "#/definitions/InstanceLaunchTemplate"
+        }
+      },
+      "required": [
+        "InfrastructureRoleArn",
+        "InstanceLaunchTemplate"
+      ],
+      "title": "AWSECSCapacityProviderManagedInstancesProviderDefinition"
     }
   },
+  "conditionalCreateOnlyProperties": [
+    "/properties/ManagedInstancesProvider/InstanceLaunchTemplate/CapacityOptionType"
+  ],
   "properties": {
     "AutoScalingGroupProvider": {
       "$ref": "#/definitions/AutoScalingGroupProvider"
     },
-    "Name": {
+    "ClusterName": {
       "oneOf": [
         {
           "type": "string"
@@ -122,22 +782,21 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ]
+    },
+    "ManagedInstancesProvider": {
+      "$ref": "#/definitions/ManagedInstancesProvider"
     }
   },
-  "additionalProperties": false,
-  "primaryIdentifier": [
-    "/properties/Name"
-  ],
-  "createOnlyProperties": [
-    "/properties/AutoScalingGroupProvider/AutoScalingGroupArn",
-    "/properties/Name"
-  ],
-  "propertyTransform": {
-    "/properties/AutoScalingGroupProvider/AutoScalingGroupArn": "$split(AutoScalingGroupProvider.AutoScalingGroupArn, \"autoScalingGroupName/\")[-1]"
-  },
-  "required": [
-    "AutoScalingGroupProvider"
-  ],
   "type": "object",
   "title": "AWSECSCapacityProviderProperties"
 }

@@ -1,0 +1,113 @@
+{
+  "typeName": "AWS::SSMQuickSetup::LifecycleAutomation",
+  "description": "Resource Type definition for AWS::SSMQuickSetup::LifecycleAutomation that executes SSM Automation documents in response to CloudFormation lifecycle events.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": false,
+    "permissions": [
+      "ssm:AddTagsToResource",
+      "ssm:RemoveTagsFromResource",
+      "ssm:ListTagsForResource"
+    ]
+  },
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "definitions": {
+    "AutomationParameters": {
+      "type": "object",
+      "description": "Parameters to be passed to the Automation Document",
+      "patternProperties": {
+        "^[a-zA-Z0-9_]+$": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSSSMQuickSetupLifecycleAutomationAutomationParametersDefinition"
+    },
+    "TagsMap": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z0-9 +=@_\\/:.-]+$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9 +=@_\\/:.-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSSSMQuickSetupLifecycleAutomationTagsMapDefinition"
+    }
+  },
+  "properties": {
+    "AutomationDocument": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the Automation document to execute"
+    },
+    "AutomationParameters": {
+      "$ref": "#/definitions/AutomationParameters"
+    },
+    "ResourceKey": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9-]+$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "A unique identifier used for generating a unique logical ID for the custom resource"
+    },
+    "Tags": {
+      "$ref": "#/definitions/TagsMap"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "AutomationDocument",
+    "ResourceKey",
+    "AutomationParameters"
+  ],
+  "readOnlyProperties": [
+    "/properties/AssociationId"
+  ],
+  "primaryIdentifier": [
+    "/properties/AssociationId"
+  ],
+  "createOnlyProperties": [
+    "/properties/ResourceKey"
+  ],
+  "type": "object",
+  "title": "AWSSSMQuickSetupLifecycleAutomationProperties"
+}

@@ -1,0 +1,1564 @@
+{
+  "typeName": "AWS::DataZone::Connection",
+  "description": "Connections enables users to connect their DataZone resources (domains, projects, and environments) to external resources/services (data, compute, etc). Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-datazone",
+  "definitions": {
+    "AthenaPropertiesInput": {
+      "type": "object",
+      "description": "Athena Properties Input",
+      "properties": {
+        "WorkgroupName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9._-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "WorkgroupName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionAthenaPropertiesInputDefinition"
+    },
+    "AuthenticationConfigurationInput": {
+      "type": "object",
+      "description": "Authentication Configuration Input",
+      "properties": {
+        "AuthenticationType": {
+          "$ref": "#/definitions/AuthenticationType"
+        },
+        "OAuth2Properties": {
+          "$ref": "#/definitions/OAuth2Properties"
+        },
+        "SecretArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^arn:aws(-(cn|us-gov|iso(-[bef])?))?:secretsmanager:.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "KmsKeyArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^$|arn:aws[a-z0-9-]*:kms:.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "BasicAuthenticationCredentials": {
+          "$ref": "#/definitions/BasicAuthenticationCredentials"
+        },
+        "CustomAuthenticationCredentials": {
+          "$ref": "#/definitions/CredentialMap"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionAuthenticationConfigurationInputDefinition"
+    },
+    "AuthenticationType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "BASIC",
+            "OAUTH2",
+            "CUSTOM"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Authentication Type",
+      "title": "AWSDataZoneConnectionAuthenticationTypeDefinition"
+    },
+    "AuthorizationCodeProperties": {
+      "type": "object",
+      "description": "Authorization Code Properties",
+      "properties": {
+        "AuthorizationCode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4096,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RedirectUri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionAuthorizationCodePropertiesDefinition"
+    },
+    "AwsLocation": {
+      "type": "object",
+      "description": "AWS Location of project",
+      "properties": {
+        "AccessRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AwsAccountId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{12}$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AwsRegion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z]{2}-[a-z]{4,10}-\\d$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IamConnectionId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionAwsLocationDefinition"
+    },
+    "BasicAuthenticationCredentials": {
+      "type": "object",
+      "description": "Basic Authentication Credentials",
+      "properties": {
+        "UserName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "pattern": "^\\S+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Password": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "pattern": "^.*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionBasicAuthenticationCredentialsDefinition"
+    },
+    "ComputeEnvironments": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Compute Environments",
+      "title": "AWSDataZoneConnectionComputeEnvironmentsDefinition"
+    },
+    "ConnectionProperties": {
+      "type": "object",
+      "description": "Connection Properties",
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionConnectionPropertiesDefinition"
+    },
+    "ConnectionPropertiesInput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "AthenaProperties",
+          "properties": {
+            "AthenaProperties": {
+              "$ref": "#/definitions/AthenaPropertiesInput"
+            }
+          },
+          "required": [
+            "AthenaProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "GlueProperties",
+          "properties": {
+            "GlueProperties": {
+              "$ref": "#/definitions/GluePropertiesInput"
+            }
+          },
+          "required": [
+            "GlueProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "HyperPodProperties",
+          "properties": {
+            "HyperPodProperties": {
+              "$ref": "#/definitions/HyperPodPropertiesInput"
+            }
+          },
+          "required": [
+            "HyperPodProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "IamProperties",
+          "properties": {
+            "IamProperties": {
+              "$ref": "#/definitions/IamPropertiesInput"
+            }
+          },
+          "required": [
+            "IamProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "RedshiftProperties",
+          "properties": {
+            "RedshiftProperties": {
+              "$ref": "#/definitions/RedshiftPropertiesInput"
+            }
+          },
+          "required": [
+            "RedshiftProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "SparkEmrProperties",
+          "properties": {
+            "SparkEmrProperties": {
+              "$ref": "#/definitions/SparkEmrPropertiesInput"
+            }
+          },
+          "required": [
+            "SparkEmrProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "AmazonQProperties",
+          "properties": {
+            "AmazonQProperties": {
+              "$ref": "#/definitions/AmazonQPropertiesInput"
+            }
+          },
+          "required": [
+            "AmazonQProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "SparkGlueProperties",
+          "properties": {
+            "SparkGlueProperties": {
+              "$ref": "#/definitions/SparkGluePropertiesInput"
+            }
+          },
+          "required": [
+            "SparkGlueProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "S3Properties",
+          "properties": {
+            "S3Properties": {
+              "$ref": "#/definitions/S3PropertiesInput"
+            }
+          },
+          "required": [
+            "S3Properties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "MlflowProperties",
+          "properties": {
+            "MlflowProperties": {
+              "$ref": "#/definitions/MlflowPropertiesInput"
+            }
+          },
+          "required": [
+            "MlflowProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "WorkflowsMwaaProperties",
+          "properties": {
+            "WorkflowsMwaaProperties": {
+              "$ref": "#/definitions/WorkflowsMwaaPropertiesInput"
+            }
+          },
+          "required": [
+            "WorkflowsMwaaProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "WorkflowsServerlessProperties",
+          "properties": {
+            "WorkflowsServerlessProperties": {
+              "$ref": "#/definitions/WorkflowsServerlessPropertiesInput"
+            }
+          },
+          "required": [
+            "WorkflowsServerlessProperties"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "LakehouseProperties",
+          "properties": {
+            "LakehouseProperties": {
+              "$ref": "#/definitions/LakehousePropertiesInput"
+            }
+          },
+          "required": [
+            "LakehouseProperties"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDataZoneConnectionConnectionPropertiesInputDefinition"
+    },
+    "ConnectionStatus": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "CREATING",
+            "CREATE_FAILED",
+            "DELETING",
+            "DELETE_FAILED",
+            "READY",
+            "UPDATING",
+            "UPDATE_FAILED",
+            "DELETED"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Connection Status",
+      "title": "AWSDataZoneConnectionConnectionStatusDefinition"
+    },
+    "ConnectionType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Connection Type",
+      "title": "AWSDataZoneConnectionConnectionTypeDefinition"
+    },
+    "CredentialMap": {
+      "type": "object",
+      "description": "Credential Map",
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionCredentialMapDefinition"
+    },
+    "GlueConnectionInput": {
+      "type": "object",
+      "description": "Glue Connection Input",
+      "properties": {
+        "ConnectionProperties": {
+          "$ref": "#/definitions/ConnectionProperties"
+        },
+        "PhysicalConnectionRequirements": {
+          "$ref": "#/definitions/PhysicalConnectionRequirements"
+        },
+        "Name": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "minLength": 1,
+              "pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFF\\t]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Description": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFF\\r\\n\\t]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ConnectionType": {
+          "$ref": "#/definitions/GlueConnectionType"
+        },
+        "MatchCriteria": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 10,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ValidateCredentials": {
+          "type": "boolean"
+        },
+        "ValidateForComputeEnvironments": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "$ref": "#/definitions/ComputeEnvironments"
+          },
+          "maxItems": 50,
+          "minItems": 1
+        },
+        "SparkProperties": {
+          "$ref": "#/definitions/PropertyMap"
+        },
+        "AthenaProperties": {
+          "$ref": "#/definitions/PropertyMap"
+        },
+        "PythonProperties": {
+          "$ref": "#/definitions/PropertyMap"
+        },
+        "AuthenticationConfiguration": {
+          "$ref": "#/definitions/AuthenticationConfigurationInput"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionGlueConnectionInputDefinition"
+    },
+    "GlueConnectionType": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Glue Connection Type",
+      "title": "AWSDataZoneConnectionGlueConnectionTypeDefinition"
+    },
+    "GlueOAuth2Credentials": {
+      "type": "object",
+      "description": "Glue OAuth2 Credentials",
+      "properties": {
+        "UserManagedClientApplicationClientSecret": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "pattern": "^[\\x20-\\x7E]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AccessToken": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4096,
+              "pattern": "^[\\x20-\\x7E]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RefreshToken": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 4096,
+              "pattern": "^[\\x20-\\x7E]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "JwtToken": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 8000,
+              "pattern": "^([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_\\-\\+\\/=]*)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionGlueOAuth2CredentialsDefinition"
+    },
+    "GluePropertiesInput": {
+      "type": "object",
+      "description": "Glue Properties Input",
+      "properties": {
+        "GlueConnectionInput": {
+          "$ref": "#/definitions/GlueConnectionInput"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionGluePropertiesInputDefinition"
+    },
+    "HyperPodPropertiesInput": {
+      "type": "object",
+      "description": "HyperPod Properties Input",
+      "properties": {
+        "ClusterName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 63,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "ClusterName"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionHyperPodPropertiesInputDefinition"
+    },
+    "IamPropertiesInput": {
+      "type": "object",
+      "description": "IAM Properties Input",
+      "properties": {
+        "GlueLineageSyncEnabled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionIamPropertiesInputDefinition"
+    },
+    "LineageSyncSchedule": {
+      "type": "object",
+      "description": "Lineage Sync Schedule",
+      "properties": {
+        "Schedule": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^cron\\((\\b[0-5]?[0-9]\\b) (\\b2[0-3]\\b|\\b[0-1]?[0-9]\\b) ([-?*,/\\dLW]){1,83} ([-*,/\\d]|[a-zA-Z]{3}){1,23} ([-?#*,/\\dL]|[a-zA-Z]{3}){1,13} ([^\\)]+)\\)$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionLineageSyncScheduleDefinition"
+    },
+    "OAuth2ClientApplication": {
+      "type": "object",
+      "description": "OAuth2 Client Application",
+      "properties": {
+        "UserManagedClientApplicationClientId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^\\S+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "AWSManagedClientApplicationReference": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^\\S+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionOAuth2ClientApplicationDefinition"
+    },
+    "OAuth2GrantType": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "AUTHORIZATION_CODE",
+            "CLIENT_CREDENTIALS",
+            "JWT_BEARER"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "OAuth2 Grant Type",
+      "title": "AWSDataZoneConnectionOAuth2GrantTypeDefinition"
+    },
+    "OAuth2Properties": {
+      "type": "object",
+      "description": "OAuth2 Properties",
+      "properties": {
+        "OAuth2GrantType": {
+          "$ref": "#/definitions/OAuth2GrantType"
+        },
+        "OAuth2ClientApplication": {
+          "$ref": "#/definitions/OAuth2ClientApplication"
+        },
+        "TokenUrl": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TokenUrlParametersMap": {
+          "$ref": "#/definitions/TokenUrlParametersMap"
+        },
+        "AuthorizationCodeProperties": {
+          "$ref": "#/definitions/AuthorizationCodeProperties"
+        },
+        "OAuth2Credentials": {
+          "$ref": "#/definitions/GlueOAuth2Credentials"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionOAuth2PropertiesDefinition"
+    },
+    "PhysicalConnectionRequirements": {
+      "type": "object",
+      "description": "Physical Connection Requirements",
+      "properties": {
+        "SubnetId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 32,
+              "pattern": "^subnet-[a-z0-9]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "SubnetIdList": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 32,
+                "pattern": "^subnet-[a-z0-9]+$"
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 50,
+          "minItems": 1
+        },
+        "SecurityGroupIdList": {
+          "type": "array",
+          "insertionOrder": false,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              {
+                "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+              }
+            ]
+          },
+          "maxItems": 50,
+          "minItems": 0
+        },
+        "AvailabilityZone": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionPhysicalConnectionRequirementsDefinition"
+    },
+    "PropertyMap": {
+      "type": "object",
+      "description": "Property Map",
+      "patternProperties": {
+        "^[\\u0020-\\uD7FF\\uE000-\\uFFFF\\t]*$": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 1,
+              "pattern": "^[\\u0020-\\uD7FF\\uE000-\\uFFFF\\t]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionPropertyMapDefinition"
+    },
+    "RedshiftCredentials": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "SecretArn",
+          "properties": {
+            "SecretArn": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 2048,
+                  "pattern": "^arn:aws[^:]*:secretsmanager:[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]:\\d{12}:secret:.*$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "SecretArn"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "UsernamePassword",
+          "properties": {
+            "UsernamePassword": {
+              "$ref": "#/definitions/UsernamePassword"
+            }
+          },
+          "required": [
+            "UsernamePassword"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDataZoneConnectionRedshiftCredentialsDefinition"
+    },
+    "RedshiftLineageSyncConfigurationInput": {
+      "type": "object",
+      "description": "Redshift Lineage Sync Configuration Input",
+      "properties": {
+        "Enabled": {
+          "type": "boolean"
+        },
+        "Schedule": {
+          "$ref": "#/definitions/LineageSyncSchedule"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionRedshiftLineageSyncConfigurationInputDefinition"
+    },
+    "RedshiftPropertiesInput": {
+      "type": "object",
+      "description": "Redshift Properties Input",
+      "properties": {
+        "Storage": {
+          "$ref": "#/definitions/RedshiftStorageProperties"
+        },
+        "DatabaseName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[a-z0-9_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Host": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Port": {
+          "type": "number",
+          "maximum": 65535,
+          "minimum": 0
+        },
+        "Credentials": {
+          "$ref": "#/definitions/RedshiftCredentials"
+        },
+        "LineageSync": {
+          "$ref": "#/definitions/RedshiftLineageSyncConfigurationInput"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionRedshiftPropertiesInputDefinition"
+    },
+    "RedshiftStorageProperties": {
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "ClusterName",
+          "properties": {
+            "ClusterName": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 63,
+                  "minLength": 0,
+                  "pattern": "^[a-z0-9-]+$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "ClusterName"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "title": "WorkgroupName",
+          "properties": {
+            "WorkgroupName": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64,
+                  "minLength": 3,
+                  "pattern": "^[a-z0-9-]+$"
+                },
+                {
+                  "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+                }
+              ]
+            }
+          },
+          "required": [
+            "WorkgroupName"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AWSDataZoneConnectionRedshiftStoragePropertiesDefinition"
+    },
+    "SparkEmrPropertiesInput": {
+      "type": "object",
+      "description": "Spark EMR Properties Input.",
+      "properties": {
+        "ComputeArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^arn:aws(-(cn|us-gov|iso(-[bef])?))?:(elasticmapreduce|emr-serverless|emr-containers):.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "InstanceProfileArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "JavaVirtualEnv": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "LogUri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^s3://.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "PythonVirtualEnv": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "RuntimeRole": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^arn:aws[^:]*:iam::\\d{12}:role(/[a-zA-Z0-9+=,.@_-]+)*/[a-zA-Z0-9+=,.@_-]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "TrustedCertificatesS3Uri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^s3://.+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ManagedEndpointArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionSparkEmrPropertiesInputDefinition"
+    },
+    "SparkGlueArgs": {
+      "type": "object",
+      "description": "Spark Glue Args.",
+      "properties": {
+        "Connection": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[a-zA-Z0-9]+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionSparkGlueArgsDefinition"
+    },
+    "AmazonQPropertiesInput": {
+      "type": "object",
+      "description": "Amazon Q properties of the connection.",
+      "properties": {
+        "IsEnabled": {
+          "type": "boolean",
+          "description": "Specifies whether Amazon Q is enabled for the connection"
+        },
+        "AuthMode": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 128,
+              "minLength": 0
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The authentication mode of the connection's AmazonQ properties"
+        },
+        "ProfileArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 0,
+              "pattern": "arn:aws[a-z\\-]*:[a-z0-9\\-]+:[a-z0-9\\-]*:[0-9]*:.*"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionAmazonQPropertiesInputDefinition"
+    },
+    "SparkGluePropertiesInput": {
+      "type": "object",
+      "description": "Spark Glue Properties Input.",
+      "properties": {
+        "AdditionalArgs": {
+          "$ref": "#/definitions/SparkGlueArgs"
+        },
+        "GlueConnectionName": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 255,
+              "minLength": 1,
+              "pattern": "^[\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "GlueVersion": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^\\w+\\.\\w+$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "IdleTimeout": {
+          "type": "number",
+          "maximum": 3000,
+          "minimum": 1
+        },
+        "JavaVirtualEnv": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "NumberOfWorkers": {
+          "type": "number",
+          "maximum": 1000,
+          "minimum": 1
+        },
+        "PythonVirtualEnv": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "WorkerType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 256,
+              "pattern": "^[G|Z].*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionSparkGluePropertiesInputDefinition"
+    },
+    "TokenUrlParametersMap": {
+      "type": "object",
+      "description": "The token URL parameters.",
+      "patternProperties": {
+        ".+": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 512,
+              "minLength": 1
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionTokenUrlParametersMapDefinition"
+    },
+    "UsernamePassword": {
+      "type": "object",
+      "description": "The username and password to be used for authentication.",
+      "properties": {
+        "Password": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^[\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Username": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 127,
+              "minLength": 1,
+              "pattern": "^[\\S]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        }
+      },
+      "required": [
+        "Password",
+        "Username"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionUsernamePasswordDefinition"
+    },
+    "S3PropertiesInput": {
+      "type": "object",
+      "description": "S3 Properties Input",
+      "properties": {
+        "S3Uri": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "minLength": 0,
+              "pattern": "s3://.+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 URI that's part of the Amazon S3 properties of a connection."
+        },
+        "S3AccessGrantLocationId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 0,
+              "pattern": "[a-zA-Z0-9\\-]+"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The Amazon S3 Access Grant location ID that's part of the Amazon S3 properties of a connection."
+        },
+        "RegisterS3AccessGrantLocation": {
+          "type": "boolean",
+          "description": "Specifies whether to register the S3 Access Grant location."
+        }
+      },
+      "required": [
+        "S3Uri"
+      ],
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionS3PropertiesInputDefinition"
+    },
+    "LakehousePropertiesInput": {
+      "type": "object",
+      "description": "Lakehouse Properties Input",
+      "properties": {
+        "GlueLineageSyncEnabled": {
+          "type": "boolean",
+          "description": "Specifies whether Glue lineage sync is enabled for the lakehouse connection."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionLakehousePropertiesInputDefinition"
+    },
+    "MlflowPropertiesInput": {
+      "type": "object",
+      "description": "MLflow Properties Input",
+      "properties": {
+        "TrackingServerArn": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the MLflow tracking server"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionMlflowPropertiesInputDefinition"
+    },
+    "WorkflowsMwaaPropertiesInput": {
+      "type": "object",
+      "description": "Workflows MWAA Properties Input",
+      "properties": {
+        "MwaaEnvironmentName": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The name of the MWAA environment."
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionWorkflowsMwaaPropertiesInputDefinition"
+    },
+    "WorkflowsServerlessPropertiesInput": {
+      "type": "object",
+      "description": "Workflows Serverless Properties Input",
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionWorkflowsServerlessPropertiesInputDefinition"
+    },
+    "ConnectionConfiguration": {
+      "type": "object",
+      "description": "A configuration of the connection.",
+      "properties": {
+        "Classification": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^[\\w][\\w\\.\\-\\_]*$"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The classification of the connection configuration."
+        },
+        "Properties": {
+          "$ref": "#/definitions/PropertyMap"
+        }
+      },
+      "additionalProperties": false,
+      "title": "AWSDataZoneConnectionConnectionConfigurationDefinition"
+    }
+  },
+  "properties": {
+    "AwsLocation": {
+      "$ref": "#/definitions/AwsLocation"
+    },
+    "Configurations": {
+      "type": "array",
+      "description": "The configurations of the connection.",
+      "insertionOrder": false,
+      "items": {
+        "$ref": "#/definitions/ConnectionConfiguration"
+      }
+    },
+    "Description": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[\\S\\s]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The description of the connection."
+    },
+    "DomainIdentifier": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^dzd[_-][a-zA-Z0-9_-]{1,36}$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the domain in which the connection is created."
+    },
+    "EnableTrustedIdentityPropagation": {
+      "type": "boolean",
+      "description": "Specifies whether the trusted identity propagation is enabled"
+    },
+    "EnvironmentIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the environment in which the connection is created."
+    },
+    "ProjectIdentifier": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The identifier of the project in which the connection should be created. If "
+    },
+    "Name": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[\\w][\\w\\.\\-\\_]*$"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the connection."
+    },
+    "Props": {
+      "$ref": "#/definitions/ConnectionPropertiesInput"
+    },
+    "Scope": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "DOMAIN",
+            "PROJECT"
+          ]
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The scope of the connection."
+    }
+  },
+  "required": [
+    "DomainIdentifier",
+    "Name"
+  ],
+  "readOnlyProperties": [
+    "/properties/ConnectionId",
+    "/properties/DomainId",
+    "/properties/DomainUnitId",
+    "/properties/EnvironmentId",
+    "/properties/EnvironmentUserRole",
+    "/properties/ProjectId",
+    "/properties/Type"
+  ],
+  "writeOnlyProperties": [
+    "/properties/AwsLocation",
+    "/properties/Configurations",
+    "/properties/DomainIdentifier",
+    "/properties/EnableTrustedIdentityPropagation",
+    "/properties/EnvironmentIdentifier",
+    "/properties/ProjectIdentifier",
+    "/properties/Props",
+    "/properties/Scope"
+  ],
+  "createOnlyProperties": [
+    "/properties/DomainIdentifier",
+    "/properties/EnableTrustedIdentityPropagation",
+    "/properties/EnvironmentIdentifier",
+    "/properties/ProjectIdentifier",
+    "/properties/Name",
+    "/properties/Scope"
+  ],
+  "primaryIdentifier": [
+    "/properties/DomainId",
+    "/properties/ConnectionId"
+  ],
+  "tagging": {
+    "taggable": false,
+    "tagOnCreate": false,
+    "tagUpdatable": false,
+    "cloudFormationSystemTags": false
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "title": "AWSDataZoneConnectionProperties"
+}

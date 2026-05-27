@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::IoT::SecurityProfile",
-  "description": "A security profile defines a set of expected behaviors for devices in your account.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
+  "description": "A security profile defines a set of expected behaviors for devices in your account.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-iot.git",
   "definitions": {
     "Behavior": {
@@ -44,6 +44,9 @@
         "SuppressAlerts": {
           "description": "Manage Detect alarm SNS notifications by setting behavior notification to on or suppressed. Detect will continue to performing device behavior evaluations. However, suppressed alarms wouldn't be forwarded for SNS notification.",
           "type": "boolean"
+        },
+        "ExportMetric": {
+          "$ref": "#/definitions/ExportMetric"
         }
       },
       "required": [
@@ -51,6 +54,11 @@
       ],
       "additionalProperties": false,
       "title": "AWSIoTSecurityProfileBehaviorDefinition"
+    },
+    "ExportMetric": {
+      "description": "Flag to enable/disable metrics export for metric to be retained.",
+      "type": "boolean",
+      "title": "AWSIoTSecurityProfileExportMetricDefinition"
     },
     "MetricDimension": {
       "description": "The dimension of a metric.",
@@ -338,6 +346,9 @@
         },
         "MetricDimension": {
           "$ref": "#/definitions/MetricDimension"
+        },
+        "ExportMetric": {
+          "$ref": "#/definitions/ExportMetric"
         }
       },
       "required": [
@@ -441,6 +452,43 @@
         "$ref": "#/definitions/MetricToRetain"
       }
     },
+    "MetricsExportConfig": {
+      "description": "A structure containing the mqtt topic for metrics export.",
+      "type": "object",
+      "properties": {
+        "MqttTopic": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The topic for metrics export."
+        },
+        "RoleArn": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 2048
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The ARN of the role that grants permission to publish to mqtt topic."
+        }
+      },
+      "required": [
+        "MqttTopic",
+        "RoleArn"
+      ],
+      "additionalProperties": false
+    },
     "Tags": {
       "description": "Metadata that can be used to manage the security profile.",
       "type": "array",
@@ -475,6 +523,18 @@
     "/properties/SecurityProfileName"
   ],
   "required": [],
+  "tagging": {
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "cloudFormationSystemTags": true,
+    "tagProperty": "/properties/Tags",
+    "permissions": [
+      "iot:TagResource",
+      "iot:UntagResource",
+      "iot:ListTagsForResource"
+    ]
+  },
   "createOnlyProperties": [
     "/properties/SecurityProfileName"
   ],

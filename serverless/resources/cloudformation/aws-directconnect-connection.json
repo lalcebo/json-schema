@@ -1,0 +1,179 @@
+{
+  "tagging": {
+    "permissions": [
+      "directconnect:TagResource",
+      "directconnect:UntagResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "typeName": "AWS::DirectConnect::Connection",
+  "readOnlyProperties": [
+    "/properties/ConnectionArn",
+    "/properties/ConnectionId",
+    "/properties/ConnectionState"
+  ],
+  "description": "Resource Type definition for AWS::DirectConnect::Connection. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "createOnlyProperties": [
+    "/properties/Bandwidth",
+    "/properties/Location",
+    "/properties/ProviderName",
+    "/properties/RequestMACSec"
+  ],
+  "primaryIdentifier": [
+    "/properties/ConnectionArn"
+  ],
+  "required": [
+    "Bandwidth",
+    "ConnectionName",
+    "Location"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "propertyTransform": {
+    "/properties/Location": "\"^[a-zA-Z0-9-]+$\"",
+    "/properties/LagId": "$lowercase($substringAfter(LagId, \"/\"))"
+  },
+  "writeOnlyProperties": [
+    "/properties/RequestMACSec"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/ConnectionId"
+    ]
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSDirectConnectConnectionTagDefinition"
+    }
+  },
+  "replacementStrategy": "delete_then_create",
+  "properties": {
+    "ConnectionName": {
+      "oneOf": [
+        {
+          "pattern": "^[\\w \\-_,\\/]{1,200}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the connection."
+    },
+    "LagId": {
+      "oneOf": [
+        {
+          "pattern": "^(arn:aws[a-z-]*:directconnect:[a-z0-9-]+:[0-9]{12}:dxlag/)?dxlag-[a-zA-Z0-9]{8,21}$",
+          "anyOf": [
+            {
+              "relationshipRef": {
+                "typeName": "AWS::DirectConnect::Lag",
+                "propertyPath": "/properties/LagId"
+              }
+            },
+            {
+              "relationshipRef": {
+                "typeName": "AWS::DirectConnect::Lag",
+                "propertyPath": "/properties/LagArn"
+              }
+            }
+          ],
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The ID or ARN of the LAG to associate the connection with."
+    },
+    "ProviderName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the service provider associated with the requested connection."
+    },
+    "RequestMACSec": {
+      "description": "Indicates whether you want the connection to support MAC Security (MACsec).",
+      "type": "boolean"
+    },
+    "Bandwidth": {
+      "oneOf": [
+        {
+          "pattern": "^[1-9][0-9]*(M|G)bps$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The bandwidth of the connection."
+    },
+    "Tags": {
+      "uniqueItems": true,
+      "description": "The tags associated with the connection.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Location": {
+      "oneOf": [
+        {
+          "pattern": "^[a-zA-Z0-9-]+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The location of the connection."
+    }
+  },
+  "type": "object",
+  "title": "AWSDirectConnectConnectionProperties"
+}

@@ -1,6 +1,6 @@
 {
   "typeName": "AWS::AutoScaling::ScalingPolicy",
-  "description": "The AWS::AutoScaling::ScalingPolicy resource specifies an Amazon EC2 Auto Scaling scaling policy so that the Auto Scaling group can scale the number of instances available for your application.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-autoscaling.git. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-autoscaling.git",
+  "description": "The AWS::AutoScaling::ScalingPolicy resource specifies an Amazon EC2 Auto Scaling scaling policy so that the Auto Scaling group can scale the number of instances available for your application.. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-autoscaling.git",
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-autoscaling.git",
   "definitions": {
     "PredictiveScalingMetricSpecification": {
@@ -100,6 +100,14 @@
             "$ref": "#/definitions/MetricDimension"
           }
         },
+        "Metrics": {
+          "type": "array",
+          "insertionOrder": false,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/definitions/TargetTrackingMetricDataQuery"
+          }
+        },
         "Statistic": {
           "oneOf": [
             {
@@ -129,13 +137,12 @@
               "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
             }
           ]
+        },
+        "Period": {
+          "type": "integer"
         }
       },
-      "required": [
-        "MetricName",
-        "Statistic",
-        "Namespace"
-      ],
+      "required": [],
       "title": "AWSAutoScalingScalingPolicyCustomizedMetricSpecificationDefinition"
     },
     "TargetTrackingConfiguration": {
@@ -424,6 +431,43 @@
       ],
       "title": "AWSAutoScalingScalingPolicyMetricDefinition"
     },
+    "TargetTrackingMetricStat": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Metric": {
+          "$ref": "#/definitions/Metric"
+        },
+        "Stat": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Unit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Period": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Stat",
+        "Metric"
+      ],
+      "title": "AWSAutoScalingScalingPolicyTargetTrackingMetricStatDefinition"
+    },
     "MetricStat": {
       "type": "object",
       "additionalProperties": false,
@@ -457,6 +501,55 @@
         "Metric"
       ],
       "title": "AWSAutoScalingScalingPolicyMetricStatDefinition"
+    },
+    "TargetTrackingMetricDataQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Label": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "MetricStat": {
+          "$ref": "#/definitions/TargetTrackingMetricStat"
+        },
+        "Id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "ReturnData": {
+          "type": "boolean"
+        },
+        "Expression": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ]
+        },
+        "Period": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Id"
+      ],
+      "title": "AWSAutoScalingScalingPolicyTargetTrackingMetricDataQueryDefinition"
     },
     "MetricDataQuery": {
       "type": "object",

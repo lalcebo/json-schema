@@ -1,0 +1,156 @@
+{
+  "tagging": {
+    "permissions": [
+      "directconnect:TagResource",
+      "directconnect:UntagResource"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": true
+  },
+  "typeName": "AWS::DirectConnect::Lag",
+  "readOnlyProperties": [
+    "/properties/LagArn",
+    "/properties/LagId",
+    "/properties/LagState"
+  ],
+  "description": "Resource Type definition for AWS::DirectConnect::Lag. Source:- https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "createOnlyProperties": [
+    "/properties/ConnectionsBandwidth",
+    "/properties/Location",
+    "/properties/ProviderName",
+    "/properties/RequestMACSec"
+  ],
+  "primaryIdentifier": [
+    "/properties/LagArn"
+  ],
+  "required": [
+    "LagName",
+    "Location",
+    "ConnectionsBandwidth"
+  ],
+  "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-rpdk.git",
+  "propertyTransform": {
+    "/properties/Location": "\"^[a-zA-Z0-9-]+$\""
+  },
+  "writeOnlyProperties": [
+    "/properties/RequestMACSec"
+  ],
+  "additionalIdentifiers": [
+    [
+      "/properties/LagId"
+    ]
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Tag": {
+      "description": "A key-value pair to associate with a resource.",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "Value": {
+          "oneOf": [
+            {
+              "minLength": 0,
+              "type": "string",
+              "maxLength": 256
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        }
+      },
+      "required": [
+        "Key",
+        "Value"
+      ],
+      "title": "AWSDirectConnectLagTagDefinition"
+    }
+  },
+  "replacementStrategy": "delete_then_create",
+  "properties": {
+    "ProviderName": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the service provider associated with the requested LAG."
+    },
+    "RequestMACSec": {
+      "description": "Indicates whether you want the LAG to support MAC Security (MACsec).",
+      "type": "boolean"
+    },
+    "ConnectionsBandwidth": {
+      "oneOf": [
+        {
+          "pattern": "^[1-9][0-9]*(M|G)bps$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The bandwidth of the individual physical dedicated connections bundled by the LAG."
+    },
+    "LagName": {
+      "oneOf": [
+        {
+          "pattern": "^[\\w \\-_,\\/]{1,200}$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The name of the LAG."
+    },
+    "MinimumLinks": {
+      "description": "The minimum number of physical dedicated connections that must be operational for the LAG itself to be operational.",
+      "type": "integer"
+    },
+    "Tags": {
+      "uniqueItems": true,
+      "description": "The tags associated with the LAG.",
+      "insertionOrder": false,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "Location": {
+      "oneOf": [
+        {
+          "pattern": "^[a-zA-Z0-9-]+$",
+          "type": "string"
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "The location for the LAG."
+    }
+  },
+  "type": "object",
+  "title": "AWSDirectConnectLagProperties"
+}

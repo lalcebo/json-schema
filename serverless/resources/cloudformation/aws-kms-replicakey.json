@@ -1,30 +1,48 @@
 {
+  "tagging": {
+    "permissions": [
+      "kms:TagResource",
+      "kms:UntagResource",
+      "kms:ListResourceTags"
+    ],
+    "taggable": true,
+    "tagOnCreate": true,
+    "tagUpdatable": true,
+    "tagProperty": "/properties/Tags",
+    "cloudFormationSystemTags": false
+  },
   "typeName": "AWS::KMS::ReplicaKey",
-  "description": "The AWS::KMS::ReplicaKey resource specifies a multi-region replica AWS KMS key in AWS Key Management Service (AWS KMS).. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kms. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kms",
+  "readOnlyProperties": [
+    "/properties/Arn",
+    "/properties/KeyId"
+  ],
+  "description": "The AWS::KMS::ReplicaKey resource specifies a multi-region replica AWS KMS key in AWS Key Management Service (AWS KMS).. Source:- https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kms",
+  "createOnlyProperties": [
+    "/properties/PrimaryKeyArn"
+  ],
+  "primaryIdentifier": [
+    "/properties/KeyId"
+  ],
+  "required": [
+    "PrimaryKeyArn",
+    "KeyPolicy"
+  ],
   "sourceUrl": "https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-kms",
+  "writeOnlyProperties": [
+    "/properties/PendingWindowInDays"
+  ],
+  "additionalProperties": false,
   "definitions": {
     "Tag": {
       "description": "A key-value pair to associate with a resource.",
+      "additionalProperties": false,
       "type": "object",
       "properties": {
-        "Key": {
-          "oneOf": [
-            {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128
-            },
-            {
-              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-            }
-          ],
-          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
-        },
         "Value": {
           "oneOf": [
             {
-              "type": "string",
               "minLength": 0,
+              "type": "string",
               "maxLength": 256
             },
             {
@@ -32,9 +50,21 @@
             }
           ],
           "description": "The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
+        },
+        "Key": {
+          "oneOf": [
+            {
+              "minLength": 1,
+              "type": "string",
+              "maxLength": 128
+            },
+            {
+              "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+            }
+          ],
+          "description": "The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -."
         }
       },
-      "additionalProperties": false,
       "required": [
         "Key",
         "Value"
@@ -43,24 +73,11 @@
     }
   },
   "properties": {
-    "PrimaryKeyArn": {
-      "oneOf": [
-        {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256
-        },
-        {
-          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
-        }
-      ],
-      "description": "Identifies the primary AWS KMS key to create a replica of. Specify the Amazon Resource Name (ARN) of the AWS KMS key. You cannot specify an alias or key ID. For help finding the ARN, see Finding the Key ID and ARN in the AWS Key Management Service Developer Guide."
-    },
     "Description": {
       "oneOf": [
         {
-          "type": "string",
           "minLength": 0,
+          "type": "string",
           "maxLength": 8192
         },
         {
@@ -69,9 +86,11 @@
       ],
       "description": "A description of the AWS KMS key. Use a description that helps you to distinguish this AWS KMS key from others in the account, such as its intended use."
     },
-    "Enabled": {
-      "description": "Specifies whether the AWS KMS key is enabled. Disabled AWS KMS keys cannot be used in cryptographic operations.",
-      "type": "boolean"
+    "PendingWindowInDays": {
+      "description": "Specifies the number of days in the waiting period before AWS KMS deletes an AWS KMS key that has been removed from a CloudFormation stack. Enter a value between 7 and 30 days. The default value is 30 days.",
+      "maximum": 30,
+      "type": "integer",
+      "minimum": 7
     },
     "KeyPolicy": {
       "description": "The key policy that authorizes use of the AWS KMS key. The key policy must observe the following rules.",
@@ -80,45 +99,32 @@
         "string"
       ]
     },
-    "PendingWindowInDays": {
-      "description": "Specifies the number of days in the waiting period before AWS KMS deletes an AWS KMS key that has been removed from a CloudFormation stack. Enter a value between 7 and 30 days. The default value is 30 days.",
-      "type": "integer",
-      "minimum": 7,
-      "maximum": 30
+    "PrimaryKeyArn": {
+      "oneOf": [
+        {
+          "minLength": 1,
+          "type": "string",
+          "maxLength": 256
+        },
+        {
+          "$ref": "../../components/cf.functions.json#/Aws_CF_FunctionString"
+        }
+      ],
+      "description": "Identifies the primary AWS KMS key to create a replica of. Specify the Amazon Resource Name (ARN) of the AWS KMS key. You cannot specify an alias or key ID. For help finding the ARN, see Finding the Key ID and ARN in the AWS Key Management Service Developer Guide."
+    },
+    "Enabled": {
+      "description": "Specifies whether the AWS KMS key is enabled. Disabled AWS KMS keys cannot be used in cryptographic operations.",
+      "type": "boolean"
     },
     "Tags": {
-      "description": "An array of key-value pairs to apply to this resource.",
-      "type": "array",
       "uniqueItems": true,
+      "description": "An array of key-value pairs to apply to this resource.",
       "insertionOrder": false,
+      "type": "array",
       "items": {
         "$ref": "#/definitions/Tag"
       }
     }
-  },
-  "additionalProperties": false,
-  "required": [
-    "PrimaryKeyArn",
-    "KeyPolicy"
-  ],
-  "createOnlyProperties": [
-    "/properties/PrimaryKeyArn"
-  ],
-  "readOnlyProperties": [
-    "/properties/Arn",
-    "/properties/KeyId"
-  ],
-  "primaryIdentifier": [
-    "/properties/KeyId"
-  ],
-  "writeOnlyProperties": [
-    "/properties/PendingWindowInDays"
-  ],
-  "tagging": {
-    "taggable": true,
-    "tagOnCreate": true,
-    "tagUpdatable": true,
-    "cloudFormationSystemTags": false
   },
   "type": "object",
   "title": "AWSKMSReplicaKeyProperties"
