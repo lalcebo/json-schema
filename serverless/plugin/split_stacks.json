@@ -1,44 +1,56 @@
 {
-  "id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/split_stacks.json",
-  "schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/split_stacks.json",
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "ServerlessSplitStacksPlugin",
+  "description": "Schema for the serverless-plugin-split-stacks (https://github.com/dougmoscrop/serverless-plugin-split-stacks). Splits a deployment into multiple nested CloudFormation stacks. Goes under `custom.splitStacks`.",
   "type": "object",
-  "additionalProperties": false,
-  "SplitStacks": {
-    "type": "object",
-    "properties": {
-      "nestedStackCount": {
-        "type": "number",
-        "maximum": 200,
-        "default": 20,
-        "description": "Controls the number of created nested stacks"
+  "definitions": {
+    "SplitStacks": {
+      "title": "SplitStacks",
+      "type": "object",
+      "properties": {
+        "nestedStackCount": {
+          "description": "Number of nested stacks to create when `perGroupFunction` is enabled. WARNING: should never be changed after initial deployment — changing it forces a full recreation.",
+          "type": "number",
+          "maximum": 200,
+          "default": 20
+        },
+        "perFunction": {
+          "description": "Split resources into a nested stack dedicated to each Lambda function.",
+          "type": "boolean",
+          "default": false
+        },
+        "perType": {
+          "description": "Move resources into a nested stack per resource type.",
+          "type": "boolean",
+          "default": true
+        },
+        "perGroupFunction": {
+          "description": "Split resources into a nested stack dedicated to a set of Lambda functions and associated resources.",
+          "type": "boolean",
+          "default": false
+        },
+        "stackConcurrency": {
+          "description": "How many nested stacks to deploy in parallel. Disabled when absent.",
+          "type": "number",
+          "minimum": 1
+        },
+        "resourceConcurrency": {
+          "description": "How many resources to deploy in parallel. Disabled when absent.",
+          "type": "number",
+          "minimum": 1
+        },
+        "custom": {
+          "description": "Path to a custom splitter module.",
+          "type": "string"
+        },
+        "proxyAgent": {
+          "description": "Enable the proxy-agent library so HTTPS requests honour `HTTPS_PROXY` / `NO_PROXY` environment variables.",
+          "type": "boolean",
+          "default": false
+        }
       },
-      "perFunction": {
-        "type": "boolean",
-        "default": true
-      },
-      "perType": {
-        "type": "boolean",
-        "default": false
-      },
-      "perGroupFunction": {
-        "type": "boolean",
-        "default": false
-      },
-      "stackConcurrency": {
-        "description": "Controls if enabled and how much stacks are deployed in parallel. Disabled if absent.",
-        "type": "number"
-      },
-      "resourceConcurrency": {
-        "type": "number",
-        "description": "Controls how much resources are deployed in parallel. Disabled if absent."
-      },
-      "custom": {
-        "type": "string",
-        "description": "If you want to pass path to your splitter directly"
-      }
+      "additionalProperties": false
     }
-  },
-  "required": [
-    "SplitStacks"
-  ]
+  }
 }

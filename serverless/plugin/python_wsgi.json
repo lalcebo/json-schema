@@ -1,35 +1,39 @@
 {
   "$id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/python_wsgi.json",
   "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "ServerlessWsgiPlugin",
+  "description": "Schema for the serverless-wsgi plugin (https://github.com/logandk/serverless-wsgi). Goes under `custom.wsgi`.",
   "type": "object",
-  "description": "",
-  "additionalProperties": false,
-  "PythonWsgi": {
-    "properties": {
-      "app": {
-        "type": "string",
-        "description": "The path to the flask app, <path_to_file>.<name_of_variable>"
-      },
-      "packRequirements": {
-        "type": "boolean",
-        "description": "https://github.com/logandk/serverless-wsgi#automatic-requirement-packaging"
-      },
-      "pipArgs": {
-        "type": "string"
-      },
-      "pythonBin": {
-        "type": "string",
-        "description": "https://github.com/logandk/serverless-wsgi#python-version"
-      },
-      "textMimeTypes": {
-        "type": "array",
-        "items": {
+  "definitions": {
+    "PythonWsgi": {
+      "title": "PythonWsgi",
+      "type": "object",
+      "properties": {
+        "app": {
+          "description": "Module path of the WSGI application callable (e.g. `app.application`).",
           "type": "string"
+        },
+        "packRequirements": {
+          "description": "Automatically package Python dependencies from `requirements.txt`.",
+          "type": "boolean",
+          "default": true
+        },
+        "pythonBin": {
+          "description": "Python binary used for packaging and serving (e.g. `python3.11`). Defaults to the configured Lambda runtime.",
+          "type": "string"
+        },
+        "pipArgs": {
+          "description": "Extra arguments forwarded to `pip` during requirement installation.",
+          "type": "string"
+        },
+        "textMimeTypes": {
+          "description": "Additional MIME types to send as plain text instead of base64-encoded. Adds to the default allow list.",
+          "type": "array",
+          "items": { "type": "string" }
         }
-      }
+      },
+      "required": ["app"],
+      "additionalProperties": false
     }
-  },
-  "required": [
-    "PythonWsgi"
-  ]
+  }
 }

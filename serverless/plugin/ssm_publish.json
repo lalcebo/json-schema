@@ -1,109 +1,110 @@
 {
-  "id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/ssm_publish.json",
-  "schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/ssm_publish.json",
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "ServerlessSsmPublishPlugin",
+  "description": "Schema for ServerlessPlugin-SSMPublish (https://github.com/mysense-ai/ServerlessPlugin-SSMPublish). Publishes parameters to AWS SSM Parameter Store after deploy. Goes under `custom.ssmPublish`.",
   "type": "object",
-  "description": "Configuration for SSM Publish Plugin",
-  "additionalProperties": false,
-  "SsmPublishConfiguration": {
-    "title": "SsmPublishConfiguration",
-    "type": "object",
-    "properties": {
-      "enabled": {
-        "type": "boolean",
-        "default": true
-      },
-      "params": {
-        "title": "SsmPublishConfigurationParam",
-        "type": "array",
-        "items": {
-          "anyOf": [
-            {
-              "type": "object",
-              "title": "SsmPublishConfigurationParamWithValue",
-              "properties": {
-                "path": {
-                  "type": "string",
-                  "maxLength": 1011
-                },
-                "description": {
-                  "type": "string",
-                  "maxLength": 1024
-                },
-                "secure": {
-                  "type": "boolean"
-                },
-                "enabled": {
-                  "type": "boolean"
-                },
-                "type": {
-                  "type": "boolean",
-                  "enum": [
-                    "String",
-                    "SecureString",
-                    "StringList"
-                  ]
-                },
-                "value": {
-                  "oneOf": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "object"
-                    }
-                  ]
-                }
-              },
-              "required": [
-                "path",
-                "value"
-              ]
-            },
-            {
-              "type": "object",
-              "title": "SsmPublishConfigurationParamCloudFormation",
-              "properties": {
-                "path": {
-                  "type": "string",
-                  "maxLength": 1011
-                },
-                "description": {
-                  "type": "string",
-                  "maxLength": 1024
-                },
-                "secure": {
-                  "type": "boolean"
-                },
-                "enabled": {
-                  "type": "boolean"
-                },
-                "type": {
-                  "type": "boolean",
-                  "enum": [
-                    "String",
-                    "SecureString",
-                    "StringList"
-                  ]
-                },
-                "source": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "path",
-                "source"
-              ]
-            }
-          ]
+  "definitions": {
+    "SsmPublishConfiguration": {
+      "title": "SsmPublishConfiguration",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Enable / disable the plugin globally.",
+          "type": "boolean",
+          "default": true
+        },
+        "params": {
+          "description": "Parameters to publish to SSM. Each item supplies either a literal `value` or a CloudFormation stack-output `source`.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SsmPublishParam"
+          }
         }
-      }
+      },
+      "required": ["params"],
+      "additionalProperties": false
     },
-    "required": [
-      "enabled",
-      "params"
-    ]
-  },
-  "required": [
-    "SsmPublishConfiguration"
-  ]
+    "SsmPublishParam": {
+      "title": "SsmPublishParam",
+      "oneOf": [
+        { "$ref": "#/definitions/SsmPublishParamWithValue" },
+        { "$ref": "#/definitions/SsmPublishParamFromSource" }
+      ]
+    },
+    "SsmPublishParamWithValue": {
+      "title": "SsmPublishParamWithValue",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Parameter Store path (e.g. `/myapp/prod/api-url`).",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1011
+        },
+        "value": {
+          "description": "Literal value to publish. Objects are serialised to YAML before upload.",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "object" }
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "secure": {
+          "description": "Encrypt the value at rest (uses the SecureString type).",
+          "type": "boolean",
+          "default": true
+        },
+        "type": {
+          "description": "Explicit Parameter Store type. Required when publishing list values.",
+          "type": "string",
+          "enum": ["String", "SecureString", "StringList"]
+        },
+        "enabled": {
+          "description": "Skip this individual parameter without disabling the whole plugin.",
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": ["path", "value"],
+      "additionalProperties": false
+    },
+    "SsmPublishParamFromSource": {
+      "title": "SsmPublishParamFromSource",
+      "type": "object",
+      "properties": {
+        "path": {
+          "description": "Parameter Store path.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1011
+        },
+        "source": {
+          "description": "Name of a CloudFormation stack Output whose value is published as this parameter.",
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "secure": {
+          "type": "boolean",
+          "default": true
+        },
+        "type": {
+          "type": "string",
+          "enum": ["String", "SecureString", "StringList"]
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": ["path", "source"],
+      "additionalProperties": false
+    }
+  }
 }

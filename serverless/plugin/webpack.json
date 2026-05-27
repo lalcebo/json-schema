@@ -1,169 +1,177 @@
 {
-  "id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/webpack.json",
-  "schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/webpack.json",
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "ServerlessWebpackPlugin",
+  "description": "Schema for the serverless-webpack plugin (https://github.com/serverless-heaven/serverless-webpack). Goes under `custom.webpack`.",
   "type": "object",
-  "description": "Configuration schema for the webpack plugin",
-  "additionalProperties": false,
-  "WebpackConfiguration": {
-    "description": "Configuration for webpack plugin:- https://github.com/serverless-heaven/serverless-webpack",
-    "type": "object",
-    "properties": {
-      "webpackConfig": {
-        "description": "Name of webpack configuration file",
-        "type": "string",
-        "default": "webpack.config.js"
+  "definitions": {
+    "WebpackConfiguration": {
+      "title": "WebpackConfiguration",
+      "type": "object",
+      "properties": {
+        "webpackConfig": {
+          "description": "Path to the webpack configuration file.",
+          "type": "string",
+          "default": "webpack.config.js"
+        },
+        "includeModules": {
+          "description": "How to package external node modules. `true` to package them with defaults, `false` to skip, or an object for fine-grained control.",
+          "oneOf": [
+            { "type": "boolean", "default": false },
+            { "$ref": "#/definitions/WebpackIncludeModules" }
+          ]
+        },
+        "packager": {
+          "description": "Package manager used to install external modules.",
+          "type": "string",
+          "enum": ["npm", "yarn", "pnpm"],
+          "default": "npm"
+        },
+        "packagerOptions": {
+          "description": "Packager-specific options.",
+          "anyOf": [
+            { "$ref": "#/definitions/WebpackNpmPackagerOptions" },
+            { "$ref": "#/definitions/WebpackYarnPackagerOptions" }
+          ]
+        },
+        "excludeFiles": {
+          "description": "Glob pattern of files to ignore when packaging.",
+          "type": "string",
+          "default": "src/**/*.test.js"
+        },
+        "excludeRegex": {
+          "description": "Regex pattern of files to ignore before zipping.",
+          "type": "string"
+        },
+        "keepOutputDirectory": {
+          "description": "Keep the `.webpack` output directory after packaging. Useful for debugging.",
+          "type": "boolean",
+          "default": false
+        },
+        "concurrency": {
+          "description": "Number of concurrent webpack builds. Defaults to the number of available cores.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "serializedCompile": {
+          "description": "Run webpack builds sequentially (equivalent to `concurrency: 1`).",
+          "type": "boolean",
+          "default": false
+        },
+        "noBuild": {
+          "description": "Skip compilation before `invoke local`.",
+          "type": "boolean",
+          "default": false
+        },
+        "packExternalModulesMaxBuffer": {
+          "description": "Maximum buffer size in bytes for the `pack external modules` subprocess.",
+          "type": "integer",
+          "minimum": 1
+        }
       },
-      "excludeFiles": {
-        "description": "Provide a glob for files to ignore",
-        "type": "string",
-        "default": "src/**/*.test.js"
-      },
-      "excludeRegex": {
-        "description": "Provide a regex to match files to ignore",
-        "type": "string",
-        "default": "\\.ts|test|\\.map"
-      },
-      "keepOutputDirectory": {
-        "description": "Keep the output .webpack directory after packaging",
-        "type": "boolean",
-        "default": false
-      },
-      "concurrency": {
-        "description": "Desired concurrency, defaults to the number of available cores",
-        "type": "number",
-        "minimum": 1
-      },
-      "serializedCompile": {
-        "description": "Backward compatible, this translates to concurrency: 1",
-        "type": "boolean",
-        "default": true
-      },
-      "packager": {
-        "description": "Packager that will be used to package your external modules",
-        "type": "string",
-        "default": "npm",
-        "enum": [
-          "npm",
-          "yarn",
-          "pnpm"
-        ]
-      },
-      "includeModules": {
-        "oneOf": [
-          {
-            "type": "boolean",
-            "default": false
-          },
-          {
-            "title": "WebpackIncludeModules",
-            "type": "object",
-            "properties": {
-              "packagePath": {
-                "description": "Relative path to custom package.json file.",
-                "type": "string",
-                "default": "package.json"
-              },
-              "nodeModulesRelativeDir": {
-                "description": "relative path to current working directory.",
-                "type": "string",
-                "default": "./"
-              },
-              "forceExclude": {
-                "description": "The collection of modules that should not be bundled",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "default": ["aws-sdk"]
-              },
-              "forceInclude": {
-                "description": "The collection of modules that should definitely be bundled",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "additionalProperties": false
-          }
-        ]
-      },
-      "packagerOptions": {
-        "anyOf": [
-          {
-            "title": "WebpackNpmPackageOptions",
-            "type": "object",
-            "properties": {
-              "lockFile": {
-                "description": "relative path to package-lock.json or yarn.lock",
-                "type": "string",
-                "default": "./package-lock.json"
-              },
-              "ignoreScripts": {
-                "description": "Do not execute package.json hook scripts on install",
-                "type": "boolean",
-                "default": false
-              },
-              "noInstall": {
-                "description": "Do not run npm install (assume install completed)",
-                "type": "boolean",
-                "default": false
-              },
-              "scripts": {
-                "description": "Scripts to run after installation, source:- https://github.com/serverless-heaven/serverless-webpack#custom-scripts",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "additionalProperties": false
-          },
-          {
-            "title": "WebpackYarnPackageOptions",
-            "type": "object",
-            "properties": {
-              "ignoreScripts": {
-                "description": "Do not execute package.json hook scripts on install",
-                "type": "boolean",
-                "default": false
-              },
-              "noInstall": {
-                "description": "Do not run npm install (assume install completed)",
-                "type": "boolean",
-                "default": false
-              },
-              "noNonInteractive": {
-                "description": "Disable interactive mode when using Yarn 2 or above",
-                "type": "boolean",
-                "default": false
-              },
-              "noFrozenLockfile": {
-                "description": "Do not require an up-to-date yarn.lock",
-                "type": "boolean",
-                "default": false
-              },
-              "networkConcurrency": {
-                "description": "Specify number of concurrent network requests",
-                "type": "number",
-                "minimum": 1
-              },
-              "scripts": {
-                "description": "Scripts to run after installation, source:- https://github.com/serverless-heaven/serverless-webpack#custom-scripts",
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "additionalProperties": false
-          }
-        ]
-      }
+      "additionalProperties": false
     },
-    "additionalProperties": false
-  },
-  "required": [
-    "WebpackConfiguration"
-  ]
+    "WebpackIncludeModules": {
+      "title": "WebpackIncludeModules",
+      "type": "object",
+      "properties": {
+        "packagePath": {
+          "description": "Relative path to a custom package.json used for dependency resolution.",
+          "type": "string",
+          "default": "package.json"
+        },
+        "nodeModulesRelativeDir": {
+          "description": "Relative directory where node_modules exists.",
+          "type": "string",
+          "default": "./"
+        },
+        "forceInclude": {
+          "description": "Modules that should always be packaged even if webpack can't detect them.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "forceExclude": {
+          "description": "Modules that should never be packaged.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["aws-sdk"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "WebpackNpmPackagerOptions": {
+      "title": "WebpackNpmPackagerOptions",
+      "description": "Options when `packager` is `npm` or `pnpm`.",
+      "type": "object",
+      "properties": {
+        "lockFile": {
+          "description": "Relative path to the lock file (package-lock.json / pnpm-lock.yaml).",
+          "type": "string",
+          "default": "./package-lock.json"
+        },
+        "ignoreScripts": {
+          "description": "Skip running package.json install hook scripts.",
+          "type": "boolean",
+          "default": false
+        },
+        "noInstall": {
+          "description": "Skip the install step (assume it ran already).",
+          "type": "boolean",
+          "default": false
+        },
+        "scripts": {
+          "description": "Scripts to execute after installation.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "copyPackageSectionNames": {
+          "description": "Sections of the source `package.json` to copy into the generated one.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      },
+      "additionalProperties": false
+    },
+    "WebpackYarnPackagerOptions": {
+      "title": "WebpackYarnPackagerOptions",
+      "description": "Options when `packager` is `yarn`.",
+      "type": "object",
+      "properties": {
+        "ignoreScripts": {
+          "type": "boolean",
+          "default": false
+        },
+        "noInstall": {
+          "type": "boolean",
+          "default": false
+        },
+        "noNonInteractive": {
+          "description": "Disable Yarn 2+ interactive mode.",
+          "type": "boolean",
+          "default": false
+        },
+        "noFrozenLockfile": {
+          "description": "Allow an out-of-date yarn.lock.",
+          "type": "boolean",
+          "default": false
+        },
+        "networkConcurrency": {
+          "description": "Number of concurrent network requests.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "scripts": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "copyPackageSectionNames": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["resolutions"]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
 }

@@ -1,157 +1,214 @@
 {
   "$id": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/plugin/python_requirements.json",
   "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "ServerlessPythonRequirementsPlugin",
+  "description": "Schema for the serverless-python-requirements plugin (https://github.com/serverless/serverless-python-requirements). Bundles dependencies from requirements.txt / Pipfile / pyproject.toml. NOTE: this plugin's functionality is integrated into Serverless Framework v4.22.0+; the standalone plugin is deprecated as of October 2025. Goes under `custom.pythonRequirements`.",
   "type": "object",
-  "description": "A Serverless Framework plugin to automatically bundle dependencies from requirements.txt and make them available in your PYTHONPATH.",
-  "additionalProperties": false,
-  "PythonRequirements": {
-    "properties": {
-      "dockerizePip": {
-        "description": "Compiling non-pure-Python modules or fetching their manylinux wheels is supported on non-linux OSs via the use of Docker and the (docker-lambda)[https://github.com/lambci/docker-lambda] image",
-        "oneOf": [
-          {
-            "type": "boolean"
-          },
-          {
-            "description": "This will only use docker on non-linux environments",
-            "type": "string",
-            "enum": [
-              "non-linux"
-            ]
-          }
-        ]
-      },
-      "dockerImage": {
-        "description": "Name of the docker image you want to utilize instead of the default. This must be the full image name and tag to use, including the runtime specific tag if applicable",
-        "type": "string"
-      },
-      "dockerFile": {
-        "description": "Use this to define your Docker image in your own Dockerfile. Path to the Dockerfile that must be in the current folder (or a subfolder). Please note the dockerImage and the dockerFile are mutually exclusive.",
-        "type": "string"
-      },
-      "dockerSsh": {
-        "type": "boolean",
-        "description": "Set to true if you need to install from private git repositories. This will mount your $HOME/.ssh/id_rsa and $HOME/.ssh/known_hosts as a volume in the docker container."
-      },
-      "dockerPrivateKey": {
-        "type": "string"
-      },
-      "usePipenv": {
-        "type": "boolean",
-        "description": "Use Pipenv instead of requirements.txt. https://github.com/serverless/serverless-python-requirements#sparklescakesparkles-pipenv-support"
-      },
-      "usePoetry": {
-        "type": "boolean",
-        "description": "https://github.com/serverless/serverless-python-requirements#sparklespencilsparkles-poetry-support"
-      },
-      "zip": {
-        "type": "boolean",
-        "description": "https://github.com/serverless/serverless-python-requirements#sparklescakesparkles-pipenv-support"
-      },
-      "slim": {
-        "type": "boolean",
-        "description": "https://github.com/serverless/serverless-python-requirements#slim-package"
-      },
-      "slimPatterns": {
-        "type": "array",
-        "items": {
+  "definitions": {
+    "PythonRequirements": {
+      "title": "PythonRequirements",
+      "type": "object",
+      "properties": {
+        "dockerizePip": {
+          "description": "Use Docker (via the lambci/docker-lambda image) to compile non-pure-Python modules or fetch manylinux wheels on non-Linux systems. Pass `non-linux` to only enable on non-Linux.",
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "string", "enum": ["non-linux"] }
+          ],
+          "default": false
+        },
+        "dockerImage": {
+          "description": "Docker image (with tag) to use instead of the default AWS build image. Mutually exclusive with `dockerFile`.",
           "type": "string"
         },
-        "description": "https://github.com/serverless/serverless-python-requirements#custom-removal-patterns"
-      },
-      "slimPatternsAppendDefaults": {
-        "type": "boolean"
-      },
-      "strip": {
-        "description": "https://github.com/serverless/serverless-python-requirements#option-not-to-strip-binaries",
-        "type": "boolean"
-      },
-      "layer": {
-        "description": "https://github.com/serverless/serverless-python-requirements#lambda-layer",
-        "oneOf": [
-          {
-            "type": "boolean"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
+        "dockerFile": {
+          "description": "Path to a custom Dockerfile in (or under) the working directory. Mutually exclusive with `dockerImage`.",
+          "type": "string"
+        },
+        "dockerSsh": {
+          "description": "Mount `$HOME/.ssh/id_rsa` and `$HOME/.ssh/known_hosts` into the build container to install from private git repos.",
+          "type": "boolean",
+          "default": false
+        },
+        "dockerPrivateKey": {
+          "description": "Absolute path to an SSH private key. Overrides the default `$HOME/.ssh/id_rsa`.",
+          "type": "string"
+        },
+        "dockerEnv": {
+          "description": "Environment variables to pass to the Docker build container.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "dockerExtraFiles": {
+          "description": "Additional OS files to copy out of the Docker build (e.g. shared libraries).",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "dockerBuildCmdExtraArgs": {
+          "description": "Extra arguments forwarded to `docker build`.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "dockerRunCmdExtraArgs": {
+          "description": "Extra arguments forwarded to `docker run`.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "fileName": {
+          "description": "Requirements filename. Default `requirements.txt`.",
+          "type": "string",
+          "default": "requirements.txt"
+        },
+        "pythonBin": {
+          "description": "Python executable used for packaging. Default `python`.",
+          "type": "string",
+          "default": "python"
+        },
+        "pipCmdExtraArgs": {
+          "description": "Extra arguments forwarded to `pip install`.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "usePipenv": {
+          "description": "Use Pipenv (Pipfile) for dependency resolution.",
+          "type": "boolean"
+        },
+        "usePoetry": {
+          "description": "Use Poetry (pyproject.toml) for dependency resolution.",
+          "type": "boolean"
+        },
+        "requirePoetryLockFile": {
+          "description": "Require `poetry.lock` to be present and up to date.",
+          "type": "boolean",
+          "default": false
+        },
+        "poetryWithGroups": {
+          "description": "Poetry dependency groups to include.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "poetryWithoutGroups": {
+          "description": "Poetry dependency groups to exclude.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "poetryOnlyGroups": {
+          "description": "Poetry dependency groups to export exclusively.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "useDownloadCache": {
+          "description": "Cache pip downloads between builds.",
+          "type": "boolean",
+          "default": true
+        },
+        "useStaticCache": {
+          "description": "Reuse the compiled output between builds when requirements haven't changed.",
+          "type": "boolean",
+          "default": true
+        },
+        "cacheLocation": {
+          "description": "Override cache directory path (otherwise auto-detected per OS/user).",
+          "type": "string"
+        },
+        "staticCacheMaxVersions": {
+          "description": "Maximum cached versions to retain (0 disables the cap).",
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "invalidateCaches": {
+          "description": "Clean `.requirements` on every package operation.",
+          "type": "boolean",
+          "default": false
+        },
+        "zip": {
+          "description": "Zip the bundled dependencies. Helps stay under Lambda code size limits.",
+          "type": "boolean",
+          "default": false
+        },
+        "slim": {
+          "description": "Strip tests, caches and `.pyc` files from packages.",
+          "type": "boolean",
+          "default": false
+        },
+        "slimPatterns": {
+          "description": "Extra glob patterns to remove when `slim` is enabled.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "slimPatternsAppendDefaults": {
+          "description": "Append `slimPatterns` to the defaults instead of replacing them.",
+          "type": "boolean",
+          "default": true
+        },
+        "strip": {
+          "description": "Strip `.so` binaries when slimming.",
+          "type": "boolean",
+          "default": true
+        },
+        "noDeploy": {
+          "description": "Packages to exclude from deployment (typically large runtime-provided libraries).",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        },
+        "vendor": {
+          "description": "Path to a directory of vendored libraries to include.",
+          "type": "string"
+        },
+        "layer": {
+          "description": "Publish dependencies as a Lambda Layer instead of bundling them inline.",
+          "oneOf": [
+            { "type": "boolean" },
+            {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "compatibleRuntimes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "python3.13",
+                      "python3.12",
+                      "python3.11",
+                      "python3.10",
+                      "python3.9",
+                      "python3.8",
+                      "python3.7",
+                      "python3.6"
+                    ]
+                  }
+                },
+                "compatibleArchitectures": {
+                  "type": "array",
+                  "items": { "type": "string", "enum": ["x86_64", "arm64"] }
+                },
+                "licenseInfo": { "type": "string" },
+                "allowedAccounts": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "retain": { "type": "boolean" }
               },
-              "description": {
-                "type": "string"
-              },
-              "compatibleRuntimes": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "python3.12",
-                    "python3.11",
-                    "python3.10",
-                    "python3.9",
-                    "python3.8",
-                    "python3.7",
-                    "python3.6"
-                  ]
-                }
-              },
-              "licenseInfo": {
-                "type": "string"
-              },
-              "allowedAccounts": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
+              "additionalProperties": false
             }
-          }
-        ]
-      },
-      "noDeploy": {
-        "type": "array",
-        "items": {
-          "type": "string"
+          ],
+          "default": false
         }
       },
-      "useDownloadCache": {
-        "type": "boolean"
-      },
-      "useStaticCache": {
-        "type": "boolean"
-      },
-      "cacheLocation": {
-        "type": "string"
-      },
-      "staticCacheMaxVersions": {
-        "type": "integer"
-      },
-      "pipCmdExtraArgs": {
-        "description": "https://github.com/serverless/serverless-python-requirements#extra-pip-arguments",
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      },
-      "dockerBuildCmdExtraArgs": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      },
-      "dockerRunCmdExtraArgs": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      },
-      "invalidateCaches": {
-        "type": "boolean"
-      }
+      "additionalProperties": false
     }
-  },
-  "required": [
-    "PythonRequirements"
-  ]
+  }
 }
